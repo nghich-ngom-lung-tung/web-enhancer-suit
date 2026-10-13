@@ -28,6 +28,10 @@ body.ro-theater-active nav:hover {
 body.ro-theater-active .player-wrapper,
 body.ro-theater-active .player-container,
 body.ro-theater-active #player,
+body.ro-theater-active #live-player-content,
+body.ro-theater-active #embed-player,
+body.ro-theater-active #iframe-stream,
+body.ro-theater-active .col-player,
 body.ro-theater-active iframe {
   max-height: 88vh !important;
   box-shadow: 0 10px 50px rgba(81, 240, 133, 0.25) !important;

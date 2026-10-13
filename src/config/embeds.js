@@ -38,5 +38,11 @@ module.exports = [
   "*://*.vidembed.cc/*",
   "*://*.superembed.stream/*",
   "*://*.streamz.ws/*",
-  "*://*.streamhub.to/*"
+  "*://*.streamhub.to/*",
+  "*://*.cdnfastter.xyz/*",
+  "*://livecdn.cdnfastter.xyz/*",
+  "*://live.khoga.space/*",
+  "*://*.khoga.space/*",
+  "*://*.vcdn.cloud/*",
+  "*://embed.apistatscore.com/*"
 ];

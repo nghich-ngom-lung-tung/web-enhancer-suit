@@ -1,10 +1,10 @@
 # 🎬 Web Enhancer Suite - Cinema Pro Edition v5.3
 
 ![Version](https://img.shields.io/badge/Version-5.3_Modular_Architecture-blue?style=for-the-badge&logo=javascript)
-![Tests](https://img.shields.io/badge/Tests-667%2F667_Passed-success?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-752%2F752_Passed-success?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-100%25_Production_Ready-brightgreen?style=for-the-badge)
 
-Bộ công cụ toàn diện số 1 Việt Nam: Mở khóa VIP vĩnh viễn, vô hạn Coin/TCoin, **triệt tiêu 100% AdBlock / Stream Guard**, tự động tóm link **M3U8 Stream mở bằng PotPlayer/VLC/Tải playlist .M3U**, bộ phím tắt thần thánh **Tua nhanh/lùi 5s, Skip Intro 85s, Chỉnh âm lượng, Toàn màn hình**, bộ lọc màu **Anime OLED HDR**, và chế độ **Rạp phim Theater Mode** trên **37+ website xem phim và anime hàng đầu Việt Nam**!
+Bộ công cụ toàn diện số 1 Việt Nam: Mở khóa VIP vĩnh viễn, vô hạn Coin/TCoin, **triệt tiêu 100% AdBlock / Stream Guard**, tự động tóm link **M3U8 Stream mở bằng PotPlayer/VLC/Tải playlist .M3U**, bộ phím tắt thần thánh **Tua nhanh/lùi 5s, Skip Intro 85s, Chỉnh âm lượng, Toàn màn hình**, bộ lọc màu **Anime OLED HDR**, và chế độ **Rạp phim / Sân cỏ Theater Mode** trên **42+ website xem phim, anime và bóng đá trực tiếp hàng đầu Việt Nam**!
 
 ---
 
@@ -17,28 +17,30 @@ Codebase đã được tái cấu trúc hoàn toàn thành hệ thống Module s
 │   ├── config/          # Embed matchers & aggregated site registry
 │   ├── css/             # CSS độc lập (adblock.css, hub.css, theater.css, embed-guard.css)
 │   ├── modules/         # Logic module (icons.js, sniffer.js, player-controls.js, ad-nuker.js, hub-ui.js, rophim-vip.js)
-│   ├── sites/           # Cấu hình 37+ website chia theo nhóm thư mục:
+│   ├── sites/           # Cấu hình 42+ website chia theo nhóm thư mục:
 │   │   ├── anime/       # Anime & Hoạt hình 3D (9 sites: AnimeVietsub, VuiGhe, AnimeHay, HH3D...)
 │   │   ├── movies/      # Phim Chiếu Rạp & Phim Tổng Hợp (25 sites: Rophim, Motchill, PhimMoi...)
 │   │   ├── tv/          # Phim Truyền Hình & Thuyết Minh (2 sites: TVHay, VietSubTV)
-│   │   └── embeds/      # Server Nguồn & Embed (OPhim, KKPhim)
+│   │   ├── embeds/      # Server Nguồn & Embed (OPhim, KKPhim)
+│   │   └── sports/      # Bóng Đá & Thể Thao Trực Tiếp (5 sites: Xôi Lạc, Thập Cẩm, Khô Gà, Giờ Vàng, Chuối Chiên)
 │   └── template.js      # Compiler template ráp nối các module
-├── scripts/             # Script UserScript xuất bản theo nhóm folder (anime/, movies/, tv/, embeds/)
+├── scripts/             # Script UserScript xuất bản theo nhóm folder (anime/, movies/, tv/, embeds/, sports/)
 ├── build_all_scripts.js # Trình biên dịch tinh gọn (~70 dòng)
-└── run_audit.js         # Bộ Test Suite tự động (667/667 Assertions)
+└── run_audit.js         # Bộ Test Suite tự động (752/752 Assertions)
 ```
 
 ---
 
 ## 🌐 Các Tên Miền & Trình Phát Hỗ Trợ (Cập nhật 2026)
 
-Hệ thống script tự động nhận diện và kích hoạt trên toàn bộ 37+ hệ thống website phim và iframe player nhúng:
+Hệ thống script tự động nhận diện và kích hoạt trên toàn bộ 42+ hệ thống website phim, anime, bóng đá và iframe player nhúng:
+- ⚽ **Bóng Đá & Thể Thao Trực Tiếp**: `xoilaczzz.pro`, `explorado-invest.com` (ThapCam TV), `khoga.live`, `giovang.tax`, `chuoichientv.me`, `chuoichientv.link`...
 - 🌟 **Rổ Phim**: `rophim1.vip`, `rophim1.cc`, `rophim1.co`, `rophimx.net`, `rophim.ws`, `rophim.li`, `rophim.me`, `rophim.mx`
 - 🍿 **Motchill, PhimMoi, SSPhim & Mọt Phim**: `phimmotchill.online`, `motchill.online`, `motchilltv.com`, `phimmoiyyy.net`, `phimmoichill.net`, `phimmoi.net`, `motphim.to`, `motphimtv.me`, `ssphim.net`...
 - 🌸 **Anime & Hoạt Hình 3D (Donghua)**: `animevietsub.moe`, `vuighe.net`, `vuighe3.com`, `animetvn.com`, `animehay.tv`, `anime47.net`, `hoathinh3d.biz`, `hhkungfu.tv`, `hhpanda.com`, `donghuatv.com`, `topsub.org`...
 - 🎬 **Kho Phim Chiếu Rạp & Series**: `bilutv.live`, `phim1080z.org`, `xemphim.tv`, `dongphim.net`, `tvhay.site`, `subnhanh.org`, `ophim.cc`, `biphim.net`, `mephimtv.com`, `ghienphim.net`, `fullphim.net`, `phimhay.co`...
 - 💎 **Các Web Kinh Điển Bổ Sung**: `vietsubtv.org`, `phim247.tv`, `phimhd.com`, `phimbathu.com`, `phimvang.com`, `banhtv.net`, `hdonline.co`, `chillhay.com`, `xemphimplus.net`...
-- 🛡️ **Hệ thống nhúng Player**: `*.streamc.xyz`, `embed*.streamc.xyz`, `*.goatembed.com`, `*.stream*.xyz`, `*.nguonc.com`, `*.phimapi.com`, `*.streamtape.com`, `*.doodstream.com`, `*.vidsrc.to`, `*.streamwish.to`...
+- 🛡️ **Hệ thống nhúng Player & Live CDN**: `*.streamc.xyz`, `embed*.streamc.xyz`, `*.goatembed.com`, `*.vcdn.cloud`, `livecdn.cdnfastter.xyz`, `live.khoga.space`, `*.nguonc.com`, `*.phimapi.com`, `*.streamtape.com`, `*.doodstream.com`, `*.vidsrc.to`, `*.streamwish.to`...
 
 ---
 
@@ -130,6 +132,11 @@ Nếu trình duyệt của bạn chưa có Tampermonkey, hãy cài đặt extens
 | ➕ **XemPhimPlus** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT XEMPHIMPLUS](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/xemphimplus.user.js)** | `xemphimplus.net`... |
 | 🍙 **TopSub (Vietsub)** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT TOPSUB](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/topsub.user.js)** | `topsub.org`, `topsub.net`, `topsub.tv`... |
 | ⚡ **SSPhim (Phim Nhanh)** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT SSPHIM](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/ssphim.user.js)** | `ssphim.net`, `ssphim.tv`, `ssphim.org`... |
+| ⚽ **Xôi Lạc TV (XoilacZ)** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT XÔI LẠC](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/sports/xoilac.user.js)** | `xoilaczzz.pro`, `xoilac.tv`, `xoilac.net`... |
+| 🏆 **Thập Cẩm TV (ThapCam)** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT THẬP CẨM](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/sports/thapcam.user.js)** | `explorado-invest.com`, `thapcam.tv`... |
+| 🍗 **Khô Gà TV (KhogaLive)** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT KHÔ GÀ](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/sports/khoga.user.js)** | `khoga.live`, `khoga1.live`, `khoga.tv`... |
+| ⏰ **Giờ Vàng TV (Giovang)** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT GIỜ VÀNG](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/sports/giovang.user.js)** | `giovang.tax`, `giovang.tv`, `giovangtv.net`... |
+| 🍌 **Chuối Chiên TV** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT CHUỐI CHIÊN](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/sports/chuoichien.user.js)** | `chuoichientv.me`, `chuoichientv.link`... |
 
 > 💡 **Mẹo**: Nếu anh hay xem nhiều web khác nhau, chỉ cần cài duy nhất bản **ALL-IN-ONE** là xong! Hoặc chọn từng bản riêng lẻ nếu chỉ xem cố định một trang. Nhấp vào nút **Cài đặt** ở trên, Tampermonkey sẽ tự động phát hiện và hiện bảng xác nhận. Nhấn **Install** (Cài đặt) hoặc **Update** (Cập nhật) là hoàn tất!
 
