@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PhimVang VIP & Cinema Pro Suite
 // @namespace    http://tampermonkey.net/
-// @version      4.5
+// @version      4.6
 // @description  Chặn sạch banner quảng cáo Phim Vàng + M3U8 Stream Sniffer PotPlayer/VLC + Skip Intro 85s + Rạp phim
 // @author       nghich-ngom-lung-tung
 // @match        *://*.phimvang.com/*
@@ -952,7 +952,7 @@
       <div id="ro-hub-menu">
         <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px; color: #51f085; display: flex; justify-content: space-between;">
           <span>🎬 PhimVang VIP & Cinema Pro Suite</span>
-          <span style="font-size: 11px; opacity: 0.7;">v4.5</span>
+          <span style="font-size: 11px; opacity: 0.7;">v4.6</span>
         </div>
         <button class="ro-menu-btn" id="ro-potplayer-btn">
           <span>🚀 Mở PotPlayer</span>

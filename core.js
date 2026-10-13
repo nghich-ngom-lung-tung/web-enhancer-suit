@@ -910,7 +910,7 @@
       <div id="ro-hub-menu">
         <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px; color: #51f085; display: flex; justify-content: space-between;">
           <span>🎬 Cinema Pro (All-In-One)</span>
-          <span style="font-size: 11px; opacity: 0.7;">v4.5</span>
+          <span style="font-size: 11px; opacity: 0.7;">v4.6</span>
         </div>
         <button class="ro-menu-btn" id="ro-potplayer-btn">
           <span>🚀 Mở PotPlayer</span>

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cinema Pro Suite (All-In-One) - Kho Phim & Anime Việt Nam
 // @namespace    http://tampermonkey.net/
-// @version      4.5
+// @version      4.6
 // @description  Bản Master Gộp Tất Cả Trong Một: Mở khóa VIP + Vô hạn Coin + Chặn 100% AdBlock/Stream Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Tua 5s/Intro 85s/Volume & Anime HDR trên hơn 37+ website phim, anime, hoạt hình 3D Việt Nam!
 // @author       nghich-ngom-lung-tung
 // @match        *://rophim1.vip/*
@@ -1147,7 +1147,7 @@
       <div id="ro-hub-menu">
         <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px; color: #51f085; display: flex; justify-content: space-between;">
           <span>🎬 Cinema Pro (All-In-One)</span>
-          <span style="font-size: 11px; opacity: 0.7;">v4.5</span>
+          <span style="font-size: 11px; opacity: 0.7;">v4.6</span>
         </div>
         <button class="ro-menu-btn" id="ro-potplayer-btn">
           <span>🚀 Mở PotPlayer</span>

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         BiluTV VIP & Cinema Pro Suite
 // @namespace    http://tampermonkey.net/
-// @version      4.5
+// @version      4.6
 // @description  Chặn quảng cáo BiluTV + Diệt Stream Guard + Bắt link M3U8 PotPlayer/VLC + Phím tắt Skip Intro & Cinema Mode
 // @author       nghich-ngom-lung-tung
 // @match        *://*.bilutv.live/*
@@ -958,7 +958,7 @@
       <div id="ro-hub-menu">
         <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px; color: #51f085; display: flex; justify-content: space-between;">
           <span>🎬 BiluTV VIP & Cinema Pro Suite</span>
-          <span style="font-size: 11px; opacity: 0.7;">v4.5</span>
+          <span style="font-size: 11px; opacity: 0.7;">v4.6</span>
         </div>
         <button class="ro-menu-btn" id="ro-potplayer-btn">
           <span>🚀 Mở PotPlayer</span>
