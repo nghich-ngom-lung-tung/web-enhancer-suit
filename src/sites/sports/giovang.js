@@ -13,5 +13,5 @@ module.exports = {
     "*://giovangtv.net/*", "*://*.giovangtv.net/*",
     "*://giovangtv.org/*", "*://*.giovangtv.org/*"
   ],
-  siteCss: `.gv-skeleton-banner, .gv-skeleton-banner-main, .banner-match, div[class*="gv-skeleton-banner"], div[class*="banner-match"], div[id*="banner-match"], .ads-banner, #catfish, div[style*="z-index: 9999999"]`
+  siteCss: `#banner_popup, .banner_popup, .banner_inner, .banner_cursor, .grid_banner_devqc, .devqc-manager-resources, .w-banner_devqc-bd, .banner_devqc-bdn-button, .devqc-catfish, .gvbanner-catfish, [class*="devqc"], [id*="devqc"], #banners-bottom-container, .banners-bottom, .banners-bottom-grid, #open-banner-bottom, .popup-menu, #popupMenu, .floating-balloon-container, .popup-anim, .popup-item, [data-brand-id], [class*="seo4s"], .bg-modaltrungthuong, .modal-trungthuong, .close-modal-trungthuong, .gv-skeleton-banner, .gv-skeleton-banner-main, .banner-match, div[class*="gv-skeleton-banner"], div[class*="banner-match"], div[id*="banner-match"], .ads-banner, #catfish, div[style*="z-index: 9999999"], img[src*="giovang-popup"], img[src*="hit.club"], img[src*="go88"], img[src*="sun.win"]`
 };

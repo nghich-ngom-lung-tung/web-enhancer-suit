@@ -27,10 +27,21 @@ div[id*="box-bottom"], div[class*="box-bottom"], div[id*="ads_bottom"], div[clas
 div[class*="banner_bottom"], div[id*="banner_bottom"], div[class*="banner-bottom"], div[id*="banner-bottom"],
 div[id*="floating_bottom"], div[class*="floating_bottom"], div[id*="float_bottom"],
 
-/* Diệt tận gốc Banner Rophim: sspp-area, display-single, 9922, 154.82, media gif */
+/* Diệt tận gốc Banner Rophim, Thể thao & Giovang: devqc, banner_popup, catfish, cá cược */
 .sspp-area, [class*="sspp-area"], [class*="sspp_area"], [class*="sspp-"],
 .display-single, [class*="display-single"], .is-demo, [class*="is-demo"],
 .is-image, div[class*="is-image"],
+#banner_popup, .banner_popup, .banner_inner, .banner_cursor,
+.grid_banner_devqc, .devqc-manager-resources, .w-banner_devqc-bd, .banner_devqc-bdn-button,
+.devqc-catfish, .gvbanner-catfish, [class*="devqc"], [id*="devqc"],
+#banners-bottom-container, .banners-bottom, .banners-bottom-grid, #open-banner-bottom,
+.popup-menu, #popupMenu, .floating-balloon-container, .popup-anim, .popup-item,
+[data-brand-id], [class*="seo4s"],
+.bg-modaltrungthuong, .modal-trungthuong, .close-modal-trungthuong,
+.xlz-ads-item, .block-catfish, .xlz-btn-8xbet, [class*="xlz-ads"],
+.top-ads, .ads-728-90, .adspot-wrap, .adspot-1, .adspot-2, [class*="adspot"], [id*="adspot"],
+.banner-match, .gv-skeleton-banner, [class*="gv-skeleton-banner"],
+img[src*="giovang-popup"], img[src*="hit.club"], img[src*="go88"], img[src*="sun.win"],
 a[href*="154.82."], a[href*="2138046"], a[href*="9922"],
 img[src*="/media/"][src*=".gif"],
 div.slide:has(.sspp-area), div.slide:has(.display-single),
@@ -48,6 +59,24 @@ div[style*="position:fixed"][style*="bottom:0"]:not(#ro-vip-hub):not(#ro-hub-men
   max-height: 0 !important;
   pointer-events: none !important;
   opacity: 0 !important;
+}
+
+/* Diệt tuyệt đối các Modal Popup & Floating Ads đè trang */
+#banner_popup, #banner_popup.show, div#banner_popup, div#banner_popup.show,
+.banner_popup, .banner_popup.show, div.banner_popup, div.banner_popup.show,
+.modal-backdrop, .bg-modaltrungthuong, .modal-trungthuong,
+.floating-balloon-container, #popupMenu, .popup-menu,
+.grid_banner_devqc, .devqc-manager-resources, .w-banner_devqc-bd, .banner_devqc-bdn-button,
+.devqc-catfish, .gvbanner-catfish, [class*="devqc"], [id*="devqc"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: -999999 !important;
+  width: 0 !important;
+  height: 0 !important;
+  max-width: 0 !important;
+  max-height: 0 !important;
 }
 
 html, body {

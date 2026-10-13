@@ -47,10 +47,14 @@ function generateUserscript(site, isMasterAllInOne = false, allSites = []) {
   const snifferCode = getSnifferCode(enableRophimVip);
   const hubUiCode = getHubUiCode(icons, siteTitle, scriptVersion);
 
+  const formattedSiteCss = site.siteCss
+    ? (site.siteCss.includes("{") ? site.siteCss : `${site.siteCss} {\n  display: none !important;\n  visibility: hidden !important;\n  height: 0 !important;\n  opacity: 0 !important;\n  pointer-events: none !important;\n}`)
+    : "";
+
   const fullCss = `
 ${adblockCss}
 
-    ${site.siteCss || ""}
+    ${formattedSiteCss}
 
 ${theaterCss}
 
