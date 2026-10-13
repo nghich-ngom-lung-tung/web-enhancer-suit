@@ -138,8 +138,11 @@ module.exports = `
 
       // ChuoiChien Video Player Banner & Gambling Overlays
       '.banner-player', '.banner-container', '.banner-content', '.banner-image',
-      '[class*="banner-player"]', '[class*="banner-container"]',
-      'img[src*="banner_player"]', 'img[src*="FB88"]', 'img[src*="fb88"]',
+      '[class*="banner-player"]', '[class*="banner-container"]', '[class*="banner-content"]', '[class*="banner-image"]',
+      '.banner-content.active', '[class*="banner-content"][class*="active"]',
+      '.bet-button', '.bet-buttons', '[class*="bet-button"]', '[class*="bet-buttons"]', '[class*="bet-btn"]',
+      '[data-v-cede0d5b]',
+      'img[src*="banner_player"]', 'img[src*="FB88"]', 'img[src*="fb88"]', 'img[src*="net88"]', 'img[src*="NET88"]', 'img[src*="xBet"]',
 
       // ThapCam Popups, Balloons & "Top Nha Cai"
       '#corner-start-popup', '.corner-start-popup', '.corner-start-popup-backdrop', '.corner-start-popup-content', '.corner-start-popup-inner',
@@ -215,13 +218,41 @@ module.exports = `
           if (el.tagName === "VIDEO" && !el.classList.contains("tvc-pre-roll__video") && !el.src?.includes("tvc")) {
             return;
           }
-          const parent = (el.closest && el.closest('.sspp-area, div[class*="sspp"], div[style*="fixed"]:not(.livestream_widget):not(.giovang-fixture-player-shell), div[style*="sticky"], div[class*="catfish"], #banner_popup, .banner_popup, #corner-start-popup, .corner-start-popup, [class*="devqc"], .banner-player, .corner-popup-wrap, .marquee-container')) || el;
+          const parent = (el.closest && el.closest('.sspp-area, div[class*="sspp"], div[style*="fixed"]:not(.livestream_widget):not(.giovang-fixture-player-shell), div[style*="sticky"], div[class*="catfish"], #banner_popup, .banner_popup, #corner-start-popup, .corner-start-popup, [class*="devqc"], .banner-player, .banner-container, .banner-content, .bet-button, .bet-buttons, [class*="bet-button"], .corner-popup-wrap, .marquee-container')) || el;
           if (parent) {
             if (parent === lw || (lw && parent.contains && parent.contains(lw))) return;
+            try {
+              parent.style.setProperty("display", "none", "important");
+              parent.style.setProperty("visibility", "hidden", "important");
+              parent.style.setProperty("height", "0", "important");
+            } catch (e) {}
             if (typeof parent.remove === "function") {
               parent.remove();
               count++;
             }
+          }
+        });
+      }
+
+      // Chuối Chiên TV: Quét sạch các nút cược theo nội dung text (Cược FB88, Cược Net-88, Cược xBet79, ĐUA TOP THƯỞNG...)
+      if (document.querySelectorAll) {
+        document.querySelectorAll("button, div, span, a").forEach(el => {
+          const txt = (el.textContent || "").trim();
+          if (
+            (txt.startsWith("Cược FB88") || txt.startsWith("Cược Net-88") || txt.startsWith("Cược xBet") || txt.includes("Cược 8XBET") || txt.includes("ĐUA TOP THƯỞNG")) &&
+            !el.classList.contains("livestream_widget") && !(el.closest && el.closest(".livestream_widget"))
+          ) {
+            try {
+              el.style.setProperty("display", "none", "important");
+              const p = (el.closest && el.closest('.bet-button, .bet-buttons, [class*="bet-button"], .banner-content, [class*="banner-content"]')) || el;
+              p.style.setProperty("display", "none", "important");
+              p.style.setProperty("visibility", "hidden", "important");
+              p.style.setProperty("height", "0", "important");
+              if (typeof p.remove === "function") {
+                p.remove();
+                count++;
+              }
+            } catch (e) {}
           }
         });
       }

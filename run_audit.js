@@ -658,6 +658,9 @@ sportsScripts.forEach(file => {
   if (file.includes("chuoichien") || file.includes("cinema-pro-all")) {
     const hasBannerPlayerNuked = content.includes(".banner-player") && content.includes(".banner-container") && content.includes("FB88");
     report(`${file}: Chuối Chiên TV video player banner & FB88 ads eradicated`, hasBannerPlayerNuked);
+
+    const hasBetButtonsNuked = content.includes(".bet-button") && content.includes(".bet-buttons") && content.includes("cede0d5b");
+    report(`${file}: Chuối Chiên TV betting buttons (.bet-button, Net-88, xBet79) eradicated`, hasBetButtonsNuked);
   }
 
   // Thập Cẩm TV checks
