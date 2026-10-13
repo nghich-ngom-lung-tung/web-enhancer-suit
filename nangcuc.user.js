@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         NangCuc TV VIP & Cinema Pro Suite
 // @namespace    http://tampermonkey.net/
-// @version      5.0
+// @version      5.1
 // @description  Diệt sạch quảng cáo Nắng Cực TV + Tóm link M3U8 mở PotPlayer/VLC + Skip Intro 85s + Bật Anime OLED HDR & Chế độ Rạp phim
 // @author       nghich-ngom-lung-tung
 // @match        *://*.nangcuc.tv/*
@@ -286,6 +286,48 @@
       }
     }, 1000);
 
+    // ─── AGGRESSIVE STREAM EXTRACTION ───
+    // Hook eval() to intercept StreamC packed JS (eval(function(p,a,c,k,e,d){...}))
+    try {
+      const origEval = window.eval;
+      window.eval = function (code) {
+        if (typeof code === "string") {
+          try { extractUrlsFromString(code); } catch (e) {}
+        }
+        return origEval.apply(this, arguments);
+      };
+    } catch (e) {}
+
+    // Hook Function constructor (alternative to eval for packed JS)
+    try {
+      const OrigFunc = Function;
+      window.Function = function () {
+        const lastArg = arguments[arguments.length - 1];
+        if (typeof lastArg === "string") {
+          try { extractUrlsFromString(lastArg); } catch (e) {}
+        }
+        return OrigFunc.apply(this, arguments);
+      };
+      window.Function.prototype = OrigFunc.prototype;
+    } catch (e) {}
+
+    function extractUrlsFromString(str) {
+      if (!str || typeof str !== "string") return;
+      if (!str.includes("http")) return;
+      try {
+        var re = new RegExp("https?://[^\\s\"'<>,;)\\]]+", "g");
+        var match;
+        while ((match = re.exec(str)) !== null) {
+          var url = match[0];
+          var lower = url.toLowerCase();
+          if (lower.includes(".m3u8") || lower.includes("/hls/") || lower.includes("master.") || lower.includes("playlist.") || lower.includes(".mpd")) {
+            notifyStream(url);
+          }
+        }
+      } catch (e) {}
+    }
+
+    // Hook fetch
     try {
       const origFetch = window.fetch;
       window.fetch = async function (input, init) {
@@ -297,23 +339,25 @@
       };
     } catch (e) {}
 
+    // Hook XHR.open on prototype (most reliable)
     try {
       const origXhrOpen = XMLHttpRequest.prototype.open;
       XMLHttpRequest.prototype.open = function (m, u) {
         try {
-          if (u) notifyStream(u);
+          if (u) notifyStream(String(u));
         } catch (e) {}
         return origXhrOpen.apply(this, arguments);
       };
     } catch (e) {}
 
+    // Hook HTMLMediaElement.src setter
     try {
       const origSrcDesc = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, "src");
       if (origSrcDesc && origSrcDesc.set) {
         const origSet = origSrcDesc.set;
         Object.defineProperty(HTMLMediaElement.prototype, "src", {
           set: function (val) {
-            try { if (val) notifyStream(val); } catch (e) {}
+            try { if (val) notifyStream(String(val)); } catch (e) {}
             return origSet.call(this, val);
           },
           get: origSrcDesc.get,
@@ -322,29 +366,59 @@
       }
     } catch (e) {}
 
+    // Hook Hls.js loadSource (trap on window.Hls property)
     try {
       function hookHlsProto(HlsClass) {
         if (HlsClass && HlsClass.prototype && !HlsClass._roHooked) {
           HlsClass._roHooked = true;
           const origLoad = HlsClass.prototype.loadSource;
           HlsClass.prototype.loadSource = function (url) {
-            try { if (url) notifyStream(url); } catch (e) {}
+            try { if (url) notifyStream(String(url)); } catch (e) {}
             return origLoad.apply(this, arguments);
           };
         }
       }
       if (window.Hls) hookHlsProto(window.Hls);
       let _curHls = window.Hls;
-      Object.defineProperty(window, "Hls", {
-        configurable: true,
-        enumerable: true,
-        get: () => _curHls,
-        set: (v) => {
-          _curHls = v;
-          hookHlsProto(v);
-        }
-      });
+      try {
+        Object.defineProperty(window, "Hls", {
+          configurable: true,
+          enumerable: true,
+          get: () => _curHls,
+          set: (v) => {
+            _curHls = v;
+            try { hookHlsProto(v); } catch (e) {}
+          }
+        });
+      } catch (e) {}
     } catch (e) {}
+
+    // Scan inline script content and DOM for m3u8 URLs (runs after DOM ready)
+    function scanEmbedDom() {
+      try {
+        const scripts = document.querySelectorAll("script");
+        for (let i = 0; i < scripts.length; i++) {
+          const text = scripts[i].textContent || "";
+          if (text.length > 10) extractUrlsFromString(text);
+        }
+      } catch (e) {}
+      try {
+        const html = document.documentElement ? document.documentElement.innerHTML : "";
+        extractUrlsFromString(html);
+      } catch (e) {}
+    }
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+      setTimeout(scanEmbedDom, 500);
+      setTimeout(scanEmbedDom, 2000);
+      setTimeout(scanEmbedDom, 5000);
+    } else {
+      document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(scanEmbedDom, 500);
+        setTimeout(scanEmbedDom, 2000);
+        setTimeout(scanEmbedDom, 5000);
+      });
+    }
+    setInterval(scanEmbedDom, 3000);
 
     window.addEventListener("message", function (e) {
       if (!e.data || typeof e.data !== "object") return;
@@ -1229,7 +1303,7 @@
       <div id="ro-hub-menu">
         <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px; color: #51f085; display: flex; justify-content: space-between;">
           <span>🎬 NangCuc TV VIP & Cinema Pro Suite</span>
-          <span style="font-size: 11px; opacity: 0.7;">v5.0</span>
+          <span style="font-size: 11px; opacity: 0.7;">v5.1</span>
         </div>
         <div id="ro-stream-preview" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 6px 10px; font-size: 11px; word-break: break-all; color: #51f085; font-family: monospace; display: none; cursor: pointer;" title="Bấm để copy link"></div>
         <button class="ro-menu-btn" id="ro-copym3u8-btn">
