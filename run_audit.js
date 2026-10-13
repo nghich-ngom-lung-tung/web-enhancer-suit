@@ -643,6 +643,12 @@ sportsScripts.forEach(file => {
 
     const hasFixtureAndBalloonNuked = content.includes(".fixture-banner") && content.includes("balloon-wrapper") && content.includes("btn-balloon");
     report(`${file}: Giờ Vàng match banners & floating balloons (.fixture-banner, .balloon-wrapper) eradicated`, hasFixtureAndBalloonNuked);
+
+    const hasToplistsNuked = content.includes("toplists-home") && content.includes("homepage-toplists-content") && content.includes("devvn-topfive-wrapper");
+    report(`${file}: Giờ Vàng Top Nhà Cái section (.homepage-toplists-content, .toplists-home, .devvn-topfive) eradicated`, hasToplistsNuked);
+
+    const hasBetDropdownNuked = content.includes("gv-bet-dropdown") && content.includes("box-odds-match") && content.includes("title-odds");
+    report(`${file}: Giờ Vàng Cược ngay dropdown & Soi Kèo (.gv-bet-dropdown, .box-odds-match) eradicated`, hasBetDropdownNuked);
   }
 
   // Xôi Lạc TV checks
@@ -667,6 +673,9 @@ sportsScripts.forEach(file => {
 
     const hasBetButtonsNuked = content.includes(".bet-button") && content.includes(".bet-buttons") && content.includes("cede0d5b");
     report(`${file}: Chuối Chiên TV betting buttons (.bet-button, Net-88, xBet79) eradicated`, hasBetButtonsNuked);
+
+    const hasAdsLayerNuked = content.includes("ads-layer") && content.includes("4c9315d7") && content.includes("1920x60");
+    report(`${file}: Chuối Chiên TV master Ads Layer & 1920x60 banner (.ads-layer, [data-v-4c9315d7]) eradicated`, hasAdsLayerNuked);
   }
 
   // Thập Cẩm TV checks
@@ -676,6 +685,9 @@ sportsScripts.forEach(file => {
 
     const hasBookmakerNuked = content.includes(".bookmaker-title") && content.includes(".tf-section");
     report(`${file}: Thập Cẩm TV nhà cái list & betting section eradicated`, hasBookmakerNuked);
+
+    const hasStickyAnnouncementNuked = content.includes("sticky-message") && content.includes("sticky-announcement") && content.includes("detail-live-brand");
+    report(`${file}: Thập Cẩm TV chat sticky announcement & live brand banners (.sticky-message, .detail-live-brand) eradicated`, hasStickyAnnouncementNuked);
   }
 
   // Khô Gà TV checks
