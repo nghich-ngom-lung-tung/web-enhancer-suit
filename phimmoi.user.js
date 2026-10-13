@@ -1,56 +1,100 @@
 // ==UserScript==
 // @name         PhimMoi & PhimMoiChill VIP & Cinema Pro Suite
 // @namespace    http://tampermonkey.net/
-// @version      5.1
+// @version      5.2
 // @description  Chặn 100% quảng cáo PhimMoi/PhimMoiChill + Khắc chế Stream Guard + Bắt link M3U8 PotPlayer/VLC + Phím tắt Skip Intro & Cinema Mode
 // @author       nghich-ngom-lung-tung
 // @match        *://*.phimmoiyyy.net/*
+// @match        *://phimmoiyyy.net/*
 // @match        *://*.phimmoichill.net/*
+// @match        *://phimmoichill.net/*
 // @match        *://*.phimmoichill.tv/*
+// @match        *://phimmoichill.tv/*
 // @match        *://*.phimmoichilla.net/*
+// @match        *://phimmoichilla.net/*
 // @match        *://*.phimmoii.org/*
+// @match        *://phimmoii.org/*
 // @match        *://*.phimmoi.net/*
+// @match        *://phimmoi.net/*
 // @match        *://*.phimmoiz.net/*
+// @match        *://phimmoiz.net/*
 // @match        *://*.phimmoivn.net/*
+// @match        *://phimmoivn.net/*
 // @match        *://*.phimmoito.net/*
+// @match        *://phimmoito.net/*
 // @match        *://*.phimmoichill.com/*
+// @match        *://phimmoichill.com/*
 // @match        *://*.streamvsmov.com/*
+// @match        *://streamvsmov.com/*
 // @match        *://*.streamvsmov.net/*
+// @match        *://streamvsmov.net/*
 // @match        *://*.vsmov.com/*
+// @match        *://vsmov.com/*
 // @match        *://*.vsmov.net/*
+// @match        *://vsmov.net/*
 // @match        *://*.streamc.xyz/*
+// @match        *://streamc.xyz/*
 // @match        *://embed*.streamc.xyz/*
 // @match        *://*.stream*.xyz/*
+// @match        *://stream*.xyz/*
 // @match        *://*.stream*.top/*
+// @match        *://stream*.top/*
 // @match        *://*.stream*.net/*
+// @match        *://stream*.net/*
 // @match        *://*.stream*.org/*
+// @match        *://stream*.org/*
 // @match        *://*.stream*.cc/*
+// @match        *://stream*.cc/*
 // @match        *://*.stream*.co/*
+// @match        *://stream*.co/*
 // @match        *://*.goatembed.com/*
+// @match        *://goatembed.com/*
 // @match        *://*.emturbovid.com/*
+// @match        *://emturbovid.com/*
 // @match        *://*.turboviplay.com/*
+// @match        *://turboviplay.com/*
 // @match        *://*.streamtape.com/*
+// @match        *://streamtape.com/*
 // @match        *://*.streamtape.net/*
+// @match        *://streamtape.net/*
 // @match        *://*.doodstream.com/*
+// @match        *://doodstream.com/*
 // @match        *://*.dood.*/*
+// @match        *://dood.*/*
 // @match        *://*.nguonc.com/*
+// @match        *://nguonc.com/*
 // @match        *://api.nguonc.com/*
 // @match        *://*.phimapi.com/*
+// @match        *://phimapi.com/*
 // @match        *://player.phimapi.com/*
 // @match        *://*.2embed.cc/*
+// @match        *://2embed.cc/*
 // @match        *://*.2embed.to/*
+// @match        *://2embed.to/*
 // @match        *://*.vidsrc.to/*
+// @match        *://vidsrc.to/*
 // @match        *://*.vidsrc.me/*
+// @match        *://vidsrc.me/*
 // @match        *://*.vidsrc.net/*
+// @match        *://vidsrc.net/*
 // @match        *://*.streamwish.to/*
+// @match        *://streamwish.to/*
 // @match        *://*.streamwish.com/*
+// @match        *://streamwish.com/*
 // @match        *://*.filelions.to/*
+// @match        *://filelions.to/*
 // @match        *://*.filelions.com/*
+// @match        *://filelions.com/*
 // @match        *://*.vidcdn.pro/*
+// @match        *://vidcdn.pro/*
 // @match        *://*.vidembed.cc/*
+// @match        *://vidembed.cc/*
 // @match        *://*.superembed.stream/*
+// @match        *://superembed.stream/*
 // @match        *://*.streamz.ws/*
+// @match        *://streamz.ws/*
 // @match        *://*.streamhub.to/*
+// @match        *://streamhub.to/*
 // @allFrames    true
 // @run-at       document-start
 // @grant        none
@@ -1307,7 +1351,7 @@
       <div id="ro-hub-menu">
         <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px; color: #51f085; display: flex; justify-content: space-between;">
           <span>🎬 PhimMoi & PhimMoiChill VIP & Cinema Pro Suite</span>
-          <span style="font-size: 11px; opacity: 0.7;">v5.1</span>
+          <span style="font-size: 11px; opacity: 0.7;">v5.2</span>
         </div>
         <div id="ro-stream-preview" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 6px 10px; font-size: 11px; word-break: break-all; color: #51f085; font-family: monospace; display: none; cursor: pointer;" title="Bấm để copy link"></div>
         <button class="ro-menu-btn" id="ro-copym3u8-btn">
