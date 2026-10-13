@@ -101,8 +101,8 @@
 // @license      MIT
 // @icon         https://rophim1.vip/apple-icon.png
 // @homepageURL  https://github.com/nghich-ngom-lung-tung/web-enhancer-suit
-// @downloadURL  https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/phimmoi.user.js
-// @updateURL    https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/phimmoi.user.js
+// @downloadURL  https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/phimmoi.user.js
+// @updateURL    https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/phimmoi.user.js
 // ==/UserScript==
 
 (function () {

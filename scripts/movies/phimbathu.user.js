@@ -85,8 +85,8 @@
 // @license      MIT
 // @icon         https://rophim1.vip/apple-icon.png
 // @homepageURL  https://github.com/nghich-ngom-lung-tung/web-enhancer-suit
-// @downloadURL  https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/phimbathu.user.js
-// @updateURL    https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/phimbathu.user.js
+// @downloadURL  https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/phimbathu.user.js
+// @updateURL    https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/phimbathu.user.js
 // ==/UserScript==
 
 (function () {

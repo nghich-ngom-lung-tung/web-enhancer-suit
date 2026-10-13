@@ -6,11 +6,24 @@ console.log("================================================================");
 console.log("🎬 GRANDMASTER VERIFICATION HARNESS - CINEMA PRO SUITE v4.5");
 console.log("================================================================\n");
 
-const scriptFiles = fs.readdirSync(".")
-  .filter(f => f.endsWith(".user.js"))
-  .sort();
+function findScriptFiles(dir) {
+  let results = [];
+  const list = fs.readdirSync(dir);
+  list.forEach(file => {
+    const fullPath = path.join(dir, file);
+    const stat = fs.statSync(fullPath);
+    if (stat && stat.isDirectory()) {
+      results = results.concat(findScriptFiles(fullPath));
+    } else if (file.endsWith(".user.js")) {
+      results.push(fullPath.replace(/\\/g, "/"));
+    }
+  });
+  return results.sort();
+}
 
-console.log(`Discovered ${scriptFiles.length} UserScripts to audit:`);
+const scriptFiles = findScriptFiles("scripts");
+
+console.log(`Discovered ${scriptFiles.length} UserScripts to audit under scripts/:`);
 scriptFiles.forEach((f, i) => console.log(`  [${String(i + 1).padStart(2, "0")}] ${f}`));
 console.log("\n----------------------------------------------------------------");
 
@@ -57,7 +70,7 @@ scriptFiles.forEach(file => {
   report(`${file}: Author is nghich-ngom-lung-tung`, hasAuthor);
 
   // Download & Update URL
-  if (file !== "tampermonkey.user.js") {
+  if (!file.includes("tampermonkey.user.js")) {
     const expectedUrl = `https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/${file}`;
     const hasDownload = content.includes(`@downloadURL  ${expectedUrl}`);
     const hasUpdate = content.includes(`@updateURL    ${expectedUrl}`);
@@ -522,7 +535,7 @@ scriptFiles.forEach(file => {
 // ═════════════════════════════════════════════════════════════════
 console.log("\n👑 PHASE 4: Rophim VIP 2099 & Coin Backend Patcher Audit");
 
-const rophimScripts = ["rophim.user.js", "tampermonkey.user.js", "cinema-pro-all.user.js"];
+const rophimScripts = scriptFiles.filter(f => f.endsWith("rophim.user.js") || f.endsWith("tampermonkey.user.js") || f.endsWith("cinema-pro-all.user.js"));
 rophimScripts.forEach(file => {
   const code = fs.readFileSync(file, "utf8");
   const { window, document } = createTopWindowMock("rophim1.vip");

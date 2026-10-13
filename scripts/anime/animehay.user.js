@@ -99,8 +99,8 @@
 // @license      MIT
 // @icon         https://rophim1.vip/apple-icon.png
 // @homepageURL  https://github.com/nghich-ngom-lung-tung/web-enhancer-suit
-// @downloadURL  https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/animehay.user.js
-// @updateURL    https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/animehay.user.js
+// @downloadURL  https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/anime/animehay.user.js
+// @updateURL    https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/anime/animehay.user.js
 // ==/UserScript==
 
 (function () {

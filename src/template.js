@@ -57,6 +57,11 @@ ${theaterCss}
 ${hubCss}
   `.trim();
 
+  const cat = site.category || "movies";
+  const scriptRelPath = isMasterAllInOne
+    ? "scripts/cinema-pro-all.user.js"
+    : `scripts/${cat}/${fileName}`;
+
   return `// ==UserScript==
 // @name         ${scriptName}
 // @namespace    http://tampermonkey.net/
@@ -70,8 +75,8 @@ ${matchHeaders}
 // @license      MIT
 // @icon         https://rophim1.vip/apple-icon.png
 // @homepageURL  https://github.com/nghich-ngom-lung-tung/web-enhancer-suit
-// @downloadURL  https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/${fileName}
-// @updateURL    https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/${fileName}
+// @downloadURL  https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/${scriptRelPath}
+// @updateURL    https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/${scriptRelPath}
 // ==/UserScript==
 
 (function () {

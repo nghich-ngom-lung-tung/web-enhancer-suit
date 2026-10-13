@@ -89,8 +89,8 @@
 // @license      MIT
 // @icon         https://rophim1.vip/apple-icon.png
 // @homepageURL  https://github.com/nghich-ngom-lung-tung/web-enhancer-suit
-// @downloadURL  https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/motphim.user.js
-// @updateURL    https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/motphim.user.js
+// @downloadURL  https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/motphim.user.js
+// @updateURL    https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/motphim.user.js
 // ==/UserScript==
 
 (function () {
