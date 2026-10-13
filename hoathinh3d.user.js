@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HoatHinh3D VIP & Cinema Pro Suite
 // @namespace    http://tampermonkey.net/
-// @version      4.7
+// @version      4.8
 // @description  Chặn sạch quảng cáo Hoạt Hình 3D Trung Quốc + Bắt link M3U8 PotPlayer/VLC + Tua Intro 85s + Anime OLED HDR rực rỡ
 // @author       nghich-ngom-lung-tung
 // @match        *://*.hoathinh3d.biz/*
@@ -61,6 +61,43 @@
 
 (function () {
   "use strict";
+
+  function unwrapStreamUrl(url) {
+    if (!url || typeof url !== "string") return "";
+    let clean = url.trim();
+    clean = clean.replace(/\//g, "/").replace(/\/+/g, "/").replace(/\+/g, "");
+    clean = clean.replace(/&amp;/g, "&");
+    if (clean.includes("%3A%2F%2F") || clean.includes("%3a%2f%2f") || clean.includes("%2F") || clean.includes("%2f")) {
+      try { clean = decodeURIComponent(clean); } catch (e) {}
+    }
+    if (clean.startsWith("/") || clean.startsWith("./")) {
+      try { clean = new URL(clean, location.href).href; } catch (e) {}
+    }
+    try {
+      const u = new URL(clean);
+      for (const [k, val] of u.searchParams.entries()) {
+        if (!val || typeof val !== "string") continue;
+        let dec = val.trim();
+        try { dec = decodeURIComponent(dec); } catch (e) {}
+        if (dec.includes(".m3u8") || dec.includes("/hls/") || dec.includes(".mpd") || dec.includes(".mp4")) {
+          return unwrapStreamUrl(dec);
+        }
+        if (dec.length > 20 && !dec.includes("http") && !dec.includes("/")) {
+          try {
+            const b64 = atob(dec);
+            if (b64.includes(".m3u8") || b64.includes(".mp4")) return unwrapStreamUrl(b64);
+          } catch (e) {}
+        }
+      }
+    } catch (e) {}
+    clean = clean.replace(/.m3u8[\/]+$/i, ".m3u8");
+    clean = clean.replace(/.mp4[\/]+$/i, ".mp4");
+    clean = clean.replace(/.mpd[\/]+$/i, ".mpd");
+    while (clean.endsWith("/") && (clean.includes(".m3u8/") || clean.includes(".mp4/") || clean.includes(".mpd/"))) {
+      clean = clean.slice(0, -1);
+    }
+    return clean;
+  }
 
   const host = location.hostname || "";
   const path = location.pathname || "";
@@ -1064,7 +1101,7 @@
       <div id="ro-hub-menu">
         <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px; color: #51f085; display: flex; justify-content: space-between;">
           <span>🎬 HoatHinh3D VIP & Cinema Pro Suite</span>
-          <span style="font-size: 11px; opacity: 0.7;">v4.7</span>
+          <span style="font-size: 11px; opacity: 0.7;">v4.8</span>
         </div>
         <div id="ro-stream-preview" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 6px 10px; font-size: 11px; word-break: break-all; color: #51f085; font-family: monospace; display: none; cursor: pointer;" title="Bấm để copy link"></div>
         <button class="ro-menu-btn" id="ro-copym3u8-btn">
