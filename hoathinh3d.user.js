@@ -536,6 +536,17 @@
   }
 
   function scanIframesForStreams() {
+    // 0. Quét URL trang hiện tại nếu mở trực tiếp trang player API
+    try {
+      const cur = new URL(location.href);
+      for (const [k, val] of cur.searchParams.entries()) {
+        if (!val || typeof val !== "string") continue;
+        if (val.includes(".m3u8") || val.includes(".mp4") || val.includes("/hls/")) {
+          checkAndCaptureUrl(decodeURIComponent(val));
+        }
+      }
+    } catch (e) {}
+
     // 1. Quét dữ liệu giải mã __V_DATA__ nếu có trên window (như Motchill)
     if (typeof window.__V_DATA__ === "string" && window.__V_DATA__) {
       try {
