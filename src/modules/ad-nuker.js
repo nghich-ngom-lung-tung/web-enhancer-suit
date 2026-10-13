@@ -9,14 +9,22 @@ module.exports = `
     localStorage.setItem("corner_start_popup_dismissed", "9999999999999");
     localStorage.setItem("popup_shown", "true");
     localStorage.setItem("is_banner_popup", "1");
+    localStorage.setItem("giovang_tvc_pre_roll_daily", JSON.stringify({ date: "2099-12-31", count: 99999 }));
     const origSetItem = Storage.prototype.setItem;
     Storage.prototype.setItem = function (key, value) {
-      if (key === "probe_until" || key === "adblock_detected" || key === "popup_last_shown" || key === "corner_start_popup_dismissed") return;
+      if (
+        key === "probe_until" ||
+        key === "adblock_detected" ||
+        key === "popup_last_shown" ||
+        key === "corner_start_popup_dismissed" ||
+        key === "giovang_tvc_pre_roll_daily"
+      ) return;
       return origSetItem.apply(this, arguments);
     };
     const origGetItem = Storage.prototype.getItem;
     Storage.prototype.getItem = function (key) {
       if (key === "popup_last_shown" || key === "corner_start_popup_dismissed") return "9999999999999";
+      if (key === "giovang_tvc_pre_roll_daily") return JSON.stringify({ date: "2099-12-31", count: 99999 });
       return origGetItem.apply(this, arguments);
     };
   } catch (e) {}
@@ -78,6 +86,8 @@ module.exports = `
   function isAdApi(url) {
     if (!url || typeof url !== "string") return false;
     const u = url.toLowerCase();
+    // Chặn tuyệt đối video ads & TVC pre-roll kể cả file .mp4
+    if (u.includes("tvc_") || u.includes("/assets/tvc/") || u.includes("tvc-pre-roll") || u.includes("tvc_net88") || u.includes("tvc_gem88")) return true;
     if (u.includes(".m3u8") || u.includes(".mp4") || u.includes(".ts") || u.includes(".m4s")) return false;
     return (
       u.includes("/ads") ||
@@ -96,7 +106,11 @@ module.exports = `
       u.includes("ovn-banner") ||
       u.includes("unistar") ||
       u.includes("devqc") ||
-      u.includes("hitclub")
+      u.includes("hitclub") ||
+      u.includes("15.235.211.192") ||
+      u.includes("xoilacz") ||
+      u.includes("top-nha-cai") ||
+      u.includes("/images/company/")
     );
   }
 
@@ -119,6 +133,8 @@ module.exports = `
       '.bg-modaltrungthuong', '.modal-trungthuong', '.close-modal-trungthuong',
       '.banner-match', '.gv-skeleton-banner', '[class*="gv-skeleton-banner"]',
       'img[src*="giovang-popup"]',
+      '.tvc-pre-roll', '.video-wrapper.tvc-pre-roll', '.tvc-pre-roll__video', '.tvc-pre-roll__skip', '.tvc-pre-roll__link-overlay', '[class*="tvc-pre-roll"]',
+      'video[src*="tvc_"]', 'video[src*="assets/tvc/"]',
 
       // ChuoiChien Video Player Banner & Gambling Overlays
       '.banner-player', '.banner-container', '.banner-content', '.banner-image',
@@ -139,6 +155,11 @@ module.exports = `
       // Xoilac & Betting General
       '.xlz-ads-item', '.block-catfish', '.xlz-btn-8xbet', '[class*="xlz-ads"]',
       '.top-ads', '.ads-728-90',
+      '.odds-comp-logo', 'a.odds-comp-logo', '.grid-match__odds',
+      '.marquee-container', '.marquee-box', '[class*="marquee-container"]',
+      '.odds-button', 'div[class*="odds-button"]', '[class*="odds-button"]',
+      'img[src*="/images/company/"]', 'img[src*="company"]', 'img[src*="21-1.png"]', 'img[alt="company"]',
+      'a[href*="15.235.211.192"]', 'a[href*="top-nha-cai"]', 'a[href*="xoilacz"]',
       'img[src*="hit.club"]', 'img[src*="go88"]', 'img[src*="sun.win"]',
       'a[href*="154.82."]', 'a[href*="2138046"]', 'a[href*="9922"]',
       'img[src*="/media/"][src*=".gif"]',
@@ -161,6 +182,21 @@ module.exports = `
         if (lw.hasAttribute("data-seo4s-resolve")) lw.removeAttribute("data-seo4s-resolve");
         if (lw.hasAttribute("data-type")) lw.removeAttribute("data-type");
         if (lw.getAttribute("data-button-ads") !== "[]") lw.setAttribute("data-button-ads", "[]");
+        if (lw.getAttribute("data-tvc") !== "[]") lw.setAttribute("data-tvc", "[]");
+      }
+
+      // Tự động bỏ qua và kết thúc video TVC pre-roll nếu xuất hiện
+      const tvcVideo = document.querySelector(".tvc-pre-roll__video, video[src*='tvc_'], video[src*='assets/tvc/']");
+      if (tvcVideo) {
+        try {
+          tvcVideo.muted = true;
+          tvcVideo.currentTime = tvcVideo.duration || 999;
+          tvcVideo.dispatchEvent(new Event("ended"));
+        } catch (e) {}
+      }
+      const skipBtn = document.querySelector(".tvc-pre-roll__skip button, .tvc-pre-roll__skip, [class*='skip'] button");
+      if (skipBtn && typeof skipBtn.click === "function") {
+        try { skipBtn.click(); } catch (e) {}
       }
 
       if (document.querySelectorAll) {
@@ -171,15 +207,21 @@ module.exports = `
             el.classList.contains("livestream_widget") ||
             el.classList.contains("giovang-fixture-player-mount") ||
             el.classList.contains("giovang-fixture-player-shell") ||
-            el.classList.contains("livestream_widget__content") ||
-            (el.closest && el.closest(".livestream_widget"))
+            el.classList.contains("livestream_widget__content")
           ) {
             return;
           }
-          const parent = (el.closest && el.closest('.sspp-area, div[class*="sspp"], div[style*="fixed"]:not(.livestream_widget):not(.giovang-fixture-player-shell), div[style*="sticky"], div[class*="catfish"], #banner_popup, .banner_popup, #corner-start-popup, .corner-start-popup, [class*="devqc"], .banner-player, .corner-popup-wrap')) || el;
-          if (parent && typeof parent.remove === "function") {
-            parent.remove();
-            count++;
+          // Bảo vệ video stream thể thao không bao giờ bị xóa nhầm
+          if (el.tagName === "VIDEO" && !el.classList.contains("tvc-pre-roll__video") && !el.src?.includes("tvc")) {
+            return;
+          }
+          const parent = (el.closest && el.closest('.sspp-area, div[class*="sspp"], div[style*="fixed"]:not(.livestream_widget):not(.giovang-fixture-player-shell), div[style*="sticky"], div[class*="catfish"], #banner_popup, .banner_popup, #corner-start-popup, .corner-start-popup, [class*="devqc"], .banner-player, .corner-popup-wrap, .marquee-container')) || el;
+          if (parent) {
+            if (parent === lw || (lw && parent.contains && parent.contains(lw))) return;
+            if (typeof parent.remove === "function") {
+              parent.remove();
+              count++;
+            }
           }
         });
       }

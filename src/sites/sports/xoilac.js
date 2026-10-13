@@ -15,5 +15,5 @@ module.exports = {
     "*://xoilac*.pro/*", "*://*.xoilac*.pro/*",
     "*://xoilac*.tv/*", "*://*.xoilac*.tv/*"
   ],
-  siteCss: `.xlz-ads-item, .block-catfish, .xlz-btn-8xbet, div[class*="xlz-ads"], a[href*="8xbet"], a[href*="bet"], div[id*="catfish"], #catfish, div[style*="z-index: 9999999"]`
+  siteCss: `.xlz-ads-item, .block-catfish, .xlz-btn-8xbet, div[class*="xlz-ads"], a[href*="8xbet"], a[href*="bet"], div[id*="catfish"], #catfish, div[style*="z-index: 9999999"], .odds-comp-logo, a.odds-comp-logo, .grid-match__odds, .marquee-container, .marquee-box, [class*="marquee-container"], .odds-button, div[class*="odds-button"], [class*="odds-button"], img[src*="/images/company/"], img[src*="company"], img[src*="21-1.png"], img[alt="company"], a[href*="15.235.211.192"], a[href*="top-nha-cai"], a[href*="xoilacz"]`
 };

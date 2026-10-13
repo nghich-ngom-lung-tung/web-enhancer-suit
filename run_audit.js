@@ -270,7 +270,7 @@ function createTopWindowMock(hostname = "rophim1.vip") {
     clearInterval: (id) => clearInterval(id),
     console: { log: () => {}, warn: () => {}, error: () => {} },
     HTMLMediaElement: { prototype: { pause: function () {} } },
-    Storage: { prototype: { setItem: function (k, v) {} } }
+    Storage: { prototype: { setItem: function (k, v) {}, getItem: function (k) {} } }
   };
 
   windowMock.window = windowMock;
@@ -610,6 +610,63 @@ rophimScripts.forEach(file => {
 
   } catch (err) {
     report(`${file}: VIP Patcher execution`, false, err.stack);
+  }
+});
+
+// ═════════════════════════════════════════════════════════════════
+// 5. LIVE FOOTBALL STREAMING & SPORTS AD-NUKER AUDIT
+// ═════════════════════════════════════════════════════════════════
+console.log("\n⚽ PHASE 5: Live Football Streaming & Sports Ad-Nuker Audit");
+
+const sportsScripts = [
+  "scripts/sports/giovang.user.js",
+  "scripts/sports/xoilac.user.js",
+  "scripts/sports/chuoichien.user.js",
+  "scripts/sports/thapcam.user.js",
+  "scripts/sports/khoga.user.js",
+  "scripts/cinema-pro-all.user.js"
+];
+
+sportsScripts.forEach(file => {
+  const content = fs.readFileSync(file, "utf8");
+
+  // Giờ Vàng TV checks
+  if (file.includes("giovang") || file.includes("cinema-pro-all")) {
+    const hasTvcDefuser = content.includes("giovang_tvc_pre_roll_daily");
+    report(`${file}: Giờ Vàng TVC Pre-roll Storage Defuser present`, hasTvcDefuser);
+
+    const hasTvcSelectors = content.includes(".tvc-pre-roll") && content.includes(".tvc-pre-roll__video") && content.includes(".tvc-pre-roll__skip");
+    report(`${file}: Giờ Vàng TVC Pre-roll elements suppressed in CSS/Nuker`, hasTvcSelectors);
+
+    const hasTvcDataSanitize = content.includes('data-tvc') && content.includes('"[]"');
+    report(`${file}: Giờ Vàng data-tvc sanitized to [] on .livestream_widget`, hasTvcDataSanitize);
+  }
+
+  // Xôi Lạc TV checks
+  if (file.includes("xoilac") || file.includes("cinema-pro-all")) {
+    const hasCompanyBadgeNuked = content.includes(".odds-comp-logo") && content.includes("company") && content.includes("21-1.png");
+    report(`${file}: Xôi Lạc gambling company badges (.odds-comp-logo, 21-1.png) suppressed`, hasCompanyBadgeNuked);
+
+    const hasMarqueeNuked = content.includes(".marquee-container") && content.includes(".marquee-box");
+    report(`${file}: Xôi Lạc 8XBET Marquee banner (.marquee-container) suppressed`, hasMarqueeNuked);
+
+    const hasOddsButtonNuked = content.includes(".odds-button") && content.includes("15.235.211.192");
+    report(`${file}: Xôi Lạc in-player 8XBET odds buttons & IP links suppressed`, hasOddsButtonNuked);
+  }
+
+  // Chuối Chiên TV checks
+  if (file.includes("chuoichien") || file.includes("cinema-pro-all")) {
+    const hasBannerPlayerNuked = content.includes(".banner-player") && content.includes(".banner-container") && content.includes("FB88");
+    report(`${file}: Chuối Chiên TV video player banner & FB88 ads eradicated`, hasBannerPlayerNuked);
+  }
+
+  // Thập Cẩm TV checks
+  if (file.includes("thapcam") || file.includes("cinema-pro-all")) {
+    const hasCornerPopupNuked = content.includes("#corner-start-popup") && content.includes("1280x1280px") && content.includes(".corner-popup-wrap");
+    report(`${file}: Thập Cẩm TV 18+ modal popup & corner banner eradicated`, hasCornerPopupNuked);
+
+    const hasBookmakerNuked = content.includes(".bookmaker-title") && content.includes(".tf-section");
+    report(`${file}: Thập Cẩm TV nhà cái list & betting section eradicated`, hasBookmakerNuked);
   }
 });
 

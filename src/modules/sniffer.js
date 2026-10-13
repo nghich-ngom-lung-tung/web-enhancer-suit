@@ -153,7 +153,7 @@ function getSnifferCode(enableRophimVip) {
         u.includes("master") ||
         u.includes("playlist") ||
         u.includes(".mpd") ||
-        (u.includes(".mp4") && !u.includes("preview") && !u.includes("trailer"))
+        (u.includes(".mp4") && !u.includes("preview") && !u.includes("trailer") && !u.includes("tvc"))
       ) {
         lastNotifiedStream = clean;
         try { localStorage.setItem("RO_CAPTURED_STREAM", clean); } catch (e) {}
@@ -464,7 +464,7 @@ function getSnifferCode(enableRophimVip) {
       u.includes("master") ||
       u.includes("playlist") ||
       u.includes(".mpd") ||
-      (u.includes(".mp4") && !u.includes("trailer") && !u.includes("preview") && !u.includes("ad_"))
+      (u.includes(".mp4") && !u.includes("trailer") && !u.includes("preview") && !u.includes("ad_") && !u.includes("tvc"))
     ) {
       capturedStreamUrl = clean;
       try { localStorage.setItem("RO_CAPTURED_STREAM", clean); } catch (e) {}
@@ -583,7 +583,7 @@ function getSnifferCode(enableRophimVip) {
             n.includes("master") ||
             n.includes("playlist") ||
             n.includes(".mpd") ||
-            (n.includes(".mp4") && !n.includes("preview") && !n.includes("trailer"))
+            (n.includes(".mp4") && !n.includes("preview") && !n.includes("trailer") && !n.includes("tvc"))
           ) {
             if (checkAndCaptureUrl(name)) break;
           }
