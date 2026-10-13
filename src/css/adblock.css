@@ -49,7 +49,9 @@ a[data-brand-id], a.seo4s-resolve-link, a[class*="seo4s"],
 .top-ads, .ads-728-90, .adspot-wrap, .adspot-1, .adspot-2, [class*="adspot"], [id*="adspot"], ins[data-revive-id],
 .banner-match, .gv-skeleton-banner, [class*="gv-skeleton-banner"],
 .ads-layer, [class*="ads-layer"], div.ads-layer,
-[data-v-e65a4a44], [data-v-4c9315d7], [data-v-77cd3882], [data-v-cede0d5b],
+.player-logo-wrapper, .player-logo-inner, .player-logo-ad, [class*="player-logo-"], [class*="player-logo"],
+.bet-button-player, .bet-buttons-container, .bet-button-content, [class*="bet-button-player"], [class*="bet-buttons-container"], [class*="bet-button-content"],
+[data-v-77ed3802], [data-v-77cd3882], [data-v-4c9315d7], [data-v-cede0d5b],
 .banner-player, .banner-container, .banner-content, .banner-image, .banner-item,
 [class*="banner-player"], [class*="banner-container"], [class*="banner-content"], [class*="banner-image"], [class*="banner-item"],
 .banner-content.active, [class*="banner-content"][class*="active"],
@@ -76,8 +78,9 @@ img[src*="kbv.svg"], img[src*="bet-net88"], img[src*="bet-gem88"],
 .fixed-ads, .fixed-ads-1, .block-fixed-ads-1, [class*="block-fixed-ads"], [class*="fixed-ads"],
 .live-ads-temp-1, .live-ads-temp-2, .live-ads-temp-3, .live-ads-temp-4, .live-ads-temp-5, [class*="live-ads-temp"],
 .left-ads, .right-ads,
-img[alt*="FB88_banner_player"], img[alt*="banner_player"],
-img[src*="1920x60"], img[src*="cdnvip.chuoichientv.net"],
+img[alt*="FB88_banner_player"], img[alt*="net-88-banner-player"], img[alt*="net-88-logo"], img[alt*="banner_player"],
+img[src*="1920x60"], img[src*="cdnvip.chuoichientv.net"], img[src*="c5735ef8"],
+a[href*="net88.boats"], a[href*="logolive-30x30"],
 img[src*="giovang-popup"], img[src*="hit.club"], img[src*="go88"], img[src*="sun.win"],
 img[src*="1280x1280px"], img[src*="balloon_1111"], img[src*="FB88"], img[src*="fb88"], img[src*="banner_player"],
 img[src*="net88"], img[src*="NET88"], img[src*="xBet"],
@@ -109,12 +112,13 @@ div[style*="position:fixed"][style*="bottom:0"]:not(#ro-vip-hub):not(#ro-hub-men
 #corner-start-popup, .corner-start-popup, .corner-start-popup-backdrop, .corner-start-popup-content,
 .corner-popup-wrap, .corner-popup-box,
 .ads-layer, [class*="ads-layer"], div.ads-layer,
-[data-v-e65a4a44], [data-v-4c9315d7], [data-v-77cd3882],
+.player-logo-wrapper, .player-logo-inner, .player-logo-ad, [class*="player-logo-"], [class*="player-logo"],
+.bet-button-player, .bet-buttons-container, .bet-button-content, [class*="bet-button-player"], [class*="bet-buttons-container"], [class*="bet-button-content"],
+[data-v-77ed3802], [data-v-77cd3882], [data-v-4c9315d7], [data-v-cede0d5b],
 .banner-player, .banner-container, .banner-content, .banner-image, .banner-item,
 [class*="banner-player"], [class*="banner-container"], [class*="banner-content"], [class*="banner-image"], [class*="banner-item"],
 .banner-content.active, [class*="banner-content"][class*="active"],
 .bet-button, .bet-buttons, [class*="bet-button"], [class*="bet-buttons"], [class*="bet-btn"],
-[data-v-cede0d5b],
 .homepage-toplists-content, section.homepage-toplists-content, [class*="homepage-toplists"],
 .toplists-home, [class*="toplists-home"], .devvn-topfive-wrapper, [class*="devvn-topfive"],
 .topfive-card, [class*="topfive-card"],
@@ -147,8 +151,9 @@ div[style*="position:fixed"][style*="bottom:0"]:not(#ro-vip-hub):not(#ro-hub-men
   max-height: 0 !important;
 }
 
-/* Đảm bảo khung Player bóng đá Giờ Vàng và các web thể thao luôn hiển thị nguyên vẹn */
-.livestream_widget, .giovang-fixture-player-shell, .giovang-fixture-player-mount, .livestream_widget__content {
+/* Đảm bảo khung Player bóng đá Giờ Vàng, Chuối Chiên và các web thể thao luôn hiển thị nguyên vẹn */
+.livestream_widget, .giovang-fixture-player-shell, .giovang-fixture-player-mount, .livestream_widget__content,
+.hlsp, .player-container, video {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;

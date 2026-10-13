@@ -95,7 +95,9 @@ module.exports = `
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(cleanUrl).catch(() => {});
     }
-    window.location.href = "potplayer://" + cleanUrl;
+    const ref = location.href || "";
+    const potTarget = ref ? (cleanUrl + "|Referer=" + encodeURIComponent(ref)) : cleanUrl;
+    window.location.href = "potplayer://" + potTarget;
     showToast("Đang mở PotPlayer...");
   }
 
@@ -110,7 +112,7 @@ module.exports = `
       navigator.clipboard.writeText(cleanUrl).catch(() => {});
     }
     window.location.href = "vlc://" + encodeURIComponent(cleanUrl);
-    showToast("Đang mở VLC Player (và đã copy link vào Clipboard)...");
+    showToast("Đang mở VLC... Nếu VLC báo lỗi MRL do CDN chặn, hãy bấm 'Tải Playlist .M3U' hoặc dùng PotPlayer!");
   }
 
   function copyM3u8() {
@@ -152,8 +154,11 @@ module.exports = `
       showToast("Chưa có link video, hãy bấm Play trước!");
       return;
     }
+    const cleanUrl = capturedStreamUrl.trim();
     const title = (document.title || "Cinema_Pro_Stream").replace(/[/\\\\?%*:|"<>]/g, "_").trim();
-    const content = "#EXTM3U\\n#EXTINF:-1," + title + "\\n" + capturedStreamUrl + "\\n";
+    const ref = location.href || "";
+    const ua = navigator.userAgent || "Mozilla/5.0";
+    const content = "#EXTM3U\\n#EXTINF:-1," + title + "\\n#EXTVLCOPT:http-referrer=" + ref + "\\n#EXTVLCOPT:http-user-agent=" + ua + "\\n#EXTVLCOPT:network-caching=1000\\n" + cleanUrl + "\\n";
     const blob = new Blob([content], { type: "audio/x-mpegurl" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -164,7 +169,7 @@ module.exports = `
       a.remove();
       URL.revokeObjectURL(a.href);
     }, 1000);
-    showToast("Đã tải playlist .m3u (Mở trực tiếp trong VLC/PotPlayer)!");
+    showToast("Đã tải playlist .m3u (Kèm Referer cho VLC & PotPlayer)!");
   }
 
   function adjustSpeed(delta) {

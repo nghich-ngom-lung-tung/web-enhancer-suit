@@ -674,8 +674,17 @@ sportsScripts.forEach(file => {
     const hasBetButtonsNuked = content.includes(".bet-button") && content.includes(".bet-buttons") && content.includes("cede0d5b");
     report(`${file}: Chuối Chiên TV betting buttons (.bet-button, Net-88, xBet79) eradicated`, hasBetButtonsNuked);
 
+    const hasBetButtonPlayerNuked = content.includes(".bet-button-player") && content.includes("bet-buttons-container") && content.includes("bet-button-content");
+    report(`${file}: Chuối Chiên TV in-player bet buttons (.bet-button-player, .bet-buttons-container) eradicated`, hasBetButtonPlayerNuked);
+
+    const hasPlayerLogoWatermarkNuked = content.includes(".player-logo-wrapper") && content.includes("77ed3802") && content.includes("net88.boats");
+    report(`${file}: Chuối Chiên TV player watermark logo (.player-logo-wrapper, Net88 logo) eradicated`, hasPlayerLogoWatermarkNuked);
+
     const hasAdsLayerNuked = content.includes("ads-layer") && content.includes("4c9315d7") && content.includes("1920x60");
     report(`${file}: Chuối Chiên TV master Ads Layer & 1920x60 banner (.ads-layer, [data-v-4c9315d7]) eradicated`, hasAdsLayerNuked);
+
+    const hasM3uRefererDirectives = content.includes("#EXTVLCOPT:http-referrer") && content.includes("|Referer=");
+    report(`${file}: PotPlayer & VLC M3U stream launcher HTTP-Referer bypass directives enabled`, hasM3uRefererDirectives);
   }
 
   // Thập Cẩm TV checks

@@ -23,6 +23,10 @@ function generateUserscript(site, isMasterAllInOne = false, allSites = []) {
     ? Array.from(new Set([...sitesList.flatMap(s => s.domains), ...COMMON_EMBED_MATCHES]))
     : Array.from(new Set([...site.domains, ...COMMON_EMBED_MATCHES]));
 
+  const rawIncludes = isMasterAllInOne
+    ? Array.from(new Set(sitesList.flatMap(s => s.includes || [])))
+    : Array.from(new Set(site.includes || []));
+
   const expanded = [];
   rawMatches.forEach(m => {
     expanded.push(m);
@@ -30,9 +34,29 @@ function generateUserscript(site, isMasterAllInOne = false, allSites = []) {
       expanded.push("*://" + m.slice(6));
     }
   });
-  const matches = Array.from(new Set(expanded));
+
+  const validMatches = [];
+  const allIncludes = [...rawIncludes];
+  expanded.forEach(m => {
+    const hostMatch = m.match(/^\*:\/\/([^\/]+)\//);
+    if (hostMatch) {
+      const h = hostMatch[1];
+      if (h !== "*" && h.includes("*") && !h.startsWith("*.")) {
+        allIncludes.push(m);
+        return;
+      }
+    }
+    validMatches.push(m);
+  });
+
+  const matches = Array.from(new Set(validMatches));
+  const includes = Array.from(new Set(allIncludes));
 
   const matchHeaders = matches.map(m => `// @match        ${m}`).join("\n");
+  const includeHeaders = includes.length > 0
+    ? "\n" + includes.map(inc => `// @include      ${inc}`).join("\n")
+    : "";
+
   const fileName = isMasterAllInOne ? "cinema-pro-all.user.js" : site.file;
   const scriptName = isMasterAllInOne
     ? "Cinema Pro Suite (All-In-One) - Kho Phim & Anime Việt Nam"
@@ -40,7 +64,7 @@ function generateUserscript(site, isMasterAllInOne = false, allSites = []) {
   const scriptDesc = isMasterAllInOne
     ? "Bản Master Gộp Tất Cả Trong Một: Mở khóa VIP + Vô hạn Coin + Chặn 100% AdBlock/Stream Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Tua 5s/Intro 85s/Volume & Anime HDR trên hơn 37+ website phim, anime, hoạt hình 3D Việt Nam!"
     : site.desc;
-  const scriptVersion = isMasterAllInOne ? "5.2" : (site.version || "5.2");
+  const scriptVersion = isMasterAllInOne ? "5.4" : (site.version || "5.4");
   const enableRophimVip = isMasterAllInOne || Boolean(site.isRophim);
   const siteTitle = isMasterAllInOne ? "Cinema Pro (All-In-One)" : site.name;
 
@@ -72,7 +96,7 @@ ${hubCss}
 // @version      ${scriptVersion}
 // @description  ${scriptDesc}
 // @author       nghich-ngom-lung-tung
-${matchHeaders}
+${matchHeaders}${includeHeaders}
 // @allFrames    true
 // @run-at       document-start
 // @grant        none

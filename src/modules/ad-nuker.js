@@ -115,6 +115,10 @@ module.exports = `
       u.includes("asyncspc") ||
       u.includes("uat-08oc10") ||
       u.includes("cdnvip.chuoichientv.net") ||
+      u.includes("net88.boats") ||
+      u.includes("net88") ||
+      u.includes("c5735ef8") ||
+      u.includes("/media/uploads/") && u.includes(".gif") ||
       u.includes("/ux-toplist/") ||
       u.includes("ux-toplist")
     );
@@ -154,14 +158,16 @@ module.exports = `
 
       // ChuoiChien Video Player Banner & Gambling Overlays
       '.ads-layer', '[class*="ads-layer"]', 'div.ads-layer',
-      '[data-v-e65a4a44]', '[data-v-4c9315d7]', '[data-v-77cd3882]',
+      '.player-logo-wrapper', '.player-logo-inner', '.player-logo-ad', '[class*="player-logo-"]', '[class*="player-logo"]',
+      '.bet-button-player', '.bet-buttons-container', '.bet-button-content', '[class*="bet-button-player"]', '[class*="bet-buttons-container"]', '[class*="bet-button-content"]',
+      '[data-v-77ed3802]', '[data-v-77cd3882]', '[data-v-4c9315d7]', '[data-v-cede0d5b]',
       '.banner-player', '.banner-container', '.banner-content', '.banner-image', '.banner-item',
       '[class*="banner-player"]', '[class*="banner-container"]', '[class*="banner-content"]', '[class*="banner-image"]', '[class*="banner-item"]',
       '.banner-content.active', '[class*="banner-content"][class*="active"]',
       '.bet-button', '.bet-buttons', '[class*="bet-button"]', '[class*="bet-buttons"]', '[class*="bet-btn"]',
-      '[data-v-cede0d5b]',
-      'img[alt*="FB88_banner_player"]', 'img[alt*="banner_player"]',
-      'img[src*="1920x60"]', 'img[src*="cdnvip.chuoichientv.net"]',
+      'img[alt*="FB88_banner_player"]', 'img[alt*="net-88-banner-player"]', 'img[alt*="net-88-logo"]', 'img[alt*="banner_player"]',
+      'img[src*="1920x60"]', 'img[src*="cdnvip.chuoichientv.net"]', 'img[src*="c5735ef8"]',
+      'a[href*="net88.boats"]', 'a[href*="logolive-30x30"]',
       'img[src*="banner_player"]', 'img[src*="FB88"]', 'img[src*="fb88"]', 'img[src*="net88"]', 'img[src*="NET88"]', 'img[src*="xBet"]',
 
       // ThapCam, Khoga Popups, Balloons & Placements
@@ -240,7 +246,10 @@ module.exports = `
             el.classList.contains("livestream_widget") ||
             el.classList.contains("giovang-fixture-player-mount") ||
             el.classList.contains("giovang-fixture-player-shell") ||
-            el.classList.contains("livestream_widget__content")
+            el.classList.contains("livestream_widget__content") ||
+            el.classList.contains("hlsp") ||
+            el.classList.contains("player-container") ||
+            (el.closest && el.closest(".hlsp"))
           ) {
             return;
           }
@@ -248,9 +257,10 @@ module.exports = `
           if (el.tagName === "VIDEO" && !el.classList.contains("tvc-pre-roll__video") && !el.src?.includes("tvc")) {
             return;
           }
-          const parent = (el.closest && el.closest('.sspp-area, div[class*="sspp"], div[style*="fixed"]:not(.livestream_widget):not(.giovang-fixture-player-shell), div[style*="sticky"], div[class*="catfish"], #banner_popup, .banner_popup, #corner-start-popup, .corner-start-popup, [class*="devqc"], .ads-layer, [class*="ads-layer"], .banner-player, .banner-container, .banner-content, .banner-item, .bet-button, .bet-buttons, [class*="bet-button"], .corner-popup-wrap, .marquee-container, .fixture-banner, [class*="balloon-wrapper"], [class*="banner-pos-"], [class*="ad-popup-modal"], .match-detail__offer, .teambox__odds, .homepage-toplists-content, .toplists-home, .box-odds-match, .gv-bet-dropdown, .sticky-message, .sticky-announcement, [class*="detail-live-brand"]')) || el;
+          const parent = (el.closest && el.closest('.sspp-area, div[class*="sspp"], div[style*="fixed"]:not(.livestream_widget):not(.giovang-fixture-player-shell), div[style*="sticky"], div[class*="catfish"], #banner_popup, .banner_popup, #corner-start-popup, .corner-start-popup, [class*="devqc"], .ads-layer, [class*="ads-layer"], .player-logo-wrapper, .bet-button-player, .banner-player, .banner-container, .banner-content, .banner-item, .bet-button, .bet-buttons, [class*="bet-button"], .corner-popup-wrap, .marquee-container, .fixture-banner, [class*="balloon-wrapper"], [class*="banner-pos-"], [class*="ad-popup-modal"], .match-detail__offer, .teambox__odds, .homepage-toplists-content, .toplists-home, .box-odds-match, .gv-bet-dropdown, .sticky-message, .sticky-announcement, [class*="detail-live-brand"]')) || el;
           if (parent) {
             if (parent === lw || (lw && parent.contains && parent.contains(lw))) return;
+            if (parent.classList.contains("hlsp") || parent.classList.contains("player-container") || (parent.querySelector && parent.querySelector(".hlsp"))) return;
             try {
               parent.style.setProperty("display", "none", "important");
               parent.style.setProperty("visibility", "hidden", "important");
@@ -261,6 +271,18 @@ module.exports = `
               count++;
             }
           }
+        });
+
+        // Diệt tận gốc ads-layer Chuối Chiên (watermark + nút cược + banner dưới player)
+        document.querySelectorAll(".ads-layer, [class*='ads-layer'], .player-logo-wrapper, .player-logo-inner, .bet-button-player, .banner-player, [data-v-77ed3802], [data-v-cede0d5b], [data-v-4c9315d7]").forEach(ad => {
+          if (ad.classList.contains("hlsp") || ad.classList.contains("player-container") || (ad.querySelector && ad.querySelector(".hlsp"))) return;
+          try {
+            ad.style.setProperty("display", "none", "important");
+            ad.style.setProperty("visibility", "hidden", "important");
+            ad.style.setProperty("height", "0", "important");
+            ad.remove();
+            count++;
+          } catch (e) {}
         });
       }
 
