@@ -388,10 +388,37 @@
     }
   }, 1500);
 
-  // Sniff fetch trên trang chính
+  function isAdApi(url) {
+    if (!url || typeof url !== "string") return false;
+    const u = url.toLowerCase();
+    return (
+      u.includes("/ads") ||
+      u.includes("/ad/") ||
+      u.includes("/banners") ||
+      u.includes("/banner/") ||
+      u.includes("advertising") ||
+      u.includes("sponsor") ||
+      u.includes("popunder") ||
+      u.includes("catfish") ||
+      u.includes("sspp") ||
+      u.includes("154.82.") ||
+      u.includes("adv_") ||
+      u.includes("9922") ||
+      u.includes("vsbet")
+    );
+  }
+
+  // Sniff fetch trên trang chính & Chặn triệt để API banner
   const origFetchMain = window.fetch;
   window.fetch = async function (input, init) {
     const url = typeof input === "string" ? input : input?.url || "";
+    if (isAdApi(url)) {
+      console.log("[Web Enhancer] Đã chặn triệt để API banner:", url);
+      return new Response(JSON.stringify({ status: 200, success: true, data: [], items: [], banners: [], result: [] }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
     checkAndCaptureUrl(url);
     return origFetchMain.apply(this, arguments);
   };
@@ -407,6 +434,19 @@
       return origOpen.apply(this, arguments);
     };
     
+    const origSend = xhr.send;
+    xhr.send = function () {
+      if (isAdApi(targetUrl)) {
+        try {
+          const emptyStr = JSON.stringify({ status: 200, success: true, data: [], items: [], banners: [], result: [] });
+          Object.defineProperty(xhr, "responseText", { value: emptyStr, configurable: true, writable: true });
+          Object.defineProperty(xhr, "response", { value: emptyStr, configurable: true, writable: true });
+          Object.defineProperty(xhr, "status", { value: 200, configurable: true, writable: true });
+        } catch (e) {}
+      }
+      
+      return origSend.apply(this, arguments);
+    };
     return xhr;
   };
 
@@ -436,6 +476,14 @@
     div[id*="box-bottom"], div[class*="box-bottom"], div[id*="ads_bottom"], div[class*="ads_bottom"],
     div[class*="banner_bottom"], div[id*="banner_bottom"], div[class*="banner-bottom"], div[id*="banner-bottom"],
     div[id*="floating_bottom"], div[class*="floating_bottom"], div[id*="float_bottom"],
+    /* Diệt tận gốc Banner Rophim: sspp-area, display-single, 9922, 154.82, media gif */
+    .sspp-area, [class*="sspp-area"], [class*="sspp_area"], [class*="sspp-"],
+    .display-single, [class*="display-single"], .is-demo, [class*="is-demo"],
+    .is-image, div[class*="is-image"],
+    a[href*="154.82."], a[href*="2138046"], a[href*="9922"],
+    img[src*="/media/"][src*=".gif"],
+    div.slide:has(.sspp-area), div.slide:has(.display-single),
+    div.fluid-gap:has(.sspp-area), div.fluid-gap:has(.display-single),
     a[href*="vsbet"], a[href*="bet88"], a[href*="colatv"], a[href*="colascore"], a[href*="kubet"], a[href*="fun88"],
     a[href*="w88"], a[href*="fb88"], a[href*="bk8"], a[href*="casino"], a[href*="nhacai"], a[href*="nohu"],
     a[href*="taixiu"], a[href*="gamebai"], a[href*="keonhacai"], a[href*="bongda"], a[href*="link1s"],
@@ -816,6 +864,11 @@
     let count = 0;
     const adSelectors = [
       '.catfish', '#catfish', '.catfish-banner', '#catfish-banner', '[class*="catfish"]', '[id*="catfish"]',
+      '.sspp-area', '[class*="sspp-area"]', '[class*="sspp_area"]', '[class*="sspp-"]',
+      '.display-single', '[class*="display-single"]', '.is-demo', '[class*="is-demo"]',
+      '.is-image', 'div[class*="is-image"]',
+      'a[href*="154.82."]', 'a[href*="2138046"]', 'a[href*="9922"]',
+      'img[src*="/media/"][src*=".gif"]',
       '[class*="bottom-ads"]', '[class*="bottom_ads"]', '[class*="bottom-banner"]', '[class*="bottom_banner"]',
       '[id*="bottom-ads"]', '[id*="bottom_ads"]', '[id*="bottom-banner"]', '[id*="bottom_banner"]',
       '[class*="footer-ads"]', '[class*="footer_ads"]', '[class*="footer-banner"]', '[class*="footer_banner"]',
@@ -830,7 +883,7 @@
       if (document.querySelectorAll) {
         document.querySelectorAll(adSelectors.join(",")).forEach(el => {
           if (el.id === "ro-vip-hub" || (el.closest && el.closest("#ro-vip-hub"))) return;
-          const parent = (el.closest && el.closest('div[style*="fixed"], div[style*="sticky"], div[class*="bottom"], div[id*="bottom"], div[class*="catfish"]')) || el;
+          const parent = (el.closest && el.closest('.sspp-area, div[class*="sspp"], div[style*="fixed"], div[style*="sticky"], div[class*="bottom"], div[id*="bottom"], div[class*="catfish"]')) || el;
           if (parent && typeof parent.remove === "function") {
             parent.remove();
             count++;
