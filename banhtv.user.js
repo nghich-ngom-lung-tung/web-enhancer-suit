@@ -424,11 +424,31 @@
     .atvn-ads, .hhkf-ads, .hhpanda-ads, .vst-ads, .p247-ads, .phd-ads, .pbh-ads,
     .pv-ads, .btv-ads, .hdo-ads, .chay-ads, .xpp-ads, .ts-ads, .ss-ads,
     [class*="ad_placement"], [id*="google_ads"], div[style*="z-index: 9999999"],
-    div[style*="zIndex: 9999999"], div[style*="backdrop-filter: blur(25px)"] {
+    div[style*="zIndex: 9999999"], div[style*="backdrop-filter: blur(25px)"],
+    /* Diệt sạch banner catfish, fixed bottom bar và cá cược */
+    .catfish, #catfish, .catfish-banner, #catfish-banner, div[class*="catfish"], div[id*="catfish"],
+    div[class*="bottom-ads"], div[class*="bottom_ads"], div[class*="bottom-banner"], div[class*="bottom_banner"],
+    div[id*="bottom-ads"], div[id*="bottom_ads"], div[id*="bottom-banner"], div[id*="bottom_banner"],
+    div[class*="footer-ads"], div[class*="footer_ads"], div[class*="footer-banner"], div[class*="footer_banner"],
+    div[class*="floating-banner"], div[class*="floating_banner"], div[class*="float-ads"], div[class*="float_ads"],
+    div[class*="sticky-ads"], div[class*="sticky-banner"], div[id*="sticky-ads"], div[id*="sticky-banner"],
+    div[class*="qc_bottom"], div[id*="qc_bottom"], div[class*="qc-bottom"], div[id*="qc-bottom"],
+    div[id*="box-bottom"], div[class*="box-bottom"], div[id*="ads_bottom"], div[class*="ads_bottom"],
+    div[class*="banner_bottom"], div[id*="banner_bottom"], div[class*="banner-bottom"], div[id*="banner-bottom"],
+    div[id*="floating_bottom"], div[class*="floating_bottom"], div[id*="float_bottom"],
+    a[href*="vsbet"], a[href*="bet88"], a[href*="colatv"], a[href*="colascore"], a[href*="kubet"], a[href*="fun88"],
+    a[href*="w88"], a[href*="fb88"], a[href*="bk8"], a[href*="casino"], a[href*="nhacai"], a[href*="nohu"],
+    a[href*="taixiu"], a[href*="gamebai"], a[href*="keonhacai"], a[href*="bongda"], a[href*="link1s"],
+    div[style*="position: fixed"][style*="bottom: 0"]:not(#ro-vip-hub):not(#ro-hub-menu),
+    div[style*="position: fixed"][style*="bottom:0"]:not(#ro-vip-hub):not(#ro-hub-menu),
+    div[style*="position:fixed"][style*="bottom: 0"]:not(#ro-vip-hub):not(#ro-hub-menu),
+    div[style*="position:fixed"][style*="bottom:0"]:not(#ro-vip-hub):not(#ro-hub-menu) {
       display: none !important;
       visibility: hidden !important;
       height: 0 !important;
+      max-height: 0 !important;
       pointer-events: none !important;
+      opacity: 0 !important;
     }
 
     .ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .btv-ads
@@ -733,6 +753,10 @@
           <span>🎭 Chế Độ Rạp Phim</span>
           <span class="ro-badge">Phím T</span>
         </button>
+        <button class="ro-menu-btn" id="ro-nukeads-btn" style="border-color: rgba(239, 68, 68, 0.4); color: #f87171;">
+          <span>🧹 Diệt Sạch Banner Rác</span>
+          <span class="ro-badge" style="color: #f87171;">Phím X</span>
+        </button>
         <div style="display: flex; gap: 8px; margin-top: 4px;">
           <button class="ro-menu-btn" id="ro-vol-down" style="flex: 1; justify-content: center;" title="Giảm âm lượng">
             <span>🔉 Giảm (↓)</span>
@@ -778,11 +802,82 @@
     bind("ro-fullscreen-btn", toggleFullscreen);
     bind("ro-hdr-btn", toggleHdr);
     bind("ro-theater-btn", toggleTheater);
+    bind("ro-nukeads-btn", () => nukeAdElements(true));
     bind("ro-vol-down", () => adjustVolume(-0.05));
     bind("ro-vol-up", () => adjustVolume(0.05));
     bind("ro-speed-down", () => adjustSpeed(-1));
     bind("ro-speed-up", () => adjustSpeed(1));
   }
+
+  // ═══════════════════════════════════════════════════════════════
+  // 🧹 SMART AD & BANNER NUKER (DIỆT TẬN GỐC BANNER CATFISH & CÁ CƯỢC)
+  // ═══════════════════════════════════════════════════════════════
+  function nukeAdElements(notify = false) {
+    let count = 0;
+    const adSelectors = [
+      '.catfish', '#catfish', '.catfish-banner', '#catfish-banner', '[class*="catfish"]', '[id*="catfish"]',
+      '[class*="bottom-ads"]', '[class*="bottom_ads"]', '[class*="bottom-banner"]', '[class*="bottom_banner"]',
+      '[id*="bottom-ads"]', '[id*="bottom_ads"]', '[id*="bottom-banner"]', '[id*="bottom_banner"]',
+      '[class*="footer-ads"]', '[class*="footer_ads"]', '[class*="footer-banner"]', '[class*="footer_banner"]',
+      '[class*="floating-banner"]', '[class*="float-ads"]', '[class*="sticky-ads"]', '[class*="sticky-banner"]',
+      '[class*="qc-bottom"]', '[id*="qc-bottom"]', '[class*="banner-ads"]', '[id*="banner-ads"]',
+      'a[href*="vsbet"]', 'a[href*="bet88"]', 'a[href*="colatv"]', 'a[href*="colascore"]', 'a[href*="kubet"]',
+      'a[href*="casino"]', 'a[href*="fun88"]', 'a[href*="w88"]', 'a[href*="fb88"]', 'a[href*="nohu"]',
+      'a[href*="taixiu"]', 'a[href*="gamebai"]', 'a[href*="keonhacai"]'
+    ];
+
+    try {
+      if (document.querySelectorAll) {
+        document.querySelectorAll(adSelectors.join(",")).forEach(el => {
+          if (el.id === "ro-vip-hub" || (el.closest && el.closest("#ro-vip-hub"))) return;
+          const parent = (el.closest && el.closest('div[style*="fixed"], div[style*="sticky"], div[class*="bottom"], div[id*="bottom"], div[class*="catfish"]')) || el;
+          if (parent && typeof parent.remove === "function") {
+            parent.remove();
+            count++;
+          }
+        });
+      }
+
+      if (typeof window.getComputedStyle === "function" && document.querySelectorAll) {
+        document.querySelectorAll("div, footer, section, aside").forEach(el => {
+          if (el.id === "ro-vip-hub" || (el.closest && el.closest("#ro-vip-hub"))) return;
+          const s = window.getComputedStyle(el);
+          if (s && (s.position === "fixed" || s.position === "sticky")) {
+            const bottomVal = parseInt(s.bottom, 10);
+            if (!isNaN(bottomVal) && bottomVal <= 25 && el.offsetHeight > 20 && el.offsetHeight < 260) {
+              const html = (el.innerHTML || "").toLowerCase();
+              if (
+                el.querySelector && el.querySelector("img, a, iframe") &&
+                (html.includes("bet") || html.includes("cola") || html.includes("88") ||
+                 html.includes("casino") || html.includes("game") || html.includes("đại lý") ||
+                 html.includes("bóng đá") || html.includes("tỷ số") || html.includes("nohu") ||
+                 html.includes("taixiu") || html.includes("adv") || html.includes("banner") ||
+                 parseInt(s.zIndex, 10) > 1000)
+              ) {
+                if (typeof el.remove === "function") {
+                  el.remove();
+                  count++;
+                }
+              }
+            }
+          }
+        });
+      }
+    } catch (e) {}
+
+    if (notify && typeof showToast === "function") {
+      showToast(count > 0 ? `🧹 Đã quét sạch ${count} banner quảng cáo!` : "🧹 Đã quét sạch banner!");
+    }
+  }
+
+  // Tự động quét sạch banner quảng cáo ngầm
+  try {
+    nukeAdElements();
+    setInterval(nukeAdElements, 1000);
+    if (window.MutationObserver) {
+      new MutationObserver(() => nukeAdElements()).observe(document.documentElement || document.body, { childList: true, subtree: true });
+    }
+  } catch (e) {}
 
   // Phím tắt toàn cục
   window.addEventListener("keydown", function (e) {
@@ -813,6 +908,9 @@
     } else if (key === "t") {
       e.preventDefault();
       toggleTheater();
+    } else if (key === "x") {
+      e.preventDefault();
+      nukeAdElements(true);
     } else if (e.key === "[") {
       e.preventDefault();
       adjustSpeed(-1);
