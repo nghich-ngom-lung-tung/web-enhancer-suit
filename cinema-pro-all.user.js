@@ -543,7 +543,19 @@
 
   function checkAndCaptureUrl(url) {
     if (!url || typeof url !== "string") return;
-    if (url.includes(".m3u8") || url.includes("master") || url.includes("playlist") || (url.includes(".mp4") && !url.includes("preview"))) {
+    if (url.startsWith("blob:") || url.startsWith("data:")) return;
+    if (url.startsWith("/")) {
+      try { url = new URL(url, location.href).href; } catch (e) {}
+    }
+    const u = url.toLowerCase();
+    if (
+      u.includes(".m3u8") ||
+      u.includes("/hls/") ||
+      u.includes("master") ||
+      u.includes("playlist") ||
+      u.includes(".mpd") ||
+      (u.includes(".mp4") && !u.includes("preview") && !u.includes("trailer"))
+    ) {
       capturedStreamUrl = url;
       const btn = document.getElementById("ro-potplayer-btn");
       if (btn) {
@@ -553,21 +565,73 @@
     }
   }
 
-  // Sniff video tag in top window
+  function extractStreamFromObject(obj) {
+    if (!obj) return;
+    if (typeof obj === "string") {
+      checkAndCaptureUrl(obj);
+      return;
+    }
+    if (Array.isArray(obj)) {
+      obj.forEach(extractStreamFromObject);
+      return;
+    }
+    if (typeof obj === "object") {
+      for (const k in obj) {
+        if (typeof obj[k] === "string") {
+          const val = obj[k].toLowerCase();
+          if (val.includes(".m3u8") || val.includes("/hls/") || val.includes(".mp4")) {
+            checkAndCaptureUrl(obj[k]);
+          }
+        } else if (typeof obj[k] === "object") {
+          extractStreamFromObject(obj[k]);
+        }
+      }
+    }
+  }
+
+  function scanPerformanceResources() {
+    if (typeof performance === "undefined" || !performance.getEntriesByType) return;
+    try {
+      const entries = performance.getEntriesByType("resource");
+      for (let i = entries.length - 1; i >= 0; i--) {
+        const name = entries[i].name;
+        if (name && typeof name === "string") {
+          const n = name.toLowerCase();
+          if (
+            n.includes(".m3u8") ||
+            n.includes("/hls/") ||
+            n.includes("master") ||
+            n.includes("playlist") ||
+            n.includes(".mpd") ||
+            (n.includes(".mp4") && !n.includes("preview") && !n.includes("trailer"))
+          ) {
+            checkAndCaptureUrl(name);
+            break;
+          }
+        }
+      }
+    } catch (e) {}
+  }
+
+  // Quét định kỳ video tag & performance timing
   setInterval(() => {
+    scanPerformanceResources();
     const v = document.querySelector("video");
     if (v) {
       if (v.currentSrc) checkAndCaptureUrl(v.currentSrc);
       if (v.src) checkAndCaptureUrl(v.src);
     }
-  }, 1500);
+    document.querySelectorAll("video source").forEach(s => {
+      if (s.src) checkAndCaptureUrl(s.src);
+    });
+  }, 1000);
 
   function isAdApi(url) {
     if (!url || typeof url !== "string") return false;
     const u = url.toLowerCase();
+    if (u.includes(".m3u8") || u.includes(".mp4") || u.includes(".ts") || u.includes(".m4s")) return false;
     return (
       u.includes("/ads") ||
-      u.includes("/ad/") ||
       u.includes("/banners") ||
       u.includes("/banner/") ||
       u.includes("advertising") ||
@@ -576,7 +640,6 @@
       u.includes("catfish") ||
       u.includes("sspp") ||
       u.includes("154.82.") ||
-      u.includes("adv_") ||
       u.includes("9922") ||
       u.includes("vsbet")
     );
@@ -888,6 +951,7 @@
   }
 
   function openPotPlayer() {
+    scanPerformanceResources();
     if (!capturedStreamUrl) {
       showToast("⚠️ Đang chờ bắt link video, hãy bấm Play trước!");
       return;
@@ -897,6 +961,7 @@
   }
 
   function openVlcPlayer() {
+    scanPerformanceResources();
     if (!capturedStreamUrl) {
       showToast("⚠️ Đang chờ bắt link video, hãy bấm Play trước!");
       return;
@@ -906,6 +971,7 @@
   }
 
   function copyM3u8() {
+    scanPerformanceResources();
     if (!capturedStreamUrl) {
       showToast("⚠️ Chưa có link video, hãy bấm Play trước!");
       return;
@@ -918,6 +984,7 @@
   }
 
   function downloadM3uFile() {
+    scanPerformanceResources();
     if (!capturedStreamUrl) {
       showToast("⚠️ Chưa có link video, hãy bấm Play trước!");
       return;
@@ -1249,6 +1316,7 @@
       if (!ct || !ct.includes("application/json")) return res;
       const clone = res.clone();
       const data = await clone.json();
+      extractStreamFromObject(data);
       const patched = patchRophimData(data, url);
       return new Response(JSON.stringify(patched), {
         status: res.status,
@@ -1266,6 +1334,7 @@
       const ct = xhr.getResponseHeader("content-type");
       if (!ct || !ct.includes("application/json")) return;
       const data = JSON.parse(xhr.responseText);
+      extractStreamFromObject(data);
       const patched = patchRophimData(data, url);
       const str = JSON.stringify(patched);
       Object.defineProperty(xhr, "responseText", { value: str, configurable: true, writable: true });
