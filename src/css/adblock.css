@@ -27,7 +27,7 @@ div[id*="box-bottom"], div[class*="box-bottom"], div[id*="ads_bottom"], div[clas
 div[class*="banner_bottom"], div[id*="banner_bottom"], div[class*="banner-bottom"], div[id*="banner-bottom"],
 div[id*="floating_bottom"], div[class*="floating_bottom"], div[id*="float_bottom"],
 
-/* Diệt tận gốc Banner Rophim, Thể thao & Giovang: devqc, banner_popup, catfish, cá cược */
+/* Diệt tận gốc Banner Rophim, Thể thao, Giovang, Chuoichien & Thapcam */
 .sspp-area, [class*="sspp-area"], [class*="sspp_area"], [class*="sspp-"],
 .display-single, [class*="display-single"], .is-demo, [class*="is-demo"],
 .is-image, div[class*="is-image"],
@@ -36,12 +36,22 @@ div[id*="floating_bottom"], div[class*="floating_bottom"], div[id*="float_bottom
 .devqc-catfish, .gvbanner-catfish, [class*="devqc"], [id*="devqc"],
 #banners-bottom-container, .banners-bottom, .banners-bottom-grid, #open-banner-bottom,
 .popup-menu, #popupMenu, .floating-balloon-container, .popup-anim, .popup-item,
-[data-brand-id], [class*="seo4s"],
+a[data-brand-id], a.seo4s-resolve-link, a[class*="seo4s"],
 .bg-modaltrungthuong, .modal-trungthuong, .close-modal-trungthuong,
 .xlz-ads-item, .block-catfish, .xlz-btn-8xbet, [class*="xlz-ads"],
-.top-ads, .ads-728-90, .adspot-wrap, .adspot-1, .adspot-2, [class*="adspot"], [id*="adspot"],
+.top-ads, .ads-728-90, .adspot-wrap, .adspot-1, .adspot-2, [class*="adspot"], [id*="adspot"], ins[data-revive-id],
 .banner-match, .gv-skeleton-banner, [class*="gv-skeleton-banner"],
+.banner-player, .banner-container, .banner-content, .banner-image,
+[class*="banner-player"], [class*="banner-container"],
+#corner-start-popup, .corner-start-popup, .corner-start-popup-backdrop, .corner-start-popup-content, .corner-start-popup-inner,
+.corner-popup-wrap, .corner-popup-box, [class*="corner-popup"], [id*="corner-popup"],
+.block-balloon-right, .block-balloon-left, .close-balloon-left, .close-balloon-right, [class*="balloon-"],
+.bookmaker-title, .tf-section, .tf-theme-style4, [class*="tf-s3-"], [class*="tf-section"],
+.fixed-ads, .fixed-ads-1, .block-fixed-ads-1, [class*="block-fixed-ads"], [class*="fixed-ads"],
+.live-ads-temp-1, .live-ads-temp-2, .live-ads-temp-3, .live-ads-temp-4, .live-ads-temp-5, [class*="live-ads-temp"],
+.left-ads, .right-ads,
 img[src*="giovang-popup"], img[src*="hit.club"], img[src*="go88"], img[src*="sun.win"],
+img[src*="1280x1280px"], img[src*="balloon_1111"], img[src*="FB88"], img[src*="fb88"], img[src*="banner_player"],
 a[href*="154.82."], a[href*="2138046"], a[href*="9922"],
 img[src*="/media/"][src*=".gif"],
 div.slide:has(.sspp-area), div.slide:has(.display-single),
@@ -49,10 +59,11 @@ div.fluid-gap:has(.sspp-area), div.fluid-gap:has(.display-single),
 a[href*="vsbet"], a[href*="bet88"], a[href*="colatv"], a[href*="colascore"], a[href*="kubet"], a[href*="fun88"],
 a[href*="w88"], a[href*="fb88"], a[href*="bk8"], a[href*="casino"], a[href*="nhacai"], a[href*="nohu"],
 a[href*="taixiu"], a[href*="gamebai"], a[href*="keonhacai"], a[href*="bongda"], a[href*="link1s"],
-div[style*="position: fixed"][style*="bottom: 0"]:not(#ro-vip-hub):not(#ro-hub-menu),
-div[style*="position: fixed"][style*="bottom:0"]:not(#ro-vip-hub):not(#ro-hub-menu),
-div[style*="position:fixed"][style*="bottom: 0"]:not(#ro-vip-hub):not(#ro-hub-menu),
-div[style*="position:fixed"][style*="bottom:0"]:not(#ro-vip-hub):not(#ro-hub-menu) {
+a[href*="tructiephotlink"], a[href*="branchseo"], a[href*="/mlink/"], a[href*="1-1-1-1"],
+div[style*="position: fixed"][style*="bottom: 0"]:not(#ro-vip-hub):not(#ro-hub-menu):not(.livestream_widget):not(.giovang-fixture-player-shell),
+div[style*="position: fixed"][style*="bottom:0"]:not(#ro-vip-hub):not(#ro-hub-menu):not(.livestream_widget):not(.giovang-fixture-player-shell),
+div[style*="position:fixed"][style*="bottom: 0"]:not(#ro-vip-hub):not(#ro-hub-menu):not(.livestream_widget):not(.giovang-fixture-player-shell),
+div[style*="position:fixed"][style*="bottom:0"]:not(#ro-vip-hub):not(#ro-hub-menu):not(.livestream_widget):not(.giovang-fixture-player-shell) {
   display: none !important;
   visibility: hidden !important;
   height: 0 !important;
@@ -64,6 +75,9 @@ div[style*="position:fixed"][style*="bottom:0"]:not(#ro-vip-hub):not(#ro-hub-men
 /* Diệt tuyệt đối các Modal Popup & Floating Ads đè trang */
 #banner_popup, #banner_popup.show, div#banner_popup, div#banner_popup.show,
 .banner_popup, .banner_popup.show, div.banner_popup, div.banner_popup.show,
+#corner-start-popup, .corner-start-popup, .corner-start-popup-backdrop, .corner-start-popup-content,
+.corner-popup-wrap, .corner-popup-box,
+.banner-player, .banner-container, .banner-content, .banner-image,
 .modal-backdrop, .bg-modaltrungthuong, .modal-trungthuong,
 .floating-balloon-container, #popupMenu, .popup-menu,
 .grid_banner_devqc, .devqc-manager-resources, .w-banner_devqc-bd, .banner_devqc-bdn-button,
@@ -77,6 +91,16 @@ div[style*="position:fixed"][style*="bottom:0"]:not(#ro-vip-hub):not(#ro-hub-men
   height: 0 !important;
   max-width: 0 !important;
   max-height: 0 !important;
+}
+
+/* Đảm bảo khung Player bóng đá Giờ Vàng và các web thể thao luôn hiển thị nguyên vẹn */
+.livestream_widget, .giovang-fixture-player-shell, .giovang-fixture-player-mount, .livestream_widget__content {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  height: auto !important;
+  max-height: none !important;
 }
 
 html, body {
