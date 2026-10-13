@@ -1,0 +1,13 @@
+/* ═══════════════════════════════════════════════════════════════
+   Cinema Pro Suite - Embed Player Stream Guard Defusal CSS
+   ═══════════════════════════════════════════════════════════════ */
+
+#stream-guard, #stream-guard-card, .stream-guard, div[id*="stream-guard"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+video.ro-enhanced-hdr {
+  filter: contrast(1.10) saturate(1.25) brightness(1.04) !important;
+}

@@ -1,0 +1,33 @@
+module.exports = {
+  "id": "motchill",
+  "name": "Motchill VIP & Cinema Pro Suite",
+  "file": "motchill.user.js",
+  "desc": "Chặn 100% quảng cáo Motchill + Vô hiệu hóa Stream Guard + Bắt link M3U8 PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR",
+  "version": "5.2",
+  "domains": [
+    "*://phimmotchill.online/*",
+    "*://*.phimmotchill.online/*",
+    "*://motchill.online/*",
+    "*://*.motchill.online/*",
+    "*://motchilltv.org/*",
+    "*://*.motchilltv.org/*",
+    "*://motchilltv.com/*",
+    "*://*.motchilltv.com/*",
+    "*://phimmotchill.com/*",
+    "*://*.phimmotchill.com/*",
+    "*://phimmotchill.run/*",
+    "*://*.phimmotchill.run/*",
+    "*://phimmotchill.me/*",
+    "*://*.phimmotchill.me/*",
+    "*://motchill.moe/*",
+    "*://*.motchill.moe/*",
+    "*://motchilli.com/*",
+    "*://*.motchilli.com/*",
+    "*://motchilli.vip/*",
+    "*://*.motchilli.vip/*",
+    "*://motchill.in/*",
+    "*://*.motchill.in/*"
+  ],
+  "siteCss": ".ad-container, .ads-holder, .banner-left, .banner-right, div[id*=\"ad-\"], div[class*=\"banner-ads\"], div[id*=\"catfish\"], .ads-wrapper, #chancoc, .modal-adblock",
+  "category": "movies"
+};

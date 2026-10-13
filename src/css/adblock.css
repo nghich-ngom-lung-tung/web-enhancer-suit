@@ -1,0 +1,56 @@
+/* ═══════════════════════════════════════════════════════════════
+   Cinema Pro Suite - Adblock & Anti-Banner CSS
+   Diệt sạch banner catfish, popup, cá cược, video ads
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Xóa sạch mọi container banner quảng cáo */
+.ad-container, .ads-holder, .banner-left, .banner-right,
+div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"],
+.ads-wrapper, #chancoc, .modal-adblock, .adv-holder, .pm-ads,
+.hh3d-ads, .dp-ads, .tvhay-ads, .ah-ads, #box-ads, .ah-banner,
+.bl-ads, .a47-ads, .ophim-ads, .biphim-ads, .dhtv-ads,
+.motphim-ads, .mephim-ads, .ghienphim-ads, .fullphim-ads, .phimhay-ads,
+.atvn-ads, .hhkf-ads, .hhpanda-ads, .vst-ads, .p247-ads, .phd-ads, .pbh-ads,
+.pv-ads, .btv-ads, .hdo-ads, .chay-ads, .xpp-ads, .ts-ads, .ss-ads,
+[class*="ad_placement"], [id*="google_ads"], div[style*="z-index: 9999999"],
+div[style*="zIndex: 9999999"], div[style*="backdrop-filter: blur(25px)"],
+
+/* Diệt sạch banner catfish, fixed bottom bar và cá cược */
+.catfish, #catfish, .catfish-banner, #catfish-banner, div[class*="catfish"], div[id*="catfish"],
+div[class*="bottom-ads"], div[class*="bottom_ads"], div[class*="bottom-banner"], div[class*="bottom_banner"],
+div[id*="bottom-ads"], div[id*="bottom_ads"], div[id*="bottom-banner"], div[id*="bottom_banner"],
+div[class*="footer-ads"], div[class*="footer_ads"], div[class*="footer-banner"], div[class*="footer_banner"],
+div[class*="floating-banner"], div[class*="floating_banner"], div[class*="float-ads"], div[class*="float_ads"],
+div[class*="sticky-ads"], div[class*="sticky-banner"], div[id*="sticky-ads"], div[id*="sticky-banner"],
+div[class*="qc_bottom"], div[id*="qc_bottom"], div[class*="qc-bottom"], div[id*="qc-bottom"],
+div[id*="box-bottom"], div[class*="box-bottom"], div[id*="ads_bottom"], div[class*="ads_bottom"],
+div[class*="banner_bottom"], div[id*="banner_bottom"], div[class*="banner-bottom"], div[id*="banner-bottom"],
+div[id*="floating_bottom"], div[class*="floating_bottom"], div[id*="float_bottom"],
+
+/* Diệt tận gốc Banner Rophim: sspp-area, display-single, 9922, 154.82, media gif */
+.sspp-area, [class*="sspp-area"], [class*="sspp_area"], [class*="sspp-"],
+.display-single, [class*="display-single"], .is-demo, [class*="is-demo"],
+.is-image, div[class*="is-image"],
+a[href*="154.82."], a[href*="2138046"], a[href*="9922"],
+img[src*="/media/"][src*=".gif"],
+div.slide:has(.sspp-area), div.slide:has(.display-single),
+div.fluid-gap:has(.sspp-area), div.fluid-gap:has(.display-single),
+a[href*="vsbet"], a[href*="bet88"], a[href*="colatv"], a[href*="colascore"], a[href*="kubet"], a[href*="fun88"],
+a[href*="w88"], a[href*="fb88"], a[href*="bk8"], a[href*="casino"], a[href*="nhacai"], a[href*="nohu"],
+a[href*="taixiu"], a[href*="gamebai"], a[href*="keonhacai"], a[href*="bongda"], a[href*="link1s"],
+div[style*="position: fixed"][style*="bottom: 0"]:not(#ro-vip-hub):not(#ro-hub-menu),
+div[style*="position: fixed"][style*="bottom:0"]:not(#ro-vip-hub):not(#ro-hub-menu),
+div[style*="position:fixed"][style*="bottom: 0"]:not(#ro-vip-hub):not(#ro-hub-menu),
+div[style*="position:fixed"][style*="bottom:0"]:not(#ro-vip-hub):not(#ro-hub-menu) {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
+html, body {
+  overflow: auto !important;
+  position: static !important;
+}

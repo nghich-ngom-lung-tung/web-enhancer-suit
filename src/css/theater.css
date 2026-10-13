@@ -1,0 +1,35 @@
+/* ═══════════════════════════════════════════════════════════════
+   Cinema Pro Suite - Theater Mode & OLED HDR CSS
+   ═══════════════════════════════════════════════════════════════ */
+
+video.ro-enhanced-hdr {
+  filter: contrast(1.10) saturate(1.25) brightness(1.04) !important;
+}
+
+body.ro-theater-active {
+  background-color: #050608 !important;
+}
+
+body.ro-theater-active header,
+body.ro-theater-active footer,
+body.ro-theater-active .sidebar,
+body.ro-theater-active .sidebar-right,
+body.ro-theater-active nav {
+  opacity: 0.1 !important;
+  transition: opacity 0.3s ease;
+}
+
+body.ro-theater-active header:hover,
+body.ro-theater-active footer:hover,
+body.ro-theater-active nav:hover {
+  opacity: 1 !important;
+}
+
+body.ro-theater-active .player-wrapper,
+body.ro-theater-active .player-container,
+body.ro-theater-active #player,
+body.ro-theater-active iframe {
+  max-height: 88vh !important;
+  box-shadow: 0 10px 50px rgba(81, 240, 133, 0.25) !important;
+  border-radius: 14px;
+}

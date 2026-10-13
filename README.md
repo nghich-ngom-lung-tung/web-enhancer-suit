@@ -1,10 +1,32 @@
-# 🎬 Web Enhancer Suite - Cinema Pro Edition v4.5
+# 🎬 Web Enhancer Suite - Cinema Pro Edition v5.3
 
-![Version](https://img.shields.io/badge/Version-4.5_Cinema_Pro_Master-blue?style=for-the-badge&logo=javascript)
+![Version](https://img.shields.io/badge/Version-5.3_Modular_Architecture-blue?style=for-the-badge&logo=javascript)
 ![Tests](https://img.shields.io/badge/Tests-667%2F667_Passed-success?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-100%25_Production_Ready-brightgreen?style=for-the-badge)
 
 Bộ công cụ toàn diện số 1 Việt Nam: Mở khóa VIP vĩnh viễn, vô hạn Coin/TCoin, **triệt tiêu 100% AdBlock / Stream Guard**, tự động tóm link **M3U8 Stream mở bằng PotPlayer/VLC/Tải playlist .M3U**, bộ phím tắt thần thánh **Tua nhanh/lùi 5s, Skip Intro 85s, Chỉnh âm lượng, Toàn màn hình**, bộ lọc màu **Anime OLED HDR**, và chế độ **Rạp phim Theater Mode** trên **37+ website xem phim và anime hàng đầu Việt Nam**!
+
+---
+
+## 📁 Cấu Trúc Thư Mục Modular v5.3
+
+Codebase đã được tái cấu trúc hoàn toàn thành hệ thống Module sạch sẽ, chia theo nhóm folder:
+
+```text
+├── src/
+│   ├── config/          # Embed matchers & aggregated site registry
+│   ├── css/             # CSS độc lập (adblock.css, hub.css, theater.css, embed-guard.css)
+│   ├── modules/         # Logic module (icons.js, sniffer.js, player-controls.js, ad-nuker.js, hub-ui.js, rophim-vip.js)
+│   ├── sites/           # Cấu hình 37+ website chia theo nhóm thư mục:
+│   │   ├── anime/       # Anime & Hoạt hình 3D (9 sites: AnimeVietsub, VuiGhe, AnimeHay, HH3D...)
+│   │   ├── movies/      # Phim Chiếu Rạp & Phim Tổng Hợp (25 sites: Rophim, Motchill, PhimMoi...)
+│   │   ├── tv/          # Phim Truyền Hình & Thuyết Minh (2 sites: TVHay, VietSubTV)
+│   │   └── embeds/      # Server Nguồn & Embed (OPhim, KKPhim)
+│   └── template.js      # Compiler template ráp nối các module
+├── scripts/             # Script UserScript xuất bản theo nhóm folder (anime/, movies/, tv/, embeds/)
+├── build_all_scripts.js # Trình biên dịch tinh gọn (~70 dòng)
+└── run_audit.js         # Bộ Test Suite tự động (667/667 Assertions)
+```
 
 ---
 
@@ -20,7 +42,7 @@ Hệ thống script tự động nhận diện và kích hoạt trên toàn bộ
 
 ---
 
-## ✨ Kho Vũ Khí VIP v4.5 (Cinema Pro Suite)
+## ✨ Kho Vũ Khí VIP (Cinema Pro Suite)
 
 ### 1. 📺 M3U8 Stream Sniffer & 1-Click PotPlayer / VLC / Tải Playlist .M3U
 - Tự động bắt trộm đường link luồng phát `.m3u8` và direct `.mp4` chất lượng gốc khi video tải (bắt cả trong iframe lẫn trang chính).
@@ -41,9 +63,9 @@ Hệ thống script tự động nhận diện và kích hoạt trên toàn bộ
 - **`Phím Space`**: Tạm dừng / Tiếp tục phát video thông minh (tự động bỏ qua khi đang gõ phím vào ô nhập liệu).
 - **`Phím M`**: Tắt / Mở tiếng (Mute/Unmute) tức thì.
 
-### 3. 👑 Floating VIP Control Hub Glassmorphism
-- Biểu tượng vương miện VIP nhỏ gọn ở góc phải dưới màn hình.
-- Bấm vào để mở nhanh bảng điều khiển Pro mà không cần ghi nhớ phím tắt.
+### 3. 👑 Floating VIP Control Hub Glassmorphism (SVG Icons)
+- Biểu tượng vương miện VIP dạng SVG thanh lịch ở góc phải dưới màn hình (zero emojis).
+- Bấm vào để mở nhanh bảng điều khiển Pro với biểu tượng sắc nét, không dùng emoji.
 - Tích hợp thông báo Toast hiện đại với hiệu ứng Glassmorphism viền xanh neon emerald.
 
 ### 4. 🛡️ Triệt Tiêu 100% Cảnh Báo AdBlock & Stream Guard
