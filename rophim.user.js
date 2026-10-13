@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Rophim VIP & Cinema Pro Suite
 // @namespace    http://tampermonkey.net/
-// @version      4.6
+// @version      4.7
 // @description  Mở khóa VIP 2099 + Vô hạn Coin + Chặn 100% AdBlock/Player Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Skip Intro & Anime HDR
 // @author       nghich-ngom-lung-tung
 // @match        *://rophim1.vip/*
@@ -138,10 +138,10 @@
       HTMLMediaElement.prototype.pause = function () {
         const stack = new Error().stack || "";
         if (
-          stack.includes("guard") ||
+          stack.includes("stream-guard") ||
+          stack.includes("guard-25") ||
           stack.includes("stopPlayback") ||
-          stack.includes("adError") ||
-          stack.includes("stream-guard")
+          stack.includes("adError")
         ) {
           return;
         }
@@ -153,9 +153,9 @@
     setInterval(() => {
       const video = document.querySelector("video");
       const adNotice = document.querySelector(
-        ".jw-ad-notice, .jw-ad-countdown, .ad-showing, .video-ads, .ad-interrupting, [class*='ad-countdown']"
+        ".jw-ad-notice, .jw-ad-countdown, [class*='ad-countdown'], .ad-showing"
       );
-      if (adNotice && video && video.duration < 120) {
+      if (adNotice && video && video.duration > 0 && video.duration < 90) {
         video.currentTime = video.duration || 999;
       }
       const skipBtn = document.querySelector(
@@ -164,7 +164,7 @@
       if (skipBtn && typeof skipBtn.click === "function") {
         try { skipBtn.click(); } catch (e) {}
       }
-    }, 400);
+    }, 500);
 
     const embedStyle = document.createElement("style");
     embedStyle.textContent = `
@@ -191,31 +191,39 @@
         u.includes(".mpd") ||
         (u.includes(".mp4") && !u.includes("preview") && !u.includes("trailer"))
       ) {
+        let clean = url.trim();
+        while (clean.endsWith("/") && (clean.includes(".m3u8/") || clean.includes(".mp4/") || clean.includes(".mpd/"))) {
+          clean = clean.slice(0, -1);
+        }
         try {
-          window.parent.postMessage({ type: "RO_STREAM_FOUND", streamUrl: url }, "*");
+          window.parent.postMessage({ type: "RO_STREAM_FOUND", streamUrl: clean }, "*");
         } catch (e) {}
       }
     }
 
-    // Sniff global stream variables on embed players (e.g. VSMov / JWPlayer / Hls.js)
+    // Sniff global stream variables on embed players (e.g. VSMov / JWPlayer / Hls.js / Motchill)
     function checkGlobals() {
       if (typeof window.videoSrc === "string" && window.videoSrc) notifyStream(window.videoSrc);
       if (typeof window.playerSource === "string" && window.playerSource) notifyStream(window.playerSource);
       if (window.playerOptions && typeof window.playerOptions.signedMasterUrl === "string" && window.playerOptions.signedMasterUrl) {
         notifyStream(window.playerOptions.signedMasterUrl);
       }
+      if (typeof window.__V_DATA__ === "string" && window.__V_DATA__) {
+        try {
+          const parsed = JSON.parse(atob(window.__V_DATA__));
+          if (parsed.m) {
+            const u = atob(parsed.m);
+            if (u.includes(".m3u8") || u.includes(".mp4")) notifyStream(u);
+          }
+          if (parsed.rm) {
+            const ru = atob(parsed.rm);
+            if (ru.includes(".m3u8") || ru.includes(".mp4")) notifyStream(ru);
+          }
+        } catch (e) {}
+      }
     }
     checkGlobals();
     setInterval(checkGlobals, 800);
-
-    let _vSrc = window.videoSrc;
-    try {
-      Object.defineProperty(window, "videoSrc", {
-        get: () => _vSrc,
-        set: (val) => { _vSrc = val; notifyStream(val); },
-        configurable: true
-      });
-    } catch (e) {}
 
     // Sniff DOM video element src & performance timing in iframe
     setInterval(() => {
@@ -247,8 +255,10 @@
 
     const origFetch = window.fetch;
     window.fetch = async function (input, init) {
-      const url = typeof input === "string" ? input : input?.url || input?.href || "";
-      notifyStream(url);
+      try {
+        const url = typeof input === "string" ? input : input?.url || input?.href || "";
+        if (url) notifyStream(url);
+      } catch (e) {}
       return origFetch.apply(this, arguments);
     };
 
@@ -257,11 +267,17 @@
       const xhr = new OrigXHR();
       const origOpen = xhr.open;
       xhr.open = function (m, u) {
-        notifyStream(u);
-        return origOpen.apply(this, arguments);
+        if (u) notifyStream(u);
+        if (origOpen) return origOpen.apply(this, arguments);
       };
       return xhr;
     };
+    try {
+      window.XMLHttpRequest.prototype = OrigXHR.prototype;
+      Object.keys(OrigXHR).forEach(k => {
+        try { window.XMLHttpRequest[k] = OrigXHR[k]; } catch (e) {}
+      });
+    } catch (e) {}
 
     window.addEventListener("message", function (e) {
       if (!e.data || typeof e.data !== "object") return;
@@ -468,8 +484,12 @@
       u.includes(".mpd") ||
       (u.includes(".mp4") && !u.includes("preview") && !u.includes("trailer"))
     ) {
-      capturedStreamUrl = url;
-      console.log("%c🎬 [Cinema Pro Sniffer] Đã bắt được stream:", "color: #51f085; font-weight: bold;", url);
+      let clean = url.trim();
+      while (clean.endsWith("/") && (clean.includes(".m3u8/") || clean.includes(".mp4/") || clean.includes(".mpd/"))) {
+        clean = clean.slice(0, -1);
+      }
+      capturedStreamUrl = clean;
+      console.log("%c🎬 [Cinema Pro Sniffer] Đã bắt được stream chuẩn:", "color: #51f085; font-weight: bold;", clean);
       const btn = document.getElementById("ro-potplayer-btn");
       if (btn) {
         btn.style.borderColor = "#51f085";
@@ -484,6 +504,18 @@
       if (copyBtn) {
         copyBtn.style.borderColor = "#51f085";
         copyBtn.style.color = "#51f085";
+      }
+      const fileBtn = document.getElementById("ro-m3ufile-btn");
+      if (fileBtn) {
+        fileBtn.style.borderColor = "#51f085";
+        fileBtn.style.color = "#51f085";
+      }
+      const preview = document.getElementById("ro-stream-preview");
+      if (preview) {
+        preview.style.display = "block";
+        const shortUrl = clean.length > 38 ? clean.slice(0, 35) + "..." : clean;
+        preview.textContent = "🟢 " + shortUrl;
+        preview.title = "Bấm để copy link: " + clean;
       }
     }
   }
@@ -520,11 +552,27 @@
   }
 
   function scanIframesForStreams() {
+    // 1. Quét dữ liệu giải mã __V_DATA__ nếu có trên window (như Motchill)
+    if (typeof window.__V_DATA__ === "string" && window.__V_DATA__) {
+      try {
+        const parsed = JSON.parse(atob(window.__V_DATA__));
+        if (parsed.m) {
+          const u = atob(parsed.m);
+          if (u.includes(".m3u8") || u.includes(".mp4")) checkAndCaptureUrl(u);
+        }
+        if (parsed.rm) {
+          const ru = atob(parsed.rm);
+          if (ru.includes(".m3u8") || ru.includes(".mp4")) checkAndCaptureUrl(ru);
+        }
+      } catch (e) {}
+    }
+
+    // 2. Quét iframe
     document.querySelectorAll("iframe").forEach(f => {
       const src = f.src || f.getAttribute("src") || "";
       if (!src) return;
       
-      // 1. streamvsmov pattern: /video/{hash} -> {origin}/stream/{hash}/master.m3u8
+      // streamvsmov pattern: /video/{hash} -> {origin}/stream/{hash}/master.m3u8
       if (src.includes("vsmov") && src.includes("/video/")) {
         const parts = src.split("/video/");
         if (parts.length === 2) {
@@ -537,14 +585,27 @@
         }
       }
       
-      // 2. Query param containing m3u8 or mp4
+      // Query param containing m3u8 or mp4
       try {
         const u = new URL(src, location.href);
         for (const [k, val] of u.searchParams.entries()) {
-          if (val && typeof val === "string" && (val.includes(".m3u8") || val.includes(".mp4"))) {
+          if (!val || typeof val !== "string") continue;
+          if (val.includes(".m3u8") || val.includes(".mp4") || val.includes("/hls/")) {
             checkAndCaptureUrl(decodeURIComponent(val));
             return;
           }
+          if (val.length > 20 && !val.includes("http") && !val.includes("/")) {
+            try {
+              const dec = atob(val);
+              if (dec.includes(".m3u8") || dec.includes(".mp4") || dec.includes("/hls/")) {
+                checkAndCaptureUrl(dec);
+                return;
+              }
+            } catch (e) {}
+          }
+        }
+        if (u.pathname.includes(".m3u8") || u.pathname.includes(".mp4")) {
+          checkAndCaptureUrl(u.href);
         }
       } catch (e) {}
     });
@@ -630,7 +691,7 @@
     xhr.open = function (m, u) {
       targetUrl = u || "";
       checkAndCaptureUrl(targetUrl);
-      return origOpen.apply(this, arguments);
+      if (origOpen) return origOpen.apply(this, arguments);
     };
     
     const origSend = xhr.send;
@@ -644,14 +705,22 @@
         } catch (e) {}
       }
       
-      this.addEventListener("load", function () {
-        handleRophimXhrResponse(xhr, targetUrl);
-      }, { once: true });
+      if (typeof xhr.addEventListener === "function") {
+        xhr.addEventListener("load", function () {
+          handleRophimXhrResponse(xhr, targetUrl);
+        }, { once: true });
+      }
       
-      return origSend.apply(this, arguments);
+      if (origSend) return origSend.apply(this, arguments);
     };
     return xhr;
   };
+  try {
+    window.XMLHttpRequest.prototype = origXhrMain.prototype;
+    Object.keys(origXhrMain).forEach(k => {
+      try { window.XMLHttpRequest[k] = origXhrMain[k]; } catch (e) {}
+    });
+  } catch (e) {}
 
   // ═══════════════════════════════════════════════════════════════
   // 🎨 4. CSS DỌN SẠCH QUẢNG CÁO & THEATER MODE TOÀN TRANG
@@ -919,7 +988,11 @@
       showToast("⚠️ Đang chờ bắt link video, hãy bấm Play trước!");
       return;
     }
-    window.location.href = `potplayer://${capturedStreamUrl}`;
+    const cleanUrl = capturedStreamUrl.trim();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cleanUrl).catch(() => {});
+    }
+    window.location.href = `potplayer://${cleanUrl}`;
     showToast("🚀 Đang mở PotPlayer...");
   }
 
@@ -930,22 +1003,45 @@
       showToast("⚠️ Đang chờ bắt link video, hãy bấm Play trước!");
       return;
     }
-    window.location.href = `vlc://${encodeURIComponent(capturedStreamUrl)}`;
-    showToast("🧡 Đang mở VLC Player...");
+    const cleanUrl = capturedStreamUrl.trim();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cleanUrl).catch(() => {});
+    }
+    window.location.href = `vlc://${encodeURIComponent(cleanUrl)}`;
+    showToast("🧡 Đang mở VLC Player (và đã copy link vào Clipboard)...");
   }
 
   function copyM3u8() {
     scanIframesForStreams();
     scanPerformanceResources();
     if (!capturedStreamUrl) {
-      showToast("⚠️ Chưa có link video, hãy bấm Play trước!");
+      showToast("⚠️ Đang tìm link video, hãy bấm Play trước!");
       return;
     }
-    navigator.clipboard.writeText(capturedStreamUrl).then(() => {
-      showToast("📋 Đã copy link vào Clipboard (IDM / PotPlayer)!");
-    }).catch(() => {
-      showToast("Link: " + capturedStreamUrl.slice(0, 40) + "...");
-    });
+    const cleanUrl = capturedStreamUrl.trim();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cleanUrl).then(() => {
+        showToast("📋 Đã copy link M3U8 chuẩn vào Clipboard (IDM / PotPlayer)!");
+      }).catch(() => fallbackCopy(cleanUrl));
+    } else {
+      fallbackCopy(cleanUrl);
+    }
+  }
+
+  function fallbackCopy(text) {
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      showToast("📋 Đã copy link M3U8 chuẩn vào Clipboard!");
+    } catch (e) {
+      prompt("Sao chép link video:", text);
+    }
   }
 
   function downloadM3uFile() {
@@ -955,18 +1051,19 @@
       showToast("⚠️ Chưa có link video, hãy bấm Play trước!");
       return;
     }
-    const content = `#EXTM3U\n#EXTINF:-1,Cinema Pro Stream\n${capturedStreamUrl}\n`;
+    const title = (document.title || "Cinema_Pro_Stream").replace(/[/\\?%*:|"<>]/g, "_").trim();
+    const content = `#EXTM3U\n#EXTINF:-1,${title}\n${capturedStreamUrl}\n`;
     const blob = new Blob([content], { type: "audio/x-mpegurl" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `CinemaPro_${Date.now()}.m3u`;
+    a.download = `${title}.m3u`;
     document.body.appendChild(a);
     a.click();
     setTimeout(() => {
       a.remove();
       URL.revokeObjectURL(a.href);
     }, 1000);
-    showToast("💾 Đã tải file playlist .m3u!");
+    showToast("💾 Đã tải playlist .m3u (Bấm đúp để mở trực tiếp trong VLC/PotPlayer)!");
   }
 
   function adjustSpeed(delta) {
@@ -987,8 +1084,17 @@
       <div id="ro-hub-menu">
         <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px; color: #51f085; display: flex; justify-content: space-between;">
           <span>🎬 Rophim VIP & Cinema Pro Suite</span>
-          <span style="font-size: 11px; opacity: 0.7;">v4.6</span>
+          <span style="font-size: 11px; opacity: 0.7;">v4.7</span>
         </div>
+        <div id="ro-stream-preview" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 6px 10px; font-size: 11px; word-break: break-all; color: #51f085; font-family: monospace; display: none; cursor: pointer;" title="Bấm để copy link"></div>
+        <button class="ro-menu-btn" id="ro-copym3u8-btn">
+          <span>📋 Sao Chép Link Luồng</span>
+          <span class="ro-badge">IDM/Pot</span>
+        </button>
+        <button class="ro-menu-btn" id="ro-m3ufile-btn">
+          <span>💾 Tải Playlist .M3U</span>
+          <span class="ro-badge">1-Click</span>
+        </button>
         <button class="ro-menu-btn" id="ro-potplayer-btn">
           <span>🚀 Mở PotPlayer</span>
           <span class="ro-badge">Direct</span>
@@ -996,14 +1102,6 @@
         <button class="ro-menu-btn" id="ro-vlc-btn">
           <span>🧡 Mở VLC Player</span>
           <span class="ro-badge">Direct</span>
-        </button>
-        <button class="ro-menu-btn" id="ro-copym3u8-btn">
-          <span>📋 Sao Chép Link Luồng</span>
-          <span class="ro-badge">IDM</span>
-        </button>
-        <button class="ro-menu-btn" id="ro-m3ufile-btn">
-          <span>💾 Tải Playlist .M3U</span>
-          <span class="ro-badge">File</span>
         </button>
         <button class="ro-menu-btn" id="ro-skipintro-btn">
           <span>⏭️ Bỏ Qua Intro 85s</span>
@@ -1062,6 +1160,7 @@
       if (el) el.addEventListener("click", fn);
     };
 
+    bind("ro-stream-preview", copyM3u8);
     bind("ro-potplayer-btn", openPotPlayer);
     bind("ro-vlc-btn", openVlcPlayer);
     bind("ro-copym3u8-btn", copyM3u8);

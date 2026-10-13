@@ -1,6 +1,6 @@
 /**
  * ═══════════════════════════════════════════════════════════════
- * 🎬 CINEMA PRO SUITE - UNIVERSAL BUILDER & CODE GENERATOR v4.5
+ * 🎬 CINEMA PRO SUITE - UNIVERSAL BUILDER & CODE GENERATOR v4.7
  * ═══════════════════════════════════════════════════════════════
  * Generates 100% complete, fully implemented, drop-in production
  * userscripts with zero truncation across all 37+ streaming sites
@@ -56,7 +56,7 @@ const SITE_DEFINITIONS = [
     name: "Rophim VIP & Cinema Pro Suite",
     file: "rophim.user.js",
     desc: "Mở khóa VIP 2099 + Vô hạn Coin + Chặn 100% AdBlock/Player Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Skip Intro & Anime HDR",
-    version: "4.6",
+    version: "4.7",
     isRophim: true,
     domains: [
       "*://rophim1.vip/*", "*://www.rophim1.vip/*",
@@ -88,7 +88,7 @@ const SITE_DEFINITIONS = [
     name: "Motchill VIP & Cinema Pro Suite",
     file: "motchill.user.js",
     desc: "Chặn 100% quảng cáo Motchill + Vô hiệu hóa Stream Guard + Bắt link M3U8 PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.phimmotchill.online/*", "*://*.motchill.online/*",
       "*://*.motchilltv.org/*", "*://*.motchilltv.com/*",
@@ -104,7 +104,7 @@ const SITE_DEFINITIONS = [
     name: "NangCuc TV VIP & Cinema Pro Suite",
     file: "nangcuc.user.js",
     desc: "Diệt sạch quảng cáo Nắng Cực TV + Tóm link M3U8 mở PotPlayer/VLC + Skip Intro 85s + Bật Anime OLED HDR & Chế độ Rạp phim",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.nangcuc.tv/*", "*://*.nangcuc.net/*",
       "*://*.nangcuc.cc/*", "*://*.nangcuctv.cc/*",
@@ -117,7 +117,7 @@ const SITE_DEFINITIONS = [
     name: "AnimeVietsub VIP & Cinema Pro Suite",
     file: "animevietsub.user.js",
     desc: "Chặn 100% quảng cáo & Popup AnimeVietsub + Sniff luồng M3U8 PotPlayer/VLC + Bỏ qua Intro bài hát 85s + Bộ lọc Anime OLED HDR rực rỡ",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.animevietsub.moe/*", "*://*.animevietsub.link/*",
       "*://*.animevietsub.global/*", "*://*.animevietsub.net/*",
@@ -130,7 +130,7 @@ const SITE_DEFINITIONS = [
     name: "SubNhanh VIP & Cinema Pro Suite",
     file: "subnhanh.user.js",
     desc: "Chặn quảng cáo SubNhanh + Vô hiệu hóa Stream Guard + Bắt link M3U8 PotPlayer/VLC + Phím tắt Skip Intro & Cinema Mode",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.subnhanh.org/*", "*://*.subnhanh.com/*",
       "*://*.subnhanh.vip/*", "*://*.subnhanh.online/*",
@@ -144,7 +144,7 @@ const SITE_DEFINITIONS = [
     name: "PhimMoi & PhimMoiChill VIP & Cinema Pro Suite",
     file: "phimmoi.user.js",
     desc: "Chặn 100% quảng cáo PhimMoi/PhimMoiChill + Khắc chế Stream Guard + Bắt link M3U8 PotPlayer/VLC + Phím tắt Skip Intro & Cinema Mode",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.phimmoiyyy.net/*", "*://*.phimmoichill.net/*",
       "*://*.phimmoichill.tv/*", "*://*.phimmoichilla.net/*",
@@ -159,7 +159,7 @@ const SITE_DEFINITIONS = [
     name: "HoatHinh3D VIP & Cinema Pro Suite",
     file: "hoathinh3d.user.js",
     desc: "Chặn sạch quảng cáo Hoạt Hình 3D Trung Quốc + Bắt link M3U8 PotPlayer/VLC + Tua Intro 85s + Anime OLED HDR rực rỡ",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.hoathinh3d.biz/*", "*://*.hoathinh3d.com/*",
       "*://*.hoathinh3d.site/*", "*://*.hoathinh3d.vip/*",
@@ -173,7 +173,7 @@ const SITE_DEFINITIONS = [
     name: "DongPhim VIP & Cinema Pro Suite",
     file: "dongphim.user.js",
     desc: "Chặn quảng cáo Động Phim + Bắt link M3U8 PotPlayer/VLC + Skip Intro 85s + Tăng cường màu sắc HDR & Chế độ Rạp phim",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.dongphim.net/*", "*://*.dongphym.net/*",
       "*://*.dongphim.cc/*", "*://*.dongphym.org/*",
@@ -187,7 +187,7 @@ const SITE_DEFINITIONS = [
     name: "TVHay Thuyết Minh VIP & Cinema Pro Suite",
     file: "tvhay.user.js",
     desc: "Chặn quảng cáo TVHay Thuyết Minh + Tóm link M3U8 PotPlayer/VLC + Phím tắt Skip Intro & Anime HDR",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.tvhay.site/*", "*://*.tvhay.org/*",
       "*://*.tvhay.co/*", "*://*.tvhay.cc/*",
@@ -201,7 +201,7 @@ const SITE_DEFINITIONS = [
     name: "AnimeHay & VuiGhe VIP & Cinema Pro Suite",
     file: "animehay.user.js",
     desc: "Diệt sạch quảng cáo AnimeHay & VuiGhe + Sniff M3U8 PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR rực rỡ",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.animehay.tv/*", "*://*.animehay.live/*",
       "*://*.animehay.site/*", "*://*.animehay.io/*",
@@ -216,7 +216,7 @@ const SITE_DEFINITIONS = [
     name: "BiluTV VIP & Cinema Pro Suite",
     file: "bilutv.user.js",
     desc: "Chặn quảng cáo BiluTV + Diệt Stream Guard + Bắt link M3U8 PotPlayer/VLC + Phím tắt Skip Intro & Cinema Mode",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.bilutv.live/*", "*://*.bilutva.com/*",
       "*://*.bilutv.link/*", "*://*.bilutv.net/*",
@@ -230,7 +230,7 @@ const SITE_DEFINITIONS = [
     name: "Phim1080 VIP & Cinema Pro Suite",
     file: "phim1080.user.js",
     desc: "Chặn sạch banner quảng cáo Phim1080 + Tóm link M3U8 PotPlayer/VLC + Skip Intro 85s + Chế độ Rạp phim",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.phim1080z.org/*", "*://*.phim1080.net/*",
       "*://*.phim1080.me/*", "*://*.phim1080.vip/*",
@@ -243,7 +243,7 @@ const SITE_DEFINITIONS = [
     name: "XemPhim VIP & Cinema Pro Suite",
     file: "xemphim.user.js",
     desc: "Chặn quảng cáo XemPhim + M3U8 Stream Sniffer cho PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.xemphim.tv/*", "*://*.xemphim.in/*",
       "*://*.xemphim.club/*", "*://*.xemphim.fun/*",
@@ -257,7 +257,7 @@ const SITE_DEFINITIONS = [
     name: "Anime47 VIP & Cinema Pro Suite",
     file: "anime47.user.js",
     desc: "Diệt sạch quảng cáo Anime47 + Sniff link M3U8 PotPlayer/VLC + Tua Intro 85s + Anime OLED HDR rực rỡ",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.anime47.net/*", "*://*.anime47.com/*",
       "*://*.anime47.tv/*", "*://*.anime47.top/*",
@@ -270,7 +270,7 @@ const SITE_DEFINITIONS = [
     name: "OPhim & KKPhim VIP & Cinema Pro Suite",
     file: "ophim.user.js",
     desc: "Chặn quảng cáo OPhim/KKPhim + Khắc chế Stream Guard + Bắt link M3U8 PotPlayer/VLC + Phím tắt Cinema Pro",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.ophim.cc/*", "*://*.ophim.live/*",
       "*://*.kkphim.com/*", "*://*.ophim1.com/*",
@@ -283,7 +283,7 @@ const SITE_DEFINITIONS = [
     name: "BiPhim & PhimChill VIP & Cinema Pro Suite",
     file: "biphim.user.js",
     desc: "Chặn quảng cáo BiPhim/PhimChill + Bắt link M3U8 PotPlayer/VLC + Skip Intro 85s + Chế độ Rạp phim",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.biphim.net/*", "*://*.biphim.co/*",
       "*://*.phimchill.tv/*", "*://*.phimchill.net/*"
@@ -295,7 +295,7 @@ const SITE_DEFINITIONS = [
     name: "DongHuaTV VIP & Cinema Pro Suite",
     file: "donghuatv.user.js",
     desc: "Chặn quảng cáo DongHuaTV + Sniff luồng M3U8 PotPlayer/VLC + Tua Intro 85s + Anime OLED HDR rực rỡ",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.donghuatv.com/*", "*://*.donghua.tv/*",
       "*://*.donghuatv.net/*", "*://*.donghuatv.top/*"
@@ -307,7 +307,7 @@ const SITE_DEFINITIONS = [
     name: "MotPhim VIP & Cinema Pro Suite",
     file: "motphim.user.js",
     desc: "Chặn 100% quảng cáo Mọt Phim + Tóm link M3U8 PotPlayer/VLC + Skip Intro 85s + Bộ lọc Anime OLED HDR",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.motphim.to/*", "*://*.motphimtv.me/*",
       "*://*.motphimtv.top/*", "*://*.motphim.net/*"
@@ -319,7 +319,7 @@ const SITE_DEFINITIONS = [
     name: "MePhim VIP & Cinema Pro Suite",
     file: "mephim.user.js",
     desc: "Diệt sạch quảng cáo Mê Phim TV + M3U8 Stream Sniffer PotPlayer/VLC + Tua Intro 85s + Chế độ Rạp phim",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.mephimtv.com/*", "*://*.mephim.net/*",
       "*://*.mephim.tv/*"
@@ -331,7 +331,7 @@ const SITE_DEFINITIONS = [
     name: "GhienPhim VIP & Cinema Pro Suite",
     file: "ghienphim.user.js",
     desc: "Chặn quảng cáo Ghiền Phim + Bắt link M3U8 mở PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.ghienphim.net/*", "*://*.ghienphim.tv/*",
       "*://*.ghienphim.org/*"
@@ -343,7 +343,7 @@ const SITE_DEFINITIONS = [
     name: "FullPhim VIP & Cinema Pro Suite",
     file: "fullphim.user.js",
     desc: "Chặn sạch banner quảng cáo FullPhim + Sniff luồng M3U8 PotPlayer/VLC + Skip Intro 85s + Cinema Theater Mode",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.fullphim.net/*", "*://*.fullphim.tv/*",
       "*://*.fullphim.org/*"
@@ -355,7 +355,7 @@ const SITE_DEFINITIONS = [
     name: "PhimHay VIP & Cinema Pro Suite",
     file: "phimhay.user.js",
     desc: "Diệt quảng cáo PhimHay.co + Tóm link M3U8 PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR rực rỡ",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.phimhay.co/*", "*://*.phimhay.net/*",
       "*://*.phimhay.tv/*"
@@ -367,7 +367,7 @@ const SITE_DEFINITIONS = [
     name: "VuiGhe VIP & Cinema Pro Suite",
     file: "vuighe.user.js",
     desc: "Chặn 100% quảng cáo VuiGhe Anime + Tóm link M3U8 PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR rực rỡ",
-    version: "4.6",
+    version: "4.7",
     domains: ["*://*.vuighe.net/*", "*://*.vuighe3.com/*", "*://*.vuighe.com/*"],
     siteCss: `.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .ah-ads, #box-ads, .ah-banner`
   },
@@ -376,7 +376,7 @@ const SITE_DEFINITIONS = [
     name: "AnimeTVN VIP & Cinema Pro Suite",
     file: "animetvn.user.js",
     desc: "Chặn quảng cáo AnimeTVN + Vô hiệu hóa Stream Guard + Bắt link M3U8 PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR",
-    version: "4.6",
+    version: "4.7",
     domains: ["*://*.animetvn.com/*", "*://*.animetvn.tv/*", "*://*.animetvn.net/*"],
     siteCss: `.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .atvn-ads`
   },
@@ -385,7 +385,7 @@ const SITE_DEFINITIONS = [
     name: "HoatHinh KungFu VIP & Cinema Pro Suite",
     file: "hhkungfu.user.js",
     desc: "Diệt sạch quảng cáo Hoạt Hình Kungfu Donghua 3D + Sniff M3U8 PotPlayer/VLC + Tua Intro 85s + Anime OLED HDR",
-    version: "4.6",
+    version: "4.7",
     domains: ["*://*.hhkungfu.tv/*", "*://*.hhkungfu.com/*", "*://*.hhkungfu.net/*"],
     siteCss: `.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .hhkf-ads`
   },
@@ -394,7 +394,7 @@ const SITE_DEFINITIONS = [
     name: "HoatHinh Panda VIP & Cinema Pro Suite",
     file: "hhpanda.user.js",
     desc: "Chặn quảng cáo Hoạt Hình Panda Donghua 3D + Tóm link M3U8 PotPlayer/VLC + Tua Intro 85s + OLED HDR",
-    version: "4.6",
+    version: "4.7",
     domains: ["*://*.hhpanda.com/*", "*://*.hhpanda.tv/*"],
     siteCss: `.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .hhpanda-ads`
   },
@@ -403,7 +403,7 @@ const SITE_DEFINITIONS = [
     name: "VietSubTV VIP & Cinema Pro Suite",
     file: "vietsubtv.user.js",
     desc: "Chặn sạch banner quảng cáo VietSubTV + Sniff M3U8 PotPlayer/VLC + Skip Intro 85s + Chế độ Rạp phim",
-    version: "4.6",
+    version: "4.7",
     domains: ["*://*.vietsubtv.org/*", "*://*.vietsubtv.com/*", "*://*.vietsubtv.net/*"],
     siteCss: `.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .vst-ads`
   },
@@ -412,7 +412,7 @@ const SITE_DEFINITIONS = [
     name: "Phim247 VIP & Cinema Pro Suite",
     file: "phim247.user.js",
     desc: "Chặn 100% quảng cáo Phim247 + Bắt link M3U8 PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR",
-    version: "4.6",
+    version: "4.7",
     domains: ["*://*.phim247.tv/*", "*://*.phim247.vip/*"],
     siteCss: `.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .p247-ads`
   },
@@ -421,7 +421,7 @@ const SITE_DEFINITIONS = [
     name: "PhimHD VIP & Cinema Pro Suite",
     file: "phimhd.user.js",
     desc: "Diệt quảng cáo PhimHD.com + Sniff luồng M3U8 PotPlayer/VLC + Skip Intro 85s + Cinema Theater Mode",
-    version: "4.6",
+    version: "4.7",
     domains: ["*://*.phimhd.com/*", "*://*.phimhd.tv/*"],
     siteCss: `.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .phd-ads`
   },
@@ -430,7 +430,7 @@ const SITE_DEFINITIONS = [
     name: "PhimBatHu VIP & Cinema Pro Suite",
     file: "phimbathu.user.js",
     desc: "Chặn quảng cáo Phim Bất Hủ + Tóm link M3U8 PotPlayer/VLC + Tua Intro 85s + OLED HDR",
-    version: "4.6",
+    version: "4.7",
     domains: ["*://*.phimbathu.com/*", "*://*.phimbathu.net/*"],
     siteCss: `.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .pbh-ads`
   },
@@ -439,7 +439,7 @@ const SITE_DEFINITIONS = [
     name: "PhimVang VIP & Cinema Pro Suite",
     file: "phimvang.user.js",
     desc: "Chặn sạch banner quảng cáo Phim Vàng + M3U8 Stream Sniffer PotPlayer/VLC + Skip Intro 85s + Rạp phim",
-    version: "4.6",
+    version: "4.7",
     domains: ["*://*.phimvang.com/*", "*://*.phimvang.tv/*"],
     siteCss: `.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .pv-ads`
   },
@@ -448,7 +448,7 @@ const SITE_DEFINITIONS = [
     name: "BanhTV VIP & Cinema Pro Suite",
     file: "banhtv.user.js",
     desc: "Chặn quảng cáo Bánh TV + Sniff M3U8 PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR rực rỡ",
-    version: "4.6",
+    version: "4.7",
     domains: ["*://*.banhtv.net/*", "*://*.banhtv.cc/*"],
     siteCss: `.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .btv-ads`
   },
@@ -457,7 +457,7 @@ const SITE_DEFINITIONS = [
     name: "HDOnline VIP & Cinema Pro Suite",
     file: "hdonline.user.js",
     desc: "Chặn 100% quảng cáo HDOnline + Bắt link M3U8 PotPlayer/VLC + Skip Intro 85s + Cinema Mode",
-    version: "4.6",
+    version: "4.7",
     domains: ["*://*.hdonline.co/*", "*://*.hdonline.tv/*"],
     siteCss: `.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .hdo-ads`
   },
@@ -466,7 +466,7 @@ const SITE_DEFINITIONS = [
     name: "ChillHay VIP & Cinema Pro Suite",
     file: "chillhay.user.js",
     desc: "Diệt sạch quảng cáo ChillHay + Sniff luồng M3U8 PotPlayer/VLC + Skip Intro 85s + OLED HDR",
-    version: "4.6",
+    version: "4.7",
     domains: ["*://*.chillhay.com/*", "*://*.chillhay.tv/*"],
     siteCss: `.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .chay-ads`
   },
@@ -475,7 +475,7 @@ const SITE_DEFINITIONS = [
     name: "XemPhimPlus VIP & Cinema Pro Suite",
     file: "xemphimplus.user.js",
     desc: "Chặn quảng cáo XemPhimPlus + Tóm link M3U8 PotPlayer/VLC + Tua Intro 85s + Chế độ Rạp phim",
-    version: "4.6",
+    version: "4.7",
     domains: ["*://*.xemphimplus.net/*"],
     siteCss: `.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .xpp-ads`
   },
@@ -484,7 +484,7 @@ const SITE_DEFINITIONS = [
     name: "TopSub VIP & Cinema Pro Suite",
     file: "topsub.user.js",
     desc: "Chặn 100% quảng cáo TopSub Vietsub + Vô hiệu hóa Stream Guard + Bắt link M3U8 PotPlayer/VLC + Phím tắt Skip Intro 85s & Anime HDR",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.topsub.org/*", "*://*.topsub.net/*", "*://*.topsub.tv/*", "*://*.topsub.site/*"
     ],
@@ -495,7 +495,7 @@ const SITE_DEFINITIONS = [
     name: "SSPhim VIP & Cinema Pro Suite",
     file: "ssphim.user.js",
     desc: "Chặn sạch quảng cáo SSPhim + Tóm link M3U8 PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR rực rỡ & Chế độ Rạp phim",
-    version: "4.6",
+    version: "4.7",
     domains: [
       "*://*.ssphim.net/*", "*://*.ssphim.tv/*", "*://*.ssphim.org/*", "*://*.ssphim.cc/*"
     ],
@@ -516,7 +516,7 @@ function generateUserscriptCode(site, isMasterAllInOne = false) {
   const scriptDesc = isMasterAllInOne
     ? "Bản Master Gộp Tất Cả Trong Một: Mở khóa VIP + Vô hạn Coin + Chặn 100% AdBlock/Stream Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Tua 5s/Intro 85s/Volume & Anime HDR trên hơn 37+ website phim, anime, hoạt hình 3D Việt Nam!"
     : site.desc;
-  const scriptVersion = isMasterAllInOne ? "4.6" : site.version;
+  const scriptVersion = isMasterAllInOne ? "4.7" : site.version;
   const enableRophimVip = isMasterAllInOne || Boolean(site.isRophim);
 
   return `// ==UserScript==
@@ -599,10 +599,10 @@ ${matchHeaders}
       HTMLMediaElement.prototype.pause = function () {
         const stack = new Error().stack || "";
         if (
-          stack.includes("guard") ||
+          stack.includes("stream-guard") ||
+          stack.includes("guard-25") ||
           stack.includes("stopPlayback") ||
-          stack.includes("adError") ||
-          stack.includes("stream-guard")
+          stack.includes("adError")
         ) {
           return;
         }
@@ -614,9 +614,9 @@ ${matchHeaders}
     setInterval(() => {
       const video = document.querySelector("video");
       const adNotice = document.querySelector(
-        ".jw-ad-notice, .jw-ad-countdown, .ad-showing, .video-ads, .ad-interrupting, [class*='ad-countdown']"
+        ".jw-ad-notice, .jw-ad-countdown, [class*='ad-countdown'], .ad-showing"
       );
-      if (adNotice && video && video.duration < 120) {
+      if (adNotice && video && video.duration > 0 && video.duration < 90) {
         video.currentTime = video.duration || 999;
       }
       const skipBtn = document.querySelector(
@@ -625,7 +625,7 @@ ${matchHeaders}
       if (skipBtn && typeof skipBtn.click === "function") {
         try { skipBtn.click(); } catch (e) {}
       }
-    }, 400);
+    }, 500);
 
     const embedStyle = document.createElement("style");
     embedStyle.textContent = \`
@@ -652,31 +652,39 @@ ${matchHeaders}
         u.includes(".mpd") ||
         (u.includes(".mp4") && !u.includes("preview") && !u.includes("trailer"))
       ) {
+        let clean = url.trim();
+        while (clean.endsWith("/") && (clean.includes(".m3u8/") || clean.includes(".mp4/") || clean.includes(".mpd/"))) {
+          clean = clean.slice(0, -1);
+        }
         try {
-          window.parent.postMessage({ type: "RO_STREAM_FOUND", streamUrl: url }, "*");
+          window.parent.postMessage({ type: "RO_STREAM_FOUND", streamUrl: clean }, "*");
         } catch (e) {}
       }
     }
 
-    // Sniff global stream variables on embed players (e.g. VSMov / JWPlayer / Hls.js)
+    // Sniff global stream variables on embed players (e.g. VSMov / JWPlayer / Hls.js / Motchill)
     function checkGlobals() {
       if (typeof window.videoSrc === "string" && window.videoSrc) notifyStream(window.videoSrc);
       if (typeof window.playerSource === "string" && window.playerSource) notifyStream(window.playerSource);
       if (window.playerOptions && typeof window.playerOptions.signedMasterUrl === "string" && window.playerOptions.signedMasterUrl) {
         notifyStream(window.playerOptions.signedMasterUrl);
       }
+      if (typeof window.__V_DATA__ === "string" && window.__V_DATA__) {
+        try {
+          const parsed = JSON.parse(atob(window.__V_DATA__));
+          if (parsed.m) {
+            const u = atob(parsed.m);
+            if (u.includes(".m3u8") || u.includes(".mp4")) notifyStream(u);
+          }
+          if (parsed.rm) {
+            const ru = atob(parsed.rm);
+            if (ru.includes(".m3u8") || ru.includes(".mp4")) notifyStream(ru);
+          }
+        } catch (e) {}
+      }
     }
     checkGlobals();
     setInterval(checkGlobals, 800);
-
-    let _vSrc = window.videoSrc;
-    try {
-      Object.defineProperty(window, "videoSrc", {
-        get: () => _vSrc,
-        set: (val) => { _vSrc = val; notifyStream(val); },
-        configurable: true
-      });
-    } catch (e) {}
 
     // Sniff DOM video element src & performance timing in iframe
     setInterval(() => {
@@ -708,8 +716,10 @@ ${matchHeaders}
 
     const origFetch = window.fetch;
     window.fetch = async function (input, init) {
-      const url = typeof input === "string" ? input : input?.url || input?.href || "";
-      notifyStream(url);
+      try {
+        const url = typeof input === "string" ? input : input?.url || input?.href || "";
+        if (url) notifyStream(url);
+      } catch (e) {}
       return origFetch.apply(this, arguments);
     };
 
@@ -718,11 +728,17 @@ ${matchHeaders}
       const xhr = new OrigXHR();
       const origOpen = xhr.open;
       xhr.open = function (m, u) {
-        notifyStream(u);
-        return origOpen.apply(this, arguments);
+        if (u) notifyStream(u);
+        if (origOpen) return origOpen.apply(this, arguments);
       };
       return xhr;
     };
+    try {
+      window.XMLHttpRequest.prototype = OrigXHR.prototype;
+      Object.keys(OrigXHR).forEach(k => {
+        try { window.XMLHttpRequest[k] = OrigXHR[k]; } catch (e) {}
+      });
+    } catch (e) {}
 
     window.addEventListener("message", function (e) {
       if (!e.data || typeof e.data !== "object") return;
@@ -929,8 +945,12 @@ ${matchHeaders}
       u.includes(".mpd") ||
       (u.includes(".mp4") && !u.includes("preview") && !u.includes("trailer"))
     ) {
-      capturedStreamUrl = url;
-      console.log("%c🎬 [Cinema Pro Sniffer] Đã bắt được stream:", "color: #51f085; font-weight: bold;", url);
+      let clean = url.trim();
+      while (clean.endsWith("/") && (clean.includes(".m3u8/") || clean.includes(".mp4/") || clean.includes(".mpd/"))) {
+        clean = clean.slice(0, -1);
+      }
+      capturedStreamUrl = clean;
+      console.log("%c🎬 [Cinema Pro Sniffer] Đã bắt được stream chuẩn:", "color: #51f085; font-weight: bold;", clean);
       const btn = document.getElementById("ro-potplayer-btn");
       if (btn) {
         btn.style.borderColor = "#51f085";
@@ -945,6 +965,18 @@ ${matchHeaders}
       if (copyBtn) {
         copyBtn.style.borderColor = "#51f085";
         copyBtn.style.color = "#51f085";
+      }
+      const fileBtn = document.getElementById("ro-m3ufile-btn");
+      if (fileBtn) {
+        fileBtn.style.borderColor = "#51f085";
+        fileBtn.style.color = "#51f085";
+      }
+      const preview = document.getElementById("ro-stream-preview");
+      if (preview) {
+        preview.style.display = "block";
+        const shortUrl = clean.length > 38 ? clean.slice(0, 35) + "..." : clean;
+        preview.textContent = "🟢 " + shortUrl;
+        preview.title = "Bấm để copy link: " + clean;
       }
     }
   }
@@ -981,11 +1013,27 @@ ${matchHeaders}
   }
 
   function scanIframesForStreams() {
+    // 1. Quét dữ liệu giải mã __V_DATA__ nếu có trên window (như Motchill)
+    if (typeof window.__V_DATA__ === "string" && window.__V_DATA__) {
+      try {
+        const parsed = JSON.parse(atob(window.__V_DATA__));
+        if (parsed.m) {
+          const u = atob(parsed.m);
+          if (u.includes(".m3u8") || u.includes(".mp4")) checkAndCaptureUrl(u);
+        }
+        if (parsed.rm) {
+          const ru = atob(parsed.rm);
+          if (ru.includes(".m3u8") || ru.includes(".mp4")) checkAndCaptureUrl(ru);
+        }
+      } catch (e) {}
+    }
+
+    // 2. Quét iframe
     document.querySelectorAll("iframe").forEach(f => {
       const src = f.src || f.getAttribute("src") || "";
       if (!src) return;
       
-      // 1. streamvsmov pattern: /video/{hash} -> {origin}/stream/{hash}/master.m3u8
+      // streamvsmov pattern: /video/{hash} -> {origin}/stream/{hash}/master.m3u8
       if (src.includes("vsmov") && src.includes("/video/")) {
         const parts = src.split("/video/");
         if (parts.length === 2) {
@@ -998,14 +1046,27 @@ ${matchHeaders}
         }
       }
       
-      // 2. Query param containing m3u8 or mp4
+      // Query param containing m3u8 or mp4
       try {
         const u = new URL(src, location.href);
         for (const [k, val] of u.searchParams.entries()) {
-          if (val && typeof val === "string" && (val.includes(".m3u8") || val.includes(".mp4"))) {
+          if (!val || typeof val !== "string") continue;
+          if (val.includes(".m3u8") || val.includes(".mp4") || val.includes("/hls/")) {
             checkAndCaptureUrl(decodeURIComponent(val));
             return;
           }
+          if (val.length > 20 && !val.includes("http") && !val.includes("/")) {
+            try {
+              const dec = atob(val);
+              if (dec.includes(".m3u8") || dec.includes(".mp4") || dec.includes("/hls/")) {
+                checkAndCaptureUrl(dec);
+                return;
+              }
+            } catch (e) {}
+          }
+        }
+        if (u.pathname.includes(".m3u8") || u.pathname.includes(".mp4")) {
+          checkAndCaptureUrl(u.href);
         }
       } catch (e) {}
     });
@@ -1091,7 +1152,7 @@ ${matchHeaders}
     xhr.open = function (m, u) {
       targetUrl = u || "";
       checkAndCaptureUrl(targetUrl);
-      return origOpen.apply(this, arguments);
+      if (origOpen) return origOpen.apply(this, arguments);
     };
     
     const origSend = xhr.send;
@@ -1105,14 +1166,22 @@ ${matchHeaders}
         } catch (e) {}
       }
       ${enableRophimVip ? `
-      this.addEventListener("load", function () {
-        handleRophimXhrResponse(xhr, targetUrl);
-      }, { once: true });
+      if (typeof xhr.addEventListener === "function") {
+        xhr.addEventListener("load", function () {
+          handleRophimXhrResponse(xhr, targetUrl);
+        }, { once: true });
+      }
       ` : ""}
-      return origSend.apply(this, arguments);
+      if (origSend) return origSend.apply(this, arguments);
     };
     return xhr;
   };
+  try {
+    window.XMLHttpRequest.prototype = origXhrMain.prototype;
+    Object.keys(origXhrMain).forEach(k => {
+      try { window.XMLHttpRequest[k] = origXhrMain[k]; } catch (e) {}
+    });
+  } catch (e) {}
 
   // ═══════════════════════════════════════════════════════════════
   // 🎨 4. CSS DỌN SẠCH QUẢNG CÁO & THEATER MODE TOÀN TRANG
@@ -1371,7 +1440,11 @@ ${matchHeaders}
       showToast("⚠️ Đang chờ bắt link video, hãy bấm Play trước!");
       return;
     }
-    window.location.href = \`potplayer://\${capturedStreamUrl}\`;
+    const cleanUrl = capturedStreamUrl.trim();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cleanUrl).catch(() => {});
+    }
+    window.location.href = \`potplayer://\${cleanUrl}\`;
     showToast("🚀 Đang mở PotPlayer...");
   }
 
@@ -1382,22 +1455,45 @@ ${matchHeaders}
       showToast("⚠️ Đang chờ bắt link video, hãy bấm Play trước!");
       return;
     }
-    window.location.href = \`vlc://\${encodeURIComponent(capturedStreamUrl)}\`;
-    showToast("🧡 Đang mở VLC Player...");
+    const cleanUrl = capturedStreamUrl.trim();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cleanUrl).catch(() => {});
+    }
+    window.location.href = \`vlc://\${encodeURIComponent(cleanUrl)}\`;
+    showToast("🧡 Đang mở VLC Player (và đã copy link vào Clipboard)...");
   }
 
   function copyM3u8() {
     scanIframesForStreams();
     scanPerformanceResources();
     if (!capturedStreamUrl) {
-      showToast("⚠️ Chưa có link video, hãy bấm Play trước!");
+      showToast("⚠️ Đang tìm link video, hãy bấm Play trước!");
       return;
     }
-    navigator.clipboard.writeText(capturedStreamUrl).then(() => {
-      showToast("📋 Đã copy link vào Clipboard (IDM / PotPlayer)!");
-    }).catch(() => {
-      showToast("Link: " + capturedStreamUrl.slice(0, 40) + "...");
-    });
+    const cleanUrl = capturedStreamUrl.trim();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cleanUrl).then(() => {
+        showToast("📋 Đã copy link M3U8 chuẩn vào Clipboard (IDM / PotPlayer)!");
+      }).catch(() => fallbackCopy(cleanUrl));
+    } else {
+      fallbackCopy(cleanUrl);
+    }
+  }
+
+  function fallbackCopy(text) {
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      showToast("📋 Đã copy link M3U8 chuẩn vào Clipboard!");
+    } catch (e) {
+      prompt("Sao chép link video:", text);
+    }
   }
 
   function downloadM3uFile() {
@@ -1407,18 +1503,19 @@ ${matchHeaders}
       showToast("⚠️ Chưa có link video, hãy bấm Play trước!");
       return;
     }
-    const content = \`#EXTM3U\\n#EXTINF:-1,Cinema Pro Stream\\n\${capturedStreamUrl}\\n\`;
+    const title = (document.title || "Cinema_Pro_Stream").replace(/[/\\\\?%*:|"<>]/g, "_").trim();
+    const content = \`#EXTM3U\\n#EXTINF:-1,\${title}\\n\${capturedStreamUrl}\\n\`;
     const blob = new Blob([content], { type: "audio/x-mpegurl" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = \`CinemaPro_\${Date.now()}.m3u\`;
+    a.download = \`\${title}.m3u\`;
     document.body.appendChild(a);
     a.click();
     setTimeout(() => {
       a.remove();
       URL.revokeObjectURL(a.href);
     }, 1000);
-    showToast("💾 Đã tải file playlist .m3u!");
+    showToast("💾 Đã tải playlist .m3u (Bấm đúp để mở trực tiếp trong VLC/PotPlayer)!");
   }
 
   function adjustSpeed(delta) {
@@ -1441,6 +1538,15 @@ ${matchHeaders}
           <span>🎬 ${isMasterAllInOne ? "Cinema Pro (All-In-One)" : site.name}</span>
           <span style="font-size: 11px; opacity: 0.7;">v${scriptVersion}</span>
         </div>
+        <div id="ro-stream-preview" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 6px 10px; font-size: 11px; word-break: break-all; color: #51f085; font-family: monospace; display: none; cursor: pointer;" title="Bấm để copy link"></div>
+        <button class="ro-menu-btn" id="ro-copym3u8-btn">
+          <span>📋 Sao Chép Link Luồng</span>
+          <span class="ro-badge">IDM/Pot</span>
+        </button>
+        <button class="ro-menu-btn" id="ro-m3ufile-btn">
+          <span>💾 Tải Playlist .M3U</span>
+          <span class="ro-badge">1-Click</span>
+        </button>
         <button class="ro-menu-btn" id="ro-potplayer-btn">
           <span>🚀 Mở PotPlayer</span>
           <span class="ro-badge">Direct</span>
@@ -1448,14 +1554,6 @@ ${matchHeaders}
         <button class="ro-menu-btn" id="ro-vlc-btn">
           <span>🧡 Mở VLC Player</span>
           <span class="ro-badge">Direct</span>
-        </button>
-        <button class="ro-menu-btn" id="ro-copym3u8-btn">
-          <span>📋 Sao Chép Link Luồng</span>
-          <span class="ro-badge">IDM</span>
-        </button>
-        <button class="ro-menu-btn" id="ro-m3ufile-btn">
-          <span>💾 Tải Playlist .M3U</span>
-          <span class="ro-badge">File</span>
         </button>
         <button class="ro-menu-btn" id="ro-skipintro-btn">
           <span>⏭️ Bỏ Qua Intro 85s</span>
@@ -1514,6 +1612,7 @@ ${matchHeaders}
       if (el) el.addEventListener("click", fn);
     };
 
+    bind("ro-stream-preview", copyM3u8);
     bind("ro-potplayer-btn", openPotPlayer);
     bind("ro-vlc-btn", openVlcPlayer);
     bind("ro-copym3u8-btn", copyM3u8);
