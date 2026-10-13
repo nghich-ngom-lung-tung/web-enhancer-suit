@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         HDOnline VIP & Cinema Pro Suite
 // @namespace    http://tampermonkey.net/
-// @version      4.9
+// @version      5.0
 // @description  Chặn 100% quảng cáo HDOnline + Bắt link M3U8 PotPlayer/VLC + Skip Intro 85s + Cinema Mode
 // @author       nghich-ngom-lung-tung
 // @match        *://*.hdonline.co/*
@@ -59,8 +59,7 @@
   function unwrapStreamUrl(url) {
     if (!url || typeof url !== "string") return "";
     let clean = url.trim();
-    clean = clean.replace(/\//g, "/").replace(/\/+/g, "/").replace(/\+/g, "");
-    clean = clean.replace(/&amp;/g, "&");
+    clean = clean.split("\/").join("/").replace(/&amp;/g, "&");
     if (clean.includes("%3A%2F%2F") || clean.includes("%3a%2f%2f") || clean.includes("%2F") || clean.includes("%2f")) {
       try { clean = decodeURIComponent(clean); } catch (e) {}
     }
@@ -84,9 +83,9 @@
         }
       }
     } catch (e) {}
-    clean = clean.replace(/.m3u8[\/]+$/i, ".m3u8");
-    clean = clean.replace(/.mp4[\/]+$/i, ".mp4");
-    clean = clean.replace(/.mpd[\/]+$/i, ".mpd");
+    clean = clean.replace(new RegExp("\\.m3u8/+$", "i"), ".m3u8");
+    clean = clean.replace(new RegExp("\\.mp4/+$", "i"), ".mp4");
+    clean = clean.replace(new RegExp("\\.mpd/+$", "i"), ".mpd");
     while (clean.endsWith("/") && (clean.includes(".m3u8/") || clean.includes(".mp4/") || clean.includes(".mpd/"))) {
       clean = clean.slice(0, -1);
     }
@@ -194,11 +193,12 @@
     `;
     (document.head || document.documentElement).appendChild(embedStyle);
 
+    let lastNotifiedStream = "";
     function notifyStream(url) {
       if (!url || typeof url !== "string") return;
       if (url.startsWith("blob:") || url.startsWith("data:")) return;
       const clean = unwrapStreamUrl(url);
-      if (!clean) return;
+      if (!clean || clean === lastNotifiedStream) return;
       const u = clean.toLowerCase();
       if (
         u.includes(".m3u8") ||
@@ -208,6 +208,8 @@
         u.includes(".mpd") ||
         (u.includes(".mp4") && !u.includes("preview") && !u.includes("trailer"))
       ) {
+        lastNotifiedStream = clean;
+        try { localStorage.setItem("RO_CAPTURED_STREAM", clean); } catch (e) {}
         try {
           window.parent.postMessage({ type: "RO_STREAM_FOUND", streamUrl: clean }, "*");
         } catch (e) {}
@@ -280,29 +282,63 @@
       }
     }, 1000);
 
-    const origFetch = window.fetch;
-    window.fetch = async function (input, init) {
-      try {
-        const url = typeof input === "string" ? input : input?.url || input?.href || "";
-        if (url) notifyStream(url);
-      } catch (e) {}
-      return origFetch.apply(this, arguments);
-    };
-
-    const OrigXHR = window.XMLHttpRequest;
-    window.XMLHttpRequest = function () {
-      const xhr = new OrigXHR();
-      const origOpen = xhr.open;
-      xhr.open = function (m, u) {
-        if (u) notifyStream(u);
-        if (origOpen) return origOpen.apply(this, arguments);
-      };
-      return xhr;
-    };
     try {
-      window.XMLHttpRequest.prototype = OrigXHR.prototype;
-      Object.keys(OrigXHR).forEach(k => {
-        try { window.XMLHttpRequest[k] = OrigXHR[k]; } catch (e) {}
+      const origFetch = window.fetch;
+      window.fetch = async function (input, init) {
+        try {
+          const url = typeof input === "string" ? input : input?.url || input?.href || "";
+          if (url) notifyStream(url);
+        } catch (e) {}
+        return origFetch.apply(this, arguments);
+      };
+    } catch (e) {}
+
+    try {
+      const origXhrOpen = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function (m, u) {
+        try {
+          if (u) notifyStream(u);
+        } catch (e) {}
+        return origXhrOpen.apply(this, arguments);
+      };
+    } catch (e) {}
+
+    try {
+      const origSrcDesc = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, "src");
+      if (origSrcDesc && origSrcDesc.set) {
+        const origSet = origSrcDesc.set;
+        Object.defineProperty(HTMLMediaElement.prototype, "src", {
+          set: function (val) {
+            try { if (val) notifyStream(val); } catch (e) {}
+            return origSet.call(this, val);
+          },
+          get: origSrcDesc.get,
+          configurable: true
+        });
+      }
+    } catch (e) {}
+
+    try {
+      function hookHlsProto(HlsClass) {
+        if (HlsClass && HlsClass.prototype && !HlsClass._roHooked) {
+          HlsClass._roHooked = true;
+          const origLoad = HlsClass.prototype.loadSource;
+          HlsClass.prototype.loadSource = function (url) {
+            try { if (url) notifyStream(url); } catch (e) {}
+            return origLoad.apply(this, arguments);
+          };
+        }
+      }
+      if (window.Hls) hookHlsProto(window.Hls);
+      let _curHls = window.Hls;
+      Object.defineProperty(window, "Hls", {
+        configurable: true,
+        enumerable: true,
+        get: () => _curHls,
+        set: (v) => {
+          _curHls = v;
+          hookHlsProto(v);
+        }
       });
     } catch (e) {}
 
@@ -311,6 +347,11 @@
       if (e.data.type === "RO_STREAM_FOUND") {
         try { window.parent.postMessage(e.data, "*"); } catch (err) {}
         try { if (window.top && window.top !== window.parent) window.top.postMessage(e.data, "*"); } catch (err) {}
+      } else if (e.data.type === "RO_STREAM_PING") {
+        if (lastNotifiedStream) {
+          try { window.parent.postMessage({ type: "RO_STREAM_FOUND", streamUrl: lastNotifiedStream }, "*"); } catch (err) {}
+          try { if (window.top && window.top !== window.parent) window.top.postMessage({ type: "RO_STREAM_FOUND", streamUrl: lastNotifiedStream }, "*"); } catch (err) {}
+        }
       }
       const video = document.querySelector("video");
       if (e.data.type === "RO_CMD_SKIP_INTRO") {
@@ -460,6 +501,16 @@
       checkAndCaptureUrl(event.data.streamUrl);
     }
   });
+
+  try {
+    window.addEventListener("storage", function (e) {
+      if (e.key === "RO_CAPTURED_STREAM" && e.newValue) {
+        checkAndCaptureUrl(e.newValue);
+      }
+    });
+    const stored = localStorage.getItem("RO_CAPTURED_STREAM");
+    if (stored) checkAndCaptureUrl(stored);
+  } catch (e) {}
 
   function sendCommandToPlayer(cmd) {
     const video = document.querySelector("video");
@@ -729,11 +780,18 @@
 
   function ensureStreamUrl() {
     if (capturedStreamUrl) return capturedStreamUrl;
+    try {
+      const stored = localStorage.getItem("RO_CAPTURED_STREAM");
+      if (stored && checkAndCaptureUrl(stored)) return capturedStreamUrl;
+    } catch (e) {}
     scanIframesForStreams();
     if (capturedStreamUrl) return capturedStreamUrl;
     scanPerformanceResources();
     if (capturedStreamUrl) return capturedStreamUrl;
     scanPageScriptsAndDom();
+    if (!capturedStreamUrl) {
+      sendCommandToPlayer({ type: "RO_STREAM_PING" });
+    }
     return capturedStreamUrl;
   }
 
@@ -1167,7 +1225,7 @@
       <div id="ro-hub-menu">
         <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px; color: #51f085; display: flex; justify-content: space-between;">
           <span>🎬 HDOnline VIP & Cinema Pro Suite</span>
-          <span style="font-size: 11px; opacity: 0.7;">v4.9</span>
+          <span style="font-size: 11px; opacity: 0.7;">v5.0</span>
         </div>
         <div id="ro-stream-preview" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 6px 10px; font-size: 11px; word-break: break-all; color: #51f085; font-family: monospace; display: none; cursor: pointer;" title="Bấm để copy link"></div>
         <button class="ro-menu-btn" id="ro-copym3u8-btn">
