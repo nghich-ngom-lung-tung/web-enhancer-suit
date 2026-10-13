@@ -43,6 +43,9 @@ a[data-brand-id], a.seo4s-resolve-link, a[class*="seo4s"],
 .odds-comp-logo, a.odds-comp-logo, .grid-match__odds,
 .marquee-container, .marquee-box, [class*="marquee-container"],
 .odds-button, div[class*="odds-button"], [class*="odds-button"],
+.teambox__odds, [class*="teambox__odds"], .btn-odds, [class*="btn-odds"], .match-detail__offer, .offer__buttons, .offer__bet__col, [class*="match-detail__offer"],
+.fixture-banner, [class*="fixture-banner"], [class*="balloon-wrapper"], [class*="btn-balloon"], [class*="popup-item"],
+[class*="banner-pos-"], [class*="ad-strip-pos"], [class*="ad-popup-modal"], [class*="banner-pos"], [id*="banner-pos"],
 .top-ads, .ads-728-90, .adspot-wrap, .adspot-1, .adspot-2, [class*="adspot"], [id*="adspot"], ins[data-revive-id],
 .banner-match, .gv-skeleton-banner, [class*="gv-skeleton-banner"],
 .banner-player, .banner-container, .banner-content, .banner-image,
@@ -61,7 +64,7 @@ img[src*="giovang-popup"], img[src*="hit.club"], img[src*="go88"], img[src*="sun
 img[src*="1280x1280px"], img[src*="balloon_1111"], img[src*="FB88"], img[src*="fb88"], img[src*="banner_player"],
 img[src*="net88"], img[src*="NET88"], img[src*="xBet"],
 img[src*="/images/company/"], img[src*="company"], img[src*="21-1.png"], img[alt="company"],
-a[href*="15.235.211.192"], a[href*="top-nha-cai"], a[href*="xoilacz"],
+a[href*="15.235.211.192"], a[href*="top-nha-cai"], a[href*="xoilacz"], a[href*="fb88.com"],
 a[href*="154.82."], a[href*="2138046"], a[href*="9922"],
 img[src*="/media/"][src*=".gif"],
 div.slide:has(.sspp-area), div.slide:has(.display-single),
@@ -93,11 +96,15 @@ div[style*="position:fixed"][style*="bottom:0"]:not(#ro-vip-hub):not(#ro-hub-men
 .bet-button, .bet-buttons, [class*="bet-button"], [class*="bet-buttons"], [class*="bet-btn"],
 [data-v-cede0d5b],
 .modal-backdrop, .bg-modaltrungthuong, .modal-trungthuong,
-.floating-balloon-container, #popupMenu, .popup-menu,
+.floating-balloon-container, #popupMenu, .popup-menu, .popup-item, [class*="popup-item"],
+.fixture-banner, [class*="fixture-banner"], .balloon-wrapper, [class*="balloon-wrapper"], .btn-balloon, [class*="btn-balloon"],
 .grid_banner_devqc, .devqc-manager-resources, .w-banner_devqc-bd, .banner_devqc-bdn-button,
 .devqc-catfish, .gvbanner-catfish, [class*="devqc"], [id*="devqc"],
 .tvc-pre-roll, .video-wrapper.tvc-pre-roll, .tvc-pre-roll__video, .tvc-pre-roll__skip, .tvc-pre-roll__link-overlay,
-.marquee-container, .marquee-box, .odds-button {
+.marquee-container, .marquee-box, .odds-button,
+[class*="banner-pos-"], [class*="ad-strip-pos"], [class*="ad-popup-modal"],
+.match-detail__offer, .offer__buttons, .offer__bet__col, [class*="match-detail__offer"],
+.teambox__odds, [class*="teambox__odds"], .btn-odds, [class*="btn-odds"], .block-int, .block-k {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;

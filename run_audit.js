@@ -640,6 +640,9 @@ sportsScripts.forEach(file => {
 
     const hasTvcDataSanitize = content.includes('data-tvc') && content.includes('"[]"');
     report(`${file}: Giờ Vàng data-tvc sanitized to [] on .livestream_widget`, hasTvcDataSanitize);
+
+    const hasFixtureAndBalloonNuked = content.includes(".fixture-banner") && content.includes("balloon-wrapper") && content.includes("btn-balloon");
+    report(`${file}: Giờ Vàng match banners & floating balloons (.fixture-banner, .balloon-wrapper) eradicated`, hasFixtureAndBalloonNuked);
   }
 
   // Xôi Lạc TV checks
@@ -652,6 +655,9 @@ sportsScripts.forEach(file => {
 
     const hasOddsButtonNuked = content.includes(".odds-button") && content.includes("15.235.211.192");
     report(`${file}: Xôi Lạc in-player 8XBET odds buttons & IP links suppressed`, hasOddsButtonNuked);
+
+    const hasMatchOffersNuked = content.includes(".teambox__odds") && content.includes(".match-detail__offer") && content.includes(".btn-odds");
+    report(`${file}: Xôi Lạc match odds & offer columns (.teambox__odds, .match-detail__offer) eradicated`, hasMatchOffersNuked);
   }
 
   // Chuối Chiên TV checks
@@ -670,6 +676,15 @@ sportsScripts.forEach(file => {
 
     const hasBookmakerNuked = content.includes(".bookmaker-title") && content.includes(".tf-section");
     report(`${file}: Thập Cẩm TV nhà cái list & betting section eradicated`, hasBookmakerNuked);
+  }
+
+  // Khô Gà TV checks
+  if (file.includes("khoga") || file.includes("cinema-pro-all")) {
+    const hasKhogaPlacementsNuked = content.includes("banner-pos-") && content.includes("ad-strip-pos") && content.includes("ad-popup-modal");
+    report(`${file}: Khô Gà TV ad placements & popup modals (banner-pos-, ad-strip-pos, ad-popup-modal) eradicated`, hasKhogaPlacementsNuked);
+
+    const hasKhogaBetLinksNuked = content.includes("fb88.com");
+    report(`${file}: Khô Gà TV external betting links (fb88.com) suppressed`, hasKhogaBetLinksNuked);
   }
 });
 

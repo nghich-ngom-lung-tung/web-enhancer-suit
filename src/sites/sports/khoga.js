@@ -13,5 +13,5 @@ module.exports = {
     "*://khogatv.com/*", "*://*.khogatv.com/*",
     "*://khogatv.net/*", "*://*.khogatv.net/*"
   ],
-  siteCss: `div[class*="catfish"], div[class*="banner_"], div[class*="ads_"], .ads-holder, #catfish, a[href*="telegram"], a[href*="t.me/khoga"], div[style*="z-index: 9999999"]`
+  siteCss: `div[class*="catfish"], div[class*="banner_"], div[class*="ads_"], .ads-holder, #catfish, a[href*="telegram"], a[href*="t.me/khoga"], [class*="banner-pos-"], [class*="ad-strip-pos"], [class*="ad-popup-modal"], [class*="banner-pos"], [id*="banner-pos"], a[href*="fb88.com"], div[style*="z-index: 9999999"]`
 };

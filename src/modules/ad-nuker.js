@@ -126,9 +126,10 @@ module.exports = `
       // Giovang Popups & Ads
       '#banner_popup', '.banner_popup', '.banner_inner', '.banner_cursor',
       '.grid_banner_devqc', '.devqc-manager-resources', '.w-banner_devqc-bd', '.banner_devqc-bdn-button',
-      '.devqc-catfish', '.gvbanner-catfish', '[class*="devqc"]', '[id*="devqc"]',
+      '.devqc-catfish', '.gvbanner-catfish', '[class*="devqc"], [id*="devqc"]',
       '#banners-bottom-container', '.banners-bottom', '.banners-bottom-grid', '#open-banner-bottom',
-      '.popup-menu', '#popupMenu', '.floating-balloon-container', '.popup-anim', '.popup-item',
+      '.popup-menu', '#popupMenu', '.floating-balloon-container', '.popup-anim', '.popup-item', '[class*="popup-item"]',
+      '.fixture-banner', '[class*="fixture-banner"]', '.balloon-wrapper', '[class*="balloon-wrapper"]', '.btn-balloon', '[class*="btn-balloon"]', '.balloon-img-box',
       'a[data-brand-id]', 'a.seo4s-resolve-link', 'a[class*="seo4s"]',
       '.bg-modaltrungthuong', '.modal-trungthuong', '.close-modal-trungthuong',
       '.banner-match', '.gv-skeleton-banner', '[class*="gv-skeleton-banner"]',
@@ -144,7 +145,7 @@ module.exports = `
       '[data-v-cede0d5b]',
       'img[src*="banner_player"]', 'img[src*="FB88"]', 'img[src*="fb88"]', 'img[src*="net88"]', 'img[src*="NET88"]', 'img[src*="xBet"]',
 
-      // ThapCam Popups, Balloons & "Top Nha Cai"
+      // ThapCam, Khoga Popups, Balloons & Placements
       '#corner-start-popup', '.corner-start-popup', '.corner-start-popup-backdrop', '.corner-start-popup-content', '.corner-start-popup-inner',
       '.corner-popup-wrap', '.corner-popup-box', '[class*="corner-popup"]', '[id*="corner-popup"]',
       '.block-balloon-right', '.block-balloon-left', '.close-balloon-left', '.close-balloon-right', '[class*="balloon-"]',
@@ -154,6 +155,7 @@ module.exports = `
       '.left-ads', '.right-ads',
       '.adspot-wrap', '.adspot-1', '.adspot-2', '[class*="adspot-"]', '[class*="adspot"]', 'ins[data-revive-id]',
       'img[src*="1280x1280px"]', 'img[src*="balloon_1111"]', 'a[href*="tructiephotlink"]', 'a[href*="branchseo"]', 'a[href*="/mlink/"]', 'a[href*="1-1-1-1"]',
+      '[class*="banner-pos-"]', '[class*="ad-strip-pos"]', '[class*="ad-popup-modal"]', '[class*="banner-pos"]', '[id*="banner-pos"]', 'a[href*="fb88.com"]',
 
       // Xoilac & Betting General
       '.xlz-ads-item', '.block-catfish', '.xlz-btn-8xbet', '[class*="xlz-ads"]',
@@ -161,6 +163,9 @@ module.exports = `
       '.odds-comp-logo', 'a.odds-comp-logo', '.grid-match__odds',
       '.marquee-container', '.marquee-box', '[class*="marquee-container"]',
       '.odds-button', 'div[class*="odds-button"]', '[class*="odds-button"]',
+      '.teambox__odds', '[class*="teambox__odds"]', '.btn-odds', '[class*="btn-odds"]',
+      '.match-detail__offer', '.offer__buttons', '.offer__bet__col', '[class*="match-detail__offer"]',
+      '.block-int', '.block-k',
       'img[src*="/images/company/"]', 'img[src*="company"]', 'img[src*="21-1.png"]', 'img[alt="company"]',
       'a[href*="15.235.211.192"]', 'a[href*="top-nha-cai"]', 'a[href*="xoilacz"]',
       'img[src*="hit.club"]', 'img[src*="go88"]', 'img[src*="sun.win"]',
@@ -218,7 +223,7 @@ module.exports = `
           if (el.tagName === "VIDEO" && !el.classList.contains("tvc-pre-roll__video") && !el.src?.includes("tvc")) {
             return;
           }
-          const parent = (el.closest && el.closest('.sspp-area, div[class*="sspp"], div[style*="fixed"]:not(.livestream_widget):not(.giovang-fixture-player-shell), div[style*="sticky"], div[class*="catfish"], #banner_popup, .banner_popup, #corner-start-popup, .corner-start-popup, [class*="devqc"], .banner-player, .banner-container, .banner-content, .bet-button, .bet-buttons, [class*="bet-button"], .corner-popup-wrap, .marquee-container')) || el;
+          const parent = (el.closest && el.closest('.sspp-area, div[class*="sspp"], div[style*="fixed"]:not(.livestream_widget):not(.giovang-fixture-player-shell), div[style*="sticky"], div[class*="catfish"], #banner_popup, .banner_popup, #corner-start-popup, .corner-start-popup, [class*="devqc"], .banner-player, .banner-container, .banner-content, .bet-button, .bet-buttons, [class*="bet-button"], .corner-popup-wrap, .marquee-container, .fixture-banner, [class*="balloon-wrapper"], [class*="banner-pos-"], [class*="ad-popup-modal"], .match-detail__offer, .teambox__odds')) || el;
           if (parent) {
             if (parent === lw || (lw && parent.contains && parent.contains(lw))) return;
             try {
