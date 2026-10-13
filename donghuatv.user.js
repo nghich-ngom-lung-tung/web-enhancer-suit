@@ -897,7 +897,7 @@
       showToast("⚠️ Đang chờ bắt link video, hãy bấm Play trước!");
       return;
     }
-    window.location.href = `vlc://${capturedStreamUrl}`;
+    window.location.href = `vlc://${encodeURIComponent(capturedStreamUrl)}`;
     showToast("🧡 Đang mở VLC Player...");
   }
 
