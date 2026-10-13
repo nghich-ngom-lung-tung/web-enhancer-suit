@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PhimVang VIP & Cinema Pro Suite
 // @namespace    http://tampermonkey.net/
-// @version      4.8
+// @version      4.9
 // @description  Chặn sạch banner quảng cáo Phim Vàng + M3U8 Stream Sniffer PotPlayer/VLC + Skip Intro 85s + Rạp phim
 // @author       nghich-ngom-lung-tung
 // @match        *://*.phimvang.com/*
@@ -197,7 +197,9 @@
     function notifyStream(url) {
       if (!url || typeof url !== "string") return;
       if (url.startsWith("blob:") || url.startsWith("data:")) return;
-      const u = url.toLowerCase();
+      const clean = unwrapStreamUrl(url);
+      if (!clean) return;
+      const u = clean.toLowerCase();
       if (
         u.includes(".m3u8") ||
         u.includes("/hls/") ||
@@ -206,18 +208,28 @@
         u.includes(".mpd") ||
         (u.includes(".mp4") && !u.includes("preview") && !u.includes("trailer"))
       ) {
-        let clean = url.trim();
-        while (clean.endsWith("/") && (clean.includes(".m3u8/") || clean.includes(".mp4/") || clean.includes(".mpd/"))) {
-          clean = clean.slice(0, -1);
-        }
         try {
           window.parent.postMessage({ type: "RO_STREAM_FOUND", streamUrl: clean }, "*");
+        } catch (e) {}
+        try {
+          if (window.top && window.top !== window.parent) {
+            window.top.postMessage({ type: "RO_STREAM_FOUND", streamUrl: clean }, "*");
+          }
         } catch (e) {}
       }
     }
 
     // Sniff global stream variables on embed players (e.g. VSMov / JWPlayer / Hls.js / Motchill)
     function checkGlobals() {
+      try {
+        const cur = new URL(location.href);
+        for (const [k, val] of cur.searchParams.entries()) {
+          if (!val || typeof val !== "string") continue;
+          if (val.includes(".m3u8") || val.includes(".mp4") || val.includes("/hls/")) {
+            notifyStream(val);
+          }
+        }
+      } catch (e) {}
       if (typeof window.videoSrc === "string" && window.videoSrc) notifyStream(window.videoSrc);
       if (typeof window.playerSource === "string" && window.playerSource) notifyStream(window.playerSource);
       if (window.playerOptions && typeof window.playerOptions.signedMasterUrl === "string" && window.playerOptions.signedMasterUrl) {
@@ -296,6 +308,10 @@
 
     window.addEventListener("message", function (e) {
       if (!e.data || typeof e.data !== "object") return;
+      if (e.data.type === "RO_STREAM_FOUND") {
+        try { window.parent.postMessage(e.data, "*"); } catch (err) {}
+        try { if (window.top && window.top !== window.parent) window.top.postMessage(e.data, "*"); } catch (err) {}
+      }
       const video = document.querySelector("video");
       if (e.data.type === "RO_CMD_SKIP_INTRO") {
         const s = e.data.seconds || 85;
@@ -441,13 +457,7 @@
         }, "*");
       } catch (err) {}
     } else if (event.data && event.data.type === "RO_STREAM_FOUND") {
-      capturedStreamUrl = event.data.streamUrl;
-      console.log("%c🎬 [Cinema Pro Sniffer] Stream luồng:", "color: #51f085;", capturedStreamUrl);
-      const btn = document.getElementById("ro-potplayer-btn");
-      if (btn) {
-        btn.style.borderColor = "#51f085";
-        btn.style.color = "#51f085";
-      }
+      checkAndCaptureUrl(event.data.streamUrl);
     }
   });
 
@@ -485,12 +495,11 @@
   }
 
   function checkAndCaptureUrl(url) {
-    if (!url || typeof url !== "string") return;
-    if (url.startsWith("blob:") || url.startsWith("data:")) return;
-    if (url.startsWith("/")) {
-      try { url = new URL(url, location.href).href; } catch (e) {}
-    }
-    const u = url.toLowerCase();
+    if (!url || typeof url !== "string") return false;
+    if (url.startsWith("blob:") || url.startsWith("data:")) return false;
+    const clean = unwrapStreamUrl(url);
+    if (!clean) return false;
+    const u = clean.toLowerCase();
     if (
       u.includes(".m3u8") ||
       u.includes("/hls/") ||
@@ -499,10 +508,6 @@
       u.includes(".mpd") ||
       (u.includes(".mp4") && !u.includes("preview") && !u.includes("trailer"))
     ) {
-      let clean = url.trim();
-      while (clean.endsWith("/") && (clean.includes(".m3u8/") || clean.includes(".mp4/") || clean.includes(".mpd/"))) {
-        clean = clean.slice(0, -1);
-      }
       capturedStreamUrl = clean;
       console.log("%c🎬 [Cinema Pro Sniffer] Đã bắt được stream chuẩn:", "color: #51f085; font-weight: bold;", clean);
       const btn = document.getElementById("ro-potplayer-btn");
@@ -532,7 +537,9 @@
         preview.textContent = "🟢 " + shortUrl;
         preview.title = "Bấm để copy link: " + clean;
       }
+      return true;
     }
+    return false;
   }
 
   function extractStreamFromObject(obj) {
@@ -573,7 +580,7 @@
       for (const [k, val] of cur.searchParams.entries()) {
         if (!val || typeof val !== "string") continue;
         if (val.includes(".m3u8") || val.includes(".mp4") || val.includes("/hls/")) {
-          checkAndCaptureUrl(decodeURIComponent(val));
+          checkAndCaptureUrl(val);
         }
       }
     } catch (e) {}
@@ -595,7 +602,7 @@
 
     // 2. Quét iframe
     document.querySelectorAll("iframe").forEach(f => {
-      const src = f.src || f.getAttribute("src") || "";
+      const src = f.src || f.getAttribute("src") || f.getAttribute("data-src") || "";
       if (!src) return;
       
       // streamvsmov pattern: /video/{hash} -> {origin}/stream/{hash}/master.m3u8
@@ -611,24 +618,15 @@
         }
       }
       
-      // Query param containing m3u8 or mp4
+      const unwrapped = unwrapStreamUrl(src);
+      if (unwrapped && checkAndCaptureUrl(unwrapped)) return;
+
       try {
         const u = new URL(src, location.href);
         for (const [k, val] of u.searchParams.entries()) {
           if (!val || typeof val !== "string") continue;
-          if (val.includes(".m3u8") || val.includes(".mp4") || val.includes("/hls/")) {
-            checkAndCaptureUrl(decodeURIComponent(val));
-            return;
-          }
-          if (val.length > 20 && !val.includes("http") && !val.includes("/")) {
-            try {
-              const dec = atob(val);
-              if (dec.includes(".m3u8") || dec.includes(".mp4") || dec.includes("/hls/")) {
-                checkAndCaptureUrl(dec);
-                return;
-              }
-            } catch (e) {}
-          }
+          const uVal = unwrapStreamUrl(val);
+          if (uVal && checkAndCaptureUrl(uVal)) return;
         }
         if (u.pathname.includes(".m3u8") || u.pathname.includes(".mp4")) {
           checkAndCaptureUrl(u.href);
@@ -653,18 +651,95 @@
             n.includes(".mpd") ||
             (n.includes(".mp4") && !n.includes("preview") && !n.includes("trailer"))
           ) {
-            checkAndCaptureUrl(name);
-            break;
+            if (checkAndCaptureUrl(name)) break;
           }
         }
       }
     } catch (e) {}
   }
 
-  // Quét định kỳ iframe, video tag & performance timing
-  setInterval(() => {
+  function findStreamMatches(str) {
+    if (!str || typeof str !== "string") return [];
+    if (!str.includes(".m3u8") && !str.includes("/hls/") && !str.includes(".mpd") && !str.includes(".mp4")) return [];
+    const results = [];
+    const tokens = str.split(/[s"'<>{}()[]`]+/);
+    for (let i = 0; i < tokens.length; i++) {
+      let t = tokens[i];
+      if (
+        t.startsWith("http://") ||
+        t.startsWith("https://") ||
+        t.startsWith("//") ||
+        t.startsWith("http%3A") ||
+        t.startsWith("https%3A") ||
+        t.startsWith("http%3a") ||
+        t.startsWith("https%3a") ||
+        t.startsWith("https:\/\/") ||
+        t.startsWith("http:\/\/")
+      ) {
+        if (t.includes(".m3u8") || t.includes("/hls/") || t.includes(".mpd") || t.includes(".mp4")) {
+          t = t.replace(/[\,;)]+$/, "");
+          results.push(t);
+        }
+      }
+    }
+    return results;
+  }
+
+  function scanPageScriptsAndDom() {
+    if (capturedStreamUrl) return capturedStreamUrl;
+    
+    // 1. Quét các thẻ <script> trên trang
+    try {
+      const scripts = document.querySelectorAll("script");
+      for (let i = 0; i < scripts.length; i++) {
+        const text = scripts[i].textContent;
+        const matches = findStreamMatches(text);
+        for (let j = 0; j < matches.length; j++) {
+          const unwrapped = unwrapStreamUrl(matches[j]);
+          if (unwrapped && checkAndCaptureUrl(unwrapped)) return unwrapped;
+        }
+      }
+    } catch (e) {}
+
+    // 2. Quét các thuộc tính HTML trên trang
+    try {
+      const elements = document.querySelectorAll("[data-src*='.m3u8'], [data-url*='.m3u8'], [src*='.m3u8'], [href*='.m3u8'], [data-src*='/hls/'], [src*='/hls/']");
+      for (let i = 0; i < elements.length; i++) {
+        const el = elements[i];
+        const val = el.getAttribute("data-src") || el.getAttribute("data-url") || el.getAttribute("src") || el.getAttribute("href") || "";
+        if (val) {
+          const unwrapped = unwrapStreamUrl(val);
+          if (unwrapped && checkAndCaptureUrl(unwrapped)) return unwrapped;
+        }
+      }
+    } catch (e) {}
+
+    // 3. Fallback: Quét toàn bộ HTML tài liệu
+    try {
+      const html = (document.body ? document.body.innerHTML : "") || (document.documentElement ? document.documentElement.innerHTML : "");
+      const matches = findStreamMatches(html);
+      for (let j = 0; j < matches.length; j++) {
+        const unwrapped = unwrapStreamUrl(matches[j]);
+        if (unwrapped && checkAndCaptureUrl(unwrapped)) return unwrapped;
+      }
+    } catch (e) {}
+
+    return "";
+  }
+
+  function ensureStreamUrl() {
+    if (capturedStreamUrl) return capturedStreamUrl;
     scanIframesForStreams();
+    if (capturedStreamUrl) return capturedStreamUrl;
     scanPerformanceResources();
+    if (capturedStreamUrl) return capturedStreamUrl;
+    scanPageScriptsAndDom();
+    return capturedStreamUrl;
+  }
+
+  // Quét định kỳ iframe, video tag, script tag & performance timing
+  setInterval(() => {
+    ensureStreamUrl();
     const v = document.querySelector("video");
     if (v) {
       if (v.currentSrc) checkAndCaptureUrl(v.currentSrc);
@@ -673,7 +748,7 @@
     document.querySelectorAll("video source").forEach(s => {
       if (s.src) checkAndCaptureUrl(s.src);
     });
-  }, 1000);
+  }, 800);
 
   function isAdApi(url) {
     if (!url || typeof url !== "string") return false;
@@ -993,8 +1068,7 @@
   }
 
   function openPotPlayer() {
-    scanIframesForStreams();
-    scanPerformanceResources();
+    ensureStreamUrl();
     if (!capturedStreamUrl) {
       showToast("⚠️ Đang chờ bắt link video, hãy bấm Play trước!");
       return;
@@ -1008,8 +1082,7 @@
   }
 
   function openVlcPlayer() {
-    scanIframesForStreams();
-    scanPerformanceResources();
+    ensureStreamUrl();
     if (!capturedStreamUrl) {
       showToast("⚠️ Đang chờ bắt link video, hãy bấm Play trước!");
       return;
@@ -1023,8 +1096,7 @@
   }
 
   function copyM3u8() {
-    scanIframesForStreams();
-    scanPerformanceResources();
+    ensureStreamUrl();
     if (!capturedStreamUrl) {
       showToast("⚠️ Đang tìm link video, hãy bấm Play trước!");
       return;
@@ -1032,7 +1104,7 @@
     const cleanUrl = capturedStreamUrl.trim();
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(cleanUrl).then(() => {
-        showToast("📋 Đã copy link M3U8 chuẩn vào Clipboard (IDM / PotPlayer)!");
+        showToast("📋 Đã copy link M3U8 chuẩn: " + (cleanUrl.length > 40 ? cleanUrl.slice(0, 37) + "..." : cleanUrl));
       }).catch(() => fallbackCopy(cleanUrl));
     } else {
       fallbackCopy(cleanUrl);
@@ -1045,19 +1117,19 @@
       ta.value = text;
       ta.style.position = "fixed";
       ta.style.left = "-9999px";
-      document.body.appendChild(ta);
+      (document.body || document.documentElement).appendChild(ta);
       ta.select();
+      ta.setSelectionRange(0, 99999);
       document.execCommand("copy");
       ta.remove();
-      showToast("📋 Đã copy link M3U8 chuẩn vào Clipboard!");
+      showToast("📋 Đã copy link M3U8 chuẩn: " + (text.length > 40 ? text.slice(0, 37) + "..." : text));
     } catch (e) {
       prompt("Sao chép link video:", text);
     }
   }
 
   function downloadM3uFile() {
-    scanIframesForStreams();
-    scanPerformanceResources();
+    ensureStreamUrl();
     if (!capturedStreamUrl) {
       showToast("⚠️ Chưa có link video, hãy bấm Play trước!");
       return;
@@ -1095,7 +1167,7 @@
       <div id="ro-hub-menu">
         <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px; color: #51f085; display: flex; justify-content: space-between;">
           <span>🎬 PhimVang VIP & Cinema Pro Suite</span>
-          <span style="font-size: 11px; opacity: 0.7;">v4.8</span>
+          <span style="font-size: 11px; opacity: 0.7;">v4.9</span>
         </div>
         <div id="ro-stream-preview" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 6px 10px; font-size: 11px; word-break: break-all; color: #51f085; font-family: monospace; display: none; cursor: pointer;" title="Bấm để copy link"></div>
         <button class="ro-menu-btn" id="ro-copym3u8-btn">
@@ -1314,6 +1386,8 @@
 
   if (document.body) initVipHub();
   else document.addEventListener("DOMContentLoaded", initVipHub, { once: true });
+  window.addEventListener("DOMContentLoaded", ensureStreamUrl);
+  window.addEventListener("load", ensureStreamUrl);
 
   
 
