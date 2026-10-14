@@ -53,19 +53,7 @@ module.exports = `
     "/header-login",
     "header-login",
     "zettruyen",
-    "toptruyen",
-    "webapi/index",
-    "/webapi/",
-    "checkReward",
-    "claimReward",
-    "ghienphim",
-    "ghienxemphim",
-    "ghienphimhay",
-    "xemphimviet",
-    "ghienblog",
-    "coiphim",
-    "duphim",
-    "ghientruyen"
+    "toptruyen"
   ];
 
   function getTopTruyenVipHeaderHtml() {
@@ -414,46 +402,6 @@ module.exports = `
         },
         success: true,
         errors: []
-      });
-    }
-
-    // 14. GhienPhim Ecosystem WebAPI Mock (/webapi/index, checkReward, claimReward, getHistory)
-    if (url.includes("/webapi/index") || url.includes("/webapi/") || (url.includes("webapi") && !url.includes("baseapi"))) {
-      if (bodyStr.includes("claimReward") || url.includes("claimReward")) {
-        return JSON.stringify({
-          status: 1,
-          value: 500000,
-          msg: "Chúc mừng VIP Pro nhận lì xì 500.000đ!",
-          cardType: "Viettel 500K",
-          code: "VIP-CINEMA-PRO-500K",
-          serial: "209999999999"
-        });
-      }
-      if (bodyStr.includes("checkReward") || url.includes("checkReward")) {
-        return JSON.stringify({
-          status: 1,
-          value: "500000,200000,100000",
-          cardType: "Viettel 500K,Vinaphone 200K,MobiFone 100K",
-          msg: "VIP Thành Viên Vĩnh Viễn 2099"
-        });
-      }
-      if (bodyStr.includes("getHistory") || url.includes("getHistory")) {
-        return JSON.stringify({
-          status: 1,
-          data: [],
-          history: [],
-          msg: "Thành công"
-        });
-      }
-      return JSON.stringify({
-        status: 1,
-        data: {
-          status: 1,
-          vip: true,
-          coin: COIN_BALANCE,
-          usdt: COIN_BALANCE
-        },
-        msg: "Thành công"
       });
     }
 

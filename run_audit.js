@@ -801,7 +801,7 @@ ghienphimScripts.forEach(file => {
   const code = fs.readFileSync(file, "utf8");
   const { window, document } = createTopWindowMock("ghienphimz.mom");
 
-  // Create mock Firebase object to test hook
+  // Create mock Firebase & Business objects to test hooks
   window.firebase = {
     auth: function () {
       return {
@@ -810,9 +810,15 @@ ghienphimScripts.forEach(file => {
       };
     }
   };
+  window.business = {
+    checkReward: function (d, cb) { if (typeof cb === "function") cb({}); },
+    claimReward: function (d, cb) { if (typeof cb === "function") cb({}); }
+  };
 
   const ctx = vm.createContext({
     window,
+    business: window.business,
+    firebase: window.firebase,
     document,
     location: window.location,
     top: window.top,
@@ -851,23 +857,23 @@ ghienphimScripts.forEach(file => {
     }
     report(`${file}: GhienPhim Firebase Auth hooked with VIP 2099 user`, fbPassed);
 
-    // Test 4.11: /webapi/index checkReward mock verified
-    ctx.window.fetch("https://ghienphimz.mom/webapi/index", {
-      method: "POST",
-      body: JSON.stringify({ actionType: "checkReward" })
-    }).then(res => res.json()).then(data => {
-      const rewardPassed = Boolean(data && data.status === 1 && data.cardType && data.cardType.includes("500K"));
-      report(`${file}: GhienPhim /webapi/index checkReward intercepted with 500K reward`, rewardPassed);
-    });
+    // Test 4.11: business.checkReward mock verified
+    let rewardPassed = false;
+    if (ctx.window.business && typeof ctx.window.business.checkReward === "function") {
+      ctx.window.business.checkReward({}, function (res) {
+        rewardPassed = Boolean(res && res.status === 1 && res.cardType && res.cardType.includes("500K"));
+      });
+    }
+    report(`${file}: GhienPhim business.checkReward hooked with 500K reward`, rewardPassed);
 
-    // Test 4.12: /webapi/index claimReward mock verified
-    ctx.window.fetch("https://ghienphimz.mom/webapi/index", {
-      method: "POST",
-      body: JSON.stringify({ actionType: "claimReward" })
-    }).then(res => res.json()).then(data => {
-      const claimPassed = Boolean(data && data.status === 1 && data.value === 500000);
-      report(`${file}: GhienPhim /webapi/index claimReward intercepted with 500.000d`, claimPassed);
-    });
+    // Test 4.12: business.claimReward mock verified
+    let claimPassed = false;
+    if (ctx.window.business && typeof ctx.window.business.claimReward === "function") {
+      ctx.window.business.claimReward({}, function (res) {
+        claimPassed = Boolean(res && res.status === 1 && res.value === 500000);
+      });
+    }
+    report(`${file}: GhienPhim business.claimReward hooked with 500.000d`, claimPassed);
 
   } catch (err) {
     report(`${file}: GhienPhim VIP Patcher execution`, false, err.stack);
