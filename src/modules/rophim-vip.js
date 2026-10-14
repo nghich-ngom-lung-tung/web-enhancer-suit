@@ -10,11 +10,18 @@ module.exports = `
     "/baseapi/api/v1/tcoin/me",
     "/baseapi/api/v1/user/",
     "/baseapi/api/v1/vip/",
+    "/baseapi/api/v1/bookmarks",
+    "/baseapi/api/v1/notifications",
+    "/baseapi/api/v1/notifications/home",
     "/baseapi/api/v1/notifications/unread-counts",
     "/baseapi/api/v1/ads",
     "/baseapi/api/v1/banner",
     "/baseapi/api/v1/advertising",
     "/api/auth/session",
+    "/api/auth/providers",
+    "/api/auth/csrf",
+    "/api/auth/callback",
+    "/api/auth/",
     "/auth/profile",
     "/auth/session/check",
     "/auth/session",
@@ -48,7 +55,10 @@ module.exports = `
       name: base.name || "VIP Cinema Pro",
       full_name: base.full_name || "VIP Cinema Pro",
       email: base.email || "vip@motchill.online",
-      avatar: base.avatar || "https://rophim1.vip/apple-icon.png",
+      avatar: base.avatar || "/images/avatars/10.jpg",
+      image: base.image || "/images/avatars/10.jpg",
+      access_token: base.access_token || "cinema-pro-vip-token",
+      token: base.token || "cinema-pro-vip-token",
       role: "VIP",
       is_role: "admin",
       is_vip: true,
@@ -96,11 +106,40 @@ module.exports = `
       });
     }
 
-    // 2. NextAuth Session
+    // 2. NextAuth Providers (NextAuth signIn("credentials") checks providers)
+    if (url.includes("/api/auth/providers")) {
+      return JSON.stringify({
+        credentials: {
+          id: "credentials",
+          name: "Credentials",
+          type: "credentials",
+          signinUrl: "https://rophim1.vip/api/auth/signin/credentials",
+          callbackUrl: "https://rophim1.vip/api/auth/callback/credentials"
+        }
+      });
+    }
+
+    // 2.1 NextAuth CSRF Token
+    if (url.includes("/api/auth/csrf")) {
+      return JSON.stringify({
+        csrfToken: "cinema-pro-csrf-token"
+      });
+    }
+
+    // 2.2 NextAuth Callback Credentials (Login submission handler)
+    if (url.includes("/api/auth/callback/credentials") || url.includes("/api/auth/callback")) {
+      return JSON.stringify({
+        url: typeof location !== "undefined" ? location.href : "https://rophim1.vip/"
+      });
+    }
+
+    // 2.3 NextAuth Session
     if (url.includes("/api/auth/session") || (url.includes("/auth/session") && !url.includes("/auth/session/check"))) {
       const user = getMotchillVipUser();
       return JSON.stringify({
         user: user,
+        access_token: "cinema-pro-vip-token",
+        token: "cinema-pro-vip-token",
         is_vip: true,
         vip_expires_at: VIP_EXPIRY_TIMESTAMP,
         role: "VIP",
@@ -121,7 +160,9 @@ module.exports = `
         msg: "Thành công",
         data: user,
         result: user,
-        user: user
+        user: user,
+        token: "cinema-pro-vip-token",
+        access_token: "cinema-pro-vip-token"
       });
     }
 
@@ -223,12 +264,32 @@ module.exports = `
         thungBalance: COIN_BALANCE,
         balance: COIN_BALANCE,
         coin_balance: COIN_BALANCE,
-        total: COIN_BALANCE
+        total: COIN_BALANCE,
+        data: {
+          thungBalance: COIN_BALANCE,
+          balance: COIN_BALANCE,
+          coin_balance: COIN_BALANCE,
+          total: COIN_BALANCE
+        }
       });
     }
 
-    // 11. Notifications unread counts
-    if (url.includes("/notifications/unread-counts") || url.includes("/notifications")) {
+    // 11. Bookmarks (chặn 401 gây fallback guest mode trên Next.js)
+    if (url.includes("/bookmarks")) {
+      return JSON.stringify({
+        status: 200,
+        success: true,
+        data: {
+          data: [],
+          total: 0,
+          page: 1,
+          limit: 100
+        }
+      });
+    }
+
+    // 12. Notifications (home & unread counts)
+    if (url.includes("/notifications")) {
       return JSON.stringify({
         status: 200,
         success: true,
@@ -270,7 +331,19 @@ module.exports = `
       }
       return data;
     }
-    if (url && url.includes("/notifications/unread-counts")) {
+    if (url && url.includes("/bookmarks")) {
+      return {
+        status: 200,
+        success: true,
+        data: {
+          data: [],
+          total: 0,
+          page: 1,
+          limit: 100
+        }
+      };
+    }
+    if (url && url.includes("/notifications")) {
       return {
         status: 200,
         success: true,
@@ -287,6 +360,12 @@ module.exports = `
       data.balance = COIN_BALANCE;
       data.coin_balance = COIN_BALANCE;
       data.total = COIN_BALANCE;
+      if (data.data && typeof data.data === "object") {
+        data.data.thungBalance = COIN_BALANCE;
+        data.data.balance = COIN_BALANCE;
+        data.data.coin_balance = COIN_BALANCE;
+        data.data.total = COIN_BALANCE;
+      }
       return data;
     }
     if (url && (url.includes("/auth/profile") || url.includes("/auth/session/check") || url.includes("/auth/login") || url.includes("/auth/register") || url.includes("/users/profile"))) {
@@ -336,6 +415,12 @@ module.exports = `
       data.user.thungBalance = COIN_BALANCE;
       data.user.coin_balance = COIN_BALANCE;
       data.user.role = "VIP";
+      data.user.access_token = "cinema-pro-vip-token";
+      data.user.token = "cinema-pro-vip-token";
+      data.user.image = "/images/avatars/10.jpg";
+      data.user.avatar = "/images/avatars/10.jpg";
+      data.access_token = "cinema-pro-vip-token";
+      data.token = "cinema-pro-vip-token";
       data.expires = VIP_EXPIRY_DATE.toISOString();
       return data;
     }
@@ -396,10 +481,18 @@ module.exports = `
         const mockStr = getRophimMockXhr(url);
         if (mockStr) {
           try {
+            Object.defineProperty(xhr, "readyState", { value: 4, configurable: true, writable: true });
             Object.defineProperty(xhr, "status", { value: 200, configurable: true, writable: true });
             Object.defineProperty(xhr, "statusText", { value: "OK", configurable: true, writable: true });
             Object.defineProperty(xhr, "responseText", { value: mockStr, configurable: true, writable: true });
             Object.defineProperty(xhr, "response", { value: mockStr, configurable: true, writable: true });
+            xhr.getAllResponseHeaders = function () {
+              return "content-type: application/json; charset=utf-8";
+            };
+            xhr.getResponseHeader = function (h) {
+              if (h && h.toLowerCase() === "content-type") return "application/json; charset=utf-8";
+              return null;
+            };
           } catch (e) {}
           return;
         }
@@ -412,6 +505,7 @@ module.exports = `
           if (isRophimTarget(url)) {
             const patched = patchRophimData(data, url);
             const str = JSON.stringify(patched);
+            Object.defineProperty(xhr, "readyState", { value: 4, configurable: true, writable: true });
             Object.defineProperty(xhr, "status", { value: 200, configurable: true, writable: true });
             Object.defineProperty(xhr, "responseText", { value: str, configurable: true, writable: true });
             Object.defineProperty(xhr, "response", { value: str, configurable: true, writable: true });
@@ -468,7 +562,7 @@ module.exports = `
     }
   } catch (e) {}
 
-  // Tự động kích hoạt auth_hint = 1 trên Motchill & bảo vệ không bị logout
+  // Tự động kích hoạt auth_hint = 1 trên Motchill & sync NextAuth trên Rophim
   try {
     const isMotchillHost = location.hostname && (location.hostname.includes("motchill") || location.hostname.includes("phimmotchill"));
     if (isMotchillHost) {
@@ -481,6 +575,19 @@ module.exports = `
           if (key === "auth_hint") return;
           return origRemove.apply(this, arguments);
         };
+      }
+    }
+
+    const isRophimHost = location.hostname && (location.hostname.includes("rophim") || location.hostname.includes("ro-phim"));
+    if (isRophimHost) {
+      if (typeof window !== "undefined" && window.localStorage) {
+        try {
+          window.localStorage.setItem("nextauth.message", JSON.stringify({
+            event: "session",
+            data: { trigger: "getSession" },
+            timestamp: Math.floor(Date.now() / 1000)
+          }));
+        } catch (e) {}
       }
     }
   } catch (e) {}

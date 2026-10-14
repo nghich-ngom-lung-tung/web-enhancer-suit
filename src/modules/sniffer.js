@@ -730,13 +730,30 @@ function getSnifferCode(enableRophimVip) {
         const mockStr = getRophimMockXhr(targetUrl);
         if (mockStr) {
           try {
+            Object.defineProperty(xhr, "readyState", { value: 4, configurable: true, writable: true });
             Object.defineProperty(xhr, "status", { value: 200, configurable: true, writable: true });
             Object.defineProperty(xhr, "statusText", { value: "OK", configurable: true, writable: true });
             Object.defineProperty(xhr, "responseText", { value: mockStr, configurable: true, writable: true });
             Object.defineProperty(xhr, "response", { value: mockStr, configurable: true, writable: true });
+            xhr.getAllResponseHeaders = function () {
+              return "content-type: application/json; charset=utf-8";
+            };
+            xhr.getResponseHeader = function (h) {
+              if (h && h.toLowerCase() === "content-type") return "application/json; charset=utf-8";
+              return null;
+            };
             setTimeout(() => {
+              if (typeof xhr.onreadystatechange === "function") {
+                try { xhr.onreadystatechange(new Event("readystatechange")); } catch (e) {}
+              }
               xhr.dispatchEvent(new Event("readystatechange"));
+              if (typeof xhr.onload === "function") {
+                try { xhr.onload(new Event("load")); } catch (e) {}
+              }
               xhr.dispatchEvent(new Event("load"));
+              if (typeof xhr.onloadend === "function") {
+                try { xhr.onloadend(new Event("loadend")); } catch (e) {}
+              }
               xhr.dispatchEvent(new Event("loadend"));
             }, 5);
           } catch (e) {}
