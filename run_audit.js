@@ -535,7 +535,7 @@ scriptFiles.forEach(file => {
 // ═════════════════════════════════════════════════════════════════
 console.log("\n👑 PHASE 4: Rophim VIP 2099 & Coin Backend Patcher Audit");
 
-const rophimScripts = scriptFiles.filter(f => f.endsWith("rophim.user.js") || f.endsWith("tampermonkey.user.js") || f.endsWith("cinema-pro-all.user.js") || f.endsWith("web-enhancer-all.user.js") || f.endsWith("netanime.user.js"));
+const rophimScripts = scriptFiles.filter(f => f.endsWith("rophim.user.js") || f.endsWith("tampermonkey.user.js") || f.endsWith("web-enhancer-all.user.js") || f.endsWith("netanime.user.js"));
 rophimScripts.forEach(file => {
   const code = fs.readFileSync(file, "utf8");
   const { window, document } = createTopWindowMock("rophim1.vip");
@@ -613,7 +613,7 @@ rophimScripts.forEach(file => {
   }
 });
 
-const motchillScripts = scriptFiles.filter(f => f.endsWith("motchill.user.js") || f.endsWith("cinema-pro-all.user.js") || f.endsWith("web-enhancer-all.user.js"));
+const motchillScripts = scriptFiles.filter(f => f.endsWith("motchill.user.js") || f.endsWith("web-enhancer-all.user.js"));
 motchillScripts.forEach(file => {
   const code = fs.readFileSync(file, "utf8");
   const { window, document } = createTopWindowMock("phimmotchill.online");
@@ -685,20 +685,26 @@ motchillScripts.forEach(file => {
 // ═════════════════════════════════════════════════════════════════
 console.log("\n⚽ PHASE 5: Live Football Streaming & Sports Ad-Nuker Audit");
 
-const sportsScripts = [
+const sportsAndComicsScripts = [
   "scripts/sports/giovang.user.js",
   "scripts/sports/xoilac.user.js",
   "scripts/sports/chuoichien.user.js",
   "scripts/sports/thapcam.user.js",
   "scripts/sports/khoga.user.js",
-  "scripts/cinema-pro-all.user.js"
+  "scripts/comics/zettruyen.user.js",
+  "scripts/comics/toptruyen.user.js",
+  "scripts/comics/nettruyen.user.js",
+  "scripts/comics/truyenqq.user.js",
+  "scripts/comics/truyenvn.user.js",
+  "scripts/comics/luotnovel.user.js",
+  "scripts/web-enhancer-all.user.js"
 ];
 
-sportsScripts.forEach(file => {
+sportsAndComicsScripts.forEach(file => {
   const content = fs.readFileSync(file, "utf8");
 
   // Giờ Vàng TV checks
-  if (file.includes("giovang") || file.includes("cinema-pro-all")) {
+  if (file.includes("giovang") || file.includes("web-enhancer-all")) {
     const hasTvcDefuser = content.includes("giovang_tvc_pre_roll_daily");
     report(`${file}: Giờ Vàng TVC Pre-roll Storage Defuser present`, hasTvcDefuser);
 
@@ -719,7 +725,7 @@ sportsScripts.forEach(file => {
   }
 
   // Xôi Lạc TV checks
-  if (file.includes("xoilac") || file.includes("cinema-pro-all")) {
+  if (file.includes("xoilac") || file.includes("web-enhancer-all")) {
     const hasCompanyBadgeNuked = content.includes(".odds-comp-logo") && content.includes("company") && content.includes("21-1.png");
     report(`${file}: Xôi Lạc gambling company badges (.odds-comp-logo, 21-1.png) suppressed`, hasCompanyBadgeNuked);
 
@@ -734,7 +740,7 @@ sportsScripts.forEach(file => {
   }
 
   // Chuối Chiên TV checks
-  if (file.includes("chuoichien") || file.includes("cinema-pro-all")) {
+  if (file.includes("chuoichien") || file.includes("web-enhancer-all")) {
     const hasBannerPlayerNuked = content.includes(".banner-player") && content.includes(".banner-container") && content.includes("FB88");
     report(`${file}: Chuối Chiên TV video player banner & FB88 ads eradicated`, hasBannerPlayerNuked);
 
@@ -755,7 +761,7 @@ sportsScripts.forEach(file => {
   }
 
   // Thập Cẩm TV checks
-  if (file.includes("thapcam") || file.includes("cinema-pro-all")) {
+  if (file.includes("thapcam") || file.includes("web-enhancer-all")) {
     const hasCornerPopupNuked = content.includes("#corner-start-popup") && content.includes("1280x1280px") && content.includes(".corner-popup-wrap");
     report(`${file}: Thập Cẩm TV 18+ modal popup & corner banner eradicated`, hasCornerPopupNuked);
 
@@ -767,7 +773,7 @@ sportsScripts.forEach(file => {
   }
 
   // Khô Gà TV checks
-  if (file.includes("khoga") || file.includes("cinema-pro-all")) {
+  if (file.includes("khoga") || file.includes("web-enhancer-all")) {
     const hasKhogaPlacementsNuked = content.includes("banner-pos-") && content.includes("ad-strip-pos") && content.includes("ad-popup-modal");
     report(`${file}: Khô Gà TV ad placements & popup modals (banner-pos-, ad-strip-pos, ad-popup-modal) eradicated`, hasKhogaPlacementsNuked);
 
@@ -776,7 +782,7 @@ sportsScripts.forEach(file => {
   }
 
   // ZetTruyen & Comic Reader Pro checks
-  if (file.includes("zettruyen") || file.includes("cinema-pro-all")) {
+  if (file.includes("zettruyen") || file.includes("web-enhancer-all")) {
     const hasWidgetConfigDefused = content.includes("__WidgetConfig") && content.includes("__PopConfig");
     report(`${file}: ZetTruyen stealth ad widgets (__WidgetConfig, __PopConfig) defused`, hasWidgetConfigDefused);
 
@@ -794,7 +800,7 @@ sportsScripts.forEach(file => {
   }
 
   // TopTruyen checks
-  if (file.includes("toptruyen") || file.includes("cinema-pro-all")) {
+  if (file.includes("toptruyen") || file.includes("web-enhancer-all")) {
     const hasTopTruyenAdsNuked = content.includes(".advertisement") && content.includes("#video-chapter");
     report(`${file}: TopTruyen .advertisement & #video-chapter video ads suppressed`, hasTopTruyenAdsNuked);
 
@@ -803,6 +809,42 @@ sportsScripts.forEach(file => {
 
     const hasTopTruyenNav = content.includes("chapter-next") && content.includes("chapter-previous");
     report(`${file}: TopTruyen chapter navigation selectors mapped in player-controls`, hasTopTruyenNav);
+  }
+
+  // NetTruyen checks
+  if (file.includes("nettruyen") || file.includes("web-enhancer-all")) {
+    const hasNetTruyenAdsNuked = content.includes(".banner.text-center") && content.includes(".popup_layer") && content.includes(".iframe-content-mobile");
+    report(`${file}: NetTruyen banner & mobile iframe popup ads suppressed`, hasNetTruyenAdsNuked);
+
+    const hasNetTruyenNav = content.includes("ddlSelectChapter");
+    report(`${file}: NetTruyen chapter navigation (ctl00_mainContent_ddlSelectChapter) mapped`, hasNetTruyenNav);
+  }
+
+  // TruyenQQ checks
+  if (file.includes("truyenqq") || file.includes("web-enhancer-all")) {
+    const hasTruyenQQAdsNuked = content.includes("#top-banner-reading-container") && content.includes("#mid-banner-reading-container") && content.includes("#ad_info");
+    report(`${file}: TruyenQQ top & mid reading ad banners suppressed`, hasTruyenQQAdsNuked);
+
+    const hasTruyenQQNav = content.includes("link-next-chap") && content.includes("link-prev-chap");
+    report(`${file}: TruyenQQ chapter navigation (link-next-chap, link-prev-chap) mapped`, hasTruyenQQNav);
+  }
+
+  // TruyenVN checks
+  if (file.includes("truyenvn") || file.includes("web-enhancer-all")) {
+    const hasTruyenVNAdsNuked = content.includes(".ads-static-header") && content.includes(".ads-static-home-detail-chapter");
+    report(`${file}: TruyenVN static header & detail chapter ads suppressed`, hasTruyenVNAdsNuked);
+
+    const hasTruyenVNNav = content.includes("slt_list_chapters") && content.includes("prev_page") && content.includes("next_page");
+    report(`${file}: TruyenVN chapter navigation (slt_list_chapters, prev_page, next_page) mapped`, hasTruyenVNNav);
+  }
+
+  // LuotNovel checks
+  if (file.includes("luotnovel") || file.includes("web-enhancer-all")) {
+    const hasLuotNovelAdsNuked = content.includes(".mission-ads") && content.includes(".tr-ads-click");
+    report(`${file}: LuotNovel mission ads & popup noti suppressed`, hasLuotNovelAdsNuked);
+
+    const hasLuotNovelNav = content.includes("#prevChapter") && content.includes("#nextChapter");
+    report(`${file}: LuotNovel chapter navigation (#prevChapter, #nextChapter) mapped`, hasLuotNovelNav);
   }
 });
 

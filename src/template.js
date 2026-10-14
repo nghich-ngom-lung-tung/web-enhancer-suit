@@ -17,7 +17,7 @@ const adblockCss = fs.readFileSync(path.join(__dirname, "css", "adblock.css"), "
 const theaterCss = fs.readFileSync(path.join(__dirname, "css", "theater.css"), "utf8");
 const hubCss = fs.readFileSync(path.join(__dirname, "css", "hub.css"), "utf8");
 
-function generateUserscript(site, isMasterAllInOne = false, allSites = [], customMasterFileName = "cinema-pro-all.user.js") {
+function generateUserscript(site, isMasterAllInOne = false, allSites = [], customMasterFileName = "web-enhancer-all.user.js") {
   const sitesList = allSites.length > 0 ? allSites : [site];
   const rawMatches = isMasterAllInOne
     ? Array.from(new Set([...sitesList.flatMap(s => s.domains), ...COMMON_EMBED_MATCHES]))

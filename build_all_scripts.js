@@ -9,7 +9,7 @@
  *
  * Generates:
  * 1. Categorized UserScripts under scripts/ (anime/, movies/, tv/, embeds/)
- * 2. Master Suite (scripts/cinema-pro-all.user.js) & core.js (scripts/core.js)
+ * 2. Master Suite (scripts/web-enhancer-all.user.js) & core.js (scripts/core.js)
  */
 
 const fs = require("fs");
@@ -19,7 +19,7 @@ const SITE_DEFINITIONS = require("./src/config/sites");
 const { generateUserscript } = require("./src/template");
 
 console.log("═══════════════════════════════════════════════════════════════");
-console.log("🎬 COMPILING CINEMA PRO SUITE (MODULAR PIPELINE -> scripts/)");
+console.log("🎬 COMPILING WEB ENHANCER SUITE (MODULAR PIPELINE -> scripts/)");
 console.log("═══════════════════════════════════════════════════════════════\n");
 
 // Ensure categorized output folders under scripts/
@@ -48,13 +48,9 @@ SITE_DEFINITIONS.forEach(site => {
 });
 
 // 2. Compile Master All-In-One script
-const masterCode = generateUserscript(SITE_DEFINITIONS[0], true, SITE_DEFINITIONS, "cinema-pro-all.user.js");
-fs.writeFileSync(path.join(__dirname, "scripts", "cinema-pro-all.user.js"), masterCode, "utf8");
-console.log(`\n  ⭐ Built Master Suite (Compatibility): scripts/cinema-pro-all.user.js`);
-
-const webEnhancerCode = generateUserscript(SITE_DEFINITIONS[0], true, SITE_DEFINITIONS, "web-enhancer-all.user.js");
-fs.writeFileSync(path.join(__dirname, "scripts", "web-enhancer-all.user.js"), webEnhancerCode, "utf8");
-console.log(`  ⭐ Built Master Suite (Web Enhancer): scripts/web-enhancer-all.user.js`);
+const masterCode = generateUserscript(SITE_DEFINITIONS[0], true, SITE_DEFINITIONS, "web-enhancer-all.user.js");
+fs.writeFileSync(path.join(__dirname, "scripts", "web-enhancer-all.user.js"), masterCode, "utf8");
+console.log(`\n  ⭐ Built Master Suite (Web Enhancer): scripts/web-enhancer-all.user.js`);
 
 // 3. Compile core.js (pure JS without userscript metadata for direct embedding/console)
 const coreJsCode = masterCode.split("// ==/UserScript==\n\n")[1];

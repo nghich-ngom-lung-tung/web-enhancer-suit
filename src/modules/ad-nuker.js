@@ -83,6 +83,10 @@ module.exports = `
           url.includes("ssphim") ||
           url.includes("zettruyen") ||
           url.includes("toptruyen") ||
+          url.includes("nettruyen") ||
+          url.includes("truyenqq") ||
+          url.includes("truyenvn") ||
+          url.includes("luotnovel") ||
           url.includes("youtube.com") ||
           url.includes("youtu.be");
         if (!isSafe) {
@@ -152,7 +156,7 @@ module.exports = `
       '.display-single', '[class*="display-single"]', '.is-demo', '[class*="is-demo"]',
       '.is-image', 'div[class*="is-image"]',
 
-      // ZetTruyen, TopTruyen & Comic Ads, Stealth Widgets & Popups
+      // Comics Ads: ZetTruyen, TopTruyen, NetTruyen, TruyenQQ, TruyenVN
       '.ads-tool-banner-container', '[class*="ads-tool-banner-container"]',
       '.close-catfish', '[data-zone]', '[data-zone="top"]', '[data-zone="top_content"]', '[data-zone="bottom"]',
       'div[style*="z-index: 2147483000"]', 'div[style*="z-index: 2147483001"]',
@@ -161,6 +165,12 @@ module.exports = `
       '.advertisement', '#video-chapter', 'div[id*="video-chapter"]', 'div[class*="advertisement"]',
       'iframe[src*="chaseherbalpasty.com"]', 'iframe[src*="dekkopinolin.com"]', 'iframe[src*="crittereasilyhangover.com"]',
       '.banner-qc',
+      '#top-banner-reading-container', '#top-banner-reading-container-sub', '#mid-banner-reading-container',
+      '#ad_info_top', '#ad_info_2', '#ad_info', 'div[id*="ad_info"]', 'div[id*="banner-reading"]',
+      '.community-banner', '.iframe-content-mobile', '.iframe-content-desktop', '.banner.text-center',
+      '.ads-static-header', '.ads-static-home-detail-chapter', '.ads-static-home-middle', 'div[class*="ads-static"]',
+      '.popup_layer', '.popup_content', '#popup_content',
+      '#ads', '.wrapper-ads', '.mission-ads', '.tr-ads-click', '.popup-noti', '.notification-popup', '#couter-wrapper',
 
       // Giovang Popups, Ads & Toplists
       '#banner_popup', '.banner_popup', '.banner_inner', '.banner_cursor',

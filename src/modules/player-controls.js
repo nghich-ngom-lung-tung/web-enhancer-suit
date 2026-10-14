@@ -190,14 +190,26 @@ module.exports = `
       document.querySelector(".page-chapter") ||
       document.querySelector(".select-chapter") ||
       document.querySelector("#select_chapter") ||
-      (typeof location !== "undefined" && location.hostname && (location.hostname.includes("zettruyen") || location.hostname.includes("toptruyen")))
+      document.querySelector("#chapter_content") ||
+      document.querySelector(".reading-detail") ||
+      document.querySelector(".chapter-content") ||
+      document.querySelector("#scontent") ||
+      document.querySelector(".box_text") ||
+      (typeof location !== "undefined" && location.hostname && (
+        location.hostname.includes("zettruyen") ||
+        location.hostname.includes("toptruyen") ||
+        location.hostname.includes("nettruyen") ||
+        location.hostname.includes("truyenqq") ||
+        location.hostname.includes("truyenvn") ||
+        location.hostname.includes("luotnovel")
+      ))
     );
   }
 
   function navigateComicChapter(direction) {
     if (direction < 0) {
       const prevBtn = document.querySelector(
-        "[data-prev-chapter-container] a, [data-prev-chapter-container] button, a.prev-chapter, a.chapter-previous, a.previous-chapter, a.previous-chapter-mobile, a.previous-chapter-mobi, .chapter-prev a, a.prev, a.back, a.btn-prev, button.btn-prev, .nav-previous a, a[rel='prev'], a[title*='Chương trước'], a[title*='Tập trước']"
+        "[data-prev-chapter-container] a, [data-prev-chapter-container] button, a#prevChapter, #prevChapter, a.prev-chapter, a.chapter-previous, a.previous-chapter, a.previous-chapter-mobile, a.previous-chapter-mobi, .chapter-prev a, a.prev, a.back, a.btn-prev, button.btn-prev, a.prev_page, a.link-prev-chap, #prev_chap, a.prev-chap, .nav-previous a, a[rel='prev'], a[title*='Chương trước'], a[title*='Tập trước']"
       );
       if (prevBtn) {
         prevBtn.click();
@@ -206,7 +218,7 @@ module.exports = `
       }
     } else {
       const nextBtn = document.querySelector(
-        "[data-next-chapter-container] a, [data-next-chapter-container] button, a.next-chapter, a.chapter-next, a.next-chapter-mobile, a.next-chapter-mobi, .chapter-next a, a.next, a.forward, a.btn-next, button.btn-next, .nav-next a, a[rel='next'], a[title*='Chương sau'], a[title*='Tập sau']"
+        "[data-next-chapter-container] a, [data-next-chapter-container] button, a#nextChapter, #nextChapter, a.next-chapter, a.chapter-next, a.next-chapter-mobile, a.next-chapter-mobi, .chapter-next a, a.next, a.forward, a.btn-next, button.btn-next, a.next_page, a.link-next-chap, #next_chap, a.next-chap, .nav-next a, a[rel='next'], a[title*='Chương sau'], a[title*='Tập sau']"
       );
       if (nextBtn) {
         nextBtn.click();
@@ -215,7 +227,7 @@ module.exports = `
       }
     }
 
-    const select = document.querySelector("select[data-chapter-dropdown], select.chapter-choose, select#select_chapter, select.select-chapter");
+    const select = document.querySelector("select[data-chapter-dropdown], select.chapter-choose, select#select_chapter, select.select-chapter, select#slt_list_chapters, select[name*='ddlSelectChapter'], select.ctl00_mainContent_ddlSelectChapter, select#ddlSelectChapter");
     if (select && select.options && select.options.length > 1) {
       const nextIdx = select.selectedIndex + (direction < 0 ? 1 : -1);
       if (nextIdx >= 0 && nextIdx < select.options.length) {

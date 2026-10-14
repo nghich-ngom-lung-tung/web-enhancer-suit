@@ -1,10 +1,10 @@
 # 🎬 Web Enhancer Suite - Cinema Pro & Comic Edition v5.4.5
 
 ![Version](https://img.shields.io/badge/Version-5.4.5_Modular_Architecture-blue?style=for-the-badge&logo=javascript)
-![Tests](https://img.shields.io/badge/Tests-883%2F883_Passed-success?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-953%2F953_Passed-success?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-100%25_Production_Ready-brightgreen?style=for-the-badge)
 
-Bộ công cụ toàn diện số 1 Việt Nam: Mở khóa VIP vĩnh viễn, vô hạn Coin/TCoin, **triệt tiêu 100% AdBlock / Stream Guard / Stealth Ads Widget / Video Ads**, tự động tóm link **M3U8 Stream mở bằng PotPlayer/VLC/Tải playlist .M3U**, bộ phím tắt thần thánh **Tua nhanh/lùi 5s, Skip Intro 85s, Chỉnh âm lượng, Đổi chương & Cuộn trang đọc truyện**, bộ lọc màu **Anime OLED HDR**, và chế độ **Rạp phim / Sân cỏ Theater Mode** trên **45+ website xem phim, anime, bóng đá trực tiếp và truyện tranh hàng đầu Việt Nam**!
+Bộ công cụ toàn diện số 1 Việt Nam: Mở khóa VIP vĩnh viễn, vô hạn Coin/TCoin, **triệt tiêu 100% AdBlock / Stream Guard / Stealth Ads Widget / Video Ads**, tự động tóm link **M3U8 Stream mở bằng PotPlayer/VLC/Tải playlist .M3U**, bộ phím tắt thần thánh **Tua nhanh/lùi 5s, Skip Intro 85s, Chỉnh âm lượng, Đổi chương & Cuộn trang đọc truyện**, bộ lọc màu **Anime OLED HDR**, và chế độ **Rạp phim / Sân cỏ Theater Mode** trên **49+ website xem phim, anime, bóng đá trực tiếp và truyện tranh hàng đầu Việt Nam**!
 
 ---
 
@@ -17,25 +17,25 @@ Codebase đã được tái cấu trúc hoàn toàn thành hệ thống Module s
 │   ├── config/          # Embed matchers & aggregated site registry
 │   ├── css/             # CSS độc lập (adblock.css, hub.css, theater.css, embed-guard.css)
 │   ├── modules/         # Logic module (icons.js, sniffer.js, player-controls.js, ad-nuker.js, hub-ui.js, rophim-vip.js)
-│   ├── sites/           # Cấu hình 44+ website chia theo nhóm thư mục:
+│   ├── sites/           # Cấu hình 49+ website chia theo nhóm thư mục:
 │   │   ├── anime/       # Anime & Hoạt hình 3D (10 sites: NetAnime, AnimeVietsub, VuiGhe, AnimeHay, HH3D...)
 │   │   ├── movies/      # Phim Chiếu Rạp & Phim Tổng Hợp (25 sites: Rophim, Motchill, PhimMoi...)
 │   │   ├── tv/          # Phim Truyền Hình & Thuyết Minh (2 sites: TVHay, VietSubTV)
 │   │   ├── embeds/      # Server Nguồn & Embed (OPhim, KKPhim)
 │   │   ├── sports/      # Bóng Đá & Thể Thao Trực Tiếp (5 sites: Xôi Lạc, Thập Cẩm, Khô Gà, Giờ Vàng, Chuối Chiên)
-│   │   └── comics/      # Truyện Tranh & Manga/Manhwa/Manhua (2 sites: ZetTruyen, TopTruyen)
+│   │   └── comics/      # Truyện Tranh & Tiểu Thuyết (6 sites: NetTruyen, TruyenQQ, TruyenVN, LuotNovel, ZetTruyen, TopTruyen)
 │   └── template.js      # Compiler template ráp nối các module
 ├── scripts/             # Script UserScript xuất bản theo nhóm folder (anime/, movies/, tv/, embeds/, sports/, comics/)
 ├── build_all_scripts.js # Trình biên dịch tinh gọn (~70 dòng)
-└── run_audit.js         # Bộ Test Suite tự động (861/861 Assertions)
+└── run_audit.js         # Bộ Test Suite tự động (953/953 Assertions)
 ```
 
 ---
 
 ## 🌐 Các Tên Miền & Trình Phát Hỗ Trợ (Cập nhật 2026)
 
-Hệ thống script tự động nhận diện và kích hoạt trên toàn bộ 45+ hệ thống website phim, anime, bóng đá, truyện tranh và iframe player nhúng:
-- 📖 **Truyện Tranh & Manga/Manhwa**: ZetTruyen (`zettruyen3.com`, `zettruyen.com`, `zetimage.com`...), TopTruyen (`toptruyenzone12.com`, `toptruyenzone*.com`, `toptruyen.net`, `toptruyen.com`...)
+Hệ thống script tự động nhận diện và kích hoạt trên toàn bộ 49+ hệ thống website phim, anime, bóng đá, truyện tranh và iframe player nhúng:
+- 📖 **Truyện Tranh & Manga/Novel**: NetTruyen (`nettruyen*.com`, `nettruyen*.vn`...), TruyenQQ (`truyenqq*.com`, `truyenqq*.vn`...), TruyenVN (`truyenvn.co`...), LuotNovel (`luotnovel1.site`, `luotnovel.com`...), ZetTruyen (`zettruyen3.com`...), TopTruyen (`toptruyenzone12.com`...)
 - ⚽ **Bóng Đá & Thể Thao Trực Tiếp**: `xoilaczzz.pro`, `explorado-invest.com` (ThapCam TV), `khoga.live`, `giovang.tax`, `chuoichientv.me`, `chuoichientv.link`...
 - 🌟 **Rổ Phim**: `rophim1.vip`, `rophim1.cc`, `rophim1.co`, `rophimx.net`, `rophim.ws`, `rophim.li`, `rophim.me`, `rophim.mx`
 - 🍿 **Motchill, PhimMoi, SSPhim & Mọt Phim**: `phimmotchill.online`, `motchill.online`, `motchilltv.com`, `phimmoiyyy.net`, `phimmoichill.net`, `phimmoi.net`, `motphim.to`, `motphimtv.me`, `ssphim.net`...
@@ -96,7 +96,7 @@ Nếu trình duyệt của bạn chưa có Tampermonkey, hãy cài đặt extens
 
 | Trang Web | Trạng Thái | Link Cài Đặt 1-Click | Tên Miền Hỗ Trợ |
 | :--- | :---: | :---: | :--- |
-| 👑 **ALL-IN-ONE (Bản Gộp Master)** | 🌟 **Khuyên Dùng** | 👉 **[CÀI BẢN ALL-IN-ONE (Mới)](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/web-enhancer-all.user.js)**<br>*(Bản cũ: [cinema-pro-all.user.js](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/cinema-pro-all.user.js))* | **Cài 1 lần chạy trên TOÀN BỘ 45+ web bên dưới!** |
+| 👑 **ALL-IN-ONE (Bản Gộp Master)** | 🌟 **Khuyên Dùng** | 👉 **[CÀI BẢN ALL-IN-ONE](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/web-enhancer-all.user.js)** | **Cài 1 lần chạy trên TOÀN BỘ 48+ web bên dưới!** |
 | 🎬 **Rổ Phim (Rophim)** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT RỔ PHIM](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/rophim.user.js)** | `rophim1.vip`, `rophim1.cc`, `streamc.xyz`... |
 | 🍿 **Motchill** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT MOTCHILL](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/motchill.user.js)** | `phimmotchill.online`, `motchill.online`, `motchilltv.com`... |
 | 🔥 **Nắng Cực TV** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT NẮNG CỰC](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/nangcuc.user.js)** | `nangcuc.tv`, `nangcuc.net`, `nangcuctv.cc`... |
@@ -141,6 +141,10 @@ Nếu trình duyệt của bạn chưa có Tampermonkey, hãy cài đặt extens
 | 🍌 **Chuối Chiên TV** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT CHUỐI CHIÊN](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/sports/chuoichien.user.js)** | `chuoichientv.me`, `chuoichientv.link`... |
 | 📖 **ZetTruyen (Truyện Tranh)** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT ZETTRUYEN](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/comics/zettruyen.user.js)** | `zettruyen3.com`, `zettruyen.com`, `zettruyen.net`... |
 | 📚 **TopTruyen (Truyện Tranh)** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT TOPTRUYEN](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/comics/toptruyen.user.js)** | `toptruyenzone12.com`, `toptruyen.com`... |
+| 📑 **NetTruyen (Truyện Tranh)** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT NETTRUYEN](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/comics/nettruyen.user.js)** | `nettruyen*.com`, `nettruyen*.net`, `nettruyen*.vn`... |
+| 📚 **TruyenQQ (Truyện Tranh)** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT TRUYENQQ](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/comics/truyenqq.user.js)** | `truyenqq*.com`, `truyenqq*.vn`, `truyenqq.vip`... |
+| 📖 **TruyenVN (Truyện Tranh)** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT TRUYENVN](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/comics/truyenvn.user.js)** | `truyenvn.co`, `truyenvn*.com`, `truyenvn*.vip`... |
+| 📚 **Lướt Novel (Truyện Chữ & Tranh)** | 🟢 Sẵn sàng | 👉 **[CÀI ĐẶT LUOTNOVEL](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/comics/luotnovel.user.js)** | `luotnovel1.site`, `luotnovel.com`... |
 
 > 💡 **Mẹo**: Nếu anh hay xem nhiều web khác nhau, chỉ cần cài duy nhất bản **ALL-IN-ONE** là xong! Hoặc chọn từng bản riêng lẻ nếu chỉ xem cố định một trang. Nhấp vào nút **Cài đặt** ở trên, Tampermonkey sẽ tự động phát hiện và hiện bảng xác nhận. Nhấn **Install** (Cài đặt) hoặc **Update** (Cập nhật) là hoàn tất!
 
@@ -176,16 +180,16 @@ Nếu trình duyệt của bạn chưa có Tampermonkey, hãy cài đặt extens
 
 ## 🧪 Kiểm Định Chất Lượng Tự Động (Automated Test Suite)
 
-Dự án tích hợp bộ kiểm thử tự động [`run_audit.js`](file:///run_audit.js) với **883 Unit & Runtime Assertions** chạy qua Node.js VM Sandbox độc lập:
-- **Phase 1: Metadata & Syntax Inspection** (45 files): Kiểm tra cú pháp ES2022, headers `@name`, `@match`, `@downloadURL`, `@updateURL`, `@allFrames`, `@run-at`.
-- **Phase 2: Top Window DOM & Runtime Simulation** (45 files): Kiểm thử khởi tạo Floating VIP Hub `#ro-vip-hub`, triệt tiêu `window.open` popup ad trap, phản hồi bắt tay `stream-guard-hello` (`hasAdblock: false, key: 'ok'`), kiểm soát trực tiếp `<video>` trong `sendCommandToPlayer`, hook `fetch` & `XMLHttpRequest` bắt link M3U8, và điều phối 14 phím tắt Pro (`S`, `I`, `Arrows`, `F`, `E`, `T`, `[`, `]`, `Space`, `M`, `0`-`9`, `A`, `D`, `W`).
-- **Phase 3: Iframe Player Embed & Stream Guard Defusal** (45 files): Giả lập iframe embed player, kiểm tra defuse `window.streamGuard` (`isBlocked() === false`), vô hiệu hóa `HTMLMediaElement.prototype.pause` do Guard kích hoạt, tự động skip đếm ngược quảng cáo video pre-roll, truyền lệnh điều khiển từ xa (SEEK, VOLUME, FULLSCREEN) và cầu nối `postMessage` M3U8 Stream Sniffer về trang cha.
-- **Phase 4: Rophim VIP 2099 & Coin Backend Response Patcher** (`rophim.user.js`, `tampermonkey.user.js`, `cinema-pro-all.user.js`): Xác thực can thiệp API backend `/baseapi/api/v1/tcoin/me` (1 tỷ Coin) và `/api/auth/session` (VIP đến năm 2099).
-- **Phase 5: Live Football Streaming & Sports Ad-Nuker Audit** (`giovang`, `xoilac`, `chuoichien`, `thapcam`, `khoga`): Triệt tiêu triệt để TVC pre-roll, odds bet buttons, sticky announcements, gambling banners.
-- **Phase 6: Comic Reader & Stealth Ad Defusal** (`zettruyen`, `toptruyen`, `cinema-pro-all`, `web-enhancer-all`): Vô hiệu hóa stealth widget network (`__WidgetConfig`, `__PopConfig`), stub `aclib`, triệt tiêu popunder (`chaseherbalpasty`, `dekkopinolin`, `crittereasilyhangover`), diệt `#video-chapter`, `.advertisement`, và kích hoạt phím tắt đọc truyện A/D/W/S/F.
+Dự án tích hợp bộ kiểm thử tự động [`run_audit.js`](file:///run_audit.js) với **953 Unit & Runtime Assertions** chạy qua Node.js VM Sandbox độc lập:
+- **Phase 1: Metadata & Syntax Inspection** (49 files): Kiểm tra cú pháp ES2022, headers `@name`, `@match`, `@downloadURL`, `@updateURL`, `@allFrames`, `@run-at`.
+- **Phase 2: Top Window DOM & Runtime Simulation** (49 files): Kiểm thử khởi tạo Floating VIP Hub `#ro-vip-hub`, triệt tiêu `window.open` popup ad trap, phản hồi bắt tay `stream-guard-hello` (`hasAdblock: false, key: 'ok'`), kiểm soát trực tiếp `<video>` trong `sendCommandToPlayer`, hook `fetch` & `XMLHttpRequest` bắt link M3U8, và điều phối 14 phím tắt Pro (`S`, `I`, `Arrows`, `F`, `E`, `T`, `[`, `]`, `Space`, `M`, `0`-`9`, `A`, `D`, `W`).
+- **Phase 3: Iframe Player Embed & Stream Guard Defusal** (49 files): Giả lập iframe embed player, kiểm tra defuse `window.streamGuard` (`isBlocked() === false`), vô hiệu hóa `HTMLMediaElement.prototype.pause` do Guard kích hoạt, tự động skip đếm ngược quảng cáo video pre-roll, truyền lệnh điều khiển từ xa (SEEK, VOLUME, FULLSCREEN) và cầu nối `postMessage` M3U8 Stream Sniffer về trang cha.
+- **Phase 4: Rophim VIP 2099 & Coin Backend Response Patcher** (`rophim.user.js`, `tampermonkey.user.js`, `web-enhancer-all.user.js`, `netanime.user.js`, `motchill.user.js`): Xác thực can thiệp API backend `/baseapi/api/v1/tcoin/me` (1 tỷ Coin), `/api/auth/session` (VIP đến năm 2099), `/api/v1/auth/profile` và `/api/v1/users/vip-packages`.
+- **Phase 5: Live Football Streaming & Sports Ad-Nuker Audit** (`giovang`, `xoilac`, `chuoichien`, `thapcam`, `khoga`, `web-enhancer-all`): Triệt tiêu triệt để TVC pre-roll, odds bet buttons, sticky announcements, gambling banners.
+- **Phase 6: Comic Reader & Stealth Ad Defusal** (`zettruyen`, `toptruyen`, `nettruyen`, `truyenqq`, `truyenvn`, `luotnovel`, `web-enhancer-all`): Vô hiệu hóa stealth widget network (`__WidgetConfig`, `__PopConfig`), stub `aclib`, triệt tiêu popunder (`chaseherbalpasty`, `dekkopinolin`, `crittereasilyhangover`), diệt `#video-chapter`, `.advertisement`, mobile iframe popups, mission ads, và kích hoạt phím tắt đọc truyện A/D/W/S/F.
 
 Chạy kiểm định toàn bộ hệ thống:
 ```bash
 node run_audit.js
 ```
-*(Kết quả: 883/883 Assertions Passed - Health Score: 100.0%)*
+*(Kết quả: 953/953 Assertions Passed - Health Score: 100.0%)*

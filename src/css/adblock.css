@@ -24,8 +24,18 @@ div[class*="floating-banner"], div[class*="floating_banner"], div[class*="float-
 div[class*="sticky-ads"], div[class*="sticky-banner"], div[id*="sticky-ads"], div[id*="sticky-banner"],
 div[class*="qc_bottom"], div[id*="qc_bottom"], div[class*="qc-bottom"], div[id*="qc-bottom"],
 div[id*="box-bottom"], div[class*="box-bottom"], div[id*="ads_bottom"], div[class*="ads_bottom"],
-div[class*="banner_bottom"], div[id*="banner_bottom"], div[class*="banner-bottom"], div[id*="banner-bottom"],
 div[id*="floating_bottom"], div[class*="floating_bottom"], div[id*="float_bottom"],
+
+/* Diệt sạch banner & popup Truyện Tranh (ZetTruyen, TopTruyen, NetTruyen, TruyenQQ, TruyenVN) */
+.ads-tool-banner-container, [class*="ads-tool-banner-container"], .close-catfish,
+[data-zone], [data-zone="top"], [data-zone="top_content"], [data-zone="bottom"],
+.advertisement, #video-chapter, div[id*="video-chapter"], div[class*="advertisement"],
+#top-banner-reading-container, #top-banner-reading-container-sub, #mid-banner-reading-container,
+#ad_info_top, #ad_info_2, #ad_info, div[id*="ad_info"], div[id*="banner-reading"],
+.community-banner, .iframe-content-mobile, .iframe-content-desktop, .banner.text-center,
+.ads-static-header, .ads-static-home-detail-chapter, .ads-static-home-middle, div[class*="ads-static"],
+.popup_layer, .popup_content, #popup_content,
+#ads, .wrapper-ads, .mission-ads, .tr-ads-click, .popup-noti, .notification-popup, #couter-wrapper, [class*="mission-ads"],
 
 /* Diệt tận gốc Banner Rophim, Thể thao, Giovang, Chuoichien & Thapcam */
 .sspp-area, [class*="sspp-area"], [class*="sspp_area"], [class*="sspp-"],

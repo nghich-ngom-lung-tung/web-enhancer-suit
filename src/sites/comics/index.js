@@ -1,4 +1,8 @@
 module.exports = [
   require("./zettruyen"),
-  require("./toptruyen")
+  require("./toptruyen"),
+  require("./nettruyen"),
+  require("./truyenqq"),
+  require("./truyenvn"),
+  require("./luotnovel")
 ];
