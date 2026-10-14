@@ -4,5 +4,6 @@ module.exports = [
   require("./nettruyen"),
   require("./truyenqq"),
   require("./truyenvn"),
-  require("./luotnovel")
+  require("./luotnovel"),
+  require("./ghientruyen")
 ];

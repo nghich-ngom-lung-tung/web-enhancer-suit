@@ -955,13 +955,28 @@ sportsAndComicsScripts.forEach(file => {
     report(`${file}: LuotNovel chapter navigation (#prevChapter, #nextChapter) mapped`, hasLuotNovelNav);
   }
 
-  // GhienPhim & DuPhim checks
-  if (file.includes("ghienphim") || file.includes("duphim") || file.includes("web-enhancer-all")) {
+  // GhienPhim, DuPhim, CoiPhim & GhienBlog checks
+  if (file.includes("ghienphim") || file.includes("duphim") || file.includes("coiphim") || file.includes("ghienblog") || file.includes("web-enhancer-all")) {
     const hasFloaterAdsNuked = content.includes(".ad-floater") && content.includes(".promotion-popup") && content.includes(".source-banner");
-    report(`${file}: GhienPhim & DuPhim ad floaters & promotion popups suppressed`, hasFloaterAdsNuked);
+    report(`${file}: GhienPhim ecosystem ad floaters & promotion popups suppressed`, hasFloaterAdsNuked);
 
-    const hasBetLinksNuked = content.includes("bom88") || content.includes("ok999");
-    report(`${file}: GhienPhim & DuPhim betting links (bom88/ok999) suppressed`, hasBetLinksNuked);
+    const hasComponentAdsNuked = content.includes(".component.ads") && content.includes(".ad-1170x150") && content.includes(".adtop");
+    report(`${file}: GhienPhim ecosystem component ads & 1170x150 banners suppressed`, hasComponentAdsNuked);
+
+    const hasNoAdsBadgeNuked = content.includes(".no-ads") && content.includes(".anti-bad-ad");
+    report(`${file}: GhienPhim ecosystem .no-ads floating badge & anti-bad-ad popup suppressed`, hasNoAdsBadgeNuked);
+
+    const hasBetLinksNuked = content.includes("bom88") || content.includes("ok999") || content.includes("linkroyal") || content.includes("hdbet");
+    report(`${file}: GhienPhim ecosystem betting & redirect links (bom88/ok999/linkroyal/hdbet) suppressed`, hasBetLinksNuked);
+  }
+
+  // GhienTruyen checks
+  if (file.includes("ghientruyen") || file.includes("web-enhancer-all")) {
+    const hasGhienTruyenAdsNuked = content.includes(".advertisement") && (content.includes("seotraffic.io.vn") || content.includes("acscdn.com"));
+    report(`${file}: GhienTruyen .advertisement & SEO traffic script suppressed`, hasGhienTruyenAdsNuked);
+
+    const hasGhienTruyenNav = content.includes("ghientruyen") && content.includes("Chương sau");
+    report(`${file}: GhienTruyen chapter navigation (A/D & Chương sau/trước) mapped`, hasGhienTruyenNav);
   }
 });
 

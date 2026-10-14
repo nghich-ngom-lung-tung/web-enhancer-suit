@@ -24,5 +24,7 @@ module.exports = [
   require("./xemphimplus"),
   require("./topsub"),
   require("./ssphim"),
-  require("./duphim")
+  require("./duphim"),
+  require("./coiphim"),
+  require("./ghienblog")
 ];

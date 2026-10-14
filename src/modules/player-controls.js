@@ -201,25 +201,40 @@ module.exports = `
         location.hostname.includes("nettruyen") ||
         location.hostname.includes("truyenqq") ||
         location.hostname.includes("truyenvn") ||
-        location.hostname.includes("luotnovel")
+        location.hostname.includes("luotnovel") ||
+        location.hostname.includes("ghientruyen")
       ))
     );
   }
 
   function navigateComicChapter(direction) {
     if (direction < 0) {
-      const prevBtn = document.querySelector(
+      let prevBtn = document.querySelector(
         "[data-prev-chapter-container] a, [data-prev-chapter-container] button, a#prevChapter, #prevChapter, a.prev-chapter, a.chapter-previous, a.previous-chapter, a.previous-chapter-mobile, a.previous-chapter-mobi, .chapter-prev a, a.prev, a.back, a.btn-prev, button.btn-prev, a.prev_page, a.link-prev-chap, #prev_chap, a.prev-chap, .nav-previous a, a[rel='prev'], a[title*='Chương trước'], a[title*='Tập trước']"
       );
+      if (!prevBtn && document.querySelectorAll) {
+        const candidates = Array.from(document.querySelectorAll("a, button"));
+        prevBtn = candidates.find(el => {
+          const t = (el.textContent || "").trim();
+          return t.includes("Chương trước") || t.includes("Tập trước") || t.includes("Chap trước");
+        });
+      }
       if (prevBtn) {
         prevBtn.click();
         showToast("Đang chuyển về chương trước...");
         return;
       }
     } else {
-      const nextBtn = document.querySelector(
+      let nextBtn = document.querySelector(
         "[data-next-chapter-container] a, [data-next-chapter-container] button, a#nextChapter, #nextChapter, a.next-chapter, a.chapter-next, a.next-chapter-mobile, a.next-chapter-mobi, .chapter-next a, a.next, a.forward, a.btn-next, button.btn-next, a.next_page, a.link-next-chap, #next_chap, a.next-chap, .nav-next a, a[rel='next'], a[title*='Chương sau'], a[title*='Tập sau']"
       );
+      if (!nextBtn && document.querySelectorAll) {
+        const candidates = Array.from(document.querySelectorAll("a, button"));
+        nextBtn = candidates.find(el => {
+          const t = (el.textContent || "").trim();
+          return t.includes("Chương sau") || t.includes("Tập sau") || t.includes("Chap sau") || t.includes("Chương tiếp");
+        });
+      }
       if (nextBtn) {
         nextBtn.click();
         showToast("Đang chuyển tới chương tiếp theo...");

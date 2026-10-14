@@ -954,6 +954,10 @@
           url.includes("luotnovel") ||
           url.includes("ghienphim") ||
           url.includes("duphim") ||
+          url.includes("coiphim") ||
+          url.includes("xemphimviet") ||
+          url.includes("ghientruyen") ||
+          url.includes("ghienblog") ||
           url.includes("youtube.com") ||
           url.includes("youtu.be");
         if (!isSafe) {
@@ -985,6 +989,13 @@
       u.includes("crittereasilyhangover.com") ||
       u.includes("bom88") ||
       u.includes("ok999") ||
+      u.includes("linkroyal") ||
+      u.includes("hdbet") ||
+      u.includes("go8.best") ||
+      u.includes("tin888") ||
+      u.includes("newbanner2025") ||
+      u.includes("no-ads.png") ||
+      u.includes("seotraffic.io.vn") ||
       u.includes("irondom.net") ||
       u.includes("advertising") ||
       u.includes("sponsor") ||
@@ -1040,8 +1051,14 @@
       '.community-banner', '.iframe-content-mobile', '.iframe-content-desktop', '.banner.text-center',
       '.ads-static-header', '.ads-static-home-detail-chapter', '.ads-static-home-middle', 'div[class*="ads-static"]',
       '.popup_layer', '.popup_content', '#popup_content',
-      '#ads', '.wrapper-ads', '.mission-ads', '.tr-ads-click', '.popup-noti', '.notification-popup', '#couter-wrapper',
-      '.ad-floater', '.new-target-goal', '.new-floater-goal', '.promotion-popup', '.popuptet-bg', '.source-banner', 'a[href*="bom88"]', 'a[href*="ok999"]',
+      // GhienPhim, DuPhim, CoiPhim, GhienBlog Banners & Floating Promos
+      '.ad-floater', '.new-target-goal', '.new-floater-goal', '.promotion-popup', '.popuptet-bg', '.source-banner',
+      '.component.ads', '[class*="component ads"]', '.adtop', '.adbot', '[class*="adtop"]', '[class*="adbot"]',
+      '.ad-1170x150', '[class*="ad-1170x150"]', '.no-ads', '.anti-bad-ad', '[class*="no-ads"]', '[class*="anti-bad-ad"]',
+      'a[aria-label*="Advertisement"]', 'a[aria-label="Advertisement"]',
+      'img[src*="newbanner2025"]', 'img[src*="no-ads.png"]',
+      'a[href*="shortlink.linkroyal"]', 'a[href*="linkroyal"]', 'a[href*="hdbet"]', 'a[href*="go8.best"]', 'a[href*="tin888"]',
+      'a[href*="bom88"]', 'a[href*="ok999"]', 'iframe[src*="seotraffic.io.vn"]',
 
       // Giovang Popups, Ads & Toplists
       '#banner_popup', '.banner_popup', '.banner_inner', '.banner_cursor',
@@ -1167,7 +1184,7 @@
           if (el.tagName === "VIDEO" && !el.classList.contains("tvc-pre-roll__video") && !el.src?.includes("tvc")) {
             return;
           }
-          const parent = (el.closest && el.closest('.sspp-area, div[class*="sspp"], div[style*="fixed"]:not(.livestream_widget):not(.giovang-fixture-player-shell), div[style*="sticky"], div[class*="catfish"], #banner_popup, .banner_popup, #corner-start-popup, .corner-start-popup, [class*="devqc"], .ads-layer, [class*="ads-layer"], .player-logo-wrapper, .bet-button-player, .banner-player, .banner-container, .banner-content, .banner-item, .bet-button, .bet-buttons, [class*="bet-button"], .corner-popup-wrap, .marquee-container, .fixture-banner, [class*="balloon-wrapper"], [class*="banner-pos-"], [class*="ad-popup-modal"], .match-detail__offer, .teambox__odds, .homepage-toplists-content, .toplists-home, .box-odds-match, .gv-bet-dropdown, .sticky-message, .sticky-announcement, [class*="detail-live-brand"]')) || el;
+          const parent = (el.closest && el.closest('.sspp-area, div[class*="sspp"], .component.ads, [class*="component ads"], .adtop, .adbot, .no-ads, .anti-bad-ad, .ad-1170x150, [class*="ad-1170x150"], div[style*="fixed"]:not(.livestream_widget):not(.giovang-fixture-player-shell), div[style*="sticky"], div[class*="catfish"], #banner_popup, .banner_popup, #corner-start-popup, .corner-start-popup, [class*="devqc"], .ads-layer, [class*="ads-layer"], .player-logo-wrapper, .bet-button-player, .banner-player, .banner-container, .banner-content, .banner-item, .bet-button, .bet-buttons, [class*="bet-button"], .corner-popup-wrap, .marquee-container, .fixture-banner, [class*="balloon-wrapper"], [class*="banner-pos-"], [class*="ad-popup-modal"], .match-detail__offer, .teambox__odds, .homepage-toplists-content, .toplists-home, .box-odds-match, .gv-bet-dropdown, .sticky-message, .sticky-announcement, [class*="detail-live-brand"]')) || el;
           if (parent) {
             if (parent === lw || (lw && parent.contains && parent.contains(lw))) return;
             if (parent.classList.contains("hlsp") || parent.classList.contains("player-container") || (parent.querySelector && parent.querySelector(".hlsp"))) return;
@@ -1644,25 +1661,40 @@
         location.hostname.includes("nettruyen") ||
         location.hostname.includes("truyenqq") ||
         location.hostname.includes("truyenvn") ||
-        location.hostname.includes("luotnovel")
+        location.hostname.includes("luotnovel") ||
+        location.hostname.includes("ghientruyen")
       ))
     );
   }
 
   function navigateComicChapter(direction) {
     if (direction < 0) {
-      const prevBtn = document.querySelector(
+      let prevBtn = document.querySelector(
         "[data-prev-chapter-container] a, [data-prev-chapter-container] button, a#prevChapter, #prevChapter, a.prev-chapter, a.chapter-previous, a.previous-chapter, a.previous-chapter-mobile, a.previous-chapter-mobi, .chapter-prev a, a.prev, a.back, a.btn-prev, button.btn-prev, a.prev_page, a.link-prev-chap, #prev_chap, a.prev-chap, .nav-previous a, a[rel='prev'], a[title*='Chương trước'], a[title*='Tập trước']"
       );
+      if (!prevBtn && document.querySelectorAll) {
+        const candidates = Array.from(document.querySelectorAll("a, button"));
+        prevBtn = candidates.find(el => {
+          const t = (el.textContent || "").trim();
+          return t.includes("Chương trước") || t.includes("Tập trước") || t.includes("Chap trước");
+        });
+      }
       if (prevBtn) {
         prevBtn.click();
         showToast("Đang chuyển về chương trước...");
         return;
       }
     } else {
-      const nextBtn = document.querySelector(
+      let nextBtn = document.querySelector(
         "[data-next-chapter-container] a, [data-next-chapter-container] button, a#nextChapter, #nextChapter, a.next-chapter, a.chapter-next, a.next-chapter-mobile, a.next-chapter-mobi, .chapter-next a, a.next, a.forward, a.btn-next, button.btn-next, a.next_page, a.link-next-chap, #next_chap, a.next-chap, .nav-next a, a[rel='next'], a[title*='Chương sau'], a[title*='Tập sau']"
       );
+      if (!nextBtn && document.querySelectorAll) {
+        const candidates = Array.from(document.querySelectorAll("a, button"));
+        nextBtn = candidates.find(el => {
+          const t = (el.textContent || "").trim();
+          return t.includes("Chương sau") || t.includes("Tập sau") || t.includes("Chap sau") || t.includes("Chương tiếp");
+        });
+      }
       if (nextBtn) {
         nextBtn.click();
         showToast("Đang chuyển tới chương tiếp theo...");
