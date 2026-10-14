@@ -4,6 +4,7 @@ module.exports = {
   "file": "duphim.user.js",
   "desc": "Chặn quảng cáo Đu Phim (DuPhim) + Triệt tiêu Popunder / Khuyến mãi + Bắt link M3U8 mở PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR",
   "version": "5.4.6",
+  "isRophim": true,
   "domains": [
     "*://*.duphim.social/*",
     "*://duphim.social/*",
@@ -14,6 +15,17 @@ module.exports = {
     "*://*duphim*/*"
   ],
   "siteCss": `
+    .video-ad-layer,
+    [class*="video-ad-layer"],
+    .ad-msg,
+    [class*="ad-msg"],
+    .random-content,
+    #video-premium,
+    #video-second,
+    #video-third,
+    .btn-video-ad,
+    .btn-skip-video,
+    [class*="btn-skip-video"],
     .ad-floater,
     .component.ads,
     [class*="component ads"],

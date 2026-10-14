@@ -4,6 +4,7 @@ module.exports = {
   "file": "ghienphim.user.js",
   "desc": "Chặn quảng cáo Ghiền Phim + Triệt tiêu Popunder / Bom88 + Bắt link M3U8 mở PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR",
   "version": "5.4.6",
+  "isRophim": true,
   "domains": [
     "*://*.ghienphimz.mom/*",
     "*://ghienphimz.mom/*",
@@ -24,6 +25,17 @@ module.exports = {
     "*://*ghienphimhay*/*"
   ],
   "siteCss": `
+    .video-ad-layer,
+    [class*="video-ad-layer"],
+    .ad-msg,
+    [class*="ad-msg"],
+    .random-content,
+    #video-premium,
+    #video-second,
+    #video-third,
+    .btn-video-ad,
+    .btn-skip-video,
+    [class*="btn-skip-video"],
     .ad-floater,
     .component.ads,
     [class*="component ads"],

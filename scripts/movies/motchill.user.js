@@ -181,7 +181,19 @@
     "/header-login",
     "header-login",
     "zettruyen",
-    "toptruyen"
+    "toptruyen",
+    "webapi/index",
+    "/webapi/",
+    "checkReward",
+    "claimReward",
+    "ghienphim",
+    "ghienxemphim",
+    "ghienphimhay",
+    "xemphimviet",
+    "ghienblog",
+    "coiphim",
+    "duphim",
+    "ghientruyen"
   ];
 
   function getTopTruyenVipHeaderHtml() {
@@ -1121,6 +1133,163 @@
         }
       } catch (e) {}
     }
+
+    // ─── GHIENPHIM & COIPHIM & DUPHIM FIREBASE VIP AUTH MOCK ───
+    const isGhienHost = typeof location !== "undefined" && location.hostname && (
+      location.hostname.includes("ghienphim") ||
+      location.hostname.includes("ghienxemphim") ||
+      location.hostname.includes("coiphim") ||
+      location.hostname.includes("xemphimviet") ||
+      location.hostname.includes("duphim")
+    );
+    if (isGhienHost) {
+      try {
+        const VIP_GHIENPHIM_USER = {
+          uid: "ghienphim-vip-2099",
+          email: "vip.member@ghienphim.pro",
+          displayName: "VIP Member (Cinema Pro 2099)",
+          photoURL: "https://ghienphimz.mom/client_assets/images/favicon.png",
+          isAnonymous: false,
+          emailVerified: true,
+          result: { msg: "Gói VIP Trọn Đời 2099 Đã Kích Hoạt!", value: 999999999 },
+          updateProfile: function (data) {
+            if (data && data.displayName) this.displayName = data.displayName;
+            return Promise.resolve();
+          },
+          getIdToken: function () {
+            return Promise.resolve("mock-firebase-token-vip-2099");
+          }
+        };
+
+        function hookFirebaseAuth(fb) {
+          if (!fb || fb._vipHooked) return;
+          fb._vipHooked = true;
+          const mockAuth = {
+            currentUser: VIP_GHIENPHIM_USER,
+            onAuthStateChanged: function (cb) {
+              if (typeof cb === "function") {
+                setTimeout(() => {
+                  try { cb(VIP_GHIENPHIM_USER); } catch (e) {}
+                }, 10);
+              }
+              return function unsubscribe() {};
+            },
+            onIdTokenChanged: function (cb) {
+              if (typeof cb === "function") {
+                setTimeout(() => {
+                  try { cb(VIP_GHIENPHIM_USER); } catch (e) {}
+                }, 10);
+              }
+              return function unsubscribe() {};
+            },
+            signInWithEmailAndPassword: function () {
+              return Promise.resolve({ user: VIP_GHIENPHIM_USER });
+            },
+            createUserWithEmailAndPassword: function () {
+              return Promise.resolve({ user: VIP_GHIENPHIM_USER });
+            },
+            signInWithPopup: function () {
+              return Promise.resolve({ user: VIP_GHIENPHIM_USER });
+            },
+            signOut: function () {
+              return Promise.resolve();
+            }
+          };
+          fb.auth = function () {
+            return mockAuth;
+          };
+        }
+
+        if (window.firebase) hookFirebaseAuth(window.firebase);
+        let _curFirebase = window.firebase;
+        try {
+          Object.defineProperty(window, "firebase", {
+            configurable: true,
+            enumerable: true,
+            get: () => _curFirebase,
+            set: (v) => {
+              _curFirebase = v;
+              try { hookFirebaseAuth(v); } catch (e) {}
+            }
+          });
+        } catch (e) {}
+
+        // Mock business.checkReward for VIP
+        function hookBusinessReward() {
+          try {
+            if (window.business && !window.business._vipRewardHooked) {
+              window.business._vipRewardHooked = true;
+              const origReward = window.business.checkReward;
+              window.business.checkReward = function (data, cb) {
+                if (typeof cb === "function") {
+                  cb({ status: 1, cardType: "VIP 2099,Thẻ Cào 500K,Vô Hạn Xem Phim", value: "VIP,500K,Pro" });
+                  return;
+                }
+                if (origReward) return origReward.apply(this, arguments);
+              };
+            }
+          } catch (e) {}
+        }
+        hookBusinessReward();
+        setInterval(hookBusinessReward, 1000);
+
+        function patchGhienphimProfileDom() {
+          try {
+            if (typeof document === "undefined") return;
+
+            // 1. Header Access Account Button -> 👑 VIP Member
+            const accessBtns = document.querySelectorAll(".access-account button, .access-account a, .notification.user-profile a");
+            accessBtns.forEach(btn => {
+              if (!btn.getAttribute("data-vip-styled")) {
+                btn.setAttribute("data-vip-styled", "true");
+                const span = btn.querySelector("span") || btn;
+                span.innerHTML = '<span style="color:#51f085;font-weight:700;"><i class="fa fa-crown" style="color:#fbbf24;margin-right:4px;"></i>VIP Member</span>';
+              }
+            });
+
+            // 2. Profile Page: Hide login form (.c-form), Reveal VIP Dashboard (.profile-infomation)
+            const cForm = document.querySelector(".c-form");
+            const pInfo = document.querySelector(".profile-infomation");
+            const skeleton = document.querySelector(".skeleton");
+            if (skeleton) skeleton.remove();
+
+            if (cForm && !cForm.classList.contains("hide")) {
+              cForm.classList.add("hide");
+              cForm.style.setProperty("display", "none", "important");
+            }
+            if (pInfo && pInfo.classList.contains("hide")) {
+              pInfo.classList.remove("hide");
+              pInfo.style.setProperty("display", "block", "important");
+            }
+
+            // Populate user fields
+            const emailInput = document.querySelector(".user-email");
+            if (emailInput && (!emailInput.value || emailInput.value !== VIP_GHIENPHIM_USER.email)) {
+              emailInput.value = VIP_GHIENPHIM_USER.email;
+            }
+            const nameInput = document.querySelector(".fullname .value input");
+            if (nameInput && (!nameInput.value || nameInput.value !== VIP_GHIENPHIM_USER.displayName)) {
+              nameInput.value = VIP_GHIENPHIM_USER.displayName;
+            }
+
+            // VIP Badge in profile
+            const pVer = document.querySelector(".profile-version");
+            if (pVer && !pVer.textContent.includes("VIP 2099")) {
+              pVer.innerHTML = '<span style="color:#51f085;font-weight:bold;">👑 Tài Khoản VIP Trọn Đời (Hạn dùng: 18/07/2099)</span>';
+            }
+          } catch (e) {}
+        }
+
+        if (typeof document !== "undefined") {
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", patchGhienphimProfileDom);
+          } else {
+            patchGhienphimProfileDom();
+          }
+          setInterval(patchGhienphimProfileDom, 500);
+        }
+      } catch (e) {}
+    }
   } catch (e) {}
 
   // ─── TỰ ĐỘNG GỠ BỎ TCOIN-DISABLED & ĐỒNG BỘ 999,999,999 TCOIN MỌI GIAO DIỆN ───
@@ -1713,6 +1882,55 @@
     if (stored) checkAndCaptureUrl(stored);
   } catch (e) {}
 
+  try {
+    const origSrcDescTop = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, "src");
+    if (origSrcDescTop && origSrcDescTop.set) {
+      const origSetTop = origSrcDescTop.set;
+      Object.defineProperty(HTMLMediaElement.prototype, "src", {
+        set: function (val) {
+          try {
+            if (val && typeof val === "string" && !val.includes("tvc") && !val.includes("video-premium")) {
+              checkAndCaptureUrl(String(val));
+            }
+          } catch (e) {}
+          return origSetTop.call(this, val);
+        },
+        get: origSrcDescTop.get,
+        configurable: true
+      });
+    }
+  } catch (e) {}
+
+  try {
+    function hookHlsProtoTop(HlsClass) {
+      if (HlsClass && HlsClass.prototype && !HlsClass._roHookedTop) {
+        HlsClass._roHookedTop = true;
+        const origLoad = HlsClass.prototype.loadSource;
+        HlsClass.prototype.loadSource = function (url) {
+          try {
+            if (url && typeof url === "string" && !url.includes("tvc")) {
+              checkAndCaptureUrl(String(url));
+            }
+          } catch (e) {}
+          return origLoad.apply(this, arguments);
+        };
+      }
+    }
+    if (window.Hls) hookHlsProtoTop(window.Hls);
+    let _curHlsTop = window.Hls;
+    try {
+      Object.defineProperty(window, "Hls", {
+        configurable: true,
+        enumerable: true,
+        get: () => _curHlsTop,
+        set: (v) => {
+          _curHlsTop = v;
+          try { hookHlsProtoTop(v); } catch (e) {}
+        }
+      });
+    } catch (e) {}
+  } catch (e) {}
+
   function checkAndCaptureUrl(url) {
     if (!url || typeof url !== "string") return false;
     const clean = unwrapStreamUrl(url);
@@ -1946,6 +2164,28 @@
       const stored = localStorage.getItem("RO_CAPTURED_STREAM");
       if (stored && checkAndCaptureUrl(stored)) return capturedStreamUrl;
     } catch (e) {}
+
+    // GhienPhim, CoiPhim & DuPhim In-Memory Playlist & Player Sniffing
+    try {
+      if (window._memPlaylist && window._memPlaylist[0]) {
+        const s = window._memPlaylist[0].source;
+        if (s && typeof s === "string") checkAndCaptureUrl(s);
+        if (Array.isArray(window._memPlaylist[0].fallback)) {
+          window._memPlaylist[0].fallback.forEach(f => {
+            if (f && typeof f === "string") checkAndCaptureUrl(f);
+          });
+        }
+      }
+      if (window._player) {
+        if (window._player.source && typeof window._player.source === "string") checkAndCaptureUrl(window._player.source);
+        if (window._player.currentSrc) checkAndCaptureUrl(window._player.currentSrc);
+      }
+      document.querySelectorAll(".btn-link-play, [data-play]").forEach(b => {
+        const dp = b.getAttribute("data-play");
+        if (dp) checkAndCaptureUrl(dp);
+      });
+    } catch (e) {}
+
     scanIframesForStreams();
     if (capturedStreamUrl) return capturedStreamUrl;
     scanPerformanceResources();
@@ -1969,6 +2209,17 @@
     });
   }, 800);
 
+  try {
+    document.addEventListener("click", function (e) {
+      const btn = e.target && e.target.closest && e.target.closest("[data-play], .btn-link-play, .flim-extend .btn-custom");
+      if (btn) {
+        const dp = btn.getAttribute("data-play");
+        if (dp) checkAndCaptureUrl(dp);
+        setTimeout(ensureStreamUrl, 200);
+      }
+    }, true);
+  } catch (e) {}
+
   // ─── HOOK FETCH TRÊN TRANG CHÍNH & CHẶN API BANNER ───
   const origFetchMain = window.fetch;
   window.fetch = async function (input, init) {
@@ -1981,11 +2232,25 @@
       });
     }
     if (typeof getRophimMockResponse === "function") {
-      const mockRes = getRophimMockResponse(url);
+      const mockRes = getRophimMockResponse(url, init);
       if (mockRes) return mockRes;
     }
     checkAndCaptureUrl(url);
-    return handleRophimFetchResponse(origFetchMain.apply(this, arguments), url);
+    const fetchPromise = origFetchMain.apply(this, arguments);
+    try {
+      fetchPromise.then(res => {
+        try {
+          const clone = res.clone();
+          clone.text().then(txt => {
+            if (txt && (txt.includes(".m3u8") || txt.includes("/hls/") || txt.includes(".mpd") || txt.includes(".mp4"))) {
+              const found = findStreamMatches(txt);
+              found.forEach(u => checkAndCaptureUrl(u));
+            }
+          }).catch(() => {});
+        } catch (e) {}
+      }).catch(() => {});
+    } catch (e) {}
+    return handleRophimFetchResponse(fetchPromise, url, init);
   };
 
   // ─── HOOK XHR TRÊN TRANG CHÍNH ───
@@ -2001,7 +2266,7 @@
     };
     
     const origSend = xhr.send;
-    xhr.send = function () {
+    xhr.send = function (body) {
       if (isAdApi(targetUrl)) {
         try {
           Object.defineProperty(xhr, "status", { value: 200, writable: false });
@@ -2054,6 +2319,12 @@
         }
       }
       xhr.addEventListener("load", function () {
+        try {
+          if (xhr.responseText && (xhr.responseText.includes(".m3u8") || xhr.responseText.includes("/hls/") || xhr.responseText.includes(".mpd") || xhr.responseText.includes(".mp4"))) {
+            const found = findStreamMatches(xhr.responseText);
+            found.forEach(u => checkAndCaptureUrl(u));
+          }
+        } catch (e) {}
         handleRophimXhrResponse(xhr, targetUrl);
       });
       if (origSend) return origSend.apply(this, arguments);
@@ -2103,6 +2374,26 @@
       if (key === "popup_last_shown" || key === "corner_start_popup_dismissed") return "9999999999999";
       if (key === "giovang_tvc_pre_roll_daily") return JSON.stringify({ date: "2099-12-31", count: 99999 });
       return origGetItem.apply(this, arguments);
+    };
+  } catch (e) {}
+
+  // ─── GHIENPHIM & COIPHIM TVC VIDEO ADS DEFUSER ───
+  try {
+    window._videoAdPremium = "";
+    window._totalTVC = 0;
+    window._currentTVCIndex = 999;
+    window.handleTVC = function () {
+      try { clearInterval(window._videoAdPremium); } catch (e) {}
+    };
+    window.playAdVideo = function () {
+      try {
+        const layer = document.querySelector(".video-ad-layer");
+        if (layer) layer.remove();
+        const vids = document.querySelectorAll("#video-premium, #video-second, #video-third, video[src*='tvc']");
+        vids.forEach(v => {
+          try { v.pause(); v.src = ""; v.remove(); } catch (e) {}
+        });
+      } catch (e) {}
     };
   } catch (e) {}
 
@@ -2262,6 +2553,11 @@
       'img[src*="newbanner2025"]', 'img[src*="no-ads.png"]',
       'a[href*="shortlink.linkroyal"]', 'a[href*="linkroyal"]', 'a[href*="hdbet"]', 'a[href*="go8.best"]', 'a[href*="tin888"]',
       'a[href*="bom88"]', 'a[href*="ok999"]', 'iframe[src*="seotraffic.io.vn"]',
+      // GhienPhim & CoiPhim TVC Video Ad Layer & Pre-roll
+      '.video-ad-layer', '[class*="video-ad-layer"]',
+      '.ad-msg', '[class*="ad-msg"]', '.random-content',
+      '#video-premium', '#video-second', '#video-third',
+      '.btn-video-ad', '.btn-skip-video', '[class*="btn-skip-video"]',
 
       // Giovang Popups, Ads & Toplists
       '#banner_popup', '.banner_popup', '.banner_inner', '.banner_cursor',
@@ -2354,19 +2650,33 @@
         if (lw.getAttribute("data-tvc") !== "[]") lw.setAttribute("data-tvc", "[]");
       }
 
-      // Tự động bỏ qua và kết thúc video TVC pre-roll nếu xuất hiện
-      const tvcVideo = document.querySelector(".tvc-pre-roll__video, video[src*='tvc_'], video[src*='assets/tvc/']");
-      if (tvcVideo) {
+      // Tự động bỏ qua và kết thúc video TVC pre-roll nếu xuất hiện (Giờ Vàng, Thể Thao, GhienPhim, CoiPhim)
+      const tvcVideos = document.querySelectorAll(".tvc-pre-roll__video, video[src*='tvc_'], video[src*='assets/tvc/'], #video-premium, #video-second, #video-third");
+      tvcVideos.forEach(tvcVideo => {
         try {
           tvcVideo.muted = true;
           tvcVideo.currentTime = tvcVideo.duration || 999;
           tvcVideo.dispatchEvent(new Event("ended"));
+          if (tvcVideo.id === "video-premium" || tvcVideo.id === "video-second" || tvcVideo.id === "video-third") {
+            tvcVideo.pause();
+            tvcVideo.src = "";
+            tvcVideo.remove();
+          }
         } catch (e) {}
-      }
-      const skipBtn = document.querySelector(".tvc-pre-roll__skip button, .tvc-pre-roll__skip, [class*='skip'] button");
-      if (skipBtn && typeof skipBtn.click === "function") {
-        try { skipBtn.click(); } catch (e) {}
-      }
+      });
+      const skipBtns = document.querySelectorAll(".tvc-pre-roll__skip button, .tvc-pre-roll__skip, [class*='skip'] button, .btn-skip-video, [class*='btn-skip-video']");
+      skipBtns.forEach(skipBtn => {
+        if (skipBtn && typeof skipBtn.click === "function") {
+          try { skipBtn.click(); } catch (e) {}
+        }
+      });
+      const tvcLayers = document.querySelectorAll(".video-ad-layer, [class*='video-ad-layer'], .ad-msg, [class*='ad-msg'], .random-content");
+      tvcLayers.forEach(layer => {
+        try {
+          layer.style.setProperty("display", "none", "important");
+          layer.remove();
+        } catch (e) {}
+      });
 
       if (document.querySelectorAll) {
         document.querySelectorAll(adSelectors.join(",")).forEach(el => {
@@ -2383,11 +2693,18 @@
           ) {
             return;
           }
-          // Bảo vệ video stream thể thao không bao giờ bị xóa nhầm
-          if (el.tagName === "VIDEO" && !el.classList.contains("tvc-pre-roll__video") && !el.src?.includes("tvc")) {
+          // Bảo vệ video stream thật không bao giờ bị xóa nhầm (chỉ cho phép xóa TVC/Ads)
+          if (
+            el.tagName === "VIDEO" &&
+            !el.classList.contains("tvc-pre-roll__video") &&
+            !el.src?.includes("tvc") &&
+            el.id !== "video-premium" &&
+            el.id !== "video-second" &&
+            el.id !== "video-third"
+          ) {
             return;
           }
-          const parent = (el.closest && el.closest('.sspp-area, div[class*="sspp"], .component.ads, [class*="component ads"], .adtop, .adbot, .no-ads, .anti-bad-ad, .ad-1170x150, [class*="ad-1170x150"], div[style*="fixed"]:not(.livestream_widget):not(.giovang-fixture-player-shell), div[style*="sticky"], div[class*="catfish"], #banner_popup, .banner_popup, #corner-start-popup, .corner-start-popup, [class*="devqc"], .ads-layer, [class*="ads-layer"], .player-logo-wrapper, .bet-button-player, .banner-player, .banner-container, .banner-content, .banner-item, .bet-button, .bet-buttons, [class*="bet-button"], .corner-popup-wrap, .marquee-container, .fixture-banner, [class*="balloon-wrapper"], [class*="banner-pos-"], [class*="ad-popup-modal"], .match-detail__offer, .teambox__odds, .homepage-toplists-content, .toplists-home, .box-odds-match, .gv-bet-dropdown, .sticky-message, .sticky-announcement, [class*="detail-live-brand"]')) || el;
+          const parent = (el.closest && el.closest('.sspp-area, div[class*="sspp"], .component.ads, [class*="component ads"], .adtop, .adbot, .no-ads, .anti-bad-ad, .ad-1170x150, [class*="ad-1170x150"], div[style*="fixed"]:not(.livestream_widget):not(.giovang-fixture-player-shell), div[style*="sticky"], div[class*="catfish"], #banner_popup, .banner_popup, #corner-start-popup, .corner-start-popup, [class*="devqc"], .ads-layer, [class*="ads-layer"], .player-logo-wrapper, .bet-button-player, .banner-player, .banner-container, .banner-content, .banner-item, .bet-button, .bet-buttons, [class*="bet-button"], .corner-popup-wrap, .marquee-container, .fixture-banner, [class*="balloon-wrapper"], [class*="banner-pos-"], [class*="ad-popup-modal"], .match-detail__offer, .teambox__odds, .homepage-toplists-content, .toplists-home, .box-odds-match, .gv-bet-dropdown, .sticky-message, .sticky-announcement, [class*="detail-live-brand"], .video-ad-layer, [class*="video-ad-layer"], .ad-msg, [class*="ad-msg"], .random-content')) || el;
           if (parent) {
             if (parent === lw || (lw && parent.contains && parent.contains(lw))) return;
             if (parent.classList.contains("hlsp") || parent.classList.contains("player-container") || (parent.querySelector && parent.querySelector(".hlsp"))) return;

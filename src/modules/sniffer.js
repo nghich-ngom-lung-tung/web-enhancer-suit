@@ -510,6 +510,55 @@ function getSnifferCode(enableRophimVip) {
     if (stored) checkAndCaptureUrl(stored);
   } catch (e) {}
 
+  try {
+    const origSrcDescTop = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, "src");
+    if (origSrcDescTop && origSrcDescTop.set) {
+      const origSetTop = origSrcDescTop.set;
+      Object.defineProperty(HTMLMediaElement.prototype, "src", {
+        set: function (val) {
+          try {
+            if (val && typeof val === "string" && !val.includes("tvc") && !val.includes("video-premium")) {
+              checkAndCaptureUrl(String(val));
+            }
+          } catch (e) {}
+          return origSetTop.call(this, val);
+        },
+        get: origSrcDescTop.get,
+        configurable: true
+      });
+    }
+  } catch (e) {}
+
+  try {
+    function hookHlsProtoTop(HlsClass) {
+      if (HlsClass && HlsClass.prototype && !HlsClass._roHookedTop) {
+        HlsClass._roHookedTop = true;
+        const origLoad = HlsClass.prototype.loadSource;
+        HlsClass.prototype.loadSource = function (url) {
+          try {
+            if (url && typeof url === "string" && !url.includes("tvc")) {
+              checkAndCaptureUrl(String(url));
+            }
+          } catch (e) {}
+          return origLoad.apply(this, arguments);
+        };
+      }
+    }
+    if (window.Hls) hookHlsProtoTop(window.Hls);
+    let _curHlsTop = window.Hls;
+    try {
+      Object.defineProperty(window, "Hls", {
+        configurable: true,
+        enumerable: true,
+        get: () => _curHlsTop,
+        set: (v) => {
+          _curHlsTop = v;
+          try { hookHlsProtoTop(v); } catch (e) {}
+        }
+      });
+    } catch (e) {}
+  } catch (e) {}
+
   function checkAndCaptureUrl(url) {
     if (!url || typeof url !== "string") return false;
     const clean = unwrapStreamUrl(url);
@@ -743,6 +792,28 @@ function getSnifferCode(enableRophimVip) {
       const stored = localStorage.getItem("RO_CAPTURED_STREAM");
       if (stored && checkAndCaptureUrl(stored)) return capturedStreamUrl;
     } catch (e) {}
+
+    // GhienPhim, CoiPhim & DuPhim In-Memory Playlist & Player Sniffing
+    try {
+      if (window._memPlaylist && window._memPlaylist[0]) {
+        const s = window._memPlaylist[0].source;
+        if (s && typeof s === "string") checkAndCaptureUrl(s);
+        if (Array.isArray(window._memPlaylist[0].fallback)) {
+          window._memPlaylist[0].fallback.forEach(f => {
+            if (f && typeof f === "string") checkAndCaptureUrl(f);
+          });
+        }
+      }
+      if (window._player) {
+        if (window._player.source && typeof window._player.source === "string") checkAndCaptureUrl(window._player.source);
+        if (window._player.currentSrc) checkAndCaptureUrl(window._player.currentSrc);
+      }
+      document.querySelectorAll(".btn-link-play, [data-play]").forEach(b => {
+        const dp = b.getAttribute("data-play");
+        if (dp) checkAndCaptureUrl(dp);
+      });
+    } catch (e) {}
+
     scanIframesForStreams();
     if (capturedStreamUrl) return capturedStreamUrl;
     scanPerformanceResources();
@@ -766,6 +837,17 @@ function getSnifferCode(enableRophimVip) {
     });
   }, 800);
 
+  try {
+    document.addEventListener("click", function (e) {
+      const btn = e.target && e.target.closest && e.target.closest("[data-play], .btn-link-play, .flim-extend .btn-custom");
+      if (btn) {
+        const dp = btn.getAttribute("data-play");
+        if (dp) checkAndCaptureUrl(dp);
+        setTimeout(ensureStreamUrl, 200);
+      }
+    }, true);
+  } catch (e) {}
+
   // ─── HOOK FETCH TRÊN TRANG CHÍNH & CHẶN API BANNER ───
   const origFetchMain = window.fetch;
   window.fetch = async function (input, init) {
@@ -778,11 +860,25 @@ function getSnifferCode(enableRophimVip) {
       });
     }
     ${enableRophimVip ? `if (typeof getRophimMockResponse === "function") {
-      const mockRes = getRophimMockResponse(url);
+      const mockRes = getRophimMockResponse(url, init);
       if (mockRes) return mockRes;
     }` : ""}
     checkAndCaptureUrl(url);
-    ${enableRophimVip ? "return handleRophimFetchResponse(origFetchMain.apply(this, arguments), url);" : "return origFetchMain.apply(this, arguments);"}
+    const fetchPromise = origFetchMain.apply(this, arguments);
+    try {
+      fetchPromise.then(res => {
+        try {
+          const clone = res.clone();
+          clone.text().then(txt => {
+            if (txt && (txt.includes(".m3u8") || txt.includes("/hls/") || txt.includes(".mpd") || txt.includes(".mp4"))) {
+              const found = findStreamMatches(txt);
+              found.forEach(u => checkAndCaptureUrl(u));
+            }
+          }).catch(() => {});
+        } catch (e) {}
+      }).catch(() => {});
+    } catch (e) {}
+    ${enableRophimVip ? "return handleRophimFetchResponse(fetchPromise, url, init);" : "return fetchPromise;"}
   };
 
   // ─── HOOK XHR TRÊN TRANG CHÍNH ───
@@ -798,7 +894,7 @@ function getSnifferCode(enableRophimVip) {
     };
     
     const origSend = xhr.send;
-    xhr.send = function () {
+    xhr.send = function (body) {
       if (isAdApi(targetUrl)) {
         try {
           Object.defineProperty(xhr, "status", { value: 200, writable: false });
@@ -807,7 +903,7 @@ function getSnifferCode(enableRophimVip) {
         return;
       }
       ${enableRophimVip ? `if (typeof getRophimMockXhr === "function") {
-        const mockStr = getRophimMockXhr(targetUrl);
+        const mockStr = getRophimMockXhr(targetUrl, body);
         if (mockStr) {
           try {
             let parsedObj = null;
@@ -851,6 +947,12 @@ function getSnifferCode(enableRophimVip) {
         }
       }` : ""}
       xhr.addEventListener("load", function () {
+        try {
+          if (xhr.responseText && (xhr.responseText.includes(".m3u8") || xhr.responseText.includes("/hls/") || xhr.responseText.includes(".mpd") || xhr.responseText.includes(".mp4"))) {
+            const found = findStreamMatches(xhr.responseText);
+            found.forEach(u => checkAndCaptureUrl(u));
+          }
+        } catch (e) {}
         ${enableRophimVip ? "handleRophimXhrResponse(xhr, targetUrl);" : ""}
       });
       if (origSend) return origSend.apply(this, arguments);

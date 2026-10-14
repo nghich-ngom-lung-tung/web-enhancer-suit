@@ -974,6 +974,17 @@ sportsAndComicsScripts.forEach(file => {
 
     const hasDataValueScan = content.includes("data-value") && content.includes("isNoRefererCdn");
     report(`${file}: [data-value] stream attribute & anti-referer CDN filter present`, hasDataValueScan);
+
+    const hasTvcAdsDefused = content.includes(".video-ad-layer") && content.includes("#video-premium") && content.includes(".btn-skip-video");
+    report(`${file}: TVC pre-roll video ads (.video-ad-layer, #video-premium, .btn-skip-video) defused & nuked`, hasTvcAdsDefused);
+
+    if (file.includes("ghienphim") || file.includes("coiphim") || file.includes("duphim") || file.includes("web-enhancer-all")) {
+      const hasFirebaseVipMock = content.includes("VIP_GHIENPHIM_USER") && content.includes("patchGhienphimProfileDom");
+      report(`${file}: GhienPhim & CoiPhim Firebase Auth VIP mock & profile bypass present`, hasFirebaseVipMock);
+
+      const hasTopWindowHlsSniffer = content.includes("hookHlsProtoTop") && content.includes("_memPlaylist");
+      report(`${file}: Top-window HLS & in-memory playlist sniffer present`, hasTopWindowHlsSniffer);
+    }
   }
 
   // GhienTruyen checks

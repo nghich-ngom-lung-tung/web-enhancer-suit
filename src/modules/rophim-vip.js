@@ -53,7 +53,19 @@ module.exports = `
     "/header-login",
     "header-login",
     "zettruyen",
-    "toptruyen"
+    "toptruyen",
+    "webapi/index",
+    "/webapi/",
+    "checkReward",
+    "claimReward",
+    "ghienphim",
+    "ghienxemphim",
+    "ghienphimhay",
+    "xemphimviet",
+    "ghienblog",
+    "coiphim",
+    "duphim",
+    "ghientruyen"
   ];
 
   function getTopTruyenVipHeaderHtml() {
@@ -115,8 +127,16 @@ module.exports = `
     };
   }
 
-  function getRophimMockJsonString(url) {
+  function getRophimMockJsonString(url, init) {
     if (!url || typeof url !== "string") return null;
+
+    let bodyStr = "";
+    if (init && init.body) {
+      if (typeof init.body === "string") bodyStr = init.body;
+      else if (typeof init.body === "object") {
+        try { bodyStr = JSON.stringify(init.body); } catch (e) {}
+      }
+    }
 
     // 1. Session Check (Bắt buộc valid: true để không gọi o() trigger reload)
     if (url.includes("/auth/session/check")) {
@@ -990,6 +1010,163 @@ module.exports = `
               });
             }
           });
+        }
+      } catch (e) {}
+    }
+
+    // ─── GHIENPHIM & COIPHIM & DUPHIM FIREBASE VIP AUTH MOCK ───
+    const isGhienHost = typeof location !== "undefined" && location.hostname && (
+      location.hostname.includes("ghienphim") ||
+      location.hostname.includes("ghienxemphim") ||
+      location.hostname.includes("coiphim") ||
+      location.hostname.includes("xemphimviet") ||
+      location.hostname.includes("duphim")
+    );
+    if (isGhienHost) {
+      try {
+        const VIP_GHIENPHIM_USER = {
+          uid: "ghienphim-vip-2099",
+          email: "vip.member@ghienphim.pro",
+          displayName: "VIP Member (Cinema Pro 2099)",
+          photoURL: "https://ghienphimz.mom/client_assets/images/favicon.png",
+          isAnonymous: false,
+          emailVerified: true,
+          result: { msg: "Gói VIP Trọn Đời 2099 Đã Kích Hoạt!", value: 999999999 },
+          updateProfile: function (data) {
+            if (data && data.displayName) this.displayName = data.displayName;
+            return Promise.resolve();
+          },
+          getIdToken: function () {
+            return Promise.resolve("mock-firebase-token-vip-2099");
+          }
+        };
+
+        function hookFirebaseAuth(fb) {
+          if (!fb || fb._vipHooked) return;
+          fb._vipHooked = true;
+          const mockAuth = {
+            currentUser: VIP_GHIENPHIM_USER,
+            onAuthStateChanged: function (cb) {
+              if (typeof cb === "function") {
+                setTimeout(() => {
+                  try { cb(VIP_GHIENPHIM_USER); } catch (e) {}
+                }, 10);
+              }
+              return function unsubscribe() {};
+            },
+            onIdTokenChanged: function (cb) {
+              if (typeof cb === "function") {
+                setTimeout(() => {
+                  try { cb(VIP_GHIENPHIM_USER); } catch (e) {}
+                }, 10);
+              }
+              return function unsubscribe() {};
+            },
+            signInWithEmailAndPassword: function () {
+              return Promise.resolve({ user: VIP_GHIENPHIM_USER });
+            },
+            createUserWithEmailAndPassword: function () {
+              return Promise.resolve({ user: VIP_GHIENPHIM_USER });
+            },
+            signInWithPopup: function () {
+              return Promise.resolve({ user: VIP_GHIENPHIM_USER });
+            },
+            signOut: function () {
+              return Promise.resolve();
+            }
+          };
+          fb.auth = function () {
+            return mockAuth;
+          };
+        }
+
+        if (window.firebase) hookFirebaseAuth(window.firebase);
+        let _curFirebase = window.firebase;
+        try {
+          Object.defineProperty(window, "firebase", {
+            configurable: true,
+            enumerable: true,
+            get: () => _curFirebase,
+            set: (v) => {
+              _curFirebase = v;
+              try { hookFirebaseAuth(v); } catch (e) {}
+            }
+          });
+        } catch (e) {}
+
+        // Mock business.checkReward for VIP
+        function hookBusinessReward() {
+          try {
+            if (window.business && !window.business._vipRewardHooked) {
+              window.business._vipRewardHooked = true;
+              const origReward = window.business.checkReward;
+              window.business.checkReward = function (data, cb) {
+                if (typeof cb === "function") {
+                  cb({ status: 1, cardType: "VIP 2099,Thẻ Cào 500K,Vô Hạn Xem Phim", value: "VIP,500K,Pro" });
+                  return;
+                }
+                if (origReward) return origReward.apply(this, arguments);
+              };
+            }
+          } catch (e) {}
+        }
+        hookBusinessReward();
+        setInterval(hookBusinessReward, 1000);
+
+        function patchGhienphimProfileDom() {
+          try {
+            if (typeof document === "undefined") return;
+
+            // 1. Header Access Account Button -> 👑 VIP Member
+            const accessBtns = document.querySelectorAll(".access-account button, .access-account a, .notification.user-profile a");
+            accessBtns.forEach(btn => {
+              if (!btn.getAttribute("data-vip-styled")) {
+                btn.setAttribute("data-vip-styled", "true");
+                const span = btn.querySelector("span") || btn;
+                span.innerHTML = '<span style="color:#51f085;font-weight:700;"><i class="fa fa-crown" style="color:#fbbf24;margin-right:4px;"></i>VIP Member</span>';
+              }
+            });
+
+            // 2. Profile Page: Hide login form (.c-form), Reveal VIP Dashboard (.profile-infomation)
+            const cForm = document.querySelector(".c-form");
+            const pInfo = document.querySelector(".profile-infomation");
+            const skeleton = document.querySelector(".skeleton");
+            if (skeleton) skeleton.remove();
+
+            if (cForm && !cForm.classList.contains("hide")) {
+              cForm.classList.add("hide");
+              cForm.style.setProperty("display", "none", "important");
+            }
+            if (pInfo && pInfo.classList.contains("hide")) {
+              pInfo.classList.remove("hide");
+              pInfo.style.setProperty("display", "block", "important");
+            }
+
+            // Populate user fields
+            const emailInput = document.querySelector(".user-email");
+            if (emailInput && (!emailInput.value || emailInput.value !== VIP_GHIENPHIM_USER.email)) {
+              emailInput.value = VIP_GHIENPHIM_USER.email;
+            }
+            const nameInput = document.querySelector(".fullname .value input");
+            if (nameInput && (!nameInput.value || nameInput.value !== VIP_GHIENPHIM_USER.displayName)) {
+              nameInput.value = VIP_GHIENPHIM_USER.displayName;
+            }
+
+            // VIP Badge in profile
+            const pVer = document.querySelector(".profile-version");
+            if (pVer && !pVer.textContent.includes("VIP 2099")) {
+              pVer.innerHTML = '<span style="color:#51f085;font-weight:bold;">👑 Tài Khoản VIP Trọn Đời (Hạn dùng: 18/07/2099)</span>';
+            }
+          } catch (e) {}
+        }
+
+        if (typeof document !== "undefined") {
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", patchGhienphimProfileDom);
+          } else {
+            patchGhienphimProfileDom();
+          }
+          setInterval(patchGhienphimProfileDom, 500);
         }
       } catch (e) {}
     }

@@ -1,10 +1,10 @@
 # 🎬 Web Enhancer Suite - Cinema Pro & Comic Edition v5.4.6
 
 ![Version](https://img.shields.io/badge/Version-5.4.6_Modular_Architecture-blue?style=for-the-badge&logo=javascript)
-![Tests](https://img.shields.io/badge/Tests-1035%2F1035_Passed-success?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-1045%2F1045_Passed-success?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-100%25_Production_Ready-brightgreen?style=for-the-badge)
 
-Bộ công cụ toàn diện số 1 Việt Nam: Mở khóa VIP vĩnh viễn, vô hạn Coin/TCoin, **triệt tiêu 100% AdBlock / Stream Guard / Stealth Ads Widget / Video Ads**, tự động tóm link **M3U8 Stream mở bằng PotPlayer/VLC/Tải playlist .M3U**, bộ phím tắt thần thánh **Tua nhanh/lùi 5s, Skip Intro 85s, Chỉnh âm lượng, Đổi chương & Cuộn trang đọc truyện**, bộ lọc màu **Anime OLED HDR**, và chế độ **Rạp phim / Sân cỏ Theater Mode** trên **53+ website xem phim, anime, bóng đá trực tiếp và truyện tranh hàng đầu Việt Nam**!
+Bộ công cụ toàn diện số 1 Việt Nam: Mở khóa VIP vĩnh viễn (Rophim NextAuth, Motchill Admin, GhienPhim/CoiPhim Firebase Auth VIP bypass), vô hạn Coin/TCoin, **triệt tiêu 100% AdBlock / Stream Guard / TVC Pre-roll Video Ads / Stealth Ads Widget**, tự động tóm link **M3U8 Stream mở bằng PotPlayer/VLC/Tải playlist .M3U**, bộ phím tắt thần thánh **Tua nhanh/lùi 5s, Skip Intro 85s, Chỉnh âm lượng, Đổi chương & Cuộn trang đọc truyện**, bộ lọc màu **Anime OLED HDR**, và chế độ **Rạp phim / Sân cỏ Theater Mode** trên **53+ website xem phim, anime, bóng đá trực tiếp và truyện tranh hàng đầu Việt Nam**!
 
 ---
 

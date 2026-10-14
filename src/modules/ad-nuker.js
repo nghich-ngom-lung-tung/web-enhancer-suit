@@ -38,6 +38,26 @@ module.exports = `
     };
   } catch (e) {}
 
+  // ─── GHIENPHIM & COIPHIM TVC VIDEO ADS DEFUSER ───
+  try {
+    window._videoAdPremium = "";
+    window._totalTVC = 0;
+    window._currentTVCIndex = 999;
+    window.handleTVC = function () {
+      try { clearInterval(window._videoAdPremium); } catch (e) {}
+    };
+    window.playAdVideo = function () {
+      try {
+        const layer = document.querySelector(".video-ad-layer");
+        if (layer) layer.remove();
+        const vids = document.querySelectorAll("#video-premium, #video-second, #video-third, video[src*='tvc']");
+        vids.forEach(v => {
+          try { v.pause(); v.src = ""; v.remove(); } catch (e) {}
+        });
+      } catch (e) {}
+    };
+  } catch (e) {}
+
   // Unblock right-click and selection blocking scripts
   ["contextmenu", "copy", "cut", "selectstart"].forEach(ev => {
     document.addEventListener(ev, e => e.stopPropagation(), true);
@@ -194,6 +214,11 @@ module.exports = `
       'img[src*="newbanner2025"]', 'img[src*="no-ads.png"]',
       'a[href*="shortlink.linkroyal"]', 'a[href*="linkroyal"]', 'a[href*="hdbet"]', 'a[href*="go8.best"]', 'a[href*="tin888"]',
       'a[href*="bom88"]', 'a[href*="ok999"]', 'iframe[src*="seotraffic.io.vn"]',
+      // GhienPhim & CoiPhim TVC Video Ad Layer & Pre-roll
+      '.video-ad-layer', '[class*="video-ad-layer"]',
+      '.ad-msg', '[class*="ad-msg"]', '.random-content',
+      '#video-premium', '#video-second', '#video-third',
+      '.btn-video-ad', '.btn-skip-video', '[class*="btn-skip-video"]',
 
       // Giovang Popups, Ads & Toplists
       '#banner_popup', '.banner_popup', '.banner_inner', '.banner_cursor',
@@ -286,19 +311,33 @@ module.exports = `
         if (lw.getAttribute("data-tvc") !== "[]") lw.setAttribute("data-tvc", "[]");
       }
 
-      // Tự động bỏ qua và kết thúc video TVC pre-roll nếu xuất hiện
-      const tvcVideo = document.querySelector(".tvc-pre-roll__video, video[src*='tvc_'], video[src*='assets/tvc/']");
-      if (tvcVideo) {
+      // Tự động bỏ qua và kết thúc video TVC pre-roll nếu xuất hiện (Giờ Vàng, Thể Thao, GhienPhim, CoiPhim)
+      const tvcVideos = document.querySelectorAll(".tvc-pre-roll__video, video[src*='tvc_'], video[src*='assets/tvc/'], #video-premium, #video-second, #video-third");
+      tvcVideos.forEach(tvcVideo => {
         try {
           tvcVideo.muted = true;
           tvcVideo.currentTime = tvcVideo.duration || 999;
           tvcVideo.dispatchEvent(new Event("ended"));
+          if (tvcVideo.id === "video-premium" || tvcVideo.id === "video-second" || tvcVideo.id === "video-third") {
+            tvcVideo.pause();
+            tvcVideo.src = "";
+            tvcVideo.remove();
+          }
         } catch (e) {}
-      }
-      const skipBtn = document.querySelector(".tvc-pre-roll__skip button, .tvc-pre-roll__skip, [class*='skip'] button");
-      if (skipBtn && typeof skipBtn.click === "function") {
-        try { skipBtn.click(); } catch (e) {}
-      }
+      });
+      const skipBtns = document.querySelectorAll(".tvc-pre-roll__skip button, .tvc-pre-roll__skip, [class*='skip'] button, .btn-skip-video, [class*='btn-skip-video']");
+      skipBtns.forEach(skipBtn => {
+        if (skipBtn && typeof skipBtn.click === "function") {
+          try { skipBtn.click(); } catch (e) {}
+        }
+      });
+      const tvcLayers = document.querySelectorAll(".video-ad-layer, [class*='video-ad-layer'], .ad-msg, [class*='ad-msg'], .random-content");
+      tvcLayers.forEach(layer => {
+        try {
+          layer.style.setProperty("display", "none", "important");
+          layer.remove();
+        } catch (e) {}
+      });
 
       if (document.querySelectorAll) {
         document.querySelectorAll(adSelectors.join(",")).forEach(el => {
@@ -315,11 +354,18 @@ module.exports = `
           ) {
             return;
           }
-          // Bảo vệ video stream thể thao không bao giờ bị xóa nhầm
-          if (el.tagName === "VIDEO" && !el.classList.contains("tvc-pre-roll__video") && !el.src?.includes("tvc")) {
+          // Bảo vệ video stream thật không bao giờ bị xóa nhầm (chỉ cho phép xóa TVC/Ads)
+          if (
+            el.tagName === "VIDEO" &&
+            !el.classList.contains("tvc-pre-roll__video") &&
+            !el.src?.includes("tvc") &&
+            el.id !== "video-premium" &&
+            el.id !== "video-second" &&
+            el.id !== "video-third"
+          ) {
             return;
           }
-          const parent = (el.closest && el.closest('.sspp-area, div[class*="sspp"], .component.ads, [class*="component ads"], .adtop, .adbot, .no-ads, .anti-bad-ad, .ad-1170x150, [class*="ad-1170x150"], div[style*="fixed"]:not(.livestream_widget):not(.giovang-fixture-player-shell), div[style*="sticky"], div[class*="catfish"], #banner_popup, .banner_popup, #corner-start-popup, .corner-start-popup, [class*="devqc"], .ads-layer, [class*="ads-layer"], .player-logo-wrapper, .bet-button-player, .banner-player, .banner-container, .banner-content, .banner-item, .bet-button, .bet-buttons, [class*="bet-button"], .corner-popup-wrap, .marquee-container, .fixture-banner, [class*="balloon-wrapper"], [class*="banner-pos-"], [class*="ad-popup-modal"], .match-detail__offer, .teambox__odds, .homepage-toplists-content, .toplists-home, .box-odds-match, .gv-bet-dropdown, .sticky-message, .sticky-announcement, [class*="detail-live-brand"]')) || el;
+          const parent = (el.closest && el.closest('.sspp-area, div[class*="sspp"], .component.ads, [class*="component ads"], .adtop, .adbot, .no-ads, .anti-bad-ad, .ad-1170x150, [class*="ad-1170x150"], div[style*="fixed"]:not(.livestream_widget):not(.giovang-fixture-player-shell), div[style*="sticky"], div[class*="catfish"], #banner_popup, .banner_popup, #corner-start-popup, .corner-start-popup, [class*="devqc"], .ads-layer, [class*="ads-layer"], .player-logo-wrapper, .bet-button-player, .banner-player, .banner-container, .banner-content, .banner-item, .bet-button, .bet-buttons, [class*="bet-button"], .corner-popup-wrap, .marquee-container, .fixture-banner, [class*="balloon-wrapper"], [class*="banner-pos-"], [class*="ad-popup-modal"], .match-detail__offer, .teambox__odds, .homepage-toplists-content, .toplists-home, .box-odds-match, .gv-bet-dropdown, .sticky-message, .sticky-announcement, [class*="detail-live-brand"], .video-ad-layer, [class*="video-ad-layer"], .ad-msg, [class*="ad-msg"], .random-content')) || el;
           if (parent) {
             if (parent === lw || (lw && parent.contains && parent.contains(lw))) return;
             if (parent.classList.contains("hlsp") || parent.classList.contains("player-container") || (parent.querySelector && parent.querySelector(".hlsp"))) return;

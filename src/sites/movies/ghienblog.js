@@ -4,6 +4,7 @@ module.exports = {
   "file": "ghienblog.user.js",
   "desc": "Tối ưu hóa đọc bài GhienBlog + Chặn quảng cáo & popunder + Giao diện đọc bài siêu mượt",
   "version": "5.4.6",
+  "isRophim": true,
   "domains": [
     "*://*.ghienphim.blog/*",
     "*://ghienphim.blog/*",
