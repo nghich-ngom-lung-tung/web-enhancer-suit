@@ -15,9 +15,45 @@ function getHubUiCode(icons, siteTitle, scriptVersion) {
   // ─── VIP CONTROL HUB DOM CREATION ───
   function initVipHub() {
     if (document.getElementById("ro-vip-hub")) return;
+    const isComic = typeof isComicPage === "function" && isComicPage() && !document.querySelector("video");
     const hub = document.createElement("div");
     hub.id = "ro-vip-hub";
-    hub.innerHTML = \`
+    hub.innerHTML = isComic ? \`
+      <div id="ro-hub-menu">
+        <div style="font-weight: 700; font-size: 14px; margin-bottom: 6px; color: #51f085; display: flex; justify-content: space-between; align-items: center;">
+          <span class="ro-btn-left">
+            <span class="ro-icon">${icons.book}</span>
+            <span>${siteTitle}</span>
+          </span>
+          <span style="font-size: 11px; opacity: 0.7;">v${scriptVersion}</span>
+        </div>
+        <button class="ro-menu-btn" id="ro-comic-prev-btn">
+          <span class="ro-btn-left"><span class="ro-icon">${icons.skipBack}</span><span>Chương Trước</span></span>
+          <span class="ro-badge">Phím A / ←</span>
+        </button>
+        <button class="ro-menu-btn" id="ro-comic-next-btn">
+          <span class="ro-btn-left"><span class="ro-icon">${icons.skipForward}</span><span>Chương Tiếp Theo</span></span>
+          <span class="ro-badge">Phím D / →</span>
+        </button>
+        <button class="ro-menu-btn" id="ro-comic-up-btn">
+          <span class="ro-btn-left"><span class="ro-icon">${icons.volumeUp}</span><span>Cuộn Lên 450px</span></span>
+          <span class="ro-badge">Phím W / ↑</span>
+        </button>
+        <button class="ro-menu-btn" id="ro-comic-down-btn">
+          <span class="ro-btn-left"><span class="ro-icon">${icons.volumeDown}</span><span>Cuộn Xuống 450px</span></span>
+          <span class="ro-badge">Phím S / ↓</span>
+        </button>
+        <button class="ro-menu-btn" id="ro-fullscreen-btn">
+          <span class="ro-btn-left"><span class="ro-icon">${icons.fullscreen}</span><span>Toàn Màn Hình</span></span>
+          <span class="ro-badge">Phím F</span>
+        </button>
+        <button class="ro-menu-btn" id="ro-nukeads-btn" style="border-color: rgba(239, 68, 68, 0.4); color: #f87171;">
+          <span class="ro-btn-left"><span class="ro-icon">${icons.shieldClean}</span><span>Diệt Sạch Banner Rác</span></span>
+          <span class="ro-badge" style="color: #f87171;">Phím X</span>
+        </button>
+      </div>
+      <div id="ro-hub-toggle" title="Web Enhancer Control Hub">${icons.crown}</div>
+    \` : \`
       <div id="ro-hub-menu">
         <div style="font-weight: 700; font-size: 14px; margin-bottom: 6px; color: #51f085; display: flex; justify-content: space-between; align-items: center;">
           <span class="ro-btn-left">
@@ -80,7 +116,7 @@ function getHubUiCode(icons, siteTitle, scriptVersion) {
           </button>
         </div>
       </div>
-      <div id="ro-hub-toggle" title="Cinema Pro Control Hub">${icons.crown}</div>
+      <div id="ro-hub-toggle" title="Web Enhancer Control Hub">${icons.crown}</div>
     \`;
     document.body.appendChild(hub);
 
@@ -100,6 +136,10 @@ function getHubUiCode(icons, siteTitle, scriptVersion) {
       if (el) el.addEventListener("click", fn);
     };
 
+    bind("ro-comic-prev-btn", () => navigateComicChapter(-1));
+    bind("ro-comic-next-btn", () => navigateComicChapter(1));
+    bind("ro-comic-up-btn", () => window.scrollBy({ top: -450, behavior: "smooth" }));
+    bind("ro-comic-down-btn", () => window.scrollBy({ top: 450, behavior: "smooth" }));
     bind("ro-stream-preview", copyM3u8);
     bind("ro-potplayer-btn", openPotPlayer);
     bind("ro-vlc-btn", openVlcPlayer);

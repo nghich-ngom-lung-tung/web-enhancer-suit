@@ -6,12 +6,22 @@ module.exports = {
   "version": "5.4.5",
   "domains": [
     "*://*.toptruyenzone12.com/*",
+    "*://toptruyenzone12.com/*",
     "*://*.toptruyenzone*.com/*",
+    "*://toptruyenzone*.com/*",
     "*://*.toptruyen*.com/*",
+    "*://toptruyen*.com/*",
     "*://*.toptruyen*.net/*",
+    "*://toptruyen*.net/*",
     "*://*.toptruyen*.org/*",
+    "*://toptruyen*.org/*",
     "*://*.toptruyen.net/*",
-    "*://*.toptruyen.com/*"
+    "*://toptruyen.net/*",
+    "*://*.toptruyen.com/*",
+    "*://toptruyen.com/*"
+  ],
+  "includes": [
+    "*://*toptruyen*/*"
   ],
   "siteCss": `
     .advertisement,

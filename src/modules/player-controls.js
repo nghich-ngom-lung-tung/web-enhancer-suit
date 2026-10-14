@@ -196,14 +196,18 @@ module.exports = `
 
   function navigateComicChapter(direction) {
     if (direction < 0) {
-      const prevBtn = document.querySelector("[data-prev-chapter-container] a, [data-prev-chapter-container] button, a.prev-chapter, a.chapter-previous, a.previous-chapter, a.previous-chapter-mobile, a.previous-chapter-mobi, .chapter-prev a");
+      const prevBtn = document.querySelector(
+        "[data-prev-chapter-container] a, [data-prev-chapter-container] button, a.prev-chapter, a.chapter-previous, a.previous-chapter, a.previous-chapter-mobile, a.previous-chapter-mobi, .chapter-prev a, a.prev, a.back, a.btn-prev, button.btn-prev, .nav-previous a, a[rel='prev'], a[title*='Chương trước'], a[title*='Tập trước']"
+      );
       if (prevBtn) {
         prevBtn.click();
         showToast("Đang chuyển về chương trước...");
         return;
       }
     } else {
-      const nextBtn = document.querySelector("[data-next-chapter-container] a, [data-next-chapter-container] button, a.next-chapter, a.chapter-next, a.next-chapter-mobile, a.next-chapter-mobi, .chapter-next a");
+      const nextBtn = document.querySelector(
+        "[data-next-chapter-container] a, [data-next-chapter-container] button, a.next-chapter, a.chapter-next, a.next-chapter-mobile, a.next-chapter-mobi, .chapter-next a, a.next, a.forward, a.btn-next, button.btn-next, .nav-next a, a[rel='next'], a[title*='Chương sau'], a[title*='Tập sau']"
+      );
       if (nextBtn) {
         nextBtn.click();
         showToast("Đang chuyển tới chương tiếp theo...");

@@ -17,7 +17,7 @@ const adblockCss = fs.readFileSync(path.join(__dirname, "css", "adblock.css"), "
 const theaterCss = fs.readFileSync(path.join(__dirname, "css", "theater.css"), "utf8");
 const hubCss = fs.readFileSync(path.join(__dirname, "css", "hub.css"), "utf8");
 
-function generateUserscript(site, isMasterAllInOne = false, allSites = []) {
+function generateUserscript(site, isMasterAllInOne = false, allSites = [], customMasterFileName = "cinema-pro-all.user.js") {
   const sitesList = allSites.length > 0 ? allSites : [site];
   const rawMatches = isMasterAllInOne
     ? Array.from(new Set([...sitesList.flatMap(s => s.domains), ...COMMON_EMBED_MATCHES]))
@@ -57,16 +57,16 @@ function generateUserscript(site, isMasterAllInOne = false, allSites = []) {
     ? "\n" + includes.map(inc => `// @include      ${inc}`).join("\n")
     : "";
 
-  const fileName = isMasterAllInOne ? "cinema-pro-all.user.js" : site.file;
+  const fileName = isMasterAllInOne ? customMasterFileName : site.file;
   const scriptName = isMasterAllInOne
-    ? "Cinema Pro Suite (All-In-One) - Kho Phim & Anime Việt Nam"
+    ? "Web Enhancer Suite (All-In-One) - Phim, Anime, Bóng Đá & Truyện Tranh"
     : site.name;
   const scriptDesc = isMasterAllInOne
-    ? "Bản Master Gộp Tất Cả Trong Một: Mở khóa VIP + Vô hạn Coin + Chặn 100% AdBlock/Stream Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Tua 5s/Intro 85s/Volume & Anime HDR trên hơn 37+ website phim, anime, hoạt hình 3D Việt Nam!"
+    ? "Bản Master Gộp Tất Cả Trong Một: Mở khóa VIP 2099 + Vô hạn Coin + Chặn 100% AdBlock/Stream Guard/Ads tàng hình + Tóm link M3U8 PotPlayer/VLC + Phím tắt Tua 5s/Skip Intro 85s/Đọc truyện A-D cuộn trang W-S & Bộ lọc Anime OLED HDR trên 45+ website phim, anime, bóng đá trực tiếp và truyện tranh Việt Nam!"
     : site.desc;
-  const scriptVersion = isMasterAllInOne ? "5.4.4" : (site.version || "5.4.4");
+  const scriptVersion = isMasterAllInOne ? "5.4.5" : (site.version || "5.4.5");
   const enableRophimVip = isMasterAllInOne || Boolean(site.isRophim);
-  const siteTitle = isMasterAllInOne ? "Cinema Pro (All-In-One)" : site.name;
+  const siteTitle = isMasterAllInOne ? "Web Enhancer (All-In-One)" : site.name;
 
   const snifferCode = getSnifferCode(enableRophimVip);
   const hubUiCode = getHubUiCode(icons, siteTitle, scriptVersion);
@@ -87,7 +87,7 @@ ${hubCss}
 
   const cat = site.category || "movies";
   const scriptRelPath = isMasterAllInOne
-    ? "scripts/cinema-pro-all.user.js"
+    ? `scripts/${customMasterFileName}`
     : `scripts/${cat}/${fileName}`;
 
   return `// ==UserScript==
@@ -134,7 +134,8 @@ ${playerControlsCode}
   window.addEventListener("DOMContentLoaded", ensureStreamUrl);
   window.addEventListener("load", ensureStreamUrl);
 
-  console.log("%c[Cinema Pro] " + ${JSON.stringify(scriptName)} + " Ready!", "font-size: 13px; font-weight: bold; color: #10b981;");
+  const brandTag = ${isMasterAllInOne ? '"[Web Enhancer]"' : '"[Cinema Pro]"'};
+  console.log("%c" + brandTag + " " + ${JSON.stringify(scriptName)} + " Ready!", "font-size: 13px; font-weight: bold; color: #10b981;");
 })();
 `;
 }

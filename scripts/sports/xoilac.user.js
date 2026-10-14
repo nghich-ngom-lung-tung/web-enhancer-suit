@@ -1287,9 +1287,45 @@
   // ─── VIP CONTROL HUB DOM CREATION ───
   function initVipHub() {
     if (document.getElementById("ro-vip-hub")) return;
+    const isComic = typeof isComicPage === "function" && isComicPage() && !document.querySelector("video");
     const hub = document.createElement("div");
     hub.id = "ro-vip-hub";
-    hub.innerHTML = `
+    hub.innerHTML = isComic ? `
+      <div id="ro-hub-menu">
+        <div style="font-weight: 700; font-size: 14px; margin-bottom: 6px; color: #51f085; display: flex; justify-content: space-between; align-items: center;">
+          <span class="ro-btn-left">
+            <span class="ro-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg></span>
+            <span>Xôi Lạc TV (XoilacZ) VIP & Cinema Pro Suite</span>
+          </span>
+          <span style="font-size: 11px; opacity: 0.7;">v5.4</span>
+        </div>
+        <button class="ro-menu-btn" id="ro-comic-prev-btn">
+          <span class="ro-btn-left"><span class="ro-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" x2="5" y1="19" y2="5"/></svg></span><span>Chương Trước</span></span>
+          <span class="ro-badge">Phím A / ←</span>
+        </button>
+        <button class="ro-menu-btn" id="ro-comic-next-btn">
+          <span class="ro-btn-left"><span class="ro-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" x2="19" y1="5" y2="19"/></svg></span><span>Chương Tiếp Theo</span></span>
+          <span class="ro-badge">Phím D / →</span>
+        </button>
+        <button class="ro-menu-btn" id="ro-comic-up-btn">
+          <span class="ro-btn-left"><span class="ro-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></span><span>Cuộn Lên 450px</span></span>
+          <span class="ro-badge">Phím W / ↑</span>
+        </button>
+        <button class="ro-menu-btn" id="ro-comic-down-btn">
+          <span class="ro-btn-left"><span class="ro-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></span><span>Cuộn Xuống 450px</span></span>
+          <span class="ro-badge">Phím S / ↓</span>
+        </button>
+        <button class="ro-menu-btn" id="ro-fullscreen-btn">
+          <span class="ro-btn-left"><span class="ro-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></span><span>Toàn Màn Hình</span></span>
+          <span class="ro-badge">Phím F</span>
+        </button>
+        <button class="ro-menu-btn" id="ro-nukeads-btn" style="border-color: rgba(239, 68, 68, 0.4); color: #f87171;">
+          <span class="ro-btn-left"><span class="ro-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="9" x2="15" y1="9" y2="15"/><line x1="15" x2="9" y1="9" y2="15"/></svg></span><span>Diệt Sạch Banner Rác</span></span>
+          <span class="ro-badge" style="color: #f87171;">Phím X</span>
+        </button>
+      </div>
+      <div id="ro-hub-toggle" title="Web Enhancer Control Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg></div>
+    ` : `
       <div id="ro-hub-menu">
         <div style="font-weight: 700; font-size: 14px; margin-bottom: 6px; color: #51f085; display: flex; justify-content: space-between; align-items: center;">
           <span class="ro-btn-left">
@@ -1352,7 +1388,7 @@
           </button>
         </div>
       </div>
-      <div id="ro-hub-toggle" title="Cinema Pro Control Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg></div>
+      <div id="ro-hub-toggle" title="Web Enhancer Control Hub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg></div>
     `;
     document.body.appendChild(hub);
 
@@ -1372,6 +1408,10 @@
       if (el) el.addEventListener("click", fn);
     };
 
+    bind("ro-comic-prev-btn", () => navigateComicChapter(-1));
+    bind("ro-comic-next-btn", () => navigateComicChapter(1));
+    bind("ro-comic-up-btn", () => window.scrollBy({ top: -450, behavior: "smooth" }));
+    bind("ro-comic-down-btn", () => window.scrollBy({ top: 450, behavior: "smooth" }));
     bind("ro-stream-preview", copyM3u8);
     bind("ro-potplayer-btn", openPotPlayer);
     bind("ro-vlc-btn", openVlcPlayer);
@@ -1584,14 +1624,18 @@
 
   function navigateComicChapter(direction) {
     if (direction < 0) {
-      const prevBtn = document.querySelector("[data-prev-chapter-container] a, [data-prev-chapter-container] button, a.prev-chapter, a.chapter-previous, a.previous-chapter, a.previous-chapter-mobile, a.previous-chapter-mobi, .chapter-prev a");
+      const prevBtn = document.querySelector(
+        "[data-prev-chapter-container] a, [data-prev-chapter-container] button, a.prev-chapter, a.chapter-previous, a.previous-chapter, a.previous-chapter-mobile, a.previous-chapter-mobi, .chapter-prev a, a.prev, a.back, a.btn-prev, button.btn-prev, .nav-previous a, a[rel='prev'], a[title*='Chương trước'], a[title*='Tập trước']"
+      );
       if (prevBtn) {
         prevBtn.click();
         showToast("Đang chuyển về chương trước...");
         return;
       }
     } else {
-      const nextBtn = document.querySelector("[data-next-chapter-container] a, [data-next-chapter-container] button, a.next-chapter, a.chapter-next, a.next-chapter-mobile, a.next-chapter-mobi, .chapter-next a");
+      const nextBtn = document.querySelector(
+        "[data-next-chapter-container] a, [data-next-chapter-container] button, a.next-chapter, a.chapter-next, a.next-chapter-mobile, a.next-chapter-mobi, .chapter-next a, a.next, a.forward, a.btn-next, button.btn-next, .nav-next a, a[rel='next'], a[title*='Chương sau'], a[title*='Tập sau']"
+      );
       if (nextBtn) {
         nextBtn.click();
         showToast("Đang chuyển tới chương tiếp theo...");
@@ -1703,5 +1747,6 @@
   window.addEventListener("DOMContentLoaded", ensureStreamUrl);
   window.addEventListener("load", ensureStreamUrl);
 
-  console.log("%c[Cinema Pro] " + "Xôi Lạc TV (XoilacZ) VIP & Cinema Pro Suite" + " Ready!", "font-size: 13px; font-weight: bold; color: #10b981;");
+  const brandTag = "[Cinema Pro]";
+  console.log("%c" + brandTag + " " + "Xôi Lạc TV (XoilacZ) VIP & Cinema Pro Suite" + " Ready!", "font-size: 13px; font-weight: bold; color: #10b981;");
 })();

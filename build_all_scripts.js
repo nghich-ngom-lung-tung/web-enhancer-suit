@@ -48,9 +48,13 @@ SITE_DEFINITIONS.forEach(site => {
 });
 
 // 2. Compile Master All-In-One script
-const masterCode = generateUserscript(SITE_DEFINITIONS[0], true, SITE_DEFINITIONS);
+const masterCode = generateUserscript(SITE_DEFINITIONS[0], true, SITE_DEFINITIONS, "cinema-pro-all.user.js");
 fs.writeFileSync(path.join(__dirname, "scripts", "cinema-pro-all.user.js"), masterCode, "utf8");
-console.log(`\n  ⭐ Built Master Suite: scripts/cinema-pro-all.user.js`);
+console.log(`\n  ⭐ Built Master Suite (Compatibility): scripts/cinema-pro-all.user.js`);
+
+const webEnhancerCode = generateUserscript(SITE_DEFINITIONS[0], true, SITE_DEFINITIONS, "web-enhancer-all.user.js");
+fs.writeFileSync(path.join(__dirname, "scripts", "web-enhancer-all.user.js"), webEnhancerCode, "utf8");
+console.log(`  ⭐ Built Master Suite (Web Enhancer): scripts/web-enhancer-all.user.js`);
 
 // 3. Compile core.js (pure JS without userscript metadata for direct embedding/console)
 const coreJsCode = masterCode.split("// ==/UserScript==\n\n")[1];

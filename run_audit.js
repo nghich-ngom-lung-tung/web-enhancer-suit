@@ -535,7 +535,7 @@ scriptFiles.forEach(file => {
 // ═════════════════════════════════════════════════════════════════
 console.log("\n👑 PHASE 4: Rophim VIP 2099 & Coin Backend Patcher Audit");
 
-const rophimScripts = scriptFiles.filter(f => f.endsWith("rophim.user.js") || f.endsWith("tampermonkey.user.js") || f.endsWith("cinema-pro-all.user.js") || f.endsWith("netanime.user.js"));
+const rophimScripts = scriptFiles.filter(f => f.endsWith("rophim.user.js") || f.endsWith("tampermonkey.user.js") || f.endsWith("cinema-pro-all.user.js") || f.endsWith("web-enhancer-all.user.js") || f.endsWith("netanime.user.js"));
 rophimScripts.forEach(file => {
   const code = fs.readFileSync(file, "utf8");
   const { window, document } = createTopWindowMock("rophim1.vip");
@@ -613,7 +613,7 @@ rophimScripts.forEach(file => {
   }
 });
 
-const motchillScripts = scriptFiles.filter(f => f.endsWith("motchill.user.js") || f.endsWith("cinema-pro-all.user.js"));
+const motchillScripts = scriptFiles.filter(f => f.endsWith("motchill.user.js") || f.endsWith("cinema-pro-all.user.js") || f.endsWith("web-enhancer-all.user.js"));
 motchillScripts.forEach(file => {
   const code = fs.readFileSync(file, "utf8");
   const { window, document } = createTopWindowMock("phimmotchill.online");

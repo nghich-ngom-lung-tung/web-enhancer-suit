@@ -6,9 +6,16 @@ module.exports = {
   "version": "5.4.5",
   "domains": [
     "*://*.zettruyen3.com/*",
+    "*://zettruyen3.com/*",
     "*://*.zettruyen.com/*",
+    "*://zettruyen.com/*",
     "*://*.zettruyen.net/*",
-    "*://*.zettruyen.org/*"
+    "*://zettruyen.net/*",
+    "*://*.zettruyen.org/*",
+    "*://zettruyen.org/*"
+  ],
+  "includes": [
+    "*://*zettruyen*/*"
   ],
   "siteCss": `
     .ads-tool-banner-container,
