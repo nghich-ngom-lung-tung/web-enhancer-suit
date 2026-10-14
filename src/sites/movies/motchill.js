@@ -3,7 +3,7 @@ module.exports = {
   "name": "Motchill VIP & Cinema Pro Suite",
   "file": "motchill.user.js",
   "desc": "Mở khóa VIP Pro 2099 Vĩnh Viễn + Vô hạn Coins + Chặn 100% AdBlock/Stream Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Skip Intro & Anime HDR",
-  "version": "5.4.3",
+  "version": "5.4.4",
   "isRophim": true,
   "domains": [
     "*://phimmotchill.online/*",

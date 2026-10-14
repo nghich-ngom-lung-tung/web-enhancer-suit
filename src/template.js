@@ -64,7 +64,7 @@ function generateUserscript(site, isMasterAllInOne = false, allSites = []) {
   const scriptDesc = isMasterAllInOne
     ? "Bản Master Gộp Tất Cả Trong Một: Mở khóa VIP + Vô hạn Coin + Chặn 100% AdBlock/Stream Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Tua 5s/Intro 85s/Volume & Anime HDR trên hơn 37+ website phim, anime, hoạt hình 3D Việt Nam!"
     : site.desc;
-  const scriptVersion = isMasterAllInOne ? "5.4.3" : (site.version || "5.4.3");
+  const scriptVersion = isMasterAllInOne ? "5.4.4" : (site.version || "5.4.4");
   const enableRophimVip = isMasterAllInOne || Boolean(site.isRophim);
   const siteTitle = isMasterAllInOne ? "Cinema Pro (All-In-One)" : site.name;
 

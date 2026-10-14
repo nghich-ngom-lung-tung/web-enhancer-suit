@@ -730,11 +730,21 @@ function getSnifferCode(enableRophimVip) {
         const mockStr = getRophimMockXhr(targetUrl);
         if (mockStr) {
           try {
+            let parsedObj = null;
+            try { parsedObj = JSON.parse(mockStr); } catch (e) {}
             Object.defineProperty(xhr, "readyState", { value: 4, configurable: true, writable: true });
             Object.defineProperty(xhr, "status", { value: 200, configurable: true, writable: true });
             Object.defineProperty(xhr, "statusText", { value: "OK", configurable: true, writable: true });
             Object.defineProperty(xhr, "responseText", { value: mockStr, configurable: true, writable: true });
-            Object.defineProperty(xhr, "response", { value: mockStr, configurable: true, writable: true });
+            Object.defineProperty(xhr, "responseURL", { value: targetUrl, configurable: true, writable: true });
+            Object.defineProperty(xhr, "response", {
+              get: function () {
+                if (this.responseType === "json") return parsedObj;
+                if (this.responseType === "text") return mockStr;
+                return parsedObj !== null ? parsedObj : mockStr;
+              },
+              configurable: true
+            });
             xhr.getAllResponseHeaders = function () {
               return "content-type: application/json; charset=utf-8";
             };

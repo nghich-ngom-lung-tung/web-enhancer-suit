@@ -8,7 +8,8 @@ module.exports = `
   const VIP_EXPIRY_TIMESTAMP = Math.floor(VIP_EXPIRY_DATE.getTime() / 1000);
   const COIN_BALANCE = 999999999;
   const ROPHIM_KEYWORDS = [
-    "/baseapi/api/v1/tcoin/me",
+    "/baseapi/api/v1/tcoin",
+    "tcoin",
     "/baseapi/api/v1/user/",
     "/baseapi/api/v1/vip/",
     "/baseapi/api/v1/bookmarks",
@@ -270,19 +271,44 @@ module.exports = `
       });
     }
 
-    // 10. TCoin balance (Rophim)
-    if (url.includes("/tcoin/me")) {
+    // 10. TCoin balance & exchange (Rophim)
+    if (url.includes("/tcoin") || url.includes("tcoin")) {
+      if (url.includes("redeem") || url.includes("exchange") || url.includes("gift")) {
+        return JSON.stringify({
+          status: 200,
+          success: true,
+          code: 200,
+          message: "Đổi quà thành công! Gói VIP Cinema Pro đã được kích hoạt.",
+          msg: "Đổi quà thành công!",
+          data: {
+            thungBalance: COIN_BALANCE,
+            balance: COIN_BALANCE,
+            coin_balance: COIN_BALANCE,
+            tcoin: COIN_BALANCE
+          }
+        });
+      }
       return JSON.stringify({
         status: 200,
         success: true,
+        code: 200,
         thungBalance: COIN_BALANCE,
         balance: COIN_BALANCE,
         coin_balance: COIN_BALANCE,
+        tcoin: COIN_BALANCE,
         total: COIN_BALANCE,
         data: {
           thungBalance: COIN_BALANCE,
           balance: COIN_BALANCE,
           coin_balance: COIN_BALANCE,
+          tcoin: COIN_BALANCE,
+          total: COIN_BALANCE
+        },
+        result: {
+          thungBalance: COIN_BALANCE,
+          balance: COIN_BALANCE,
+          coin_balance: COIN_BALANCE,
+          tcoin: COIN_BALANCE,
           total: COIN_BALANCE
         }
       });
@@ -383,16 +409,25 @@ module.exports = `
         }
       };
     }
-    if (url && url.includes("/tcoin/me")) {
+    if (url && (url.includes("/tcoin") || url.includes("tcoin"))) {
       data.thungBalance = COIN_BALANCE;
       data.balance = COIN_BALANCE;
       data.coin_balance = COIN_BALANCE;
+      data.tcoin = COIN_BALANCE;
       data.total = COIN_BALANCE;
       if (data.data && typeof data.data === "object") {
         data.data.thungBalance = COIN_BALANCE;
         data.data.balance = COIN_BALANCE;
         data.data.coin_balance = COIN_BALANCE;
+        data.data.tcoin = COIN_BALANCE;
         data.data.total = COIN_BALANCE;
+      }
+      if (data.result && typeof data.result === "object") {
+        data.result.thungBalance = COIN_BALANCE;
+        data.result.balance = COIN_BALANCE;
+        data.result.coin_balance = COIN_BALANCE;
+        data.result.tcoin = COIN_BALANCE;
+        data.result.total = COIN_BALANCE;
       }
       return data;
     }
@@ -509,11 +544,21 @@ module.exports = `
         const mockStr = getRophimMockXhr(url);
         if (mockStr) {
           try {
+            let parsedObj = null;
+            try { parsedObj = JSON.parse(mockStr); } catch (e) {}
             Object.defineProperty(xhr, "readyState", { value: 4, configurable: true, writable: true });
             Object.defineProperty(xhr, "status", { value: 200, configurable: true, writable: true });
             Object.defineProperty(xhr, "statusText", { value: "OK", configurable: true, writable: true });
             Object.defineProperty(xhr, "responseText", { value: mockStr, configurable: true, writable: true });
-            Object.defineProperty(xhr, "response", { value: mockStr, configurable: true, writable: true });
+            Object.defineProperty(xhr, "responseURL", { value: url, configurable: true, writable: true });
+            Object.defineProperty(xhr, "response", {
+              get: function () {
+                if (this.responseType === "json") return parsedObj;
+                if (this.responseType === "text") return mockStr;
+                return parsedObj !== null ? parsedObj : mockStr;
+              },
+              configurable: true
+            });
             xhr.getAllResponseHeaders = function () {
               return "content-type: application/json; charset=utf-8";
             };
@@ -536,7 +581,14 @@ module.exports = `
             Object.defineProperty(xhr, "readyState", { value: 4, configurable: true, writable: true });
             Object.defineProperty(xhr, "status", { value: 200, configurable: true, writable: true });
             Object.defineProperty(xhr, "responseText", { value: str, configurable: true, writable: true });
-            Object.defineProperty(xhr, "response", { value: str, configurable: true, writable: true });
+            Object.defineProperty(xhr, "response", {
+              get: function () {
+                if (this.responseType === "json") return patched;
+                if (this.responseType === "text") return str;
+                return patched || str;
+              },
+              configurable: true
+            });
           }
         } catch (e) {}
       }
@@ -700,20 +752,84 @@ module.exports = `
     }
   } catch (e) {}
 
-  // Tự động gỡ bỏ tcoin-disabled và đảm bảo số dư TCoin 999,999,999 hiển thị rực rỡ
-  setInterval(() => {
+  // ─── TỰ ĐỘNG GỠ BỎ TCOIN-DISABLED & ĐỒNG BỘ 999,999,999 TCOIN MỌI GIAO DIỆN ───
+  function patchTcoinDom() {
     try {
       const disabledMenu = document.querySelector(".tcoin-disabled");
       if (disabledMenu) disabledMenu.classList.remove("tcoin-disabled");
+
+      // 1. Menu Dropdown góc trên bên phải
       const coinEl = document.querySelector(".tcoin-menu-content strong");
       if (coinEl && (!coinEl.textContent || coinEl.textContent === "0")) {
         coinEl.textContent = "999,999,999";
       }
+
+      // 2. Widget TCoin thanh Sidebar quản lý tài khoản (/user/*)
+      const sidebarHeadings = document.querySelectorAll(
+        ".tcoin-highlight__text .heading-xs, .tcoin-highlight .heading-xs, .tcoin-highlight__text div:last-child"
+      );
+      sidebarHeadings.forEach(el => {
+        if (!el) return;
+        const txt = el.textContent ? el.textContent.trim() : "";
+        if (txt === "0 TCoin" || txt === "0" || txt === "999999999 TCoin" || (txt.includes("TCoin") && !txt.includes("999,999,999"))) {
+          if (!txt.includes("Bạn hiện có") && !txt.includes("Đổi Quà")) {
+            el.textContent = "999,999,999 TCoin";
+          }
+        }
+      });
+
+      // 3. Quét kiểm tra khối .tcoin-highlight
+      document.querySelectorAll(".tcoin-highlight, [class*='tcoin-highlight']").forEach(container => {
+        const textContainer = container.querySelector(".tcoin-highlight__text");
+        if (textContainer) {
+          const heading = textContainer.querySelector(".heading-xs");
+          if (heading && (!heading.textContent || !heading.textContent.includes("999,999,999"))) {
+            heading.textContent = "999,999,999 TCoin";
+          }
+        }
+      });
+
+      // 4. TreeWalker quét nhanh mọi text node chứa '0 TCoin' trên trang
+      if (typeof document !== "undefined" && typeof document.createTreeWalker === "function" && typeof NodeFilter !== "undefined") {
+        const walker = document.createTreeWalker(
+          document.body || document.documentElement,
+          NodeFilter.SHOW_TEXT,
+          null,
+          false
+        );
+        let node;
+        while ((node = walker.nextNode())) {
+          if (node.nodeValue && /\b0\s*TCoin\b/.test(node.nodeValue)) {
+            node.nodeValue = node.nodeValue.replace(/\b0\s*TCoin\b/g, "999,999,999 TCoin");
+          }
+        }
+      }
+
       if (location.hostname && (location.hostname.includes("motchill") || location.hostname.includes("phimmotchill"))) {
         document.documentElement.style.setProperty("--color-primary", "#51f085");
         document.documentElement.style.setProperty("--primary-color", "#51f085");
         document.documentElement.style.setProperty("--primary-text", "#51f085");
       }
     } catch (e) {}
-  }, 1000);
+  }
+
+  // MutationObserver phản ứng tức thì khi Next.js render hoặc đổi trang
+  try {
+    if (typeof MutationObserver !== "undefined") {
+      const tcoinObserver = new MutationObserver(() => {
+        patchTcoinDom();
+      });
+      const targetObs = (typeof document !== "undefined" && (document.body || document.documentElement));
+      if (targetObs) {
+        tcoinObserver.observe(targetObs, {
+          childList: true,
+          subtree: true,
+          characterData: true
+        });
+      }
+    }
+  } catch (e) {}
+
+  // Interval dự phòng định kỳ
+  setInterval(patchTcoinDom, 400);
 `;
