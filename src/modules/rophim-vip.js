@@ -10,6 +10,7 @@ module.exports = `
     "/baseapi/api/v1/tcoin/me",
     "/baseapi/api/v1/user/",
     "/baseapi/api/v1/vip/",
+    "/baseapi/api/v1/notifications/unread-counts",
     "/baseapi/api/v1/ads",
     "/baseapi/api/v1/banner",
     "/baseapi/api/v1/advertising",
@@ -34,6 +35,18 @@ module.exports = `
         if (Array.isArray(data.result)) data.result = [];
       }
       return data;
+    }
+    if (url && url.includes("/notifications/unread-counts")) {
+      return {
+        status: 200,
+        success: true,
+        data: {
+          notificationsMovie: [],
+          notificationsOther: [],
+          unreadCountMovie: 0,
+          unreadCountOther: 0
+        }
+      };
     }
     if (url && url.includes("/tcoin/me")) {
       data.thungBalance = COIN_BALANCE;
@@ -69,6 +82,19 @@ module.exports = `
   }
 
   async function handleRophimFetchResponse(resPromise, url) {
+    if (isRophimTarget(url)) {
+      if (url.includes("/tcoin/me") || url.includes("/notifications/unread-counts")) {
+        const dummyData = url.includes("/tcoin/me")
+          ? { status: 200, success: true, thungBalance: COIN_BALANCE, balance: COIN_BALANCE, coin_balance: COIN_BALANCE, total: COIN_BALANCE }
+          : { status: 200, success: true, data: { notificationsMovie: [], notificationsOther: [], unreadCountMovie: 0, unreadCountOther: 0 } };
+        return new Response(JSON.stringify(dummyData), {
+          status: 200,
+          statusText: "OK",
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+    }
+
     const res = await resPromise;
     try {
       const ct = res.headers.get("content-type");
@@ -98,6 +124,21 @@ module.exports = `
 
   function handleRophimXhrResponse(xhr, url) {
     try {
+      if (isRophimTarget(url)) {
+        if (url.includes("/tcoin/me") || url.includes("/notifications/unread-counts")) {
+          const dummyData = url.includes("/tcoin/me")
+            ? { status: 200, success: true, thungBalance: COIN_BALANCE, balance: COIN_BALANCE, coin_balance: COIN_BALANCE, total: COIN_BALANCE }
+            : { status: 200, success: true, data: { notificationsMovie: [], notificationsOther: [], unreadCountMovie: 0, unreadCountOther: 0 } };
+          const str = JSON.stringify(dummyData);
+          try {
+            Object.defineProperty(xhr, "status", { value: 200, configurable: true, writable: true });
+            Object.defineProperty(xhr, "statusText", { value: "OK", configurable: true, writable: true });
+            Object.defineProperty(xhr, "responseText", { value: str, configurable: true, writable: true });
+            Object.defineProperty(xhr, "response", { value: str, configurable: true, writable: true });
+          } catch (e) {}
+          return;
+        }
+      }
       const ct = xhr.getResponseHeader("content-type");
       if (ct && ct.includes("application/json")) {
         try {
@@ -113,4 +154,16 @@ module.exports = `
       }
     } catch (e) {}
   }
+
+  // Tự động gỡ bỏ tcoin-disabled và đảm bảo số dư TCoin 999,999,999 hiển thị rực rỡ
+  setInterval(() => {
+    try {
+      const disabledMenu = document.querySelector(".tcoin-disabled");
+      if (disabledMenu) disabledMenu.classList.remove("tcoin-disabled");
+      const coinEl = document.querySelector(".tcoin-menu-content strong");
+      if (coinEl && (!coinEl.textContent || coinEl.textContent === "0")) {
+        coinEl.textContent = "999,999,999";
+      }
+    } catch (e) {}
+  }, 1000);
 `;

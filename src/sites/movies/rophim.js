@@ -3,7 +3,7 @@ module.exports = {
   "name": "Rophim VIP & Cinema Pro Suite",
   "file": "rophim.user.js",
   "desc": "Mở khóa VIP 2099 + Vô hạn Coin + Chặn 100% AdBlock/Player Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Skip Intro & Anime HDR",
-  "version": "5.2",
+  "version": "5.4",
   "isRophim": true,
   "domains": [
     "*://rophim1.vip/*",
@@ -31,6 +31,9 @@ module.exports = {
     "*://*.rophim10.store/*",
     "*://rophim10.store/*"
   ],
-  "siteCss": "\n      :root {\n        --primary-color: #51f085 !important;\n        --primary-text: #51f085 !important;\n      }\n      .dev.dev-up { color: #51f085 !important; }\n      .tag-imdb { border: 1px solid #51f085 !important; }\n      .tag-imdb:before { color: #51f085 !important; }\n      .app-box-fix { display: none !important; }\n    ",
+  "includes": [
+    "*://*rophim*/*"
+  ],
+  "siteCss": "\n      :root {\n        --primary-color: #51f085 !important;\n        --primary-text: #51f085 !important;\n      }\n      .dev.dev-up { color: #51f085 !important; }\n      .tag-imdb { border: 1px solid #51f085 !important; }\n      .tag-imdb:before { color: #51f085 !important; }\n      .app-box-fix { display: none !important; }\n      .tcoin-disabled .tcoin-menu-highlight { display: block !important; }\n      .tcoin-menu-highlight { display: block !important; }\n    ",
   "category": "movies"
 };
