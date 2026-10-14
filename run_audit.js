@@ -954,6 +954,15 @@ sportsAndComicsScripts.forEach(file => {
     const hasLuotNovelNav = content.includes("#prevChapter") && content.includes("#nextChapter");
     report(`${file}: LuotNovel chapter navigation (#prevChapter, #nextChapter) mapped`, hasLuotNovelNav);
   }
+
+  // GhienPhim & DuPhim checks
+  if (file.includes("ghienphim") || file.includes("duphim") || file.includes("web-enhancer-all")) {
+    const hasFloaterAdsNuked = content.includes(".ad-floater") && content.includes(".promotion-popup") && content.includes(".source-banner");
+    report(`${file}: GhienPhim & DuPhim ad floaters & promotion popups suppressed`, hasFloaterAdsNuked);
+
+    const hasBetLinksNuked = content.includes("bom88") || content.includes("ok999");
+    report(`${file}: GhienPhim & DuPhim betting links (bom88/ok999) suppressed`, hasBetLinksNuked);
+  }
 });
 
 // Final check after promise tick

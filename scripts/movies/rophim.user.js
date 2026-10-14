@@ -2080,6 +2080,8 @@
           url.includes("truyenqq") ||
           url.includes("truyenvn") ||
           url.includes("luotnovel") ||
+          url.includes("ghienphim") ||
+          url.includes("duphim") ||
           url.includes("youtube.com") ||
           url.includes("youtu.be");
         if (!isSafe) {
@@ -2109,6 +2111,9 @@
       u.includes("chaseherbalpasty.com") ||
       u.includes("dekkopinolin.com") ||
       u.includes("crittereasilyhangover.com") ||
+      u.includes("bom88") ||
+      u.includes("ok999") ||
+      u.includes("irondom.net") ||
       u.includes("advertising") ||
       u.includes("sponsor") ||
       u.includes("popunder") ||
@@ -2164,6 +2169,7 @@
       '.ads-static-header', '.ads-static-home-detail-chapter', '.ads-static-home-middle', 'div[class*="ads-static"]',
       '.popup_layer', '.popup_content', '#popup_content',
       '#ads', '.wrapper-ads', '.mission-ads', '.tr-ads-click', '.popup-noti', '.notification-popup', '#couter-wrapper',
+      '.ad-floater', '.new-target-goal', '.new-floater-goal', '.promotion-popup', '.popuptet-bg', '.source-banner', 'a[href*="bom88"]', 'a[href*="ok999"]',
 
       // Giovang Popups, Ads & Toplists
       '#banner_popup', '.banner_popup', '.banner_inner', '.banner_cursor',

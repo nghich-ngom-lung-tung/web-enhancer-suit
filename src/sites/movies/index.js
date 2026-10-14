@@ -23,5 +23,6 @@ module.exports = [
   require("./chillhay"),
   require("./xemphimplus"),
   require("./topsub"),
-  require("./ssphim")
+  require("./ssphim"),
+  require("./duphim")
 ];
