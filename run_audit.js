@@ -788,6 +788,92 @@ comicVipScripts.forEach(file => {
   }
 });
 
+const ghienphimScripts = scriptFiles.filter(f =>
+  f.endsWith("ghienphim.user.js") ||
+  f.endsWith("duphim.user.js") ||
+  f.endsWith("coiphim.user.js") ||
+  f.endsWith("ghienblog.user.js") ||
+  f.endsWith("ghientruyen.user.js") ||
+  f.endsWith("web-enhancer-all.user.js")
+);
+
+ghienphimScripts.forEach(file => {
+  const code = fs.readFileSync(file, "utf8");
+  const { window, document } = createTopWindowMock("ghienphimz.mom");
+
+  // Create mock Firebase object to test hook
+  window.firebase = {
+    auth: function () {
+      return {
+        currentUser: null,
+        onAuthStateChanged: function (cb) {}
+      };
+    }
+  };
+
+  const ctx = vm.createContext({
+    window,
+    document,
+    location: window.location,
+    top: window.top,
+    self: window.self,
+    navigator: window.navigator,
+    localStorage: window.localStorage,
+    fetch: window.fetch,
+    XMLHttpRequest: window.XMLHttpRequest,
+    setTimeout: window.setTimeout,
+    clearTimeout: window.clearTimeout,
+    setInterval: window.setInterval,
+    clearInterval: window.clearInterval,
+    console: window.console,
+    HTMLMediaElement: window.HTMLMediaElement,
+    Storage: window.Storage,
+    Promise,
+    Response: class {
+      constructor(body, init) {
+        this.body = body;
+        this.status = init?.status || 200;
+        this.headers = init?.headers || {};
+      }
+      json() { return Promise.resolve(JSON.parse(this.body)); }
+      text() { return Promise.resolve(String(this.body)); }
+    }
+  });
+
+  try {
+    vm.runInContext(code, ctx);
+
+    // Test 4.10: Firebase Auth Hook verified
+    let fbPassed = false;
+    if (ctx.window.firebase && typeof ctx.window.firebase.auth === "function") {
+      const auth = ctx.window.firebase.auth();
+      fbPassed = Boolean(auth && auth.currentUser && auth.currentUser.email === "vip.cinemapro@ghienphim.org" && auth.currentUser.displayName.includes("VIP"));
+    }
+    report(`${file}: GhienPhim Firebase Auth hooked with VIP 2099 user`, fbPassed);
+
+    // Test 4.11: /webapi/index checkReward mock verified
+    ctx.window.fetch("https://ghienphimz.mom/webapi/index", {
+      method: "POST",
+      body: JSON.stringify({ actionType: "checkReward" })
+    }).then(res => res.json()).then(data => {
+      const rewardPassed = Boolean(data && data.status === 1 && data.cardType && data.cardType.includes("500K"));
+      report(`${file}: GhienPhim /webapi/index checkReward intercepted with 500K reward`, rewardPassed);
+    });
+
+    // Test 4.12: /webapi/index claimReward mock verified
+    ctx.window.fetch("https://ghienphimz.mom/webapi/index", {
+      method: "POST",
+      body: JSON.stringify({ actionType: "claimReward" })
+    }).then(res => res.json()).then(data => {
+      const claimPassed = Boolean(data && data.status === 1 && data.value === 500000);
+      report(`${file}: GhienPhim /webapi/index claimReward intercepted with 500.000d`, claimPassed);
+    });
+
+  } catch (err) {
+    report(`${file}: GhienPhim VIP Patcher execution`, false, err.stack);
+  }
+});
+
 // ═════════════════════════════════════════════════════════════════
 // 5. LIVE FOOTBALL STREAMING & SPORTS AD-NUKER AUDIT
 // ═════════════════════════════════════════════════════════════════

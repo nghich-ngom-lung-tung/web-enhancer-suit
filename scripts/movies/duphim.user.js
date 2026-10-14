@@ -1167,16 +1167,19 @@
     const isGhienHost = typeof location !== "undefined" && location.hostname && (
       location.hostname.includes("ghienphim") ||
       location.hostname.includes("ghienxemphim") ||
+      location.hostname.includes("ghienphimhay") ||
       location.hostname.includes("coiphim") ||
       location.hostname.includes("xemphimviet") ||
-      location.hostname.includes("duphim")
+      location.hostname.includes("duphim") ||
+      location.hostname.includes("ghienblog") ||
+      location.hostname.includes("ghientruyen")
     );
     if (isGhienHost) {
       try {
         const VIP_GHIENPHIM_USER = {
           uid: "ghienphim-vip-2099",
-          email: "vip.member@ghienphim.pro",
-          displayName: "VIP Member (Cinema Pro 2099)",
+          email: "vip.cinemapro@ghienphim.org",
+          displayName: "VIP Cinema Pro 👑",
           photoURL: "https://ghienphimz.mom/client_assets/images/favicon.png",
           isAnonymous: false,
           emailVerified: true,
@@ -1187,6 +1190,15 @@
           },
           getIdToken: function () {
             return Promise.resolve("mock-firebase-token-vip-2099");
+          },
+          getIdTokenResult: function () {
+            return Promise.resolve({
+              token: "mock-firebase-token-vip-2099",
+              claims: { vip: true, expires: "2099-12-31" }
+            });
+          },
+          reload: function () {
+            return Promise.resolve();
           }
         };
 
@@ -1256,6 +1268,22 @@
                 }
                 if (origReward) return origReward.apply(this, arguments);
               };
+              const origClaim = window.business.claimReward;
+              window.business.claimReward = function (data, cb) {
+                if (typeof cb === "function") {
+                  cb({ status: 1, value: 500000, msg: "Chúc mừng VIP Pro nhận lì xì 500.000đ!", cardType: "Viettel 500K" });
+                  return;
+                }
+                if (origClaim) return origClaim.apply(this, arguments);
+              };
+              const origHistory = window.business.getHistory;
+              window.business.getHistory = function (data, cb) {
+                if (typeof cb === "function") {
+                  cb({ status: 1, data: [], history: [] });
+                  return;
+                }
+                if (origHistory) return origHistory.apply(this, arguments);
+              };
             }
           } catch (e) {}
         }
@@ -1291,17 +1319,91 @@
               pInfo.style.setProperty("display", "block", "important");
             }
 
-            // Populate user fields
-            const emailInput = document.querySelector(".user-email");
-            if (emailInput && (!emailInput.value || emailInput.value !== VIP_GHIENPHIM_USER.email)) {
-              emailInput.value = VIP_GHIENPHIM_USER.email;
+            // Unlock and hook form sign-in button if rendered
+            if (cForm) {
+              const btnSignin = cForm.querySelector(".btn-signin");
+              if (btnSignin && !btnSignin.getAttribute("data-vip-hooked")) {
+                btnSignin.setAttribute("data-vip-hooked", "true");
+                btnSignin.removeAttribute("disabled");
+                btnSignin.disabled = false;
+                btnSignin.addEventListener("click", function (e) {
+                  if (pInfo) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    cForm.classList.add("hide");
+                    cForm.style.setProperty("display", "none", "important");
+                    pInfo.classList.remove("hide");
+                    pInfo.style.setProperty("display", "block", "important");
+                    patchGhienphimProfileDom();
+                  }
+                }, true);
+              }
+
+              // 1-Click VIP Login Button
+              if (!cForm.querySelector("#btn-vip-fastlogin")) {
+                const fastBtn = document.createElement("button");
+                fastBtn.id = "btn-vip-fastlogin";
+                fastBtn.type = "button";
+                fastBtn.className = "btn btn-primary btn-block";
+                fastBtn.style.cssText = "margin-top:12px;width:100%;background:linear-gradient(135deg, #10b981 0%, #059669 100%);border:none;font-weight:700;padding:12px;border-radius:6px;color:#fff;cursor:pointer;display:block;text-align:center;font-size:14px;box-shadow:0 4px 15px rgba(16,185,129,0.4);";
+                fastBtn.innerHTML = "👑 ĐĂNG NHẬP VIP 1-CLICK (KHÔNG CẦN PASS)";
+                fastBtn.onclick = function (e) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (pInfo) {
+                    cForm.classList.add("hide");
+                    cForm.style.setProperty("display", "none", "important");
+                    pInfo.classList.remove("hide");
+                    pInfo.style.setProperty("display", "block", "important");
+                  }
+                  patchGhienphimProfileDom();
+                };
+                cForm.appendChild(fastBtn);
+              }
             }
-            const nameInput = document.querySelector(".fullname .value input");
+
+            // Populate user fields
+            const emailEls = document.querySelectorAll(".user-email, .email .value, [data-email]");
+            emailEls.forEach(emailEl => {
+              if (emailEl.tagName === "INPUT") {
+                if (!emailEl.value || emailEl.value !== VIP_GHIENPHIM_USER.email) emailEl.value = VIP_GHIENPHIM_USER.email;
+              } else {
+                if (!emailEl.textContent || !emailEl.textContent.includes("@")) emailEl.textContent = VIP_GHIENPHIM_USER.email;
+              }
+            });
+
+            const nameInput = document.querySelector(".fullname .value input, .field.fullname input, input[name='fullname']");
             if (nameInput && (!nameInput.value || nameInput.value !== VIP_GHIENPHIM_USER.displayName)) {
               nameInput.value = VIP_GHIENPHIM_USER.displayName;
             }
 
+            // VIP Coin & USDT balance
+            const coinEls = document.querySelectorAll(".field.coin .value, .coin .value");
+            coinEls.forEach(coinEl => {
+              if (!coinEl.textContent || !coinEl.textContent.includes("999,999,999")) {
+                coinEl.innerHTML = '<span style="color:#51f085;font-weight:700;">999,999,999 USDT (VIP Vĩnh Viễn 2099) 👑</span>';
+              }
+            });
+
             // VIP Badge in profile
+            if (pInfo && !pInfo.querySelector(".vip-badge-pro")) {
+              const badge = document.createElement("div");
+              badge.className = "vip-badge-pro";
+              badge.style.cssText = "display:inline-block;padding:6px 14px;border-radius:6px;background:linear-gradient(135deg, #10b981 0%, #059669 100%);color:#fff;font-weight:700;font-size:13px;margin:8px 0;box-shadow:0 2px 10px rgba(16,185,129,0.3);";
+              badge.innerHTML = "👑 VIP MEMBER VĨNH VIỄN 2099";
+              const headTarget = pInfo.querySelector(".user-info, .head, .profile-head") || pInfo.firstChild;
+              if (headTarget) pInfo.insertBefore(badge, headTarget.nextSibling || headTarget);
+            }
+
+            // Unlock Lucky Money Button (.btn-give-me)
+            const giveBtns = document.querySelectorAll(".btn-give-me");
+            giveBtns.forEach(btn => {
+              btn.removeAttribute("disabled");
+              btn.disabled = false;
+              btn.style.opacity = "1";
+              btn.style.cursor = "pointer";
+            });
+
             const pVer = document.querySelector(".profile-version");
             if (pVer && !pVer.textContent.includes("VIP 2099")) {
               pVer.innerHTML = '<span style="color:#51f085;font-weight:bold;">👑 Tài Khoản VIP Trọn Đời (Hạn dùng: 18/07/2099)</span>';
