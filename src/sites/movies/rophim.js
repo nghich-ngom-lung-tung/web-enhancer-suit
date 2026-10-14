@@ -3,7 +3,7 @@ module.exports = {
   "name": "Rophim VIP & Cinema Pro Suite",
   "file": "rophim.user.js",
   "desc": "Mở khóa VIP 2099 + Vô hạn Coin + Chặn 100% AdBlock/Player Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Skip Intro & Anime HDR",
-  "version": "5.4.2",
+  "version": "5.4.3",
   "isRophim": true,
   "domains": [
     "*://rophim1.vip/*",

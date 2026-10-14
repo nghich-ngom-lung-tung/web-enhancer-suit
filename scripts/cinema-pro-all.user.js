@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cinema Pro Suite (All-In-One) - Kho Phim & Anime Việt Nam
 // @namespace    http://tampermonkey.net/
-// @version      5.4.2
+// @version      5.4.3
 // @description  Bản Master Gộp Tất Cả Trong Một: Mở khóa VIP + Vô hạn Coin + Chặn 100% AdBlock/Stream Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Tua 5s/Intro 85s/Volume & Anime HDR trên hơn 37+ website phim, anime, hoạt hình 3D Việt Nam!
 // @author       nghich-ngom-lung-tung
 // @match        *://rophim1.vip/*
@@ -521,6 +521,7 @@
 
 
   // ─── LAYER 5: VIP 2099 & T-COIN RESPONSE PATCHER (ROPHIM & MOTCHILL API) ───
+  const _origFetchNative = (typeof window !== "undefined" && window.fetch) ? window.fetch.bind(window) : null;
   const VIP_EXPIRY_DATE = new Date(2099, 6, 18, 0, 0, 0);
   const VIP_EXPIRY_TIMESTAMP = Math.floor(VIP_EXPIRY_DATE.getTime() / 1000);
   const COIN_BALANCE = 999999999;
@@ -529,6 +530,7 @@
     "/baseapi/api/v1/user/",
     "/baseapi/api/v1/vip/",
     "/baseapi/api/v1/bookmarks",
+    "/baseapi/api/v1/histories",
     "/baseapi/api/v1/notifications",
     "/baseapi/api/v1/notifications/home",
     "/baseapi/api/v1/notifications/unread-counts",
@@ -547,10 +549,12 @@
     "/auth/register",
     "/auth/logout",
     "/users/profile",
+    "/users/update-user",
     "/users/vip-packages",
     "/vip-packages",
     "/payments/orders",
     "/watch-progress",
+    "/histories",
     "/favorites",
     "/favourite",
     "/refresh-token",
@@ -735,14 +739,24 @@
       });
     }
 
-    // 7. Watch progress / History (chặn 401 gây reload)
-    if (url.includes("/watch-progress")) {
+    // 7. Watch progress / History / Histories (chặn 401 gây reload & console error)
+    if (url.includes("/watch-progress") || url.includes("/histories")) {
       return JSON.stringify({
-        status: true,
+        status: 200,
         success: true,
         code: 200,
-        data: { items: [], pagination: { page: 1, limit: 12, total: 0, totalPages: 1 } },
-        result: { items: [], pagination: { page: 1, limit: 12, total: 0, totalPages: 1 } }
+        data: { items: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 1 } },
+        result: { items: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 1 } }
+      });
+    }
+
+    // 7.1 User Profile Update
+    if (url.includes("/users/update-user")) {
+      return JSON.stringify({
+        status: 200,
+        success: true,
+        code: 200,
+        message: "Cập nhật thông tin thành công"
       });
     }
 
@@ -870,6 +884,20 @@
           notificationsOther: [],
           unreadCountMovie: 0,
           unreadCountOther: 0
+        }
+      };
+    }
+    if (url && (url.includes("/histories") || url.includes("/watch-progress"))) {
+      return {
+        status: 200,
+        success: true,
+        data: {
+          items: [],
+          pagination: { page: 1, limit: 20, total: 0, totalPages: 1 }
+        },
+        result: {
+          items: [],
+          pagination: { page: 1, limit: 20, total: 0, totalPages: 1 }
         }
       };
     }
@@ -1107,6 +1135,86 @@
           }));
         } catch (e) {}
       }
+
+      // RoPhim Real Session Auto-Provisioner:
+      // Tự động đăng ký & đăng nhập qua real NextAuth backend để trình duyệt lưu cookie __Secure-next-auth.session-token
+      // Nhờ đó server middleware không bị 307 redirect khi người dùng mở /user/profile, /user/playlist, /user/thong-bao
+      setTimeout(async function ensureRophimServerSession() {
+        try {
+          const nativeFetch = _origFetchNative || (typeof origFetchMain === "function" ? origFetchMain : window.fetch);
+          if (!nativeFetch) return;
+
+          // 1. Kiểm tra xem server đã có session cookie hợp lệ chưa
+          try {
+            const chk = await nativeFetch("/api/auth/session");
+            if (chk && chk.ok) {
+              const d = await chk.json().catch(() => ({}));
+              if (d && d.user && d.user.id) {
+                return;
+              }
+            }
+          } catch (e) {}
+
+          // 2. Chuẩn bị thông tin tài khoản VIP
+          let creds = null;
+          try {
+            const saved = window.localStorage.getItem("RO_CREDENTIALS");
+            if (saved) creds = JSON.parse(saved);
+          } catch (e) {}
+
+          if (!creds || !creds.email || !creds.password) {
+            const rand = Math.floor(Math.random() * 900000) + 100000;
+            creds = {
+              name: "VIP Cinema Pro",
+              email: "vip_" + rand + "@gmail.com",
+              password: "CinemaPro_" + rand + "!"
+            };
+            try {
+              window.localStorage.setItem("RO_CREDENTIALS", JSON.stringify(creds));
+            } catch (e) {}
+
+            await nativeFetch("/baseapi/api/v1/auth/register", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(creds)
+            }).catch(() => {});
+          }
+
+          // 3. Lấy CSRF token từ NextAuth
+          const csrfRes = await nativeFetch("/api/auth/csrf");
+          let csrfToken = "";
+          if (csrfRes && csrfRes.ok) {
+            const csrfData = await csrfRes.json().catch(() => ({}));
+            csrfToken = csrfData.csrfToken || "";
+          }
+          if (!csrfToken) return;
+
+          // 4. Đăng nhập NextAuth Credentials để trình duyệt tự nhận cookie __Secure-next-auth.session-token
+          const postParams = new URLSearchParams({
+            email: creds.email,
+            password: creds.password,
+            csrfToken: csrfToken,
+            json: "true"
+          }).toString();
+
+          const loginRes = await nativeFetch("/api/auth/callback/credentials", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: postParams
+          });
+
+          if (loginRes && loginRes.ok) {
+            console.log("[Cinema Pro] RoPhim server session cookie (__Secure-next-auth.session-token) established!");
+            try {
+              window.localStorage.setItem("nextauth.message", JSON.stringify({
+                event: "session",
+                data: { trigger: "getSession" },
+                timestamp: Math.floor(Date.now() / 1000)
+              }));
+            } catch (e) {}
+          }
+        } catch (e) {}
+      }, 0);
     }
   } catch (e) {}
 
@@ -2302,7 +2410,7 @@
             <span class="ro-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="2.18" ry="2.18"/><line x1="7" x2="7" y1="2" y2="22"/><line x1="17" x2="17" y1="2" y2="22"/><line x1="2" x2="22" y1="12" y2="12"/><line x1="2" x2="7" y1="7" y2="7"/><line x1="2" x2="7" y1="17" y2="17"/><line x1="17" x2="22" y1="17" y2="17"/><line x1="17" x2="22" y1="7" y2="7"/></svg></span>
             <span>Cinema Pro (All-In-One)</span>
           </span>
-          <span style="font-size: 11px; opacity: 0.7;">v5.4.2</span>
+          <span style="font-size: 11px; opacity: 0.7;">v5.4.3</span>
         </div>
         <div id="ro-stream-preview" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 6px 10px; font-size: 11px; word-break: break-all; color: #51f085; font-family: monospace; display: none; cursor: pointer;" title="Bấm để copy link"></div>
         <button class="ro-menu-btn" id="ro-copym3u8-btn">
