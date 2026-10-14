@@ -167,7 +167,7 @@ Nếu trình duyệt của bạn chưa có Tampermonkey, hãy cài đặt extens
 | **`M`** | Tắt / Mở tiếng (Mute / Unmute) | Trực tiếp |
 | **`👑`** (Góc dưới) | Mở bảng điều khiển VIP Control Hub & Lấy Link M3U8 | Menu Glassmorphism |
 
-### 2. Chế Độ Đọc Truyện Tranh (Comics & Manga - ZetTruyen, TopTruyen)
+### 2. Chế Độ Đọc Truyện Tranh & Tiểu Thuyết (Comics, Manga & Novels - NetTruyen, TruyenQQ, TruyenVN, LuotNovel, ZetTruyen, TopTruyen)
 | Phím tắt | Chức năng | Phản hồi OSD Toast |
 | :---: | :--- | :--- |
 | **`A`** hoặc **`←`** | Chuyển ngay về chương trước đó | `📖 Đang chuyển về chương trước...` |
