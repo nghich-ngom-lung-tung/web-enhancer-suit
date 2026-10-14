@@ -968,6 +968,12 @@ sportsAndComicsScripts.forEach(file => {
 
     const hasBetLinksNuked = content.includes("bom88") || content.includes("ok999") || content.includes("linkroyal") || content.includes("hdbet");
     report(`${file}: GhienPhim ecosystem betting & redirect links (bom88/ok999/linkroyal/hdbet) suppressed`, hasBetLinksNuked);
+
+    const hasDoubokMatch = content.includes("doubok.xyz") && content.includes("salesperyear.xyz");
+    report(`${file}: Doubok & SalesPerYear iframe embed match patterns present`, hasDoubokMatch);
+
+    const hasDataValueScan = content.includes("data-value") && content.includes("isNoRefererCdn");
+    report(`${file}: [data-value] stream attribute & anti-referer CDN filter present`, hasDataValueScan);
   }
 
   // GhienTruyen checks
@@ -979,6 +985,54 @@ sportsAndComicsScripts.forEach(file => {
     report(`${file}: GhienTruyen chapter navigation (A/D & Chương sau/trước) mapped`, hasGhienTruyenNav);
   }
 });
+
+// Runtime functional check for URL unwrapping and Anti-Referer CDN guard
+console.log("\n🌐 PHASE 5: Advanced Stream Sniffer & Anti-Referer CDN Verification");
+const { getSnifferCode } = require("./src/modules/sniffer");
+const playerControlsCode = require("./src/modules/player-controls");
+
+const sandboxEnv = {
+  window: { self: {}, top: {}, addEventListener: () => {}, localStorage: { getItem: () => null, setItem: () => {} } },
+  document: { addEventListener: () => {}, querySelector: () => null, querySelectorAll: () => [], createElement: () => ({ appendChild: () => {}, style: {} }), head: { appendChild: () => {} }, documentElement: { appendChild: () => {} } },
+  location: { href: "https://duphim.social/vod/watch/quy-quyet-ranh-gioi-vo-dinh", hostname: "duphim.social", pathname: "/vod/watch/quy-quyet-ranh-gioi-vo-dinh" },
+  navigator: { userAgent: "Mozilla/5.0", clipboard: { writeText: () => Promise.resolve() } },
+  localStorage: { getItem: () => null, setItem: () => {} },
+  setTimeout: setTimeout,
+  setInterval: () => 1,
+  console: { log: () => {} },
+  URL: URL,
+  atob: (s) => Buffer.from(s, "base64").toString("utf-8"),
+  decodeURIComponent: decodeURIComponent,
+  encodeURIComponent: encodeURIComponent
+};
+sandboxEnv.window.self = sandboxEnv.window;
+sandboxEnv.window.top = sandboxEnv.window;
+
+let vmContext = vm.createContext(sandboxEnv);
+vm.runInContext(`(function() {
+  ${getSnifferCode(false)}
+  ${playerControlsCode}
+  window.unwrapStreamUrl = unwrapStreamUrl;
+  window.isNoRefererCdn = isNoRefererCdn;
+})();`, vmContext);
+
+// Verify unwrapStreamUrl inside master script
+const testCostaUrl = "https://costa.salesperyear.xyz/temp?s=bachuzlunho/8kPRK9unOCYifXbh.m3u8&linknhung=1&t=1";
+const unwrappedCosta = vm.runInContext(`window.unwrapStreamUrl("${testCostaUrl}")`, vmContext);
+report("unwrapStreamUrl: Relative path in query param resolves with origin", unwrappedCosta === "https://costa.salesperyear.xyz/bachuzlunho/8kPRK9unOCYifXbh.m3u8", `Got: ${unwrappedCosta}`);
+
+const testEscapedUrl = "https://scontent.cdninstagram.com/video.mp4?_nc_cat=1\\u0026oh=abcdef123456&amp;oe=789";
+const unwrappedEscaped = vm.runInContext(`window.unwrapStreamUrl("${testEscapedUrl}")`, vmContext);
+report("unwrapStreamUrl: Sanitizes HTML entities and unicode ampersands", !unwrappedEscaped.includes("\\u0026") && !unwrappedEscaped.includes("&amp;") && unwrappedEscaped.includes("&oh=") && unwrappedEscaped.includes("&oe="), `Got: ${unwrappedEscaped}`);
+
+const igNoRef = vm.runInContext(`window.isNoRefererCdn("https://scontent.cdninstagram.com/o1/v/t2/video.mp4")`, vmContext);
+report("isNoRefererCdn: Returns true for cdninstagram.com", igNoRef === true);
+
+const fbNoRef = vm.runInContext(`window.isNoRefererCdn("https://video.xx.fbcdn.net/v/t2/video.mp4")`, vmContext);
+report("isNoRefererCdn: Returns true for fbcdn.net", fbNoRef === true);
+
+const standardCdnRef = vm.runInContext(`window.isNoRefererCdn("https://costa.salesperyear.xyz/stream.m3u8")`, vmContext);
+report("isNoRefererCdn: Returns false for standard movie streaming servers", standardCdnRef === false);
 
 // Final check after promise tick
 setTimeout(() => {

@@ -44,5 +44,9 @@ module.exports = [
   "*://live.khoga.space/*",
   "*://*.khoga.space/*",
   "*://*.vcdn.cloud/*",
-  "*://embed.apistatscore.com/*"
+  "*://embed.apistatscore.com/*",
+  "*://*.doubok.xyz/*",
+  "*://*.doubok.*/*",
+  "*://*.salesperyear.xyz/*",
+  "*://*.salesperyear.*/*"
 ];

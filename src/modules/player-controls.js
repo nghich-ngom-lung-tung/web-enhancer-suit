@@ -85,6 +85,22 @@ module.exports = `
     }
   }
 
+  function isNoRefererCdn(url) {
+    if (!url || typeof url !== "string") return false;
+    const l = url.toLowerCase();
+    const hasMetaNoReferrer = Boolean(document.querySelector('meta[name="referrer"][content="no-referrer"]'));
+    return (
+      hasMetaNoReferrer ||
+      l.includes("cdninstagram.com") ||
+      l.includes("fbcdn.net") ||
+      l.includes("fbsbx.com") ||
+      l.includes("akamaihd.net") ||
+      l.includes("discordapp.com") ||
+      l.includes("discord.com") ||
+      l.includes("media.discordapp.net")
+    );
+  }
+
   function openPotPlayer() {
     ensureStreamUrl();
     if (!capturedStreamUrl) {
@@ -95,7 +111,7 @@ module.exports = `
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(cleanUrl).catch(() => {});
     }
-    const ref = location.href || "";
+    const ref = (!isNoRefererCdn(cleanUrl) && location.href) ? location.href : "";
     const potTarget = ref ? (cleanUrl + "|Referer=" + encodeURIComponent(ref)) : cleanUrl;
     window.location.href = "potplayer://" + potTarget;
     showToast("Đang mở PotPlayer...");
@@ -156,9 +172,10 @@ module.exports = `
     }
     const cleanUrl = capturedStreamUrl.trim();
     const title = (document.title || "Cinema_Pro_Stream").replace(/[/\\\\?%*:|"<>]/g, "_").trim();
-    const ref = location.href || "";
+    const ref = (!isNoRefererCdn(cleanUrl) && location.href) ? location.href : "";
     const ua = navigator.userAgent || "Mozilla/5.0";
-    const content = "#EXTM3U\\n#EXTINF:-1," + title + "\\n#EXTVLCOPT:http-referrer=" + ref + "\\n#EXTVLCOPT:http-user-agent=" + ua + "\\n#EXTVLCOPT:network-caching=1000\\n" + cleanUrl + "\\n";
+    const refLine = ref ? ("#EXTVLCOPT:http-referrer=" + ref + "\\n") : "";
+    const content = "#EXTM3U\\n#EXTINF:-1," + title + "\\n" + refLine + "#EXTVLCOPT:http-user-agent=" + ua + "\\n#EXTVLCOPT:network-caching=1000\\n" + cleanUrl + "\\n";
     const blob = new Blob([content], { type: "audio/x-mpegurl" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);

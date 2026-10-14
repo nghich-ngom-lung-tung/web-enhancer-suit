@@ -6,26 +6,42 @@ function getSnifferCode(enableRophimVip) {
   function unwrapStreamUrl(url) {
     if (!url || typeof url !== "string") return "";
     let clean = url.trim();
-    clean = clean.split("\\\\/").join("/").replace(/&amp;/g, "&");
+    clean = clean.split("\\\\/").join("/").replace(/&amp;/g, "&").replace(/\\u0026/g, "&");
     if (clean.includes("%3A%2F%2F") || clean.includes("%3a%2f%2f") || clean.includes("%2F") || clean.includes("%2f")) {
       try { clean = decodeURIComponent(clean); } catch (e) {}
     }
     if (clean.startsWith("/") || clean.startsWith("./")) {
-      try { clean = new URL(clean, location.href).href; } catch (e) {}
+      try {
+        const baseHref = (typeof location !== "undefined" && location.href) ? location.href : "https://duphim.social";
+        clean = new URL(clean, baseHref).href;
+      } catch (e) {}
     }
     try {
-      const u = new URL(clean);
+      const baseHref = (typeof location !== "undefined" && location.href) ? location.href : "https://duphim.social";
+      const u = new URL(clean, baseHref);
       for (const [k, val] of u.searchParams.entries()) {
         if (!val || typeof val !== "string") continue;
-        let dec = val.trim();
+        let dec = val.trim().replace(/&amp;/g, "&").replace(/\\u0026/g, "&");
         try { dec = decodeURIComponent(dec); } catch (e) {}
         if (dec.includes(".m3u8") || dec.includes("/hls/") || dec.includes(".mpd") || dec.includes(".mp4")) {
-          return unwrapStreamUrl(dec);
+          if (dec.startsWith("http://") || dec.startsWith("https://") || dec.startsWith("//")) {
+            return unwrapStreamUrl(dec);
+          }
+          if (u.origin && u.origin !== "null") {
+            try { return unwrapStreamUrl(new URL(dec, u.origin).href); } catch (e) {}
+          }
         }
         if (dec.length > 20 && !dec.includes("http") && !dec.includes("/")) {
           try {
             const b64 = atob(dec);
-            if (b64.includes(".m3u8") || b64.includes(".mp4")) return unwrapStreamUrl(b64);
+            if (b64.includes(".m3u8") || b64.includes(".mp4")) {
+              if (b64.startsWith("http://") || b64.startsWith("https://") || b64.startsWith("//")) {
+                return unwrapStreamUrl(b64);
+              }
+              if (u.origin && u.origin !== "null") {
+                try { return unwrapStreamUrl(new URL(b64, u.origin).href); } catch (e) {}
+              }
+            }
           } catch (e) {}
         }
       }
@@ -58,6 +74,8 @@ function getSnifferCode(enableRophimVip) {
     host.includes("filelions") ||
     host.includes("vidcdn") ||
     host.includes("vidembed") ||
+    host.includes("doubok") ||
+    host.includes("salesperyear") ||
     path.includes("embed") ||
     path.includes("/v/") ||
     path.includes("/video/");
@@ -153,7 +171,7 @@ function getSnifferCode(enableRophimVip) {
         u.includes("master") ||
         u.includes("playlist") ||
         u.includes(".mpd") ||
-        (u.includes(".mp4") && !u.includes("preview") && !u.includes("trailer") && !u.includes("tvc"))
+        (u.includes(".mp4") && !u.includes("preview") && !u.includes("trailer") && !u.includes("tvc") && !u.includes("ad-site"))
       ) {
         lastNotifiedStream = clean;
         try { localStorage.setItem("RO_CAPTURED_STREAM", clean); } catch (e) {}
@@ -208,6 +226,20 @@ function getSnifferCode(enableRophimVip) {
       if (typeof window.file === "string" && window.file) {
         notifyStream(window.file);
       }
+      if (window.sources) {
+        if (Array.isArray(window.sources)) {
+          window.sources.forEach(s => { if (typeof s === "string") notifyStream(s); });
+        } else if (typeof window.sources === "string") {
+          notifyStream(window.sources);
+        }
+      }
+      if (window.playlist) {
+        if (Array.isArray(window.playlist)) {
+          window.playlist.forEach(s => { if (typeof s === "string") notifyStream(s); });
+        } else if (typeof window.playlist === "string") {
+          notifyStream(window.playlist);
+        }
+      }
     }
 
     checkGlobals();
@@ -230,7 +262,13 @@ function getSnifferCode(enableRophimVip) {
             const n = entries[i].name;
             if (n && typeof n === "string") {
               const nl = n.toLowerCase();
-              if (nl.includes(".m3u8") || nl.includes("master") || nl.includes("playlist")) {
+              if (
+                nl.includes(".m3u8") ||
+                nl.includes("master") ||
+                nl.includes("playlist") ||
+                nl.includes(".mpd") ||
+                (nl.includes(".mp4") && !nl.includes("preview") && !nl.includes("trailer") && !nl.includes("tvc") && !nl.includes("ad-site"))
+              ) {
                 notifyStream(n);
                 break;
               }
@@ -271,7 +309,14 @@ function getSnifferCode(enableRophimVip) {
         while ((match = re.exec(str)) !== null) {
           var url = match[0];
           var lower = url.toLowerCase();
-          if (lower.includes(".m3u8") || lower.includes("/hls/") || lower.includes("master.") || lower.includes("playlist.") || lower.includes(".mpd")) {
+          if (
+            lower.includes(".m3u8") ||
+            lower.includes("/hls/") ||
+            lower.includes("master.") ||
+            lower.includes("playlist.") ||
+            lower.includes(".mpd") ||
+            (lower.includes(".mp4") && !lower.includes("preview") && !lower.includes("trailer") && !lower.includes("tvc") && !lower.includes("ad-site"))
+          ) {
             notifyStream(url);
           }
         }
@@ -476,7 +521,7 @@ function getSnifferCode(enableRophimVip) {
       u.includes("master") ||
       u.includes("playlist") ||
       u.includes(".mpd") ||
-      (u.includes(".mp4") && !u.includes("trailer") && !u.includes("preview") && !u.includes("ad_") && !u.includes("tvc"))
+      (u.includes(".mp4") && !u.includes("trailer") && !u.includes("preview") && !u.includes("ad_") && !u.includes("tvc") && !u.includes("ad-site"))
     ) {
       capturedStreamUrl = clean;
       try { localStorage.setItem("RO_CAPTURED_STREAM", clean); } catch (e) {}
@@ -509,7 +554,7 @@ function getSnifferCode(enableRophimVip) {
           const val = target[k];
           if (typeof val === "string") {
             const kl = k.toLowerCase();
-            if (kl.includes("file") || kl.includes("url") || kl.includes("stream") || kl.includes("link") || kl.includes("m3u8") || kl.includes("src") || kl.includes("hls")) {
+            if (kl.includes("file") || kl.includes("url") || kl.includes("stream") || kl.includes("link") || kl.includes("m3u8") || kl.includes("src") || kl.includes("hls") || kl.includes("video") || kl.includes("play")) {
               checkAndCaptureUrl(val);
             } else {
               checkAndCaptureUrl(val);
@@ -533,6 +578,25 @@ function getSnifferCode(enableRophimVip) {
         }
       }
     } catch (e) {}
+
+    if (window.sources) {
+      if (Array.isArray(window.sources)) {
+        window.sources.forEach(s => { if (typeof s === "string") checkAndCaptureUrl(s); else if (typeof s === "object") extractStreamFromObject(s); });
+      } else if (typeof window.sources === "string") {
+        checkAndCaptureUrl(window.sources);
+      } else if (typeof window.sources === "object") {
+        extractStreamFromObject(window.sources);
+      }
+    }
+    if (window.playlist) {
+      if (Array.isArray(window.playlist)) {
+        window.playlist.forEach(s => { if (typeof s === "string") checkAndCaptureUrl(s); else if (typeof s === "object") extractStreamFromObject(s); });
+      } else if (typeof window.playlist === "string") {
+        checkAndCaptureUrl(window.playlist);
+      } else if (typeof window.playlist === "object") {
+        extractStreamFromObject(window.playlist);
+      }
+    }
 
     if (typeof window.__V_DATA__ === "string" && window.__V_DATA__) {
       try {
@@ -595,7 +659,7 @@ function getSnifferCode(enableRophimVip) {
             n.includes("master") ||
             n.includes("playlist") ||
             n.includes(".mpd") ||
-            (n.includes(".mp4") && !n.includes("preview") && !n.includes("trailer") && !n.includes("tvc"))
+            (n.includes(".mp4") && !n.includes("preview") && !n.includes("trailer") && !n.includes("tvc") && !n.includes("ad-site"))
           ) {
             if (checkAndCaptureUrl(name)) break;
           }
@@ -646,10 +710,14 @@ function getSnifferCode(enableRophimVip) {
     } catch (e) {}
 
     try {
-      const elements = document.querySelectorAll("[data-src*='.m3u8'], [data-url*='.m3u8'], [src*='.m3u8'], [href*='.m3u8'], [data-src*='/hls/'], [src*='/hls/']");
+      const elements = document.querySelectorAll(
+        "[data-src*='.m3u8'], [data-url*='.m3u8'], [src*='.m3u8'], [href*='.m3u8'], [data-value*='.m3u8'], [data-link*='.m3u8'], [data-file*='.m3u8'], [data-stream*='.m3u8'], " +
+        "[data-src*='/hls/'], [src*='/hls/'], [data-value*='/hls/'], [data-link*='/hls/'], " +
+        "[data-src*='.mp4'], [data-url*='.mp4'], [src*='.mp4'], [href*='.mp4'], [data-value*='.mp4'], [data-link*='.mp4'], [data-file*='.mp4']"
+      );
       for (let i = 0; i < elements.length; i++) {
         const el = elements[i];
-        const val = el.getAttribute("data-src") || el.getAttribute("data-url") || el.getAttribute("src") || el.getAttribute("href") || "";
+        const val = el.getAttribute("data-value") || el.getAttribute("data-src") || el.getAttribute("data-url") || el.getAttribute("src") || el.getAttribute("href") || el.getAttribute("data-link") || el.getAttribute("data-file") || el.getAttribute("data-stream") || "";
         if (val) {
           const unwrapped = unwrapStreamUrl(val);
           if (unwrapped && checkAndCaptureUrl(unwrapped)) return unwrapped;
