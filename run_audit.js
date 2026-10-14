@@ -613,6 +613,73 @@ rophimScripts.forEach(file => {
   }
 });
 
+const motchillScripts = scriptFiles.filter(f => f.endsWith("motchill.user.js") || f.endsWith("cinema-pro-all.user.js"));
+motchillScripts.forEach(file => {
+  const code = fs.readFileSync(file, "utf8");
+  const { window, document } = createTopWindowMock("phimmotchill.online");
+
+  window.fetch = async (url) => {
+    return {
+      status: 401,
+      headers: { get: () => "application/json" },
+      clone: () => ({ json: async () => ({ success: false, error: "Unauthorized" }) }),
+      json: async () => ({ success: false, error: "Unauthorized" })
+    };
+  };
+
+  const ctx = vm.createContext({
+    window,
+    document,
+    location: window.location,
+    top: window.top,
+    self: window.self,
+    navigator: window.navigator,
+    localStorage: window.localStorage,
+    fetch: window.fetch,
+    XMLHttpRequest: window.XMLHttpRequest,
+    setTimeout: window.setTimeout,
+    clearTimeout: window.clearTimeout,
+    setInterval: window.setInterval,
+    clearInterval: window.clearInterval,
+    console: window.console,
+    HTMLMediaElement: window.HTMLMediaElement,
+    Storage: window.Storage,
+    Promise,
+    Response: class {
+      constructor(body, init) {
+        this.body = body;
+        this.status = init?.status || 200;
+        this.headers = init?.headers || {};
+      }
+      json() { return Promise.resolve(JSON.parse(this.body)); }
+    }
+  });
+
+  try {
+    vm.runInContext(code, ctx);
+
+    // Test 4.3: Motchill auth_hint set in localStorage
+    const authHintPassed = ctx.window.localStorage.getItem("auth_hint") === "1";
+    report(`${file}: Motchill auto-auth_hint=1 initialized`, authHintPassed);
+
+    // Test 4.4: /api/v1/auth/profile patched to VIP Admin with 999,999,999 coins
+    ctx.window.fetch("/api/v1/auth/profile").then(res => res.json()).then(data => {
+      const user = data?.result?.user || data?.result || data?.data;
+      const motchillVipPassed = data?.status === true && user?.is_vip === true && user?.is_role === "admin" && user?.coin === 999999999;
+      report(`${file}: /api/v1/auth/profile patched to VIP Admin & 999,999,999 coins`, motchillVipPassed);
+    });
+
+    // Test 4.5: /api/v1/users/vip-packages patched to VIP 2099 active
+    ctx.window.fetch("/api/v1/users/vip-packages").then(res => res.json()).then(data => {
+      const pkg = data?.result?.current_vip || data?.data?.current_vip;
+      const pkgPassed = data?.status === true && pkg?.is_active === true && pkg?.package_name === "VIP Vĩnh Viễn 2099";
+      report(`${file}: /api/v1/users/vip-packages patched to VIP Vĩnh Viễn 2099`, pkgPassed);
+    });
+  } catch (err) {
+    report(`${file}: Motchill VIP Patcher execution`, false, err.stack);
+  }
+});
+
 // ═════════════════════════════════════════════════════════════════
 // 5. LIVE FOOTBALL STREAMING & SPORTS AD-NUKER AUDIT
 // ═════════════════════════════════════════════════════════════════

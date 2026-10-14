@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Motchill VIP & Cinema Pro Suite
 // @namespace    http://tampermonkey.net/
-// @version      5.2
-// @description  Chặn 100% quảng cáo Motchill + Vô hiệu hóa Stream Guard + Bắt link M3U8 PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR
+// @version      5.4
+// @description  Mở khóa VIP Pro 2099 Vĩnh Viễn + Vô hạn Coins + Chặn 100% AdBlock/Stream Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Skip Intro & Anime HDR
 // @author       nghich-ngom-lung-tung
 // @match        *://phimmotchill.online/*
 // @match        *://*.phimmotchill.online/*
@@ -98,6 +98,8 @@
 // @match        *://*.vcdn.cloud/*
 // @match        *://vcdn.cloud/*
 // @match        *://embed.apistatscore.com/*
+// @include      *://*motchill*/*
+// @include      *://*phimmotchill*/*
 // @include      *://embed*.streamc.xyz/*
 // @include      *://stream*.xyz/*
 // @include      *://stream*.top/*
@@ -815,7 +817,7 @@
       });
     }
     checkAndCaptureUrl(url);
-    return origFetchMain.apply(this, arguments);
+    return handleRophimFetchResponse(origFetchMain.apply(this, arguments), url);
   };
 
   // ─── HOOK XHR TRÊN TRANG CHÍNH ───
@@ -840,7 +842,7 @@
         return;
       }
       xhr.addEventListener("load", function () {
-        
+        handleRophimXhrResponse(xhr, targetUrl);
       });
       if (origSend) return origSend.apply(this, arguments);
     };
@@ -1227,7 +1229,7 @@
   // ═══════════════════════════════════════════════════════════════
   // 3. CSS STYLING & THEATER MODE INJECTION
   // ═══════════════════════════════════════════════════════════════
-  const css = "/* ═══════════════════════════════════════════════════════════════\n   Cinema Pro Suite - Adblock & Anti-Banner CSS\n   Diệt sạch banner catfish, popup, cá cược, video ads\n   ═══════════════════════════════════════════════════════════════ */\n\n/* Xóa sạch mọi container banner quảng cáo */\n.ad-container, .ads-holder, .banner-left, .banner-right,\ndiv[id*=\"ad-\"], div[class*=\"banner-ads\"], div[id*=\"catfish\"],\n.ads-wrapper, #chancoc, .modal-adblock, .adv-holder, .pm-ads,\n.hh3d-ads, .dp-ads, .tvhay-ads, .ah-ads, #box-ads, .ah-banner,\n.bl-ads, .a47-ads, .ophim-ads, .biphim-ads, .dhtv-ads,\n.motphim-ads, .mephim-ads, .ghienphim-ads, .fullphim-ads, .phimhay-ads,\n.atvn-ads, .hhkf-ads, .hhpanda-ads, .vst-ads, .p247-ads, .phd-ads, .pbh-ads,\n.pv-ads, .btv-ads, .hdo-ads, .chay-ads, .xpp-ads, .ts-ads, .ss-ads,\n[class*=\"ad_placement\"], [id*=\"google_ads\"], div[style*=\"z-index: 9999999\"],\ndiv[style*=\"zIndex: 9999999\"], div[style*=\"backdrop-filter: blur(25px)\"],\n\n/* Diệt sạch banner catfish, fixed bottom bar và cá cược */\n.catfish, #catfish, .catfish-banner, #catfish-banner, div[class*=\"catfish\"], div[id*=\"catfish\"],\ndiv[class*=\"bottom-ads\"], div[class*=\"bottom_ads\"], div[class*=\"bottom-banner\"], div[class*=\"bottom_banner\"],\ndiv[id*=\"bottom-ads\"], div[id*=\"bottom_ads\"], div[id*=\"bottom-banner\"], div[id*=\"bottom_banner\"],\ndiv[class*=\"footer-ads\"], div[class*=\"footer_ads\"], div[class*=\"footer-banner\"], div[class*=\"footer_banner\"],\ndiv[class*=\"floating-banner\"], div[class*=\"floating_banner\"], div[class*=\"float-ads\"], div[class*=\"float_ads\"],\ndiv[class*=\"sticky-ads\"], div[class*=\"sticky-banner\"], div[id*=\"sticky-ads\"], div[id*=\"sticky-banner\"],\ndiv[class*=\"qc_bottom\"], div[id*=\"qc_bottom\"], div[class*=\"qc-bottom\"], div[id*=\"qc-bottom\"],\ndiv[id*=\"box-bottom\"], div[class*=\"box-bottom\"], div[id*=\"ads_bottom\"], div[class*=\"ads_bottom\"],\ndiv[class*=\"banner_bottom\"], div[id*=\"banner_bottom\"], div[class*=\"banner-bottom\"], div[id*=\"banner-bottom\"],\ndiv[id*=\"floating_bottom\"], div[class*=\"floating_bottom\"], div[id*=\"float_bottom\"],\n\n/* Diệt tận gốc Banner Rophim, Thể thao, Giovang, Chuoichien & Thapcam */\n.sspp-area, [class*=\"sspp-area\"], [class*=\"sspp_area\"], [class*=\"sspp-\"],\n.display-single, [class*=\"display-single\"], .is-demo, [class*=\"is-demo\"],\n.is-image, div[class*=\"is-image\"],\n#banner_popup, .banner_popup, .banner_inner, .banner_cursor,\n.grid_banner_devqc, .devqc-manager-resources, .w-banner_devqc-bd, .banner_devqc-bdn-button,\n.devqc-catfish, .gvbanner-catfish, [class*=\"devqc\"], [id*=\"devqc\"],\n#banners-bottom-container, .banners-bottom, .banners-bottom-grid, #open-banner-bottom,\n.popup-menu, #popupMenu, .floating-balloon-container, .popup-anim, .popup-item,\na[data-brand-id], a.seo4s-resolve-link, a[class*=\"seo4s\"],\n.bg-modaltrungthuong, .modal-trungthuong, .close-modal-trungthuong,\n.tvc-pre-roll, .video-wrapper.tvc-pre-roll, .tvc-pre-roll__video, .tvc-pre-roll__skip, .tvc-pre-roll__link-overlay, [class*=\"tvc-pre-roll\"],\n.xlz-ads-item, .block-catfish, .xlz-btn-8xbet, [class*=\"xlz-ads\"],\n.odds-comp-logo, a.odds-comp-logo, .grid-match__odds,\n.marquee-container, .marquee-box, [class*=\"marquee-container\"],\n.odds-button, div[class*=\"odds-button\"], [class*=\"odds-button\"],\n.teambox__odds, [class*=\"teambox__odds\"], .btn-odds, [class*=\"btn-odds\"], .match-detail__offer, .offer__buttons, .offer__bet__col, [class*=\"match-detail__offer\"],\n.fixture-banner, [class*=\"fixture-banner\"], [class*=\"balloon-wrapper\"], [class*=\"btn-balloon\"], [class*=\"popup-item\"],\n[class*=\"banner-pos-\"], [class*=\"ad-strip-pos\"], [class*=\"ad-popup-modal\"], [class*=\"banner-pos\"], [id*=\"banner-pos\"],\n.top-ads, .ads-728-90, .adspot-wrap, .adspot-1, .adspot-2, [class*=\"adspot\"], [id*=\"adspot\"], ins[data-revive-id],\n.banner-match, .gv-skeleton-banner, [class*=\"gv-skeleton-banner\"],\n.ads-layer, [class*=\"ads-layer\"], div.ads-layer,\n.player-logo-wrapper, .player-logo-inner, .player-logo-ad, [class*=\"player-logo-\"], [class*=\"player-logo\"],\n.bet-button-player, .bet-buttons-container, .bet-button-content, [class*=\"bet-button-player\"], [class*=\"bet-buttons-container\"], [class*=\"bet-button-content\"],\n[data-v-77ed3802], [data-v-77cd3882], [data-v-4c9315d7], [data-v-cede0d5b],\n.banner-player, .banner-container, .banner-content, .banner-image, .banner-item,\n[class*=\"banner-player\"], [class*=\"banner-container\"], [class*=\"banner-content\"], [class*=\"banner-image\"], [class*=\"banner-item\"],\n.banner-content.active, [class*=\"banner-content\"][class*=\"active\"],\n.bet-button, .bet-buttons, [class*=\"bet-button\"], [class*=\"bet-buttons\"], [class*=\"bet-btn\"],\n.homepage-toplists-content, section.homepage-toplists-content, [class*=\"homepage-toplists\"],\n.toplists-home, [class*=\"toplists-home\"], .devvn-topfive-wrapper, [class*=\"devvn-topfive\"],\n.topfive-card, [class*=\"topfive-card\"],\n.box-odds-match, [class*=\"box-odds-match\"], .title-odds, [class*=\"title-odds\"],\n.gv-bet-dropdown, [class*=\"gv-bet-dropdown\"], .gv-bet-dropdown-toggle, [class*=\"gv-bet-dropdown-toggle\"],\n.gv-bet-dropdown-menu, [class*=\"gv-bet-dropdown-menu\"],\n.gv-bet-brand-link--image, [class*=\"gv-bet-brand-link\"], .gv-bet-brand-link__img,\na[aria-label=\"Top Nhà Cái\"], img[src*=\"nav-toplist.svg\"], img[src*=\"nav-active-toplist.svg\"],\nimg[src*=\"kbv.svg\"], img[src*=\"bet-net88\"], img[src*=\"bet-gem88\"],\n.sticky-message, .sticky-announcement, [class*=\"sticky-announcement\"], [class*=\"sticky-message\"],\n.sticky-header, .sticky-icon-inline, .sticky-title, .sticky-content-text,\n.detail-live-brand, [class*=\"detail-live-brand\"], .detail-live-brand-title, .detail-live-brand-logo,\n[id*=\"notification-banner\"], [class*=\"notification-banner\"],\n.notification-banner-message-wrapper, .notification-banner-message-item, .gwd_notification,\n#betbutton-world-cup, a.btn-bet, a.bet-cta, .adspot-55, .adspot-56, .adspot-57,\n#corner-start-popup, .corner-start-popup, .corner-start-popup-backdrop, .corner-start-popup-content, .corner-start-popup-inner,\n.corner-popup-wrap, .corner-popup-box, [class*=\"corner-popup\"], [id*=\"corner-popup\"],\n.block-balloon-right, .block-balloon-left, .close-balloon-left, .close-balloon-right, [class*=\"balloon-\"],\n.bookmaker-title, .tf-section, .tf-theme-style4, [class*=\"tf-s3-\"], [class*=\"tf-section\"],\n.fixed-ads, .fixed-ads-1, .block-fixed-ads-1, [class*=\"block-fixed-ads\"], [class*=\"fixed-ads\"],\n.live-ads-temp-1, .live-ads-temp-2, .live-ads-temp-3, .live-ads-temp-4, .live-ads-temp-5, [class*=\"live-ads-temp\"],\n.left-ads, .right-ads,\nimg[alt*=\"FB88_banner_player\"], img[alt*=\"net-88-banner-player\"], img[alt*=\"net-88-logo\"], img[alt*=\"banner_player\"],\nimg[src*=\"1920x60\"], img[src*=\"cdnvip.chuoichientv.net\"], img[src*=\"c5735ef8\"],\na[href*=\"net88.boats\"], a[href*=\"logolive-30x30\"],\nimg[src*=\"giovang-popup\"], img[src*=\"hit.club\"], img[src*=\"go88\"], img[src*=\"sun.win\"],\nimg[src*=\"1280x1280px\"], img[src*=\"balloon_1111\"], img[src*=\"FB88\"], img[src*=\"fb88\"], img[src*=\"banner_player\"],\nimg[src*=\"net88\"], img[src*=\"NET88\"], img[src*=\"xBet\"],\nimg[src*=\"/images/company/\"], img[src*=\"company\"], img[src*=\"21-1.png\"], img[alt=\"company\"],\na[href*=\"15.235.211.192\"], a[href*=\"top-nha-cai\"], a[href*=\"xoilacz\"], a[href*=\"fb88.com\"],\na[href*=\"154.82.\"], a[href*=\"2138046\"], a[href*=\"9922\"],\nimg[src*=\"/media/\"][src*=\".gif\"],\ndiv.slide:has(.sspp-area), div.slide:has(.display-single),\ndiv.fluid-gap:has(.sspp-area), div.fluid-gap:has(.display-single),\na[href*=\"vsbet\"], a[href*=\"bet88\"], a[href*=\"colatv\"], a[href*=\"colascore\"], a[href*=\"kubet\"], a[href*=\"fun88\"],\na[href*=\"w88\"], a[href*=\"fb88\"], a[href*=\"bk8\"], a[href*=\"casino\"], a[href*=\"nhacai\"], a[href*=\"nohu\"],\na[href*=\"taixiu\"], a[href*=\"gamebai\"], a[href*=\"keonhacai\"], a[href*=\"bongda\"], a[href*=\"link1s\"],\na[href*=\"tructiephotlink\"], a[href*=\"branchseo\"], a[href*=\"/mlink/\"], a[href*=\"1-1-1-1\"],\ndiv[style*=\"position: fixed\"][style*=\"bottom: 0\"]:not(#ro-vip-hub):not(#ro-hub-menu):not(.livestream_widget):not(.giovang-fixture-player-shell),\ndiv[style*=\"position: fixed\"][style*=\"bottom:0\"]:not(#ro-vip-hub):not(#ro-hub-menu):not(.livestream_widget):not(.giovang-fixture-player-shell),\ndiv[style*=\"position:fixed\"][style*=\"bottom: 0\"]:not(#ro-vip-hub):not(#ro-hub-menu):not(.livestream_widget):not(.giovang-fixture-player-shell),\ndiv[style*=\"position:fixed\"][style*=\"bottom:0\"]:not(#ro-vip-hub):not(#ro-hub-menu):not(.livestream_widget):not(.giovang-fixture-player-shell) {\n  display: none !important;\n  visibility: hidden !important;\n  height: 0 !important;\n  max-height: 0 !important;\n  pointer-events: none !important;\n  opacity: 0 !important;\n}\n\n/* Diệt tuyệt đối các Modal Popup & Floating Ads đè trang */\n#banner_popup, #banner_popup.show, div#banner_popup, div#banner_popup.show,\n.banner_popup, .banner_popup.show, div.banner_popup, div.banner_popup.show,\n#corner-start-popup, .corner-start-popup, .corner-start-popup-backdrop, .corner-start-popup-content,\n.corner-popup-wrap, .corner-popup-box,\n.ads-layer, [class*=\"ads-layer\"], div.ads-layer,\n.player-logo-wrapper, .player-logo-inner, .player-logo-ad, [class*=\"player-logo-\"], [class*=\"player-logo\"],\n.bet-button-player, .bet-buttons-container, .bet-button-content, [class*=\"bet-button-player\"], [class*=\"bet-buttons-container\"], [class*=\"bet-button-content\"],\n[data-v-77ed3802], [data-v-77cd3882], [data-v-4c9315d7], [data-v-cede0d5b],\n.banner-player, .banner-container, .banner-content, .banner-image, .banner-item,\n[class*=\"banner-player\"], [class*=\"banner-container\"], [class*=\"banner-content\"], [class*=\"banner-image\"], [class*=\"banner-item\"],\n.banner-content.active, [class*=\"banner-content\"][class*=\"active\"],\n.bet-button, .bet-buttons, [class*=\"bet-button\"], [class*=\"bet-buttons\"], [class*=\"bet-btn\"],\n.homepage-toplists-content, section.homepage-toplists-content, [class*=\"homepage-toplists\"],\n.toplists-home, [class*=\"toplists-home\"], .devvn-topfive-wrapper, [class*=\"devvn-topfive\"],\n.topfive-card, [class*=\"topfive-card\"],\n.box-odds-match, [class*=\"box-odds-match\"], .title-odds, [class*=\"title-odds\"],\n.gv-bet-dropdown, [class*=\"gv-bet-dropdown\"], .gv-bet-dropdown-toggle, [class*=\"gv-bet-dropdown-toggle\"],\n.gv-bet-dropdown-menu, [class*=\"gv-bet-dropdown-menu\"],\n.gv-bet-brand-link--image, [class*=\"gv-bet-brand-link\"], .gv-bet-brand-link__img,\n.sticky-message, .sticky-announcement, [class*=\"sticky-announcement\"], [class*=\"sticky-message\"],\n.sticky-header, .sticky-icon-inline, .sticky-title, .sticky-content-text,\n.detail-live-brand, [class*=\"detail-live-brand\"], .detail-live-brand-title, .detail-live-brand-logo,\n[id*=\"notification-banner\"], [class*=\"notification-banner\"],\n.modal-backdrop, .bg-modaltrungthuong, .modal-trungthuong,\n.floating-balloon-container, #popupMenu, .popup-menu, .popup-item, [class*=\"popup-item\"],\n.fixture-banner, [class*=\"fixture-banner\"], .balloon-wrapper, [class*=\"balloon-wrapper\"], .btn-balloon, [class*=\"btn-balloon\"],\n.grid_banner_devqc, .devqc-manager-resources, .w-banner_devqc-bd, .banner_devqc-bdn-button,\n.devqc-catfish, .gvbanner-catfish, [class*=\"devqc\"], [id*=\"devqc\"],\n.tvc-pre-roll, .video-wrapper.tvc-pre-roll, .tvc-pre-roll__video, .tvc-pre-roll__skip, .tvc-pre-roll__link-overlay,\n.marquee-container, .marquee-box, .odds-button,\n[class*=\"banner-pos-\"], [class*=\"ad-strip-pos\"], [class*=\"ad-popup-modal\"],\n.match-detail__offer, .offer__buttons, .offer__bet__col, [class*=\"match-detail__offer\"],\n.teambox__odds, [class*=\"teambox__odds\"], .btn-odds, [class*=\"btn-odds\"], .block-int, .block-k {\n  display: none !important;\n  visibility: hidden !important;\n  opacity: 0 !important;\n  pointer-events: none !important;\n  z-index: -999999 !important;\n  width: 0 !important;\n  height: 0 !important;\n  max-width: 0 !important;\n  max-height: 0 !important;\n}\n\n/* Đảm bảo khung Player bóng đá Giờ Vàng, Chuối Chiên và các web thể thao luôn hiển thị nguyên vẹn */\n.livestream_widget, .giovang-fixture-player-shell, .giovang-fixture-player-mount, .livestream_widget__content,\n.hlsp, .player-container, video {\n  display: block !important;\n  visibility: visible !important;\n  opacity: 1 !important;\n  pointer-events: auto !important;\n  height: auto !important;\n  max-height: none !important;\n}\n\nhtml, body {\n  overflow: auto !important;\n  position: static !important;\n}\n\n\n    .ad-container, .ads-holder, .banner-left, .banner-right, div[id*=\"ad-\"], div[class*=\"banner-ads\"], div[id*=\"catfish\"], .ads-wrapper, #chancoc, .modal-adblock {\n  display: none !important;\n  visibility: hidden !important;\n  height: 0 !important;\n  opacity: 0 !important;\n  pointer-events: none !important;\n}\n\n/* ═══════════════════════════════════════════════════════════════\n   Cinema Pro Suite - Theater Mode & OLED HDR CSS\n   ═══════════════════════════════════════════════════════════════ */\n\nvideo.ro-enhanced-hdr {\n  filter: contrast(1.10) saturate(1.25) brightness(1.04) !important;\n}\n\nbody.ro-theater-active {\n  background-color: #050608 !important;\n}\n\nbody.ro-theater-active header,\nbody.ro-theater-active footer,\nbody.ro-theater-active .sidebar,\nbody.ro-theater-active .sidebar-right,\nbody.ro-theater-active nav {\n  opacity: 0.1 !important;\n  transition: opacity 0.3s ease;\n}\n\nbody.ro-theater-active header:hover,\nbody.ro-theater-active footer:hover,\nbody.ro-theater-active nav:hover {\n  opacity: 1 !important;\n}\n\nbody.ro-theater-active .player-wrapper,\nbody.ro-theater-active .player-container,\nbody.ro-theater-active #player,\nbody.ro-theater-active #live-player-content,\nbody.ro-theater-active #embed-player,\nbody.ro-theater-active #iframe-stream,\nbody.ro-theater-active .col-player,\nbody.ro-theater-active iframe {\n  max-height: 88vh !important;\n  box-shadow: 0 10px 50px rgba(81, 240, 133, 0.25) !important;\n  border-radius: 14px;\n}\n\n\n/* ═══════════════════════════════════════════════════════════════\n   Cinema Pro Suite - VIP Hub UI CSS (Sleek Modern Glassmorphism)\n   ═══════════════════════════════════════════════════════════════ */\n\n#ro-vip-hub {\n  position: fixed;\n  bottom: 24px;\n  right: 24px;\n  z-index: 2147483647;\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n  gap: 10px;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif;\n}\n\n#ro-hub-toggle {\n  width: 48px;\n  height: 48px;\n  border-radius: 50%;\n  background: linear-gradient(135deg, #10b981 0%, #059669 100%);\n  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.45);\n  border: 2px solid rgba(255, 255, 255, 0.3);\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #ffffff;\n  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);\n  user-select: none;\n}\n\n#ro-hub-toggle:hover {\n  transform: scale(1.1) rotate(6deg);\n  box-shadow: 0 6px 26px rgba(16, 185, 129, 0.65);\n}\n\n#ro-hub-toggle svg {\n  width: 24px;\n  height: 24px;\n}\n\n#ro-hub-menu {\n  display: none;\n  background: rgba(15, 23, 42, 0.95);\n  backdrop-filter: blur(14px);\n  border: 1px solid rgba(255, 255, 255, 0.12);\n  border-radius: 14px;\n  padding: 14px;\n  width: 290px;\n  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);\n  flex-direction: column;\n  gap: 8px;\n  color: #e2e8f0;\n}\n\n#ro-hub-menu.show {\n  display: flex;\n  animation: roFadeIn 0.2s ease-out;\n}\n\n@keyframes roFadeIn {\n  from { opacity: 0; transform: translateY(8px); }\n  to { opacity: 1; transform: translateY(0); }\n}\n\n.ro-menu-btn {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  background: rgba(255, 255, 255, 0.05);\n  border: 1px solid rgba(255, 255, 255, 0.08);\n  color: #f1f5f9;\n  padding: 8px 12px;\n  border-radius: 8px;\n  font-size: 13px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.15s ease;\n  text-align: left;\n}\n\n.ro-menu-btn:hover {\n  background: rgba(16, 185, 129, 0.18);\n  border-color: rgba(16, 185, 129, 0.4);\n  transform: translateX(-2px);\n}\n\n.ro-btn-left {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}\n\n.ro-icon {\n  width: 15px;\n  height: 15px;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n}\n\n.ro-icon svg {\n  width: 100%;\n  height: 100%;\n}\n\n.ro-badge {\n  font-size: 10px;\n  padding: 2px 6px;\n  border-radius: 6px;\n  background: rgba(255, 255, 255, 0.1);\n  color: #a1a1aa;\n}\n\n#ro-stream-preview {\n  background: rgba(16, 185, 129, 0.12);\n  border: 1px solid rgba(16, 185, 129, 0.3);\n  border-radius: 8px;\n  padding: 6px 10px;\n  font-size: 11px;\n  word-break: break-all;\n  color: #51f085;\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;\n  display: none;\n  cursor: pointer;\n}\n\n.ro-dot {\n  display: inline-block;\n  width: 8px;\n  height: 8px;\n  border-radius: 50%;\n  background-color: #10b981;\n  box-shadow: 0 0 8px #10b981;\n  margin-right: 6px;\n  vertical-align: middle;\n}\n\n.ro-toast {\n  position: fixed;\n  top: 24px;\n  right: 24px;\n  z-index: 2147483647;\n  background: rgba(15, 23, 42, 0.95);\n  color: #51f085;\n  padding: 10px 18px;\n  border-radius: 10px;\n  border: 1px solid rgba(81, 240, 133, 0.4);\n  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);\n  font-size: 14px;\n  font-weight: 600;\n  pointer-events: none;\n  animation: roToastAnim 2.2s forwards;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}\n\n@keyframes roToastAnim {\n  0% { opacity: 0; transform: translateY(-10px); }\n  15% { opacity: 1; transform: translateY(0); }\n  80% { opacity: 1; transform: translateY(0); }\n  100% { opacity: 0; transform: translateY(-10px); }\n}";
+  const css = "/* ═══════════════════════════════════════════════════════════════\n   Cinema Pro Suite - Adblock & Anti-Banner CSS\n   Diệt sạch banner catfish, popup, cá cược, video ads\n   ═══════════════════════════════════════════════════════════════ */\n\n/* Xóa sạch mọi container banner quảng cáo */\n.ad-container, .ads-holder, .banner-left, .banner-right,\ndiv[id*=\"ad-\"], div[class*=\"banner-ads\"], div[id*=\"catfish\"],\n.ads-wrapper, #chancoc, .modal-adblock, .adv-holder, .pm-ads,\n.hh3d-ads, .dp-ads, .tvhay-ads, .ah-ads, #box-ads, .ah-banner,\n.bl-ads, .a47-ads, .ophim-ads, .biphim-ads, .dhtv-ads,\n.motphim-ads, .mephim-ads, .ghienphim-ads, .fullphim-ads, .phimhay-ads,\n.atvn-ads, .hhkf-ads, .hhpanda-ads, .vst-ads, .p247-ads, .phd-ads, .pbh-ads,\n.pv-ads, .btv-ads, .hdo-ads, .chay-ads, .xpp-ads, .ts-ads, .ss-ads,\n[class*=\"ad_placement\"], [id*=\"google_ads\"], div[style*=\"z-index: 9999999\"],\ndiv[style*=\"zIndex: 9999999\"], div[style*=\"backdrop-filter: blur(25px)\"],\n\n/* Diệt sạch banner catfish, fixed bottom bar và cá cược */\n.catfish, #catfish, .catfish-banner, #catfish-banner, div[class*=\"catfish\"], div[id*=\"catfish\"],\ndiv[class*=\"bottom-ads\"], div[class*=\"bottom_ads\"], div[class*=\"bottom-banner\"], div[class*=\"bottom_banner\"],\ndiv[id*=\"bottom-ads\"], div[id*=\"bottom_ads\"], div[id*=\"bottom-banner\"], div[id*=\"bottom_banner\"],\ndiv[class*=\"footer-ads\"], div[class*=\"footer_ads\"], div[class*=\"footer-banner\"], div[class*=\"footer_banner\"],\ndiv[class*=\"floating-banner\"], div[class*=\"floating_banner\"], div[class*=\"float-ads\"], div[class*=\"float_ads\"],\ndiv[class*=\"sticky-ads\"], div[class*=\"sticky-banner\"], div[id*=\"sticky-ads\"], div[id*=\"sticky-banner\"],\ndiv[class*=\"qc_bottom\"], div[id*=\"qc_bottom\"], div[class*=\"qc-bottom\"], div[id*=\"qc-bottom\"],\ndiv[id*=\"box-bottom\"], div[class*=\"box-bottom\"], div[id*=\"ads_bottom\"], div[class*=\"ads_bottom\"],\ndiv[class*=\"banner_bottom\"], div[id*=\"banner_bottom\"], div[class*=\"banner-bottom\"], div[id*=\"banner-bottom\"],\ndiv[id*=\"floating_bottom\"], div[class*=\"floating_bottom\"], div[id*=\"float_bottom\"],\n\n/* Diệt tận gốc Banner Rophim, Thể thao, Giovang, Chuoichien & Thapcam */\n.sspp-area, [class*=\"sspp-area\"], [class*=\"sspp_area\"], [class*=\"sspp-\"],\n.display-single, [class*=\"display-single\"], .is-demo, [class*=\"is-demo\"],\n.is-image, div[class*=\"is-image\"],\n#banner_popup, .banner_popup, .banner_inner, .banner_cursor,\n.grid_banner_devqc, .devqc-manager-resources, .w-banner_devqc-bd, .banner_devqc-bdn-button,\n.devqc-catfish, .gvbanner-catfish, [class*=\"devqc\"], [id*=\"devqc\"],\n#banners-bottom-container, .banners-bottom, .banners-bottom-grid, #open-banner-bottom,\n.popup-menu, #popupMenu, .floating-balloon-container, .popup-anim, .popup-item,\na[data-brand-id], a.seo4s-resolve-link, a[class*=\"seo4s\"],\n.bg-modaltrungthuong, .modal-trungthuong, .close-modal-trungthuong,\n.tvc-pre-roll, .video-wrapper.tvc-pre-roll, .tvc-pre-roll__video, .tvc-pre-roll__skip, .tvc-pre-roll__link-overlay, [class*=\"tvc-pre-roll\"],\n.xlz-ads-item, .block-catfish, .xlz-btn-8xbet, [class*=\"xlz-ads\"],\n.odds-comp-logo, a.odds-comp-logo, .grid-match__odds,\n.marquee-container, .marquee-box, [class*=\"marquee-container\"],\n.odds-button, div[class*=\"odds-button\"], [class*=\"odds-button\"],\n.teambox__odds, [class*=\"teambox__odds\"], .btn-odds, [class*=\"btn-odds\"], .match-detail__offer, .offer__buttons, .offer__bet__col, [class*=\"match-detail__offer\"],\n.fixture-banner, [class*=\"fixture-banner\"], [class*=\"balloon-wrapper\"], [class*=\"btn-balloon\"], [class*=\"popup-item\"],\n[class*=\"banner-pos-\"], [class*=\"ad-strip-pos\"], [class*=\"ad-popup-modal\"], [class*=\"banner-pos\"], [id*=\"banner-pos\"],\n.top-ads, .ads-728-90, .adspot-wrap, .adspot-1, .adspot-2, [class*=\"adspot\"], [id*=\"adspot\"], ins[data-revive-id],\n.banner-match, .gv-skeleton-banner, [class*=\"gv-skeleton-banner\"],\n.ads-layer, [class*=\"ads-layer\"], div.ads-layer,\n.player-logo-wrapper, .player-logo-inner, .player-logo-ad, [class*=\"player-logo-\"], [class*=\"player-logo\"],\n.bet-button-player, .bet-buttons-container, .bet-button-content, [class*=\"bet-button-player\"], [class*=\"bet-buttons-container\"], [class*=\"bet-button-content\"],\n[data-v-77ed3802], [data-v-77cd3882], [data-v-4c9315d7], [data-v-cede0d5b],\n.banner-player, .banner-container, .banner-content, .banner-image, .banner-item,\n[class*=\"banner-player\"], [class*=\"banner-container\"], [class*=\"banner-content\"], [class*=\"banner-image\"], [class*=\"banner-item\"],\n.banner-content.active, [class*=\"banner-content\"][class*=\"active\"],\n.bet-button, .bet-buttons, [class*=\"bet-button\"], [class*=\"bet-buttons\"], [class*=\"bet-btn\"],\n.homepage-toplists-content, section.homepage-toplists-content, [class*=\"homepage-toplists\"],\n.toplists-home, [class*=\"toplists-home\"], .devvn-topfive-wrapper, [class*=\"devvn-topfive\"],\n.topfive-card, [class*=\"topfive-card\"],\n.box-odds-match, [class*=\"box-odds-match\"], .title-odds, [class*=\"title-odds\"],\n.gv-bet-dropdown, [class*=\"gv-bet-dropdown\"], .gv-bet-dropdown-toggle, [class*=\"gv-bet-dropdown-toggle\"],\n.gv-bet-dropdown-menu, [class*=\"gv-bet-dropdown-menu\"],\n.gv-bet-brand-link--image, [class*=\"gv-bet-brand-link\"], .gv-bet-brand-link__img,\na[aria-label=\"Top Nhà Cái\"], img[src*=\"nav-toplist.svg\"], img[src*=\"nav-active-toplist.svg\"],\nimg[src*=\"kbv.svg\"], img[src*=\"bet-net88\"], img[src*=\"bet-gem88\"],\n.sticky-message, .sticky-announcement, [class*=\"sticky-announcement\"], [class*=\"sticky-message\"],\n.sticky-header, .sticky-icon-inline, .sticky-title, .sticky-content-text,\n.detail-live-brand, [class*=\"detail-live-brand\"], .detail-live-brand-title, .detail-live-brand-logo,\n[id*=\"notification-banner\"], [class*=\"notification-banner\"],\n.notification-banner-message-wrapper, .notification-banner-message-item, .gwd_notification,\n#betbutton-world-cup, a.btn-bet, a.bet-cta, .adspot-55, .adspot-56, .adspot-57,\n#corner-start-popup, .corner-start-popup, .corner-start-popup-backdrop, .corner-start-popup-content, .corner-start-popup-inner,\n.corner-popup-wrap, .corner-popup-box, [class*=\"corner-popup\"], [id*=\"corner-popup\"],\n.block-balloon-right, .block-balloon-left, .close-balloon-left, .close-balloon-right, [class*=\"balloon-\"],\n.bookmaker-title, .tf-section, .tf-theme-style4, [class*=\"tf-s3-\"], [class*=\"tf-section\"],\n.fixed-ads, .fixed-ads-1, .block-fixed-ads-1, [class*=\"block-fixed-ads\"], [class*=\"fixed-ads\"],\n.live-ads-temp-1, .live-ads-temp-2, .live-ads-temp-3, .live-ads-temp-4, .live-ads-temp-5, [class*=\"live-ads-temp\"],\n.left-ads, .right-ads,\nimg[alt*=\"FB88_banner_player\"], img[alt*=\"net-88-banner-player\"], img[alt*=\"net-88-logo\"], img[alt*=\"banner_player\"],\nimg[src*=\"1920x60\"], img[src*=\"cdnvip.chuoichientv.net\"], img[src*=\"c5735ef8\"],\na[href*=\"net88.boats\"], a[href*=\"logolive-30x30\"],\nimg[src*=\"giovang-popup\"], img[src*=\"hit.club\"], img[src*=\"go88\"], img[src*=\"sun.win\"],\nimg[src*=\"1280x1280px\"], img[src*=\"balloon_1111\"], img[src*=\"FB88\"], img[src*=\"fb88\"], img[src*=\"banner_player\"],\nimg[src*=\"net88\"], img[src*=\"NET88\"], img[src*=\"xBet\"],\nimg[src*=\"/images/company/\"], img[src*=\"company\"], img[src*=\"21-1.png\"], img[alt=\"company\"],\na[href*=\"15.235.211.192\"], a[href*=\"top-nha-cai\"], a[href*=\"xoilacz\"], a[href*=\"fb88.com\"],\na[href*=\"154.82.\"], a[href*=\"2138046\"], a[href*=\"9922\"],\nimg[src*=\"/media/\"][src*=\".gif\"],\ndiv.slide:has(.sspp-area), div.slide:has(.display-single),\ndiv.fluid-gap:has(.sspp-area), div.fluid-gap:has(.display-single),\na[href*=\"vsbet\"], a[href*=\"bet88\"], a[href*=\"colatv\"], a[href*=\"colascore\"], a[href*=\"kubet\"], a[href*=\"fun88\"],\na[href*=\"w88\"], a[href*=\"fb88\"], a[href*=\"bk8\"], a[href*=\"casino\"], a[href*=\"nhacai\"], a[href*=\"nohu\"],\na[href*=\"taixiu\"], a[href*=\"gamebai\"], a[href*=\"keonhacai\"], a[href*=\"bongda\"], a[href*=\"link1s\"],\na[href*=\"tructiephotlink\"], a[href*=\"branchseo\"], a[href*=\"/mlink/\"], a[href*=\"1-1-1-1\"],\ndiv[style*=\"position: fixed\"][style*=\"bottom: 0\"]:not(#ro-vip-hub):not(#ro-hub-menu):not(.livestream_widget):not(.giovang-fixture-player-shell),\ndiv[style*=\"position: fixed\"][style*=\"bottom:0\"]:not(#ro-vip-hub):not(#ro-hub-menu):not(.livestream_widget):not(.giovang-fixture-player-shell),\ndiv[style*=\"position:fixed\"][style*=\"bottom: 0\"]:not(#ro-vip-hub):not(#ro-hub-menu):not(.livestream_widget):not(.giovang-fixture-player-shell),\ndiv[style*=\"position:fixed\"][style*=\"bottom:0\"]:not(#ro-vip-hub):not(#ro-hub-menu):not(.livestream_widget):not(.giovang-fixture-player-shell) {\n  display: none !important;\n  visibility: hidden !important;\n  height: 0 !important;\n  max-height: 0 !important;\n  pointer-events: none !important;\n  opacity: 0 !important;\n}\n\n/* Diệt tuyệt đối các Modal Popup & Floating Ads đè trang */\n#banner_popup, #banner_popup.show, div#banner_popup, div#banner_popup.show,\n.banner_popup, .banner_popup.show, div.banner_popup, div.banner_popup.show,\n#corner-start-popup, .corner-start-popup, .corner-start-popup-backdrop, .corner-start-popup-content,\n.corner-popup-wrap, .corner-popup-box,\n.ads-layer, [class*=\"ads-layer\"], div.ads-layer,\n.player-logo-wrapper, .player-logo-inner, .player-logo-ad, [class*=\"player-logo-\"], [class*=\"player-logo\"],\n.bet-button-player, .bet-buttons-container, .bet-button-content, [class*=\"bet-button-player\"], [class*=\"bet-buttons-container\"], [class*=\"bet-button-content\"],\n[data-v-77ed3802], [data-v-77cd3882], [data-v-4c9315d7], [data-v-cede0d5b],\n.banner-player, .banner-container, .banner-content, .banner-image, .banner-item,\n[class*=\"banner-player\"], [class*=\"banner-container\"], [class*=\"banner-content\"], [class*=\"banner-image\"], [class*=\"banner-item\"],\n.banner-content.active, [class*=\"banner-content\"][class*=\"active\"],\n.bet-button, .bet-buttons, [class*=\"bet-button\"], [class*=\"bet-buttons\"], [class*=\"bet-btn\"],\n.homepage-toplists-content, section.homepage-toplists-content, [class*=\"homepage-toplists\"],\n.toplists-home, [class*=\"toplists-home\"], .devvn-topfive-wrapper, [class*=\"devvn-topfive\"],\n.topfive-card, [class*=\"topfive-card\"],\n.box-odds-match, [class*=\"box-odds-match\"], .title-odds, [class*=\"title-odds\"],\n.gv-bet-dropdown, [class*=\"gv-bet-dropdown\"], .gv-bet-dropdown-toggle, [class*=\"gv-bet-dropdown-toggle\"],\n.gv-bet-dropdown-menu, [class*=\"gv-bet-dropdown-menu\"],\n.gv-bet-brand-link--image, [class*=\"gv-bet-brand-link\"], .gv-bet-brand-link__img,\n.sticky-message, .sticky-announcement, [class*=\"sticky-announcement\"], [class*=\"sticky-message\"],\n.sticky-header, .sticky-icon-inline, .sticky-title, .sticky-content-text,\n.detail-live-brand, [class*=\"detail-live-brand\"], .detail-live-brand-title, .detail-live-brand-logo,\n[id*=\"notification-banner\"], [class*=\"notification-banner\"],\n.modal-backdrop, .bg-modaltrungthuong, .modal-trungthuong,\n.floating-balloon-container, #popupMenu, .popup-menu, .popup-item, [class*=\"popup-item\"],\n.fixture-banner, [class*=\"fixture-banner\"], .balloon-wrapper, [class*=\"balloon-wrapper\"], .btn-balloon, [class*=\"btn-balloon\"],\n.grid_banner_devqc, .devqc-manager-resources, .w-banner_devqc-bd, .banner_devqc-bdn-button,\n.devqc-catfish, .gvbanner-catfish, [class*=\"devqc\"], [id*=\"devqc\"],\n.tvc-pre-roll, .video-wrapper.tvc-pre-roll, .tvc-pre-roll__video, .tvc-pre-roll__skip, .tvc-pre-roll__link-overlay,\n.marquee-container, .marquee-box, .odds-button,\n[class*=\"banner-pos-\"], [class*=\"ad-strip-pos\"], [class*=\"ad-popup-modal\"],\n.match-detail__offer, .offer__buttons, .offer__bet__col, [class*=\"match-detail__offer\"],\n.teambox__odds, [class*=\"teambox__odds\"], .btn-odds, [class*=\"btn-odds\"], .block-int, .block-k {\n  display: none !important;\n  visibility: hidden !important;\n  opacity: 0 !important;\n  pointer-events: none !important;\n  z-index: -999999 !important;\n  width: 0 !important;\n  height: 0 !important;\n  max-width: 0 !important;\n  max-height: 0 !important;\n}\n\n/* Đảm bảo khung Player bóng đá Giờ Vàng, Chuối Chiên và các web thể thao luôn hiển thị nguyên vẹn */\n.livestream_widget, .giovang-fixture-player-shell, .giovang-fixture-player-mount, .livestream_widget__content,\n.hlsp, .player-container, video {\n  display: block !important;\n  visibility: visible !important;\n  opacity: 1 !important;\n  pointer-events: auto !important;\n  height: auto !important;\n  max-height: none !important;\n}\n\nhtml, body {\n  overflow: auto !important;\n  position: static !important;\n}\n\n\n    \n      :root {\n        --color-primary: #51f085 !important;\n        --primary-color: #51f085 !important;\n        --primary-text: #51f085 !important;\n      }\n      .ad-container, .ads-holder, .banner-left, .banner-right, div[id*=\"ad-\"], div[class*=\"banner-ads\"], div[id*=\"catfish\"], .ads-wrapper, #chancoc, .modal-adblock {\n        display: none !important;\n        visibility: hidden !important;\n        height: 0 !important;\n        opacity: 0 !important;\n        pointer-events: none !important;\n      }\n    \n\n/* ═══════════════════════════════════════════════════════════════\n   Cinema Pro Suite - Theater Mode & OLED HDR CSS\n   ═══════════════════════════════════════════════════════════════ */\n\nvideo.ro-enhanced-hdr {\n  filter: contrast(1.10) saturate(1.25) brightness(1.04) !important;\n}\n\nbody.ro-theater-active {\n  background-color: #050608 !important;\n}\n\nbody.ro-theater-active header,\nbody.ro-theater-active footer,\nbody.ro-theater-active .sidebar,\nbody.ro-theater-active .sidebar-right,\nbody.ro-theater-active nav {\n  opacity: 0.1 !important;\n  transition: opacity 0.3s ease;\n}\n\nbody.ro-theater-active header:hover,\nbody.ro-theater-active footer:hover,\nbody.ro-theater-active nav:hover {\n  opacity: 1 !important;\n}\n\nbody.ro-theater-active .player-wrapper,\nbody.ro-theater-active .player-container,\nbody.ro-theater-active #player,\nbody.ro-theater-active #live-player-content,\nbody.ro-theater-active #embed-player,\nbody.ro-theater-active #iframe-stream,\nbody.ro-theater-active .col-player,\nbody.ro-theater-active iframe {\n  max-height: 88vh !important;\n  box-shadow: 0 10px 50px rgba(81, 240, 133, 0.25) !important;\n  border-radius: 14px;\n}\n\n\n/* ═══════════════════════════════════════════════════════════════\n   Cinema Pro Suite - VIP Hub UI CSS (Sleek Modern Glassmorphism)\n   ═══════════════════════════════════════════════════════════════ */\n\n#ro-vip-hub {\n  position: fixed;\n  bottom: 24px;\n  right: 24px;\n  z-index: 2147483647;\n  display: flex;\n  flex-direction: column;\n  align-items: flex-end;\n  gap: 10px;\n  font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif;\n}\n\n#ro-hub-toggle {\n  width: 48px;\n  height: 48px;\n  border-radius: 50%;\n  background: linear-gradient(135deg, #10b981 0%, #059669 100%);\n  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.45);\n  border: 2px solid rgba(255, 255, 255, 0.3);\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  color: #ffffff;\n  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);\n  user-select: none;\n}\n\n#ro-hub-toggle:hover {\n  transform: scale(1.1) rotate(6deg);\n  box-shadow: 0 6px 26px rgba(16, 185, 129, 0.65);\n}\n\n#ro-hub-toggle svg {\n  width: 24px;\n  height: 24px;\n}\n\n#ro-hub-menu {\n  display: none;\n  background: rgba(15, 23, 42, 0.95);\n  backdrop-filter: blur(14px);\n  border: 1px solid rgba(255, 255, 255, 0.12);\n  border-radius: 14px;\n  padding: 14px;\n  width: 290px;\n  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);\n  flex-direction: column;\n  gap: 8px;\n  color: #e2e8f0;\n}\n\n#ro-hub-menu.show {\n  display: flex;\n  animation: roFadeIn 0.2s ease-out;\n}\n\n@keyframes roFadeIn {\n  from { opacity: 0; transform: translateY(8px); }\n  to { opacity: 1; transform: translateY(0); }\n}\n\n.ro-menu-btn {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  background: rgba(255, 255, 255, 0.05);\n  border: 1px solid rgba(255, 255, 255, 0.08);\n  color: #f1f5f9;\n  padding: 8px 12px;\n  border-radius: 8px;\n  font-size: 13px;\n  font-weight: 500;\n  cursor: pointer;\n  transition: all 0.15s ease;\n  text-align: left;\n}\n\n.ro-menu-btn:hover {\n  background: rgba(16, 185, 129, 0.18);\n  border-color: rgba(16, 185, 129, 0.4);\n  transform: translateX(-2px);\n}\n\n.ro-btn-left {\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}\n\n.ro-icon {\n  width: 15px;\n  height: 15px;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n}\n\n.ro-icon svg {\n  width: 100%;\n  height: 100%;\n}\n\n.ro-badge {\n  font-size: 10px;\n  padding: 2px 6px;\n  border-radius: 6px;\n  background: rgba(255, 255, 255, 0.1);\n  color: #a1a1aa;\n}\n\n#ro-stream-preview {\n  background: rgba(16, 185, 129, 0.12);\n  border: 1px solid rgba(16, 185, 129, 0.3);\n  border-radius: 8px;\n  padding: 6px 10px;\n  font-size: 11px;\n  word-break: break-all;\n  color: #51f085;\n  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;\n  display: none;\n  cursor: pointer;\n}\n\n.ro-dot {\n  display: inline-block;\n  width: 8px;\n  height: 8px;\n  border-radius: 50%;\n  background-color: #10b981;\n  box-shadow: 0 0 8px #10b981;\n  margin-right: 6px;\n  vertical-align: middle;\n}\n\n.ro-toast {\n  position: fixed;\n  top: 24px;\n  right: 24px;\n  z-index: 2147483647;\n  background: rgba(15, 23, 42, 0.95);\n  color: #51f085;\n  padding: 10px 18px;\n  border-radius: 10px;\n  border: 1px solid rgba(81, 240, 133, 0.4);\n  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);\n  font-size: 14px;\n  font-weight: 600;\n  pointer-events: none;\n  animation: roToastAnim 2.2s forwards;\n  display: flex;\n  align-items: center;\n  gap: 8px;\n}\n\n@keyframes roToastAnim {\n  0% { opacity: 0; transform: translateY(-10px); }\n  15% { opacity: 1; transform: translateY(0); }\n  80% { opacity: 1; transform: translateY(0); }\n  100% { opacity: 0; transform: translateY(-10px); }\n}";
 
   const styleEl = document.createElement("style");
   styleEl.textContent = css;
@@ -1255,7 +1257,7 @@
             <span class="ro-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="2.18" ry="2.18"/><line x1="7" x2="7" y1="2" y2="22"/><line x1="17" x2="17" y1="2" y2="22"/><line x1="2" x2="22" y1="12" y2="12"/><line x1="2" x2="7" y1="7" y2="7"/><line x1="2" x2="7" y1="17" y2="17"/><line x1="17" x2="22" y1="17" y2="17"/><line x1="17" x2="22" y1="7" y2="7"/></svg></span>
             <span>Motchill VIP & Cinema Pro Suite</span>
           </span>
-          <span style="font-size: 11px; opacity: 0.7;">v5.2</span>
+          <span style="font-size: 11px; opacity: 0.7;">v5.4</span>
         </div>
         <div id="ro-stream-preview" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 6px 10px; font-size: 11px; word-break: break-all; color: #51f085; font-family: monospace; display: none; cursor: pointer;" title="Bấm để copy link"></div>
         <button class="ro-menu-btn" id="ro-copym3u8-btn">
@@ -1585,6 +1587,380 @@
   window.addEventListener("DOMContentLoaded", ensureStreamUrl);
   window.addEventListener("load", ensureStreamUrl);
 
+
+  // ─── LAYER 5: VIP 2099 & T-COIN RESPONSE PATCHER (ROPHIM & MOTCHILL API) ───
+  const VIP_EXPIRY_DATE = new Date(2099, 6, 18, 0, 0, 0);
+  const VIP_EXPIRY_TIMESTAMP = Math.floor(VIP_EXPIRY_DATE.getTime() / 1000);
+  const COIN_BALANCE = 999999999;
+  const ROPHIM_KEYWORDS = [
+    "/baseapi/api/v1/tcoin/me",
+    "/baseapi/api/v1/user/",
+    "/baseapi/api/v1/vip/",
+    "/baseapi/api/v1/notifications/unread-counts",
+    "/baseapi/api/v1/ads",
+    "/baseapi/api/v1/banner",
+    "/baseapi/api/v1/advertising",
+    "/api/auth/session",
+    "/auth/profile",
+    "/auth/session/check",
+    "/auth/session",
+    "/auth/login",
+    "/auth/register",
+    "/users/profile",
+    "/users/vip-packages",
+    "/vip-packages",
+    "/payments/orders",
+    "/api/v1/ads",
+    "api.rophim1.vip",
+    "rophimapi.net",
+    "phimmotchill.online"
+  ];
+
+  function isRophimTarget(url) {
+    if (!url || typeof url !== "string") return false;
+    return ROPHIM_KEYWORDS.some(k => url.includes(k));
+  }
+
+  function getMotchillVipUser(curUser) {
+    const base = curUser || {};
+    return {
+      id: base.id || 999999,
+      username: base.username || "VIP Cinema Pro",
+      name: base.name || "VIP Cinema Pro",
+      full_name: base.full_name || "VIP Cinema Pro",
+      email: base.email || "vip@motchill.online",
+      avatar: base.avatar || "https://rophim1.vip/apple-icon.png",
+      role: "admin",
+      is_role: "admin",
+      is_vip: true,
+      gender: 1,
+      current_vip: {
+        package_id: 999,
+        package_name: "VIP Vĩnh Viễn 2099",
+        is_active: true,
+        expires_at: VIP_EXPIRY_DATE.toISOString(),
+        end_at: VIP_EXPIRY_DATE.toISOString()
+      },
+      vip_info: {
+        package_id: 999,
+        package_name: "VIP Vĩnh Viễn 2099",
+        is_active: true,
+        expires_at: VIP_EXPIRY_DATE.toISOString(),
+        end_at: VIP_EXPIRY_DATE.toISOString()
+      },
+      coin: COIN_BALANCE,
+      coin_balance: COIN_BALANCE,
+      tcoin: COIN_BALANCE,
+      thungBalance: COIN_BALANCE
+    };
+  }
+
+  function patchRophimData(data, url) {
+    if (!data || typeof data !== "object") return data;
+    if (url && (url.includes("/ads") || url.includes("/banner") || url.includes("/advertising") || url.includes("sspp"))) {
+      if (Array.isArray(data)) return [];
+      if (data && typeof data === "object") {
+        if (Array.isArray(data.data)) data.data = [];
+        if (Array.isArray(data.items)) data.items = [];
+        if (Array.isArray(data.banners)) data.banners = [];
+        if (Array.isArray(data.result)) data.result = [];
+      }
+      return data;
+    }
+    if (url && url.includes("/notifications/unread-counts")) {
+      return {
+        status: 200,
+        success: true,
+        data: {
+          notificationsMovie: [],
+          notificationsOther: [],
+          unreadCountMovie: 0,
+          unreadCountOther: 0
+        }
+      };
+    }
+    if (url && url.includes("/tcoin/me")) {
+      data.thungBalance = COIN_BALANCE;
+      data.balance = COIN_BALANCE;
+      data.coin_balance = COIN_BALANCE;
+      data.total = COIN_BALANCE;
+      return data;
+    }
+    if (url && (url.includes("/auth/profile") || url.includes("/auth/session/check") || url.includes("/auth/login") || url.includes("/auth/register") || url.includes("/users/profile"))) {
+      const curUser = data?.result?.user || data?.result || data?.data || {};
+      const patchedUser = getMotchillVipUser(curUser);
+      return {
+        status: true,
+        valid: true,
+        success: true,
+        code: 200,
+        msg: "Thành công",
+        data: patchedUser,
+        result: data?.result?.user ? { ...data.result, user: patchedUser, valid: true } : patchedUser
+      };
+    }
+    if (url && (url.includes("/users/vip-packages") || url.includes("/vip-packages"))) {
+      const pkgData = {
+        current_vip: {
+          package_id: 999,
+          package_name: "VIP Vĩnh Viễn 2099",
+          is_active: true,
+          expires_at: VIP_EXPIRY_DATE.toISOString(),
+          end_at: VIP_EXPIRY_DATE.toISOString()
+        },
+        packages: [
+          {
+            id: 999,
+            name: "VIP Vĩnh Viễn 2099",
+            duration_days: 36500,
+            price: 0,
+            description: "Gói VIP Không Giới Hạn - Cinema Pro"
+          }
+        ]
+      };
+      return {
+        status: true,
+        success: true,
+        code: 200,
+        data: pkgData,
+        result: pkgData
+      };
+    }
+    if (url && (url.includes("/api/auth/session") || url.includes("/user/profile") || url.includes("/user/info"))) {
+      if (!data.user) data.user = {};
+      data.user.is_vip = true;
+      data.user.vip_expires_at = VIP_EXPIRY_TIMESTAMP;
+      data.user.thungBalance = COIN_BALANCE;
+      data.user.coin_balance = COIN_BALANCE;
+      data.user.role = "VIP";
+      data.expires = VIP_EXPIRY_DATE.toISOString();
+      return data;
+    }
+    const recurse = obj => {
+      if (!obj || typeof obj !== "object") return;
+      if ("is_vip" in obj || "vip_expires_at" in obj || "coin_balance" in obj || "thungBalance" in obj) {
+        obj.is_vip = true;
+        obj.vip_expires_at = VIP_EXPIRY_TIMESTAMP;
+        obj.coin_balance = COIN_BALANCE;
+        obj.thungBalance = COIN_BALANCE;
+      }
+      if (obj.result) recurse(obj.result);
+      if (obj.user) recurse(obj.user);
+      if (obj.data) recurse(obj.data);
+    };
+    recurse(data);
+    return data;
+  }
+
+  async function handleRophimFetchResponse(resPromise, url) {
+    if (isRophimTarget(url)) {
+      if (url.includes("/tcoin/me")) {
+        const dummyData = {
+          status: 200,
+          success: true,
+          thungBalance: COIN_BALANCE,
+          balance: COIN_BALANCE,
+          coin_balance: COIN_BALANCE,
+          total: COIN_BALANCE
+        };
+        return new Response(JSON.stringify(dummyData), {
+          status: 200,
+          statusText: "OK",
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+      if (url.includes("/notifications/unread-counts")) {
+        const dummyData = {
+          status: 200,
+          success: true,
+          data: {
+            notificationsMovie: [],
+            notificationsOther: [],
+            unreadCountMovie: 0,
+            unreadCountOther: 0
+          }
+        };
+        return new Response(JSON.stringify(dummyData), {
+          status: 200,
+          statusText: "OK",
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+      if (url.includes("/auth/profile") || url.includes("/auth/session/check") || url.includes("/auth/login") || url.includes("/auth/register") || url.includes("/users/profile")) {
+        const user = getMotchillVipUser();
+        const dummyData = {
+          status: true,
+          success: true,
+          code: 200,
+          msg: "Thành công",
+          data: user,
+          result: user
+        };
+        return new Response(JSON.stringify(dummyData), {
+          status: 200,
+          statusText: "OK",
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+      if (url.includes("/users/vip-packages") || url.includes("/vip-packages")) {
+        const pkgData = {
+          current_vip: {
+            package_id: 999,
+            package_name: "VIP Vĩnh Viễn 2099",
+            is_active: true,
+            expires_at: VIP_EXPIRY_DATE.toISOString(),
+            end_at: VIP_EXPIRY_DATE.toISOString()
+          },
+          packages: [
+            {
+              id: 999,
+              name: "VIP Vĩnh Viễn 2099",
+              duration_days: 36500,
+              price: 0,
+              description: "Gói VIP Không Giới Hạn - Cinema Pro"
+            }
+          ]
+        };
+        const dummyData = {
+          status: true,
+          success: true,
+          code: 200,
+          data: pkgData,
+          result: pkgData
+        };
+        return new Response(JSON.stringify(dummyData), {
+          status: 200,
+          statusText: "OK",
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+      if (url.includes("/payments/orders")) {
+        const dummyData = {
+          status: true,
+          success: true,
+          code: 200,
+          msg: "Thành công",
+          result: {
+            items: [],
+            pagination: { page: 1, limit: 8, total: 0, totalPages: 1 }
+          }
+        };
+        return new Response(JSON.stringify(dummyData), {
+          status: 200,
+          statusText: "OK",
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+    }
+
+    const res = await resPromise;
+    try {
+      const ct = res.headers.get("content-type");
+      if (ct && ct.includes("application/json")) {
+        const clone = res.clone();
+        clone.json().then(data => extractStreamFromObject(data)).catch(() => {});
+      }
+    } catch (e) {}
+
+    if (!isRophimTarget(url)) return res;
+    try {
+      const ct = res.headers.get("content-type");
+      if (!ct || !ct.includes("application/json")) return res;
+      const clone = res.clone();
+      const data = await clone.json();
+      extractStreamFromObject(data);
+      const patched = patchRophimData(data, url);
+      return new Response(JSON.stringify(patched), {
+        status: 200,
+        statusText: "OK",
+        headers: res.headers
+      });
+    } catch (e) {
+      return res;
+    }
+  }
+
+  function handleRophimXhrResponse(xhr, url) {
+    try {
+      if (isRophimTarget(url)) {
+        let dummyData = null;
+        if (url.includes("/tcoin/me")) {
+          dummyData = { status: 200, success: true, thungBalance: COIN_BALANCE, balance: COIN_BALANCE, coin_balance: COIN_BALANCE, total: COIN_BALANCE };
+        } else if (url.includes("/notifications/unread-counts")) {
+          dummyData = { status: 200, success: true, data: { notificationsMovie: [], notificationsOther: [], unreadCountMovie: 0, unreadCountOther: 0 } };
+        } else if (url.includes("/auth/profile") || url.includes("/auth/session/check") || url.includes("/auth/login") || url.includes("/auth/register") || url.includes("/users/profile")) {
+          const user = getMotchillVipUser();
+          dummyData = { status: true, success: true, code: 200, msg: "Thành công", data: user, result: user };
+        } else if (url.includes("/users/vip-packages") || url.includes("/vip-packages")) {
+          const pkgData = {
+            current_vip: { package_id: 999, package_name: "VIP Vĩnh Viễn 2099", is_active: true, expires_at: VIP_EXPIRY_DATE.toISOString(), end_at: VIP_EXPIRY_DATE.toISOString() },
+            packages: [{ id: 999, name: "VIP Vĩnh Viễn 2099", duration_days: 36500, price: 0, description: "Gói VIP Không Giới Hạn - Cinema Pro" }]
+          };
+          dummyData = { status: true, success: true, code: 200, data: pkgData, result: pkgData };
+        } else if (url.includes("/payments/orders")) {
+          dummyData = { status: true, success: true, code: 200, result: { items: [], pagination: { page: 1, limit: 8, total: 0, totalPages: 1 } } };
+        }
+        if (dummyData) {
+          const str = JSON.stringify(dummyData);
+          try {
+            Object.defineProperty(xhr, "status", { value: 200, configurable: true, writable: true });
+            Object.defineProperty(xhr, "statusText", { value: "OK", configurable: true, writable: true });
+            Object.defineProperty(xhr, "responseText", { value: str, configurable: true, writable: true });
+            Object.defineProperty(xhr, "response", { value: str, configurable: true, writable: true });
+          } catch (e) {}
+          return;
+        }
+      }
+      const ct = xhr.getResponseHeader && xhr.getResponseHeader("content-type");
+      if (ct && ct.includes("application/json")) {
+        try {
+          const data = JSON.parse(xhr.responseText);
+          extractStreamFromObject(data);
+          if (isRophimTarget(url)) {
+            const patched = patchRophimData(data, url);
+            const str = JSON.stringify(patched);
+            Object.defineProperty(xhr, "status", { value: 200, configurable: true, writable: true });
+            Object.defineProperty(xhr, "responseText", { value: str, configurable: true, writable: true });
+            Object.defineProperty(xhr, "response", { value: str, configurable: true, writable: true });
+          }
+        } catch (e) {}
+      }
+    } catch (e) {}
+  }
+
+  // Tự động kích hoạt auth_hint = 1 trên Motchill & bảo vệ không bị logout
+  try {
+    const isMotchillHost = location.hostname && (location.hostname.includes("motchill") || location.hostname.includes("phimmotchill"));
+    if (isMotchillHost) {
+      if (window.localStorage && window.localStorage.getItem("auth_hint") !== "1") {
+        window.localStorage.setItem("auth_hint", "1");
+      }
+      if (window.Storage && window.Storage.prototype) {
+        const origRemove = window.Storage.prototype.removeItem;
+        window.Storage.prototype.removeItem = function (key) {
+          if (key === "auth_hint") return;
+          return origRemove.apply(this, arguments);
+        };
+      }
+    }
+  } catch (e) {}
+
+  // Tự động gỡ bỏ tcoin-disabled và đảm bảo số dư TCoin 999,999,999 hiển thị rực rỡ
+  setInterval(() => {
+    try {
+      const disabledMenu = document.querySelector(".tcoin-disabled");
+      if (disabledMenu) disabledMenu.classList.remove("tcoin-disabled");
+      const coinEl = document.querySelector(".tcoin-menu-content strong");
+      if (coinEl && (!coinEl.textContent || coinEl.textContent === "0")) {
+        coinEl.textContent = "999,999,999";
+      }
+      if (location.hostname && (location.hostname.includes("motchill") || location.hostname.includes("phimmotchill"))) {
+        document.documentElement.style.setProperty("--color-primary", "#51f085");
+        document.documentElement.style.setProperty("--primary-color", "#51f085");
+        document.documentElement.style.setProperty("--primary-text", "#51f085");
+      }
+    } catch (e) {}
+  }, 1000);
 
 
   console.log("%c[Cinema Pro] " + "Motchill VIP & Cinema Pro Suite" + " Ready!", "font-size: 13px; font-weight: bold; color: #10b981;");

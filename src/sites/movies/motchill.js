@@ -2,8 +2,9 @@ module.exports = {
   "id": "motchill",
   "name": "Motchill VIP & Cinema Pro Suite",
   "file": "motchill.user.js",
-  "desc": "Chặn 100% quảng cáo Motchill + Vô hiệu hóa Stream Guard + Bắt link M3U8 PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR",
-  "version": "5.2",
+  "desc": "Mở khóa VIP Pro 2099 Vĩnh Viễn + Vô hạn Coins + Chặn 100% AdBlock/Stream Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Skip Intro & Anime HDR",
+  "version": "5.4",
+  "isRophim": true,
   "domains": [
     "*://phimmotchill.online/*",
     "*://*.phimmotchill.online/*",
@@ -28,6 +29,23 @@ module.exports = {
     "*://motchill.in/*",
     "*://*.motchill.in/*"
   ],
-  "siteCss": ".ad-container, .ads-holder, .banner-left, .banner-right, div[id*=\"ad-\"], div[class*=\"banner-ads\"], div[id*=\"catfish\"], .ads-wrapper, #chancoc, .modal-adblock",
+  "includes": [
+    "*://*motchill*/*",
+    "*://*phimmotchill*/*"
+  ],
+  "siteCss": `
+      :root {
+        --color-primary: #51f085 !important;
+        --primary-color: #51f085 !important;
+        --primary-text: #51f085 !important;
+      }
+      .ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+    `,
   "category": "movies"
 };
