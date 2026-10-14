@@ -23,7 +23,7 @@ console.log("🎬 COMPILING CINEMA PRO SUITE (MODULAR PIPELINE -> scripts/)");
 console.log("═══════════════════════════════════════════════════════════════\n");
 
 // Ensure categorized output folders under scripts/
-const categories = ["movies", "anime", "tv", "embeds", "sports"];
+const categories = ["movies", "anime", "tv", "embeds", "sports", "comics"];
 categories.forEach(cat => {
   fs.mkdirSync(path.join(__dirname, "scripts", cat), { recursive: true });
 });

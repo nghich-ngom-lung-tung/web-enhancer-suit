@@ -182,11 +182,88 @@ module.exports = `
     showToast("Tốc độ phát: " + currentSpeed + "x");
   }
 
+  function isComicPage() {
+    return Boolean(
+      document.querySelector(".chapter-images-container") ||
+      document.querySelector("[data-chapter-navigation]") ||
+      document.querySelector(".chapter-choose") ||
+      document.querySelector(".page-chapter") ||
+      document.querySelector(".select-chapter") ||
+      document.querySelector("#select_chapter") ||
+      (typeof location !== "undefined" && location.hostname && (location.hostname.includes("zettruyen") || location.hostname.includes("toptruyen")))
+    );
+  }
+
+  function navigateComicChapter(direction) {
+    if (direction < 0) {
+      const prevBtn = document.querySelector("[data-prev-chapter-container] a, [data-prev-chapter-container] button, a.prev-chapter, a.chapter-previous, a.previous-chapter, a.previous-chapter-mobile, a.previous-chapter-mobi, .chapter-prev a");
+      if (prevBtn) {
+        prevBtn.click();
+        showToast("Đang chuyển về chương trước...");
+        return;
+      }
+    } else {
+      const nextBtn = document.querySelector("[data-next-chapter-container] a, [data-next-chapter-container] button, a.next-chapter, a.chapter-next, a.next-chapter-mobile, a.next-chapter-mobi, .chapter-next a");
+      if (nextBtn) {
+        nextBtn.click();
+        showToast("Đang chuyển tới chương tiếp theo...");
+        return;
+      }
+    }
+
+    const select = document.querySelector("select[data-chapter-dropdown], select.chapter-choose, select#select_chapter, select.select-chapter");
+    if (select && select.options && select.options.length > 1) {
+      const nextIdx = select.selectedIndex + (direction < 0 ? 1 : -1);
+      if (nextIdx >= 0 && nextIdx < select.options.length) {
+        select.selectedIndex = nextIdx;
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+        const optVal = select.options[nextIdx].value;
+        if (optVal && optVal.startsWith("http")) {
+          location.href = optVal;
+        }
+        showToast("Đang tải: " + (select.options[nextIdx].text || "Chương mới"));
+        return;
+      }
+    }
+    showToast(direction < 0 ? "Đã ở chương đầu tiên!" : "Đã ở chương mới nhất!");
+  }
+
   // ─── GLOBAL KEYBOARD SHORTCUTS ───
   window.addEventListener("keydown", function (e) {
     const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : "";
     if (tag === "input" || tag === "textarea" || e.target?.isContentEditable) return;
     const key = e.key.toLowerCase();
+
+    // Chế độ đọc truyện tranh (Comic/Manga Reading Mode)
+    if (isComicPage() && !document.querySelector("video")) {
+      if (key === "a" || key === "arrowleft") {
+        e.preventDefault();
+        navigateComicChapter(-1);
+        return;
+      } else if (key === "d" || key === "arrowright") {
+        e.preventDefault();
+        navigateComicChapter(1);
+        return;
+      } else if (key === "w" || key === "arrowup") {
+        e.preventDefault();
+        window.scrollBy({ top: -450, behavior: "smooth" });
+        return;
+      } else if (key === "s" || key === "arrowdown") {
+        e.preventDefault();
+        window.scrollBy({ top: 450, behavior: "smooth" });
+        return;
+      } else if (key === "f") {
+        e.preventDefault();
+        if (document.fullscreenElement) {
+          try { document.exitFullscreen().catch(() => {}); } catch (err) {}
+        } else {
+          const container = document.querySelector(".chapter-images-container") || document.documentElement;
+          try { container.requestFullscreen().catch(() => {}); } catch (err) {}
+        }
+        return;
+      }
+    }
+
     if (key === "s" || key === "i") {
       e.preventDefault();
       skipIntro(85);

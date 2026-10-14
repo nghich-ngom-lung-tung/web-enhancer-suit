@@ -58,6 +58,7 @@ function getSnifferCode(enableRophimVip) {
     host.includes("filelions") ||
     host.includes("vidcdn") ||
     host.includes("vidembed") ||
+    host.includes("netanime") ||
     path.includes("embed") ||
     path.includes("/v/") ||
     path.includes("/video/");
@@ -195,6 +196,18 @@ function getSnifferCode(enableRophimVip) {
             if (ru.includes(".m3u8") || ru.includes(".mp4")) notifyStream(ru);
           }
         } catch (e) {}
+      }
+      if (typeof window.jwplayer === "function") {
+        try {
+          const inst = window.jwplayer();
+          if (inst && typeof inst.getPlaylistItem === "function") {
+            const item = inst.getPlaylistItem();
+            if (item && item.file) notifyStream(item.file);
+          }
+        } catch (e) {}
+      }
+      if (typeof window.file === "string" && window.file) {
+        notifyStream(window.file);
       }
     }
 
@@ -692,7 +705,7 @@ function getSnifferCode(enableRophimVip) {
     const url = typeof input === "string" ? input : input?.url || "";
     if (isAdApi(url)) {
       console.log("[Web Enhancer] Đã chặn triệt để API banner:", url);
-      return new Response(JSON.stringify({ status: 200, success: true, data: [], items: [], banners: [], result: [] }), {
+      return new Response(JSON.stringify({ status: 200, success: true, version: 1, items: {}, data: [], banners: [], result: [] }), {
         status: 200,
         headers: { "Content-Type": "application/json" }
       });

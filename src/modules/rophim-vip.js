@@ -44,7 +44,11 @@ module.exports = `
     "/api/v1/ads",
     "api.rophim1.vip",
     "rophimapi.net",
-    "phimmotchill.online"
+    "phimmotchill.online",
+    "netanime.net",
+    "netanime.cc",
+    "api.netanime.net",
+    "api.netanime.cc"
   ];
 
   function isRophimTarget(url) {
@@ -658,7 +662,7 @@ module.exports = `
       }
     }
 
-    const isRophimHost = location.hostname && (location.hostname.includes("rophim") || location.hostname.includes("ro-phim"));
+    const isRophimHost = location.hostname && (location.hostname.includes("rophim") || location.hostname.includes("ro-phim") || location.hostname.includes("netanime"));
     if (isRophimHost) {
       if (typeof window !== "undefined" && window.localStorage) {
         try {

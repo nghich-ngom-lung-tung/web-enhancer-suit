@@ -3,5 +3,6 @@ module.exports = [
   ...require("./anime"),
   ...require("./tv"),
   ...require("./embeds"),
-  ...require("./sports")
+  ...require("./sports"),
+  ...require("./comics")
 ];

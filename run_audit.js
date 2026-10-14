@@ -535,7 +535,7 @@ scriptFiles.forEach(file => {
 // ═════════════════════════════════════════════════════════════════
 console.log("\n👑 PHASE 4: Rophim VIP 2099 & Coin Backend Patcher Audit");
 
-const rophimScripts = scriptFiles.filter(f => f.endsWith("rophim.user.js") || f.endsWith("tampermonkey.user.js") || f.endsWith("cinema-pro-all.user.js"));
+const rophimScripts = scriptFiles.filter(f => f.endsWith("rophim.user.js") || f.endsWith("tampermonkey.user.js") || f.endsWith("cinema-pro-all.user.js") || f.endsWith("netanime.user.js"));
 rophimScripts.forEach(file => {
   const code = fs.readFileSync(file, "utf8");
   const { window, document } = createTopWindowMock("rophim1.vip");
@@ -773,6 +773,36 @@ sportsScripts.forEach(file => {
 
     const hasKhogaBetLinksNuked = content.includes("fb88.com");
     report(`${file}: Khô Gà TV external betting links (fb88.com) suppressed`, hasKhogaBetLinksNuked);
+  }
+
+  // ZetTruyen & Comic Reader Pro checks
+  if (file.includes("zettruyen") || file.includes("cinema-pro-all")) {
+    const hasWidgetConfigDefused = content.includes("__WidgetConfig") && content.includes("__PopConfig");
+    report(`${file}: ZetTruyen stealth ad widgets (__WidgetConfig, __PopConfig) defused`, hasWidgetConfigDefused);
+
+    const hasAclibDefused = content.includes("runBanner") && content.includes("aclib");
+    report(`${file}: ZetTruyen aclib Adcash script stubbed`, hasAclibDefused);
+
+    const hasComicAdSelectors = content.includes("ads-tool-banner-container") && content.includes("data-zone") && content.includes("close-catfish");
+    report(`${file}: ZetTruyen stealth ad zones & banner containers suppressed`, hasComicAdSelectors);
+
+    const hasComicNav = content.includes("isComicPage") && content.includes("navigateComicChapter");
+    report(`${file}: Comic reading hotkeys (A/D chapter, W/S smooth scroll, F fullscreen) active`, hasComicNav);
+
+    const hasWidgetApiMocked = content.includes("/api/widget/data") && content.includes("items: {}");
+    report(`${file}: ZetTruyen /api/widget/data intercepted with empty payload`, hasWidgetApiMocked);
+  }
+
+  // TopTruyen checks
+  if (file.includes("toptruyen") || file.includes("cinema-pro-all")) {
+    const hasTopTruyenAdsNuked = content.includes(".advertisement") && content.includes("#video-chapter");
+    report(`${file}: TopTruyen .advertisement & #video-chapter video ads suppressed`, hasTopTruyenAdsNuked);
+
+    const hasTopTruyenPopundersNuked = content.includes("chaseherbalpasty.com") && content.includes("dekkopinolin.com");
+    report(`${file}: TopTruyen popunder networks (chaseherbalpasty, dekkopinolin) defused`, hasTopTruyenPopundersNuked);
+
+    const hasTopTruyenNav = content.includes("chapter-next") && content.includes("chapter-previous");
+    report(`${file}: TopTruyen chapter navigation selectors mapped in player-controls`, hasTopTruyenNav);
   }
 });
 

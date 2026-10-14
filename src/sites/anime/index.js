@@ -7,5 +7,6 @@ module.exports = [
   require("./vuighe"),
   require("./animetvn"),
   require("./hhkungfu"),
-  require("./hhpanda")
+  require("./hhpanda"),
+  require("./netanime")
 ];

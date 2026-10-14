@@ -7,9 +7,18 @@ module.exports = `
     localStorage.setItem("ro_probe_", "9999999999999");
     localStorage.setItem("popup_last_shown", "9999999999999");
     localStorage.setItem("corner_start_popup_dismissed", "9999999999999");
-    localStorage.setItem("popup_shown", "true");
     localStorage.setItem("is_banner_popup", "1");
     localStorage.setItem("giovang_tvc_pre_roll_daily", JSON.stringify({ date: "2099-12-31", count: 99999 }));
+    localStorage.setItem("__widget_data:/api/widget", JSON.stringify({ version: 1, items: {} }));
+    localStorage.setItem("__pc_geo", "VN");
+
+    window.__WidgetConfig = { zones: {} };
+    window.__PopConfig = { zones: [] };
+    window.aclib = {
+      runBanner: function () {},
+      runAutoTag: function () {},
+      runPop: function () {}
+    };
     const origSetItem = Storage.prototype.setItem;
     Storage.prototype.setItem = function (key, value) {
       if (
@@ -72,6 +81,8 @@ module.exports = `
           url.includes("xemphimplus") ||
           url.includes("topsub") ||
           url.includes("ssphim") ||
+          url.includes("zettruyen") ||
+          url.includes("toptruyen") ||
           url.includes("youtube.com") ||
           url.includes("youtu.be");
         if (!isSafe) {
@@ -93,6 +104,14 @@ module.exports = `
       u.includes("/ads") ||
       u.includes("/banners") ||
       u.includes("/banner/") ||
+      u.includes("/api/widget/data") ||
+      u.includes("zthomes.js") ||
+      u.includes("aclib.js") ||
+      u.includes("acscdn.com") ||
+      u.includes("yougetwhatyoupayfor.net") ||
+      u.includes("chaseherbalpasty.com") ||
+      u.includes("dekkopinolin.com") ||
+      u.includes("crittereasilyhangover.com") ||
       u.includes("advertising") ||
       u.includes("sponsor") ||
       u.includes("popunder") ||
@@ -132,6 +151,16 @@ module.exports = `
       '.sspp-area', '[class*="sspp-area"]', '[class*="sspp_area"]', '[class*="sspp-"]',
       '.display-single', '[class*="display-single"]', '.is-demo', '[class*="is-demo"]',
       '.is-image', 'div[class*="is-image"]',
+
+      // ZetTruyen, TopTruyen & Comic Ads, Stealth Widgets & Popups
+      '.ads-tool-banner-container', '[class*="ads-tool-banner-container"]',
+      '.close-catfish', '[data-zone]', '[data-zone="top"]', '[data-zone="top_content"]', '[data-zone="bottom"]',
+      'div[style*="z-index: 2147483000"]', 'div[style*="z-index: 2147483001"]',
+      'div[id*="aclib"]', '#aclib', 'iframe[src*="acscdn.com"]', 'iframe[src*="yougetwhatyoupayfor.net"]',
+      '#banners-container', '.banners-container',
+      '.advertisement', '#video-chapter', 'div[id*="video-chapter"]', 'div[class*="advertisement"]',
+      'iframe[src*="chaseherbalpasty.com"]', 'iframe[src*="dekkopinolin.com"]', 'iframe[src*="crittereasilyhangover.com"]',
+      '.banner-qc',
 
       // Giovang Popups, Ads & Toplists
       '#banner_popup', '.banner_popup', '.banner_inner', '.banner_cursor',
