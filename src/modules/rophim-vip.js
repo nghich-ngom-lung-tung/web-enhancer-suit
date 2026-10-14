@@ -20,10 +20,15 @@ module.exports = `
     "/auth/session",
     "/auth/login",
     "/auth/register",
+    "/auth/logout",
     "/users/profile",
     "/users/vip-packages",
     "/vip-packages",
     "/payments/orders",
+    "/watch-progress",
+    "/favorites",
+    "/favourite",
+    "/refresh-token",
     "/api/v1/ads",
     "api.rophim1.vip",
     "rophimapi.net",
@@ -44,7 +49,7 @@ module.exports = `
       full_name: base.full_name || "VIP Cinema Pro",
       email: base.email || "vip@motchill.online",
       avatar: base.avatar || "https://rophim1.vip/apple-icon.png",
-      role: "admin",
+      role: "VIP",
       is_role: "admin",
       is_vip: true,
       gender: 1,
@@ -67,6 +72,190 @@ module.exports = `
       tcoin: COIN_BALANCE,
       thungBalance: COIN_BALANCE
     };
+  }
+
+  function getRophimMockJsonString(url) {
+    if (!url || typeof url !== "string") return null;
+
+    // 1. Session Check (Bắt buộc valid: true để không gọi o() trigger reload)
+    if (url.includes("/auth/session/check")) {
+      const user = getMotchillVipUser();
+      const sessionResult = {
+        valid: true,
+        status: true,
+        user: user
+      };
+      return JSON.stringify({
+        status: true,
+        valid: true,
+        success: true,
+        code: 200,
+        msg: "Thành công",
+        data: sessionResult,
+        result: sessionResult
+      });
+    }
+
+    // 2. NextAuth Session
+    if (url.includes("/api/auth/session") || (url.includes("/auth/session") && !url.includes("/auth/session/check"))) {
+      const user = getMotchillVipUser();
+      return JSON.stringify({
+        user: user,
+        is_vip: true,
+        vip_expires_at: VIP_EXPIRY_TIMESTAMP,
+        role: "VIP",
+        thungBalance: COIN_BALANCE,
+        coin_balance: COIN_BALANCE,
+        expires: VIP_EXPIRY_DATE.toISOString()
+      });
+    }
+
+    // 3. User Profile / Login / Register
+    if (url.includes("/auth/profile") || url.includes("/users/profile") || url.includes("/auth/login") || url.includes("/auth/register")) {
+      const user = getMotchillVipUser();
+      return JSON.stringify({
+        status: true,
+        valid: true,
+        success: true,
+        code: 200,
+        msg: "Thành công",
+        data: user,
+        result: user,
+        user: user
+      });
+    }
+
+    // 4. Logout bypass
+    if (url.includes("/auth/logout")) {
+      return JSON.stringify({
+        status: true,
+        success: true,
+        code: 200,
+        msg: "Đăng xuất thành công"
+      });
+    }
+
+    // 5. Silent Refresh Token
+    if (url.includes("/refresh-token")) {
+      return JSON.stringify({
+        status: true,
+        success: true,
+        code: 200,
+        msg: "Thành công",
+        result: { token: "cinema-pro-vip-token" },
+        data: { token: "cinema-pro-vip-token" }
+      });
+    }
+
+    // 6. VIP Packages & Status
+    if (url.includes("/vip-packages")) {
+      const pkgData = {
+        current_vip: {
+          package_id: 999,
+          package_name: "VIP Vĩnh Viễn 2099",
+          is_active: true,
+          expires_at: VIP_EXPIRY_DATE.toISOString(),
+          end_at: VIP_EXPIRY_DATE.toISOString()
+        },
+        packages: [
+          {
+            id: 999,
+            name: "VIP Vĩnh Viễn 2099",
+            duration_days: 36500,
+            price: 0,
+            description: "Gói VIP Không Giới Hạn - Cinema Pro"
+          }
+        ]
+      };
+      return JSON.stringify({
+        status: true,
+        success: true,
+        code: 200,
+        data: pkgData,
+        result: pkgData
+      });
+    }
+
+    // 7. Watch progress / History (chặn 401 gây reload)
+    if (url.includes("/watch-progress")) {
+      return JSON.stringify({
+        status: true,
+        success: true,
+        code: 200,
+        data: { items: [], pagination: { page: 1, limit: 12, total: 0, totalPages: 1 } },
+        result: { items: [], pagination: { page: 1, limit: 12, total: 0, totalPages: 1 } }
+      });
+    }
+
+    // 8. Movie Favorites (chặn 401 gây reload)
+    if (url.includes("/favorites") || url.includes("/favourite")) {
+      return JSON.stringify({
+        status: true,
+        success: true,
+        code: 200,
+        data: { items: [], pagination: { page: 1, limit: 64, total: 0, totalPages: 1 } },
+        result: { items: [], pagination: { page: 1, limit: 64, total: 0, totalPages: 1 } }
+      });
+    }
+
+    // 9. Payment Orders
+    if (url.includes("/orders")) {
+      return JSON.stringify({
+        status: true,
+        success: true,
+        code: 200,
+        result: {
+          items: [],
+          pagination: { page: 1, limit: 8, total: 0, totalPages: 1 }
+        },
+        data: {
+          items: [],
+          pagination: { page: 1, limit: 8, total: 0, totalPages: 1 }
+        }
+      });
+    }
+
+    // 10. TCoin balance (Rophim)
+    if (url.includes("/tcoin/me")) {
+      return JSON.stringify({
+        status: 200,
+        success: true,
+        thungBalance: COIN_BALANCE,
+        balance: COIN_BALANCE,
+        coin_balance: COIN_BALANCE,
+        total: COIN_BALANCE
+      });
+    }
+
+    // 11. Notifications unread counts
+    if (url.includes("/notifications/unread-counts") || url.includes("/notifications")) {
+      return JSON.stringify({
+        status: 200,
+        success: true,
+        data: {
+          notificationsMovie: [],
+          notificationsOther: [],
+          unreadCountMovie: 0,
+          unreadCountOther: 0
+        }
+      });
+    }
+
+    return null;
+  }
+
+  function getRophimMockResponse(url) {
+    const jsonStr = getRophimMockJsonString(url);
+    if (!jsonStr) return null;
+    return new Response(jsonStr, {
+      status: 200,
+      statusText: "OK",
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+
+  function getRophimMockXhr(url) {
+    return getRophimMockJsonString(url);
   }
 
   function patchRophimData(data, url) {
@@ -167,122 +356,29 @@ module.exports = `
   }
 
   async function handleRophimFetchResponse(resPromise, url) {
-    if (isRophimTarget(url)) {
-      if (url.includes("/tcoin/me")) {
-        const dummyData = {
-          status: 200,
-          success: true,
-          thungBalance: COIN_BALANCE,
-          balance: COIN_BALANCE,
-          coin_balance: COIN_BALANCE,
-          total: COIN_BALANCE
-        };
-        return new Response(JSON.stringify(dummyData), {
-          status: 200,
-          statusText: "OK",
-          headers: { "Content-Type": "application/json" }
-        });
-      }
-      if (url.includes("/notifications/unread-counts")) {
-        const dummyData = {
-          status: 200,
-          success: true,
-          data: {
-            notificationsMovie: [],
-            notificationsOther: [],
-            unreadCountMovie: 0,
-            unreadCountOther: 0
-          }
-        };
-        return new Response(JSON.stringify(dummyData), {
-          status: 200,
-          statusText: "OK",
-          headers: { "Content-Type": "application/json" }
-        });
-      }
-      if (url.includes("/auth/profile") || url.includes("/auth/session/check") || url.includes("/auth/login") || url.includes("/auth/register") || url.includes("/users/profile")) {
-        const user = getMotchillVipUser();
-        const dummyData = {
-          status: true,
-          success: true,
-          code: 200,
-          msg: "Thành công",
-          data: user,
-          result: user
-        };
-        return new Response(JSON.stringify(dummyData), {
-          status: 200,
-          statusText: "OK",
-          headers: { "Content-Type": "application/json" }
-        });
-      }
-      if (url.includes("/users/vip-packages") || url.includes("/vip-packages")) {
-        const pkgData = {
-          current_vip: {
-            package_id: 999,
-            package_name: "VIP Vĩnh Viễn 2099",
-            is_active: true,
-            expires_at: VIP_EXPIRY_DATE.toISOString(),
-            end_at: VIP_EXPIRY_DATE.toISOString()
-          },
-          packages: [
-            {
-              id: 999,
-              name: "VIP Vĩnh Viễn 2099",
-              duration_days: 36500,
-              price: 0,
-              description: "Gói VIP Không Giới Hạn - Cinema Pro"
-            }
-          ]
-        };
-        const dummyData = {
-          status: true,
-          success: true,
-          code: 200,
-          data: pkgData,
-          result: pkgData
-        };
-        return new Response(JSON.stringify(dummyData), {
-          status: 200,
-          statusText: "OK",
-          headers: { "Content-Type": "application/json" }
-        });
-      }
-      if (url.includes("/payments/orders")) {
-        const dummyData = {
-          status: true,
-          success: true,
-          code: 200,
-          msg: "Thành công",
-          result: {
-            items: [],
-            pagination: { page: 1, limit: 8, total: 0, totalPages: 1 }
-          }
-        };
-        return new Response(JSON.stringify(dummyData), {
-          status: 200,
-          statusText: "OK",
-          headers: { "Content-Type": "application/json" }
-        });
-      }
+    if (typeof getRophimMockResponse === "function") {
+      const mock = getRophimMockResponse(url);
+      if (mock) return mock;
     }
 
     const res = await resPromise;
     try {
-      const ct = res.headers.get("content-type");
+      const ct = res.headers && res.headers.get && res.headers.get("content-type");
       if (ct && ct.includes("application/json")) {
         const clone = res.clone();
-        clone.json().then(data => extractStreamFromObject(data)).catch(() => {});
+        clone.json().then(data => {
+          if (typeof extractStreamFromObject === "function") extractStreamFromObject(data);
+        }).catch(() => {});
       }
     } catch (e) {}
 
     if (!isRophimTarget(url)) return res;
     try {
-      const ct = res.headers.get("content-type");
+      const ct = res.headers && res.headers.get && res.headers.get("content-type");
       if (!ct || !ct.includes("application/json")) return res;
       const clone = res.clone();
       const data = await clone.json();
-      extractStreamFromObject(data);
+      if (typeof extractStreamFromObject === "function") extractStreamFromObject(data);
       const patched = patchRophimData(data, url);
       return new Response(JSON.stringify(patched), {
         status: 200,
@@ -296,31 +392,14 @@ module.exports = `
 
   function handleRophimXhrResponse(xhr, url) {
     try {
-      if (isRophimTarget(url)) {
-        let dummyData = null;
-        if (url.includes("/tcoin/me")) {
-          dummyData = { status: 200, success: true, thungBalance: COIN_BALANCE, balance: COIN_BALANCE, coin_balance: COIN_BALANCE, total: COIN_BALANCE };
-        } else if (url.includes("/notifications/unread-counts")) {
-          dummyData = { status: 200, success: true, data: { notificationsMovie: [], notificationsOther: [], unreadCountMovie: 0, unreadCountOther: 0 } };
-        } else if (url.includes("/auth/profile") || url.includes("/auth/session/check") || url.includes("/auth/login") || url.includes("/auth/register") || url.includes("/users/profile")) {
-          const user = getMotchillVipUser();
-          dummyData = { status: true, success: true, code: 200, msg: "Thành công", data: user, result: user };
-        } else if (url.includes("/users/vip-packages") || url.includes("/vip-packages")) {
-          const pkgData = {
-            current_vip: { package_id: 999, package_name: "VIP Vĩnh Viễn 2099", is_active: true, expires_at: VIP_EXPIRY_DATE.toISOString(), end_at: VIP_EXPIRY_DATE.toISOString() },
-            packages: [{ id: 999, name: "VIP Vĩnh Viễn 2099", duration_days: 36500, price: 0, description: "Gói VIP Không Giới Hạn - Cinema Pro" }]
-          };
-          dummyData = { status: true, success: true, code: 200, data: pkgData, result: pkgData };
-        } else if (url.includes("/payments/orders")) {
-          dummyData = { status: true, success: true, code: 200, result: { items: [], pagination: { page: 1, limit: 8, total: 0, totalPages: 1 } } };
-        }
-        if (dummyData) {
-          const str = JSON.stringify(dummyData);
+      if (typeof getRophimMockXhr === "function") {
+        const mockStr = getRophimMockXhr(url);
+        if (mockStr) {
           try {
             Object.defineProperty(xhr, "status", { value: 200, configurable: true, writable: true });
             Object.defineProperty(xhr, "statusText", { value: "OK", configurable: true, writable: true });
-            Object.defineProperty(xhr, "responseText", { value: str, configurable: true, writable: true });
-            Object.defineProperty(xhr, "response", { value: str, configurable: true, writable: true });
+            Object.defineProperty(xhr, "responseText", { value: mockStr, configurable: true, writable: true });
+            Object.defineProperty(xhr, "response", { value: mockStr, configurable: true, writable: true });
           } catch (e) {}
           return;
         }
@@ -329,7 +408,7 @@ module.exports = `
       if (ct && ct.includes("application/json")) {
         try {
           const data = JSON.parse(xhr.responseText);
-          extractStreamFromObject(data);
+          if (typeof extractStreamFromObject === "function") extractStreamFromObject(data);
           if (isRophimTarget(url)) {
             const patched = patchRophimData(data, url);
             const str = JSON.stringify(patched);
@@ -341,6 +420,53 @@ module.exports = `
       }
     } catch (e) {}
   }
+
+  // ─── PHÒNG CHỐNG RELOAD LOOP & BẢO VỆ PHIÊN ĐĂNG NHẬP MOTCHILL ───
+  try {
+    // 1. Chặn event auth:logout để không kích hoạt _localLogout() gây redirect / reload
+    if (typeof window !== "undefined" && window.dispatchEvent) {
+      const origDispatch = window.dispatchEvent.bind(window);
+      window.dispatchEvent = function (ev) {
+        if (ev && ev.type === "auth:logout") {
+          console.log("[Cinema Pro] Neutralized auth:logout event to protect active VIP session");
+          return true;
+        }
+        return origDispatch(ev);
+      };
+    }
+
+    // 2. Chặn reload loop nhanh từ Next.js router
+    if (typeof window !== "undefined" && window.location) {
+      let lastReplaceUrl = "";
+      let lastReplaceTime = 0;
+      if (typeof window.location.replace === "function") {
+        const origReplace = window.location.replace.bind(window.location);
+        window.location.replace = function (url) {
+          const now = Date.now();
+          if ((url === "/" || url === location.href || url === location.pathname) && (now - lastReplaceTime < 5000)) {
+            console.warn("[Cinema Pro] Blocked rapid location.replace loop to:", url);
+            return;
+          }
+          lastReplaceUrl = url;
+          lastReplaceTime = now;
+          return origReplace(url);
+        };
+      }
+    }
+
+    // 3. Stub aclib.runPop để tránh lỗi Uncaught TypeError
+    if (typeof window !== "undefined") {
+      if (!window.aclib) {
+        window.aclib = {
+          runPop: function () {},
+          runBanner: function () {},
+          run: function () {}
+        };
+      } else if (!window.aclib.runPop) {
+        window.aclib.runPop = function () {};
+      }
+    }
+  } catch (e) {}
 
   // Tự động kích hoạt auth_hint = 1 trên Motchill & bảo vệ không bị logout
   try {

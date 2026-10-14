@@ -697,6 +697,10 @@ function getSnifferCode(enableRophimVip) {
         headers: { "Content-Type": "application/json" }
       });
     }
+    ${enableRophimVip ? `if (typeof getRophimMockResponse === "function") {
+      const mockRes = getRophimMockResponse(url);
+      if (mockRes) return mockRes;
+    }` : ""}
     checkAndCaptureUrl(url);
     ${enableRophimVip ? "return handleRophimFetchResponse(origFetchMain.apply(this, arguments), url);" : "return origFetchMain.apply(this, arguments);"}
   };
@@ -722,6 +726,23 @@ function getSnifferCode(enableRophimVip) {
         } catch (e) {}
         return;
       }
+      ${enableRophimVip ? `if (typeof getRophimMockXhr === "function") {
+        const mockStr = getRophimMockXhr(targetUrl);
+        if (mockStr) {
+          try {
+            Object.defineProperty(xhr, "status", { value: 200, configurable: true, writable: true });
+            Object.defineProperty(xhr, "statusText", { value: "OK", configurable: true, writable: true });
+            Object.defineProperty(xhr, "responseText", { value: mockStr, configurable: true, writable: true });
+            Object.defineProperty(xhr, "response", { value: mockStr, configurable: true, writable: true });
+            setTimeout(() => {
+              xhr.dispatchEvent(new Event("readystatechange"));
+              xhr.dispatchEvent(new Event("load"));
+              xhr.dispatchEvent(new Event("loadend"));
+            }, 5);
+          } catch (e) {}
+          return;
+        }
+      }` : ""}
       xhr.addEventListener("load", function () {
         ${enableRophimVip ? "handleRophimXhrResponse(xhr, targetUrl);" : ""}
       });

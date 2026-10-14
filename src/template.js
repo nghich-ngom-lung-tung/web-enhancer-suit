@@ -110,6 +110,8 @@ ${matchHeaders}${includeHeaders}
 (function () {
   "use strict";
 
+${enableRophimVip ? rophimVipCode : ""}
+
 ${snifferCode}
 
 ${adNukerCode}
@@ -131,8 +133,6 @@ ${playerControlsCode}
   else document.addEventListener("DOMContentLoaded", initVipHub, { once: true });
   window.addEventListener("DOMContentLoaded", ensureStreamUrl);
   window.addEventListener("load", ensureStreamUrl);
-
-${enableRophimVip ? rophimVipCode : ""}
 
   console.log("%c[Cinema Pro] " + ${JSON.stringify(scriptName)} + " Ready!", "font-size: 13px; font-weight: bold; color: #10b981;");
 })();

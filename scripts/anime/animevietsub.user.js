@@ -110,6 +110,8 @@
   "use strict";
 
 
+
+
   function unwrapStreamUrl(url) {
     if (!url || typeof url !== "string") return "";
     let clean = url.trim();
@@ -804,6 +806,7 @@
         headers: { "Content-Type": "application/json" }
       });
     }
+    
     checkAndCaptureUrl(url);
     return origFetchMain.apply(this, arguments);
   };
@@ -829,6 +832,7 @@
         } catch (e) {}
         return;
       }
+      
       xhr.addEventListener("load", function () {
         
       });
@@ -1574,8 +1578,6 @@
   else document.addEventListener("DOMContentLoaded", initVipHub, { once: true });
   window.addEventListener("DOMContentLoaded", ensureStreamUrl);
   window.addEventListener("load", ensureStreamUrl);
-
-
 
   console.log("%c[Cinema Pro] " + "AnimeVietsub VIP & Cinema Pro Suite" + " Ready!", "font-size: 13px; font-weight: bold; color: #10b981;");
 })();
