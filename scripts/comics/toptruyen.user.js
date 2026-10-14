@@ -486,7 +486,8 @@
         name: "VIP Comic Reader",
         username: "vip_reader",
         email: "vip@zettruyen.com",
-        avatar: "/images/default-avatar.png",
+        avatar: "/images/profile-picture.webp",
+        avatar_url: "/images/profile-picture.webp",
         role: "VIP",
         is_vip: true,
         vip: 1,
@@ -666,7 +667,8 @@
         name: "VIP Comic Reader",
         username: "vip_reader",
         email: "vip@zettruyen.com",
-        avatar: "/images/default-avatar.png",
+        avatar: "/images/profile-picture.webp",
+        avatar_url: "/images/profile-picture.webp",
         role: "VIP",
         is_vip: true,
         vip: 1,
@@ -987,7 +989,8 @@
           name: "VIP Comic Reader",
           username: "vip_reader",
           email: "vip@zettruyen.com",
-          avatar: "/images/default-avatar.png",
+          avatar: "/images/profile-picture.webp",
+          avatar_url: "/images/profile-picture.webp",
           role: "VIP",
           is_vip: true,
           vip: 1,
@@ -1027,7 +1030,7 @@
               const guestLogin = authMenu.querySelector("a[href*='login'], .btn-login, [onclick*='login']");
               if (guestLogin && !authMenu.querySelector(".user-avatar, .user-name, [data-user]")) {
                 authMenu.innerHTML = '<div class="user-profile-menu dropdown" style="display:flex;align-items:center;gap:8px;">' +
-                  '<img src="/images/default-avatar.png" alt="VIP Comic" style="width:32px;height:32px;border-radius:50%;border:2px solid #51f085;">' +
+                  '<img src="/images/profile-picture.webp" alt="VIP Comic" style="width:32px;height:32px;border-radius:50%;border:2px solid #51f085;">' +
                   '<span style="color:#51f085;font-weight:600;font-size:13px;">VIP Comic Pro</span>' +
                 '</div>';
               }
@@ -1076,6 +1079,28 @@
             patchTopTruyenLoginDom();
           }
           setInterval(patchTopTruyenLoginDom, 500);
+
+          // TopTruyen dropdown toggle listener (independent of external bootstrap.js)
+          document.addEventListener("click", function (e) {
+            const toggle = e.target && e.target.closest && e.target.closest("#login .dropdown-toggle, .user-logged-in .dropdown-toggle");
+            if (toggle) {
+              e.preventDefault();
+              e.stopPropagation();
+              const container = toggle.closest(".user-logged-in, #login, .dropdown");
+              const menu = container && container.querySelector(".dropdown-menu");
+              if (menu) {
+                const isShown = menu.style.display === "block";
+                menu.style.display = isShown ? "none" : "block";
+              }
+            } else {
+              const openMenus = document.querySelectorAll("#login .dropdown-menu, .user-logged-in .dropdown-menu");
+              openMenus.forEach(function (m) {
+                if (m && m.style.display === "block" && (!e.target || !e.target.closest || !e.target.closest(".user-logged-in"))) {
+                  m.style.display = "none";
+                }
+              });
+            }
+          });
         }
       } catch (e) {}
     }
