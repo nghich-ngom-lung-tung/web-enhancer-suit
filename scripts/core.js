@@ -798,9 +798,10 @@
           } catch (e) {}
 
           // 2. Chuẩn bị thông tin tài khoản VIP
+          const credKey = (typeof location !== "undefined" && location.hostname && location.hostname.includes("netanime")) ? "NETANIME_CREDENTIALS" : "RO_CREDENTIALS";
           let creds = null;
           try {
-            const saved = window.localStorage.getItem("RO_CREDENTIALS");
+            const saved = window.localStorage.getItem(credKey);
             if (saved) creds = JSON.parse(saved);
           } catch (e) {}
 
@@ -812,7 +813,7 @@
               password: "CinemaPro_" + rand + "!"
             };
             try {
-              window.localStorage.setItem("RO_CREDENTIALS", JSON.stringify(creds));
+              window.localStorage.setItem(credKey, JSON.stringify(creds));
             } catch (e) {}
 
             await nativeFetch("/baseapi/api/v1/auth/register", {
@@ -846,14 +847,22 @@
           });
 
           if (loginRes && loginRes.ok) {
-            console.log("[Cinema Pro] RoPhim server session cookie (__Secure-next-auth.session-token) established!");
+            console.log("[Cinema Pro] Server session cookie (__Secure-next-auth.session-token) established for " + location.hostname + "!");
             try {
               window.localStorage.setItem("nextauth.message", JSON.stringify({
                 event: "session",
                 data: { trigger: "getSession" },
                 timestamp: Math.floor(Date.now() / 1000)
               }));
+              if (typeof BroadcastChannel !== "undefined") {
+                const bc = new BroadcastChannel("nextauth.message");
+                bc.postMessage({ event: "session", data: { trigger: "getSession" } });
+                bc.close();
+              }
+              document.dispatchEvent(new Event("visibilitychange"));
             } catch (e) {}
+          } else {
+            try { window.localStorage.removeItem(credKey); } catch (e) {}
           }
         } catch (e) {}
       }, 0);
@@ -1099,7 +1108,6 @@
     host.includes("filelions") ||
     host.includes("vidcdn") ||
     host.includes("vidembed") ||
-    host.includes("netanime") ||
     path.includes("embed") ||
     path.includes("/v/") ||
     path.includes("/video/");

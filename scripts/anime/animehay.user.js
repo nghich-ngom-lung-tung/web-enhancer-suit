@@ -173,7 +173,6 @@
     host.includes("filelions") ||
     host.includes("vidcdn") ||
     host.includes("vidembed") ||
-    host.includes("netanime") ||
     path.includes("embed") ||
     path.includes("/v/") ||
     path.includes("/video/");
