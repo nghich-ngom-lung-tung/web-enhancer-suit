@@ -135,10 +135,6 @@
     "/baseapi/api/v1/banner",
     "/baseapi/api/v1/advertising",
     "/api/auth/session",
-    "/api/auth/providers",
-    "/api/auth/csrf",
-    "/api/auth/callback",
-    "/api/auth/",
     "/auth/profile",
     "/auth/session/check",
     "/auth/session",
@@ -232,6 +228,12 @@
   function getRophimMockJsonString(url, init) {
     if (!url || typeof url !== "string") return null;
 
+    if (init && init.headers) {
+      const h = init.headers;
+      const isInternal = (typeof h.get === "function" ? (h.get("X-Cinema-Pro-Internal") || h.get("x-cinema-pro-internal")) : (h["X-Cinema-Pro-Internal"] || h["x-cinema-pro-internal"]));
+      if (isInternal) return null;
+    }
+
     let bodyStr = "";
     if (init && init.body) {
       if (typeof init.body === "string") bodyStr = init.body;
@@ -259,34 +261,7 @@
       });
     }
 
-    // 2. NextAuth Providers (NextAuth signIn("credentials") checks providers)
-    if (url.includes("/api/auth/providers")) {
-      return JSON.stringify({
-        credentials: {
-          id: "credentials",
-          name: "Credentials",
-          type: "credentials",
-          signinUrl: "https://rophim1.vip/api/auth/signin/credentials",
-          callbackUrl: "https://rophim1.vip/api/auth/callback/credentials"
-        }
-      });
-    }
-
-    // 2.1 NextAuth CSRF Token
-    if (url.includes("/api/auth/csrf")) {
-      return JSON.stringify({
-        csrfToken: "cinema-pro-csrf-token"
-      });
-    }
-
-    // 2.2 NextAuth Callback Credentials (Login submission handler)
-    if (url.includes("/api/auth/callback/credentials") || url.includes("/api/auth/callback")) {
-      return JSON.stringify({
-        url: typeof location !== "undefined" ? location.href : "https://rophim1.vip/"
-      });
-    }
-
-    // 2.3 NextAuth Session
+    // 2. NextAuth Session (Chỉ mock session payload cho client UI)
     if (url.includes("/api/auth/session") || (url.includes("/auth/session") && !url.includes("/auth/session/check"))) {
       const user = getMotchillVipUser();
       return JSON.stringify({
@@ -902,20 +877,28 @@
         } catch (e) {}
       }
 
-      // RoPhim Real Session Auto-Provisioner:
+      // RoPhim & NetAnime Real Session Auto-Provisioner:
       // Tự động đăng ký & đăng nhập qua real NextAuth backend để trình duyệt lưu cookie __Secure-next-auth.session-token
       // Nhờ đó server middleware không bị 307 redirect khi người dùng mở /user/profile, /user/playlist, /user/thong-bao
-      setTimeout(async function ensureRophimServerSession() {
+      async function ensureRophimServerSession(force) {
         try {
           const nativeFetch = _origFetchNative || (typeof origFetchMain === "function" ? origFetchMain : window.fetch);
           if (!nativeFetch) return;
 
-          // 1. Kiểm tra xem server đã có session cookie hợp lệ chưa
+          // 1. Kiểm tra xem server đã có session cookie hợp lệ chưa (dùng header X-Cinema-Pro-Internal để bypass mock)
+          if (!force && window.sessionStorage && window.sessionStorage.getItem("RO_SERVER_SESSION_READY") === "1") {
+            return;
+          }
+
           try {
-            const chk = await nativeFetch("/api/auth/session");
+            const chk = await nativeFetch("/api/auth/session", {
+              headers: { "X-Cinema-Pro-Internal": "1" },
+              credentials: "include"
+            });
             if (chk && chk.ok) {
               const d = await chk.json().catch(() => ({}));
-              if (d && d.user && d.user.id) {
+              if (d && d.user && d.user.id && d.user.id !== 999999) {
+                if (window.sessionStorage) window.sessionStorage.setItem("RO_SERVER_SESSION_READY", "1");
                 return;
               }
             }
@@ -929,26 +912,36 @@
             if (saved) creds = JSON.parse(saved);
           } catch (e) {}
 
-          if (!creds || !creds.email || !creds.password) {
+          async function createAndRegister() {
             const rand = Math.floor(Math.random() * 900000) + 100000;
-            creds = {
+            const newCreds = {
               name: "VIP Cinema Pro",
               email: "vip_" + rand + "@gmail.com",
               password: "CinemaPro_" + rand + "!"
             };
             try {
-              window.localStorage.setItem(credKey, JSON.stringify(creds));
+              window.localStorage.setItem(credKey, JSON.stringify(newCreds));
             } catch (e) {}
 
             await nativeFetch("/baseapi/api/v1/auth/register", {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(creds)
+              headers: { "Content-Type": "application/json", "X-Cinema-Pro-Internal": "1" },
+              body: JSON.stringify(newCreds),
+              credentials: "include"
             }).catch(() => {});
+
+            return newCreds;
           }
 
-          // 3. Lấy CSRF token từ NextAuth
-          const csrfRes = await nativeFetch("/api/auth/csrf");
+          if (!creds || !creds.email || !creds.password || force) {
+            creds = await createAndRegister();
+          }
+
+          // 3. Lấy CSRF token từ NextAuth (real server)
+          const csrfRes = await nativeFetch("/api/auth/csrf", {
+            headers: { "X-Cinema-Pro-Internal": "1" },
+            credentials: "include"
+          });
           let csrfToken = "";
           if (csrfRes && csrfRes.ok) {
             const csrfData = await csrfRes.json().catch(() => ({}));
@@ -964,14 +957,48 @@
             json: "true"
           }).toString();
 
-          const loginRes = await nativeFetch("/api/auth/callback/credentials", {
+          let loginRes = await nativeFetch("/api/auth/callback/credentials", {
             method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: postParams
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "X-Cinema-Pro-Internal": "1"
+            },
+            body: postParams,
+            credentials: "include"
           });
+
+          // Nếu login thất bại (tài khoản cũ không khớp hoặc DB reset), tạo tài khoản mới và đăng nhập lại ngay
+          if (!loginRes || !loginRes.ok) {
+            creds = await createAndRegister();
+            const csrfRes2 = await nativeFetch("/api/auth/csrf", {
+              headers: { "X-Cinema-Pro-Internal": "1" },
+              credentials: "include"
+            });
+            if (csrfRes2 && csrfRes2.ok) {
+              const csrfData2 = await csrfRes2.json().catch(() => ({}));
+              csrfToken = csrfData2.csrfToken || csrfToken;
+            }
+            const postParams2 = new URLSearchParams({
+              email: creds.email,
+              password: creds.password,
+              csrfToken: csrfToken,
+              json: "true"
+            }).toString();
+
+            loginRes = await nativeFetch("/api/auth/callback/credentials", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-Cinema-Pro-Internal": "1"
+              },
+              body: postParams2,
+              credentials: "include"
+            });
+          }
 
           if (loginRes && loginRes.ok) {
             console.log("[Cinema Pro] Server session cookie (__Secure-next-auth.session-token) established for " + location.hostname + "!");
+            if (window.sessionStorage) window.sessionStorage.setItem("RO_SERVER_SESSION_READY", "1");
             try {
               window.localStorage.setItem("nextauth.message", JSON.stringify({
                 event: "session",
@@ -985,11 +1012,31 @@
               }
               document.dispatchEvent(new Event("visibilitychange"));
             } catch (e) {}
-          } else {
-            try { window.localStorage.removeItem(credKey); } catch (e) {}
           }
-        } catch (e) {}
-      }, 0);
+        } catch (e) {
+          console.error("[Cinema Pro] Server session provisioning error:", e);
+        }
+      }
+
+      setTimeout(() => { ensureRophimServerSession(); }, 50);
+
+      // 5. Chặn 307 Redirect khi bấm "Tài Khoản": Đảm bảo có session cookie trước khi chuyển trang
+      try {
+        document.addEventListener("click", async function (e) {
+          const link = e.target && e.target.closest && e.target.closest('a[href*="/user/profile"], a[href="/user/profile"], a[href^="/user/"]');
+          if (link) {
+            const isReady = window.sessionStorage && window.sessionStorage.getItem("RO_SERVER_SESSION_READY") === "1";
+            if (!isReady) {
+              e.preventDefault();
+              e.stopPropagation();
+              const targetHref = link.getAttribute("href") || "/user/profile";
+              console.log("[Cinema Pro] Securing VIP server session before opening:", targetHref);
+              await ensureRophimServerSession(true);
+              window.location.href = targetHref;
+            }
+          }
+        }, true);
+      } catch (e) {}
     }
 
     const isZetHost = typeof location !== "undefined" && location.hostname && (location.hostname.includes("zettruyen") || location.hostname.includes("zet-truyen"));
