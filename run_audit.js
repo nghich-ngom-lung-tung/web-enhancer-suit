@@ -680,6 +680,114 @@ motchillScripts.forEach(file => {
   }
 });
 
+const comicVipScripts = scriptFiles.filter(f => f.endsWith("zettruyen.user.js") || f.endsWith("toptruyen.user.js") || f.endsWith("web-enhancer-all.user.js"));
+comicVipScripts.forEach(file => {
+  const code = fs.readFileSync(file, "utf8");
+
+  // ZetTruyen test
+  if (file.includes("zettruyen") || file.includes("web-enhancer-all")) {
+    const { window, document } = createTopWindowMock("www.zettruyen3.com");
+    const ctx = vm.createContext({
+      window,
+      document,
+      location: window.location,
+      top: window.top,
+      self: window.self,
+      navigator: window.navigator,
+      localStorage: window.localStorage,
+      fetch: window.fetch,
+      XMLHttpRequest: window.XMLHttpRequest,
+      setTimeout: window.setTimeout,
+      clearTimeout: window.clearTimeout,
+      setInterval: window.setInterval,
+      clearInterval: window.clearInterval,
+      console: window.console,
+      HTMLMediaElement: window.HTMLMediaElement,
+      Storage: window.Storage,
+      Promise,
+      Response: class {
+        constructor(body, init) {
+          this.body = body;
+          this.status = init?.status || 200;
+          this.headers = init?.headers || {};
+        }
+        json() { return Promise.resolve(JSON.parse(this.body)); }
+        text() { return Promise.resolve(String(this.body)); }
+      }
+    });
+
+    try {
+      vm.runInContext(code, ctx);
+
+      // Test 4.6: ZetTruyen userData auto-initialized in localStorage
+      const userDataStr = ctx.window.localStorage.getItem("userData");
+      let userPassed = false;
+      try {
+        const u = JSON.parse(userDataStr);
+        userPassed = Boolean(u && u.is_vip === true && u.coin === 999999999);
+      } catch (e) {}
+      report(`${file}: ZetTruyen auto-initialized VIP userData in localStorage`, userPassed);
+
+      // Test 4.7: /api/profile intercepted returning auth: true & VIP user
+      ctx.window.fetch("https://www.zettruyen3.com/api/profile").then(res => res.json()).then(data => {
+        const zetProfilePassed = Boolean(data && data.success === true && data.data && data.data.auth === true && data.data.info && data.data.info.is_vip === true);
+        report(`${file}: ZetTruyen /api/profile intercepted with VIP Reader Pro`, zetProfilePassed);
+      });
+    } catch (err) {
+      report(`${file}: ZetTruyen VIP execution`, false, err.stack);
+    }
+  }
+
+  // TopTruyen test
+  if (file.includes("toptruyen") || file.includes("web-enhancer-all")) {
+    const { window, document } = createTopWindowMock("www.toptruyenzone12.com");
+    const ctx = vm.createContext({
+      window,
+      document,
+      location: window.location,
+      top: window.top,
+      self: window.self,
+      navigator: window.navigator,
+      localStorage: window.localStorage,
+      fetch: window.fetch,
+      XMLHttpRequest: window.XMLHttpRequest,
+      setTimeout: window.setTimeout,
+      clearTimeout: window.clearTimeout,
+      setInterval: window.setInterval,
+      clearInterval: window.clearInterval,
+      console: window.console,
+      HTMLMediaElement: window.HTMLMediaElement,
+      Storage: window.Storage,
+      Promise,
+      Response: class {
+        constructor(body, init) {
+          this.body = body;
+          this.status = init?.status || 200;
+          this.headers = init?.headers || {};
+        }
+        json() { return Promise.resolve(JSON.parse(this.body)); }
+        text() { return Promise.resolve(String(this.body)); }
+      }
+    });
+
+    try {
+      vm.runInContext(code, ctx);
+
+      // Test 4.8: TopTruyen top_vip auto-initialized in localStorage
+      const topVipPassed = ctx.window.localStorage.getItem("top_vip") === "1";
+      report(`${file}: TopTruyen auto-initialized top_vip in localStorage`, topVipPassed);
+
+      // Test 4.9: /header-login intercepted returning VIP user dropdown HTML
+      ctx.window.fetch("https://www.toptruyenzone12.com/header-login").then(res => res.text()).then(html => {
+        const topHeaderPassed = Boolean(html && html.includes("user-logged-in") && html.includes("VIP Reader Pro") && html.includes("VIP 2099"));
+        report(`${file}: TopTruyen /header-login intercepted with VIP Reader Pro dropdown`, topHeaderPassed);
+      });
+    } catch (err) {
+      report(`${file}: TopTruyen VIP execution`, false, err.stack);
+    }
+  }
+});
+
 // ═════════════════════════════════════════════════════════════════
 // 5. LIVE FOOTBALL STREAMING & SPORTS AD-NUKER AUDIT
 // ═════════════════════════════════════════════════════════════════

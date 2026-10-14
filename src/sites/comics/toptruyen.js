@@ -4,6 +4,7 @@ module.exports = {
   "file": "toptruyen.user.js",
   "desc": "Diệt sạch 100% Ads / Popunder / Video Ads + Phím tắt đọc truyện A/D chuyển chap, W/S cuộn mượt, F fullscreen + Tối ưu khung hình đọc TopTruyen",
   "version": "5.4.5",
+  "isRophim": true,
   "domains": [
     "*://*.toptruyenzone12.com/*",
     "*://toptruyenzone12.com/*",
