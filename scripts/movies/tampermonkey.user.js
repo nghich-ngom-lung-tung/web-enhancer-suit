@@ -256,8 +256,16 @@
     };
   }
 
-  function getRophimMockJsonString(url) {
+  function getRophimMockJsonString(url, init) {
     if (!url || typeof url !== "string") return null;
+
+    let bodyStr = "";
+    if (init && init.body) {
+      if (typeof init.body === "string") bodyStr = init.body;
+      else if (typeof init.body === "object") {
+        try { bodyStr = JSON.stringify(init.body); } catch (e) {}
+      }
+    }
 
     // 1. Session Check (Bắt buộc valid: true để không gọi o() trigger reload)
     if (url.includes("/auth/session/check")) {
@@ -538,10 +546,50 @@
       });
     }
 
+    // 14. GhienPhim Ecosystem WebAPI Mock (/webapi/index, checkReward, claimReward, getHistory)
+    if (url.includes("/webapi/index") || url.includes("/webapi/") || (url.includes("webapi") && !url.includes("baseapi"))) {
+      if (bodyStr.includes("claimReward") || url.includes("claimReward")) {
+        return JSON.stringify({
+          status: 1,
+          value: 500000,
+          msg: "Chúc mừng VIP Pro nhận lì xì 500.000đ!",
+          cardType: "Viettel 500K",
+          code: "VIP-CINEMA-PRO-500K",
+          serial: "209999999999"
+        });
+      }
+      if (bodyStr.includes("checkReward") || url.includes("checkReward")) {
+        return JSON.stringify({
+          status: 1,
+          value: "500000,200000,100000",
+          cardType: "Viettel 500K,Vinaphone 200K,MobiFone 100K",
+          msg: "VIP Thành Viên Vĩnh Viễn 2099"
+        });
+      }
+      if (bodyStr.includes("getHistory") || url.includes("getHistory")) {
+        return JSON.stringify({
+          status: 1,
+          data: [],
+          history: [],
+          msg: "Thành công"
+        });
+      }
+      return JSON.stringify({
+        status: 1,
+        data: {
+          status: 1,
+          vip: true,
+          coin: COIN_BALANCE,
+          usdt: COIN_BALANCE
+        },
+        msg: "Thành công"
+      });
+    }
+
     return null;
   }
 
-  function getRophimMockResponse(url) {
+  function getRophimMockResponse(url, init) {
     if (url && (url.includes("/header-login") || url.includes("header-login"))) {
       const html = getTopTruyenVipHeaderHtml();
       return new Response(html, {
@@ -550,7 +598,7 @@
         headers: { "Content-Type": "text/html; charset=UTF-8" }
       });
     }
-    const jsonStr = getRophimMockJsonString(url);
+    const jsonStr = getRophimMockJsonString(url, init);
     if (!jsonStr) return null;
     return new Response(jsonStr, {
       status: 200,
@@ -559,8 +607,8 @@
     });
   }
 
-  function getRophimMockXhr(url) {
-    return getRophimMockJsonString(url);
+  function getRophimMockXhr(url, body) {
+    return getRophimMockJsonString(url, { body: body });
   }
 
   function patchRophimData(data, url) {
@@ -734,9 +782,9 @@
     return data;
   }
 
-  async function handleRophimFetchResponse(resPromise, url) {
+  async function handleRophimFetchResponse(resPromise, url, init) {
     if (typeof getRophimMockResponse === "function") {
-      const mock = getRophimMockResponse(url);
+      const mock = getRophimMockResponse(url, init);
       if (mock) return mock;
     }
 
@@ -2276,7 +2324,7 @@
         return;
       }
       if (typeof getRophimMockXhr === "function") {
-        const mockStr = getRophimMockXhr(targetUrl);
+        const mockStr = getRophimMockXhr(targetUrl, body);
         if (mockStr) {
           try {
             let parsedObj = null;
