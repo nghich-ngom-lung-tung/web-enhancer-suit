@@ -252,8 +252,8 @@
       _id: "670bf1000000000000000001",
       id: "670bf1000000000000000001",
       username: "vip_cinemapro",
-      name: "VIP Cinema Pro 👑",
-      displayName: "VIP Cinema Pro 👑",
+      name: "VIP Cinema Pro",
+      displayName: "VIP Cinema Pro",
       email: "vip.cinemapro@chuoichien.tv",
       role: "admin",
       avatar: "https://chuoichientv.link/favicon.ico",
@@ -1284,7 +1284,7 @@
         const VIP_GHIENPHIM_USER = {
           uid: "ghienphim-vip-2099",
           email: "vip.cinemapro@ghienphim.org",
-          displayName: "VIP Cinema Pro 👑",
+          displayName: "VIP Cinema Pro",
           photoURL: "https://ghienphimz.mom/client_assets/images/favicon.png",
           isAnonymous: false,
           emailVerified: true,
@@ -1399,7 +1399,7 @@
           try {
             if (typeof document === "undefined") return;
 
-            // 1. Header Access Account Button -> 👑 VIP Member
+            // 1. Header Access Account Button -> VIP Member
             const accessBtns = document.querySelectorAll(".access-account button, .access-account a, .notification.user-profile a");
             accessBtns.forEach(btn => {
               if (!btn.getAttribute("data-vip-styled")) {
@@ -1451,7 +1451,7 @@
                 fastBtn.type = "button";
                 fastBtn.className = "btn btn-primary btn-block";
                 fastBtn.style.cssText = "margin-top:12px;width:100%;background:linear-gradient(135deg, #10b981 0%, #059669 100%);border:none;font-weight:700;padding:12px;border-radius:6px;color:#fff;cursor:pointer;display:block;text-align:center;font-size:14px;box-shadow:0 4px 15px rgba(16,185,129,0.4);";
-                fastBtn.innerHTML = "👑 ĐĂNG NHẬP VIP 1-CLICK (KHÔNG CẦN PASS)";
+                fastBtn.innerHTML = "ĐĂNG NHẬP VIP 1-CLICK (KHÔNG CẦN PASS)";
                 fastBtn.onclick = function (e) {
                   e.preventDefault();
                   e.stopPropagation();
@@ -1486,7 +1486,7 @@
             const coinEls = document.querySelectorAll(".field.coin .value, .coin .value");
             coinEls.forEach(coinEl => {
               if (!coinEl.textContent || !coinEl.textContent.includes("999,999,999")) {
-                coinEl.innerHTML = '<span style="color:#51f085;font-weight:700;">999,999,999 USDT (VIP Vĩnh Viễn 2099) 👑</span>';
+                coinEl.innerHTML = '<span style="color:#51f085;font-weight:700;">999,999,999 USDT (VIP Vĩnh Viễn 2099)</span>';
               }
             });
 
@@ -1495,7 +1495,7 @@
               const badge = document.createElement("div");
               badge.className = "vip-badge-pro";
               badge.style.cssText = "display:inline-block;padding:6px 14px;border-radius:6px;background:linear-gradient(135deg, #10b981 0%, #059669 100%);color:#fff;font-weight:700;font-size:13px;margin:8px 0;box-shadow:0 2px 10px rgba(16,185,129,0.3);";
-              badge.innerHTML = "👑 VIP MEMBER VĨNH VIỄN 2099";
+              badge.innerHTML = "VIP MEMBER VĨNH VIỄN 2099";
               const headTarget = pInfo.querySelector(".user-info, .head, .profile-head") || pInfo.firstChild;
               if (headTarget) pInfo.insertBefore(badge, headTarget.nextSibling || headTarget);
             }
@@ -1511,7 +1511,7 @@
 
             const pVer = document.querySelector(".profile-version");
             if (pVer && !pVer.textContent.includes("VIP 2099")) {
-              pVer.innerHTML = '<span style="color:#51f085;font-weight:bold;">👑 Tài Khoản VIP Trọn Đời (Hạn dùng: 18/07/2099)</span>';
+              pVer.innerHTML = '<span style="color:#51f085;font-weight:bold;">Tài Khoản VIP Trọn Đời (Hạn dùng: 18/07/2099)</span>';
             }
           } catch (e) {}
         }
@@ -1561,14 +1561,14 @@
                 const res = await nativeFetch("https://api.chuoichientv.net/v1/guest-token", {
                   method: "POST",
                   headers: { "Content-Type": "application/json", "X-Cinema-Pro-Internal": "1" },
-                  body: JSON.stringify({ guestName: "VIP Cinema Pro 👑" })
+                  body: JSON.stringify({ guestName: "VIP Cinema Pro" })
                 });
                 if (res && res.ok) {
                   const d = await res.json().catch(() => ({}));
                   realToken = d?.data?.token || d?.data?.guestToken || d?.token;
                   if (realToken && !realToken.includes("cinema-pro-vip")) {
                     window.localStorage.setItem("guestAccessToken", realToken);
-                    window.localStorage.setItem("guestName", "VIP Cinema Pro 👑");
+                    window.localStorage.setItem("guestName", "VIP Cinema Pro");
                   }
                 }
               }
@@ -1595,7 +1595,7 @@
               const userDiv = document.createElement("div");
               userDiv.className = "nav-user";
               userDiv.innerHTML = '<button type="button" class="nav-user-trigger" aria-label="Tài khoản" style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(81,240,133,0.3);border-radius:20px;padding:4px 12px;cursor:pointer;">' +
-                '<span class="nav-display-name role-admin" style="color:#51f085;font-weight:700;font-size:13px;">VIP Cinema Pro 👑</span>' +
+                '<span class="nav-display-name role-admin" style="color:#51f085;font-weight:700;font-size:13px;">VIP Cinema Pro</span>' +
                 '<span class="nav-avatar-btn" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg, #10b981 0%, #059669 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:11px;border:2px solid #51f085;">VIP</span>' +
               '</button>';
               navLoginBtn.style.display = "none";
@@ -1640,7 +1640,7 @@
                 fastBtn.type = "button";
                 fastBtn.className = "auth-submit-btn w-full";
                 fastBtn.style.cssText = "margin-top:12px;width:100%;background:linear-gradient(135deg, #10b981 0%, #059669 100%);border:none;font-weight:700;padding:12px;border-radius:6px;color:#fff;cursor:pointer;display:block;text-align:center;font-size:14px;box-shadow:0 4px 15px rgba(16,185,129,0.4);";
-                fastBtn.innerHTML = "👑 ĐĂNG NHẬP VIP 1-CLICK (KHÔNG CẦN PASS)";
+                fastBtn.innerHTML = "ĐĂNG NHẬP VIP 1-CLICK (KHÔNG CẦN PASS)";
                 fastBtn.onclick = function (e) {
                   e.preventDefault();
                   e.stopPropagation();

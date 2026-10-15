@@ -351,7 +351,33 @@ body {
 }
 
 .tool-icon {
-  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  color: var(--gold);
+  margin-bottom: 3px;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s ease, filter 0.2s ease;
+}
+
+.tool-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+}
+
+.btn-tool:hover .tool-icon {
+  color: var(--gold-champ);
+  transform: translateY(-2px) scale(1.08);
+  filter: drop-shadow(0 0 6px var(--gold-glow));
+}
+
+.btn-tool.active .tool-icon {
+  color: #1a1206;
+  filter: none;
 }
 
 .tool-name {
@@ -385,6 +411,35 @@ body {
   justify-content: space-between;
   align-items: center;
   letter-spacing: 0.05em;
+  list-style: none;
+}
+
+.cheatsheet-toggle::-webkit-details-marker {
+  display: none;
+}
+
+.cheatsheet-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.cheatsheet-title .icon-small {
+  width: 13px;
+  height: 13px;
+  stroke: var(--gold);
+}
+
+.chevron-icon {
+  width: 13px;
+  height: 13px;
+  stroke: var(--muted);
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.2s ease;
+}
+
+.cheatsheet[open] .chevron-icon {
+  transform: rotate(180deg);
+  stroke: var(--gold);
 }
 
 .cheatsheet-toggle:hover {
