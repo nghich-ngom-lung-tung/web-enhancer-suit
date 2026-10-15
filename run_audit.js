@@ -921,13 +921,13 @@ chuoiChienScripts.forEach(file => {
   try {
     vm.runInContext(code, ctx);
 
-    // Test 4.13: Chuối Chiên TV localStorage auto-seed for Nuxt syncSessionFromStorage
+    // Test 4.13: Chuối Chiên TV localStorage auto-seed for VIP user & protected real chat token
     const token = ctx.window.localStorage.getItem("auth._token.local");
     const userStr = ctx.window.localStorage.getItem("auth.user");
     let userObj = null;
     try { userObj = JSON.parse(userStr); } catch (e) {}
-    const autoSeedPassed = Boolean(token && userObj && userObj.username === "vip_cinemapro" && userObj.role === "admin");
-    report(`${file}: Chuối Chiên TV auto-seeded auth._token.local & VIP user in localStorage`, autoSeedPassed);
+    const autoSeedPassed = Boolean((!token || !token.includes("cinema-pro-vip")) && userObj && userObj.username === "vip_cinemapro" && userObj.role === "admin");
+    report(`${file}: Chuối Chiên TV auto-seeded VIP user in localStorage & protected real chat token`, autoSeedPassed);
 
     // Test 4.14: Chuối Chiên TV /users/login API mock intercepted
     ctx.window.fetch("https://api.chuoichientv.net/v1/users/login", {

@@ -1547,18 +1547,21 @@
       try {
         const VIP_CC_USER = getChuoiChienVipUser();
 
-        // 1. Pre-seed & protect localStorage session so Nuxt syncSessionFromStorage immediately logs in on startup
+        // 1. Chuẩn hóa Token cho Chat WebSocket & Nuxt Auth:
+        // TUYỆT ĐỐI KHÔNG gán chuỗi giả vào auth._token.local vì backend WebSocket & Chat của Chuối Chiên
+        // sẽ từ chối token giả và chặn quyền gửi tin nhắn (bị hạ cấp xuống anonymous).
         if (typeof window !== "undefined" && window.localStorage) {
           try {
-            if (!window.localStorage.getItem("auth._token.local")) {
-              window.localStorage.setItem("auth._token.local", "cinema-pro-vip-jwt-token");
-              window.localStorage.setItem("auth._refresh_token.local", "cinema-pro-vip-refresh-token");
-              window.localStorage.setItem("auth.user", JSON.stringify(VIP_CC_USER));
+            const curToken = window.localStorage.getItem("auth._token.local");
+            if (curToken && curToken.includes("cinema-pro-vip")) {
+              window.localStorage.removeItem("auth._token.local");
+              window.localStorage.removeItem("auth._refresh_token.local");
             }
+            window.localStorage.setItem("auth.user", JSON.stringify(VIP_CC_USER));
           } catch (e) {}
 
-          // Tự động cấp real session token từ /guest-token để WebSocket Chat Centrifugo & /chat/send hoạt động 100%
-          async function syncRealChuoiChienChatToken() {
+          // Tự động đảm bảo có real session token từ /guest-token để WebSocket Chat Centrifugo & /chat/send hoạt động 100%
+          async function ensureChuoiChienChatToken() {
             try {
               const nativeFetch = _origFetchNative || (typeof origFetchMain === "function" ? origFetchMain : window.fetch);
               if (!nativeFetch) return;
@@ -1573,31 +1576,27 @@
                 if (res && res.ok) {
                   const d = await res.json().catch(() => ({}));
                   realToken = d?.data?.token || d?.data?.guestToken || d?.token;
+                  if (realToken && !realToken.includes("cinema-pro-vip")) {
+                    window.localStorage.setItem("guestAccessToken", realToken);
+                    window.localStorage.setItem("guestName", "VIP Cinema Pro 👑");
+                  }
                 }
               }
-              if (realToken && !realToken.includes("cinema-pro-vip")) {
-                window.localStorage.setItem("guestAccessToken", realToken);
-                window.localStorage.setItem("auth._token.local", realToken);
-                window.localStorage.setItem("auth._refresh_token.local", realToken);
-              }
-              window.localStorage.setItem("auth.user", JSON.stringify(VIP_CC_USER));
             } catch (e) {}
           }
-          syncRealChuoiChienChatToken();
-
-          if (window.Storage && window.Storage.prototype) {
-            const origRemove = window.Storage.prototype.removeItem;
-            window.Storage.prototype.removeItem = function (key) {
-              if (key === "auth._token.local" || key === "auth.user" || key === "auth._refresh_token.local") return;
-              return origRemove.apply(this, arguments);
-            };
-          }
+          ensureChuoiChienChatToken();
         }
 
         // 2. DOM Patcher & Modal VIP 1-Click Auto-Login Bypass
         function patchChuoiChienAuthDom() {
           try {
             if (typeof document === "undefined") return;
+
+            // Clean boxchat sticky ad & login prompt if present
+            const boxChatSticky = document.querySelector(".boxchat-sticky-ad");
+            if (boxChatSticky) boxChatSticky.remove();
+            const loginPrompt = document.querySelector(".login-prompt");
+            if (loginPrompt) loginPrompt.style.display = "none";
 
             // Header VIP Styling: Replace guest login button if still rendered
             const navLoginBtn = document.querySelector(".nav-login-btn");
@@ -1656,8 +1655,6 @@
                   e.preventDefault();
                   e.stopPropagation();
                   try {
-                    window.localStorage.setItem("auth._token.local", "cinema-pro-vip-jwt-token");
-                    window.localStorage.setItem("auth._refresh_token.local", "cinema-pro-vip-refresh-token");
                     window.localStorage.setItem("auth.user", JSON.stringify(VIP_CC_USER));
                   } catch (err) {}
 
@@ -1708,7 +1705,7 @@
                 "html body .bet-button-player, html body .bet-buttons-container, html body [class*='bet-buttons-container'], " +
                 "html body img[src*='1920x60'], html body img[src*='cdnvip.chuoichientv.net'], html body img[src*='c5735ef8'], " +
                 "html body img[alt*='FB88'], html body img[alt*='net-88'], html body img[alt*='banner_player'], html body img[alt*='banner-player'], " +
-                "html body .player-logo-wrapper, html body [class*='player-logo'] { " +
+                "html body .player-logo-wrapper, html body [class*='player-logo'], html body .boxchat-sticky-ad, html body [class*='boxchat-sticky-ad'], html body .login-prompt { " +
                 "display: none !important; " +
                 "visibility: hidden !important; " +
                 "height: 0 !important; " +
@@ -3743,7 +3740,15 @@
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(cleanUrl).catch(() => {});
     }
-    const ref = (!isNoRefererCdn(cleanUrl) && location.href) ? location.href : "";
+    function getStreamReferer(url) {
+      if (isNoRefererCdn(url)) return "";
+      if (url.includes("edgemaxcdn") || url.includes("100ycdn") || url.includes("cctvsignal") || (typeof location !== "undefined" && location.hostname && (location.hostname.includes("chuoichien") || location.hostname.includes("cctvsignal")))) {
+        return "https://fhd-01.cctvsignal.xyz/";
+      }
+      return (typeof location !== "undefined" && location.href) ? location.href : "";
+    }
+
+    const ref = getStreamReferer(cleanUrl);
     const potTarget = ref ? (cleanUrl + "|Referer=" + encodeURIComponent(ref)) : cleanUrl;
     window.location.href = "potplayer://" + potTarget;
     showToast("Đang mở PotPlayer...");
@@ -3760,7 +3765,7 @@
       navigator.clipboard.writeText(cleanUrl).catch(() => {});
     }
     window.location.href = "vlc://" + encodeURIComponent(cleanUrl);
-    showToast("Đang mở VLC... Nếu VLC báo lỗi MRL do CDN chặn, hãy bấm 'Tải Playlist .M3U' hoặc dùng PotPlayer!");
+    showToast("Đang mở VLC... Nếu VLC báo lỗi MRL do CDN chặn Referer, hãy bấm 'Tải Playlist .M3U' hoặc dùng PotPlayer!");
   }
 
   function copyM3u8() {
@@ -3803,8 +3808,15 @@
       return;
     }
     const cleanUrl = capturedStreamUrl.trim();
-    const title = (document.title || "Cinema_Pro_Stream").replace(/[/\\?%*:|"<>]/g, "_").trim();
-    const ref = (!isNoRefererCdn(cleanUrl) && location.href) ? location.href : "";
+    const title = (document.title || "Cinema_Pro_Stream").replace(/[/\?%*:|"<>]/g, "_").trim();
+    function getStreamReferer(url) {
+      if (isNoRefererCdn(url)) return "";
+      if (url.includes("edgemaxcdn") || url.includes("100ycdn") || url.includes("cctvsignal") || (typeof location !== "undefined" && location.hostname && (location.hostname.includes("chuoichien") || location.hostname.includes("cctvsignal")))) {
+        return "https://fhd-01.cctvsignal.xyz/";
+      }
+      return (typeof location !== "undefined" && location.href) ? location.href : "";
+    }
+    const ref = getStreamReferer(cleanUrl);
     const ua = navigator.userAgent || "Mozilla/5.0";
     const refLine = ref ? ("#EXTVLCOPT:http-referrer=" + ref + "\n") : "";
     const content = "#EXTM3U\n#EXTINF:-1," + title + "\n" + refLine + "#EXTVLCOPT:http-user-agent=" + ua + "\n#EXTVLCOPT:network-caching=1000\n" + cleanUrl + "\n";

@@ -111,7 +111,15 @@ module.exports = `
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(cleanUrl).catch(() => {});
     }
-    const ref = (!isNoRefererCdn(cleanUrl) && location.href) ? location.href : "";
+    function getStreamReferer(url) {
+      if (isNoRefererCdn(url)) return "";
+      if (url.includes("edgemaxcdn") || url.includes("100ycdn") || url.includes("cctvsignal") || (typeof location !== "undefined" && location.hostname && (location.hostname.includes("chuoichien") || location.hostname.includes("cctvsignal")))) {
+        return "https://fhd-01.cctvsignal.xyz/";
+      }
+      return (typeof location !== "undefined" && location.href) ? location.href : "";
+    }
+
+    const ref = getStreamReferer(cleanUrl);
     const potTarget = ref ? (cleanUrl + "|Referer=" + encodeURIComponent(ref)) : cleanUrl;
     window.location.href = "potplayer://" + potTarget;
     showToast("Đang mở PotPlayer...");
@@ -128,7 +136,7 @@ module.exports = `
       navigator.clipboard.writeText(cleanUrl).catch(() => {});
     }
     window.location.href = "vlc://" + encodeURIComponent(cleanUrl);
-    showToast("Đang mở VLC... Nếu VLC báo lỗi MRL do CDN chặn, hãy bấm 'Tải Playlist .M3U' hoặc dùng PotPlayer!");
+    showToast("Đang mở VLC... Nếu VLC báo lỗi MRL do CDN chặn Referer, hãy bấm 'Tải Playlist .M3U' hoặc dùng PotPlayer!");
   }
 
   function copyM3u8() {
@@ -171,8 +179,15 @@ module.exports = `
       return;
     }
     const cleanUrl = capturedStreamUrl.trim();
-    const title = (document.title || "Cinema_Pro_Stream").replace(/[/\\\\?%*:|"<>]/g, "_").trim();
-    const ref = (!isNoRefererCdn(cleanUrl) && location.href) ? location.href : "";
+    const title = (document.title || "Cinema_Pro_Stream").replace(/[/\\?%*:|"<>]/g, "_").trim();
+    function getStreamReferer(url) {
+      if (isNoRefererCdn(url)) return "";
+      if (url.includes("edgemaxcdn") || url.includes("100ycdn") || url.includes("cctvsignal") || (typeof location !== "undefined" && location.hostname && (location.hostname.includes("chuoichien") || location.hostname.includes("cctvsignal")))) {
+        return "https://fhd-01.cctvsignal.xyz/";
+      }
+      return (typeof location !== "undefined" && location.href) ? location.href : "";
+    }
+    const ref = getStreamReferer(cleanUrl);
     const ua = navigator.userAgent || "Mozilla/5.0";
     const refLine = ref ? ("#EXTVLCOPT:http-referrer=" + ref + "\\n") : "";
     const content = "#EXTM3U\\n#EXTINF:-1," + title + "\\n" + refLine + "#EXTVLCOPT:http-user-agent=" + ua + "\\n#EXTVLCOPT:network-caching=1000\\n" + cleanUrl + "\\n";
