@@ -119,7 +119,7 @@ Dành cho bạn nào thích quản lý bằng Tampermonkey / Violentmonkey và t
 
 | Website Phim | Trạng Thái | Link Cài Đặt 1-Click | Tên Miền Đại Diện |
 | :--- | :---: | :---: | :--- |
-| 🌟 **Rổ Phim (Rophim)** | 🟢 Sẵn sàng | [👉 **Cài đặt Rổ Phim**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/rophim.user.js) | `rophim1.vip`, `rophim1.cc`, `streamc.xyz` |
+| 🌟 **Rổ Phim (Rophim)** | 🟢 Sẵn sàng | [👉 **Cài đặt Rổ Phim**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/rophim.user.js) | `rophim1.vip`, `rophim10.work`, `streamc.xyz` |
 | 🍿 **Motchill** | 🟢 Sẵn sàng | [👉 **Cài đặt Motchill**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/motchill.user.js) | `phimmotchill.online`, `motchill.online` |
 | 📽️ **Ghiền Phim (GhienPhim)** | 🟢 Sẵn sàng | [👉 **Cài đặt GhienPhim**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/ghienphim.user.js) | `ghienphimz.mom`, `ghienphim.net` |
 | 🎬 **Đu Phim (DuPhim)** | 🟢 Sẵn sàng | [👉 **Cài đặt DuPhim**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/duphim.user.js) | `duphim.social`, `duphim.net` |
@@ -147,6 +147,8 @@ Dành cho bạn nào thích quản lý bằng Tampermonkey / Violentmonkey và t
 | 🌴 **ChillHay** | 🟢 Sẵn sàng | [👉 **Cài đặt ChillHay**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/chillhay.user.js) | `chillhay.com` |
 | ➕ **XemPhimPlus** | 🟢 Sẵn sàng | [👉 **Cài đặt XemPhimPlus**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/xemphimplus.user.js) | `xemphimplus.net` |
 | 🍙 **TopSub (Vietsub)** | 🟢 Sẵn sàng | [👉 **Cài đặt TopSub**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/topsub.user.js) | `topsub.org` |
+| 🌟 **MovieHDThai** | 🟢 Sẵn sàng | [👉 **Cài đặt MovieHDThai**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/moviehdthai.user.js) | `moviehdthai.com` |
+| 💃 **Cô Bé Phim (CoBePhim)** | 🟢 Sẵn sàng | [👉 **Cài đặt CoBePhim**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/cobephim.user.js) | `cobephim.cfd` |
 
 </details>
 
