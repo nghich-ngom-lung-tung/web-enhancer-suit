@@ -1707,6 +1707,50 @@
           }
         } catch (e) {}
 
+        // Prototype interceptor to block Vue mounting banner/bet button nodes
+        try {
+          if (typeof Element !== "undefined" && Element.prototype) {
+            const origAppend = Element.prototype.appendChild;
+            const origInsert = Element.prototype.insertBefore;
+            function isNukeNode(node) {
+              if (!node || node.nodeType !== 1) return false;
+              if (node.tagName === "VIDEO" || node.classList.contains("hlsp") || (node.querySelector && node.querySelector("video"))) return false;
+              if (node.getAttribute && (node.getAttribute("data-v-4c9315d7") !== null || node.getAttribute("data-v-cede0d5b") !== null)) return true;
+              if (node.className && typeof node.className === "string") {
+                if (node.className.includes("bet-button") || node.className.includes("banner-canvas") || node.className.includes("banner-content") || node.className.includes("banner-image")) return true;
+              }
+              if (node.tagName === "IMG" && node.src && (node.src.includes("1920x60") || node.src.includes("cdnvip.chuoichientv.net"))) return true;
+              const txt = (node.textContent || "").trim();
+              if (txt.startsWith("Cược FB88") || txt.startsWith("Cược Net-88") || txt.startsWith("Cược xBet")) return true;
+              return false;
+            }
+            Element.prototype.appendChild = function(node) {
+              if (isNukeNode(node)) {
+                try {
+                  node.style.setProperty("display", "none", "important");
+                  node.style.setProperty("visibility", "hidden", "important");
+                  node.style.setProperty("position", "absolute", "important");
+                  node.style.setProperty("top", "-9999px", "important");
+                } catch (e) {}
+                return node;
+              }
+              return origAppend.apply(this, arguments);
+            };
+            Element.prototype.insertBefore = function(node, ref) {
+              if (isNukeNode(node)) {
+                try {
+                  node.style.setProperty("display", "none", "important");
+                  node.style.setProperty("visibility", "hidden", "important");
+                  node.style.setProperty("position", "absolute", "important");
+                  node.style.setProperty("top", "-9999px", "important");
+                } catch (e) {}
+                return node;
+              }
+              return origInsert.apply(this, arguments);
+            };
+          }
+        } catch (e) {}
+
         function cleanChuoiChienPlayerAds() {
           try {
             if (typeof document === "undefined") return;
@@ -1755,6 +1799,22 @@
                 btn.style.setProperty("top", "-9999px", "important");
                 btn.remove();
               } catch (e) {}
+            });
+
+            // Quét sạch theo text content
+            document.querySelectorAll("button, div, span, a").forEach(el => {
+              const txt = (el.textContent || "").trim();
+              if (txt.startsWith("Cược FB88") || txt.startsWith("Cược Net-88") || txt.startsWith("Cược xBet")) {
+                if (el.tagName !== "VIDEO" && !el.classList.contains("hlsp") && !(el.querySelector && el.querySelector("video"))) {
+                  try {
+                    el.style.setProperty("display", "none", "important");
+                    el.style.setProperty("visibility", "hidden", "important");
+                    el.style.setProperty("position", "absolute", "important");
+                    el.style.setProperty("top", "-9999px", "important");
+                    el.remove();
+                  } catch (e) {}
+                }
+              }
             });
           } catch (e) {}
         }
