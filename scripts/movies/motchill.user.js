@@ -177,7 +177,22 @@
     "/header-login",
     "header-login",
     "zettruyen",
-    "toptruyen"
+    "toptruyen",
+    "ghienphim",
+    "ghienxemphim",
+    "ghienphimhay",
+    "coiphim",
+    "xemphimviet",
+    "duphim",
+    "ghienblog",
+    "ghientruyen",
+    "chuoichien",
+    "chuoichientv",
+    "/users/login",
+    "/users/profile",
+    "/users/register",
+    "api.chuoichientv",
+    "api-v2.chuoichientv"
   ];
 
   function getTopTruyenVipHeaderHtml() {
@@ -239,6 +254,29 @@
     };
   }
 
+  function getChuoiChienVipUser() {
+    return {
+      _id: "670bf1000000000000000001",
+      id: "670bf1000000000000000001",
+      username: "vip_cinemapro",
+      name: "VIP Cinema Pro 👑",
+      displayName: "VIP Cinema Pro 👑",
+      email: "vip.cinemapro@chuoichien.tv",
+      role: "admin",
+      avatar: "https://chuoichientv.link/favicon.ico",
+      avatar_url: "https://chuoichientv.link/favicon.ico",
+      is_vip: true,
+      vip: 1,
+      level: 99,
+      coin: COIN_BALANCE,
+      balance: COIN_BALANCE,
+      points: COIN_BALANCE,
+      phone: "0999999999",
+      verified: true,
+      status: "active"
+    };
+  }
+
   function getRophimMockJsonString(url, init) {
     if (!url || typeof url !== "string") return null;
 
@@ -289,6 +327,46 @@
         coin_balance: COIN_BALANCE,
         expires: VIP_EXPIRY_DATE.toISOString()
       });
+    }
+
+    // 2.4 Chuối Chiên TV Auth & User Profile API (Nuxt 3)
+    const isChuoiChien = url.includes("chuoichien") || (typeof location !== "undefined" && location.hostname && (location.hostname.includes("chuoichien") || location.hostname.includes("chuoichientv")));
+    if (isChuoiChien && (url.includes("/users/login") || url.includes("/users/profile") || url.includes("/auth/login") || url.includes("/users/register"))) {
+      const ccUser = getChuoiChienVipUser();
+      if (url.includes("/login")) {
+        return JSON.stringify({
+          success: true,
+          status: 200,
+          code: 200,
+          accessToken: "cinema-pro-vip-jwt-token",
+          refreshToken: "cinema-pro-vip-refresh-token",
+          user: ccUser,
+          data: {
+            accessToken: "cinema-pro-vip-jwt-token",
+            refreshToken: "cinema-pro-vip-refresh-token",
+            user: ccUser
+          },
+          message: "Đăng nhập thành công!"
+        });
+      }
+      if (url.includes("/users/profile")) {
+        return JSON.stringify({
+          success: true,
+          status: 200,
+          code: 200,
+          ...ccUser,
+          data: ccUser,
+          result: ccUser
+        });
+      }
+      if (url.includes("/users/register")) {
+        return JSON.stringify({
+          success: true,
+          status: 200,
+          code: 200,
+          message: "Đăng ký thành công!"
+        });
+      }
     }
 
     // 3. User Profile / Login / Register
@@ -1432,6 +1510,140 @@
             patchGhienphimProfileDom();
           }
           setInterval(patchGhienphimProfileDom, 500);
+        }
+      } catch (e) {}
+    }
+
+    // ─── CHUỐI CHIÊN TV AUTO VIP LOGIN & MODAL BYPASS (NUXT 3) ───
+    const isChuoiChienHost = typeof location !== "undefined" && location.hostname && (
+      location.hostname.includes("chuoichien") ||
+      location.hostname.includes("chuoichientv")
+    );
+    if (isChuoiChienHost) {
+      try {
+        const VIP_CC_USER = getChuoiChienVipUser();
+
+        // 1. Pre-seed & protect localStorage session so Nuxt syncSessionFromStorage immediately logs in on startup
+        if (typeof window !== "undefined" && window.localStorage) {
+          try {
+            if (!window.localStorage.getItem("auth._token.local")) {
+              window.localStorage.setItem("auth._token.local", "cinema-pro-vip-jwt-token");
+              window.localStorage.setItem("auth._refresh_token.local", "cinema-pro-vip-refresh-token");
+              window.localStorage.setItem("auth.user", JSON.stringify(VIP_CC_USER));
+            }
+          } catch (e) {}
+
+          if (window.Storage && window.Storage.prototype) {
+            const origRemove = window.Storage.prototype.removeItem;
+            window.Storage.prototype.removeItem = function (key) {
+              if (key === "auth._token.local" || key === "auth.user" || key === "auth._refresh_token.local") return;
+              return origRemove.apply(this, arguments);
+            };
+          }
+        }
+
+        // 2. DOM Patcher & Modal VIP 1-Click Auto-Login Bypass
+        function patchChuoiChienAuthDom() {
+          try {
+            if (typeof document === "undefined") return;
+
+            // Header VIP Styling: Replace guest login button if still rendered
+            const navLoginBtn = document.querySelector(".nav-login-btn");
+            const navActions = document.querySelector(".nav-actions");
+            if (navLoginBtn && navActions && !navActions.querySelector(".nav-user")) {
+              const userDiv = document.createElement("div");
+              userDiv.className = "nav-user";
+              userDiv.innerHTML = '<button type="button" class="nav-user-trigger" aria-label="Tài khoản" style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(81,240,133,0.3);border-radius:20px;padding:4px 12px;cursor:pointer;">' +
+                '<span class="nav-display-name role-admin" style="color:#51f085;font-weight:700;font-size:13px;">VIP Cinema Pro 👑</span>' +
+                '<span class="nav-avatar-btn" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg, #10b981 0%, #059669 100%);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:11px;border:2px solid #51f085;">VIP</span>' +
+              '</button>';
+              navLoginBtn.style.display = "none";
+              navActions.appendChild(userDiv);
+            }
+
+            // Also style existing .nav-display-name if already rendered by Nuxt
+            const existingName = document.querySelector(".nav-display-name");
+            if (existingName && !existingName.classList.contains("vip-styled")) {
+              existingName.classList.add("vip-styled", "role-admin");
+              existingName.style.color = "#51f085";
+              existingName.style.fontWeight = "700";
+            }
+
+            // Handle Login Modal if opened
+            const authPanel = document.querySelector(".auth-modal-panel, [class*='auth-modal-panel']");
+            if (authPanel) {
+              const authForm = authPanel.querySelector("form.auth-form, form");
+              const inputs = authPanel.querySelectorAll("input.auth-input, input");
+
+              // Auto-fill inputs if empty
+              if (inputs.length >= 2) {
+                const usernameInput = inputs[0];
+                const passwordInput = inputs[1];
+
+                if (!usernameInput.value) {
+                  usernameInput.value = "vip_cinemapro";
+                  usernameInput.dispatchEvent(new Event("input", { bubbles: true }));
+                  usernameInput.dispatchEvent(new Event("change", { bubbles: true }));
+                }
+                if (!passwordInput.value) {
+                  passwordInput.value = "CinemaPro2099!";
+                  passwordInput.dispatchEvent(new Event("input", { bubbles: true }));
+                  passwordInput.dispatchEvent(new Event("change", { bubbles: true }));
+                }
+              }
+
+              // Add 1-Click VIP Login Button if not present
+              if (!authPanel.querySelector("#btn-vip-fastlogin-cc")) {
+                const fastBtn = document.createElement("button");
+                fastBtn.id = "btn-vip-fastlogin-cc";
+                fastBtn.type = "button";
+                fastBtn.className = "auth-submit-btn w-full";
+                fastBtn.style.cssText = "margin-top:12px;width:100%;background:linear-gradient(135deg, #10b981 0%, #059669 100%);border:none;font-weight:700;padding:12px;border-radius:6px;color:#fff;cursor:pointer;display:block;text-align:center;font-size:14px;box-shadow:0 4px 15px rgba(16,185,129,0.4);";
+                fastBtn.innerHTML = "👑 ĐĂNG NHẬP VIP 1-CLICK (KHÔNG CẦN PASS)";
+                fastBtn.onclick = function (e) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  try {
+                    window.localStorage.setItem("auth._token.local", "cinema-pro-vip-jwt-token");
+                    window.localStorage.setItem("auth._refresh_token.local", "cinema-pro-vip-refresh-token");
+                    window.localStorage.setItem("auth.user", JSON.stringify(VIP_CC_USER));
+                  } catch (err) {}
+
+                  // Trigger form submit to let Vue update
+                  if (authForm) {
+                    const submitBtn = authForm.querySelector(".auth-submit-btn, button[type='submit']");
+                    if (submitBtn && submitBtn !== fastBtn) {
+                      submitBtn.click();
+                      return;
+                    }
+                  }
+                  // Fallback close modal
+                  const closeBtn = authPanel.querySelector(".auth-modal-close, button[aria-label='Đóng']");
+                  if (closeBtn) closeBtn.click();
+                  else {
+                    const modalOverlay = authPanel.closest(".fixed, [class*='fixed']");
+                    if (modalOverlay) modalOverlay.style.display = "none";
+                  }
+                  patchChuoiChienAuthDom();
+                };
+
+                if (authForm) {
+                  authForm.appendChild(fastBtn);
+                } else {
+                  authPanel.appendChild(fastBtn);
+                }
+              }
+            }
+          } catch (e) {}
+        }
+
+        if (typeof document !== "undefined") {
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", patchChuoiChienAuthDom);
+          } else {
+            patchChuoiChienAuthDom();
+          }
+          setInterval(patchChuoiChienAuthDom, 500);
         }
       } catch (e) {}
     }

@@ -880,6 +880,77 @@ ghienphimScripts.forEach(file => {
   }
 });
 
+const chuoiChienScripts = scriptFiles.filter(f =>
+  f.endsWith("chuoichien.user.js") ||
+  f.endsWith("web-enhancer-all.user.js")
+);
+
+chuoiChienScripts.forEach(file => {
+  const code = fs.readFileSync(file, "utf8");
+  const { window, document } = createTopWindowMock("live08.chuoichientv.me");
+
+  const ctx = vm.createContext({
+    window,
+    document,
+    location: window.location,
+    top: window.top,
+    self: window.self,
+    navigator: window.navigator,
+    localStorage: window.localStorage,
+    fetch: window.fetch,
+    XMLHttpRequest: window.XMLHttpRequest,
+    setTimeout: window.setTimeout,
+    clearTimeout: window.clearTimeout,
+    setInterval: window.setInterval,
+    clearInterval: window.clearInterval,
+    console: window.console,
+    HTMLMediaElement: window.HTMLMediaElement,
+    Storage: window.Storage,
+    Promise,
+    Response: class {
+      constructor(body, init) {
+        this.body = body;
+        this.status = init?.status || 200;
+        this.headers = init?.headers || {};
+      }
+      json() { return Promise.resolve(JSON.parse(this.body)); }
+      text() { return Promise.resolve(String(this.body)); }
+    }
+  });
+
+  try {
+    vm.runInContext(code, ctx);
+
+    // Test 4.13: Chuối Chiên TV localStorage auto-seed for Nuxt syncSessionFromStorage
+    const token = ctx.window.localStorage.getItem("auth._token.local");
+    const userStr = ctx.window.localStorage.getItem("auth.user");
+    let userObj = null;
+    try { userObj = JSON.parse(userStr); } catch (e) {}
+    const autoSeedPassed = Boolean(token && userObj && userObj.username === "vip_cinemapro" && userObj.role === "admin");
+    report(`${file}: Chuối Chiên TV auto-seeded auth._token.local & VIP user in localStorage`, autoSeedPassed);
+
+    // Test 4.14: Chuối Chiên TV /users/login API mock intercepted
+    ctx.window.fetch("https://api.chuoichientv.net/v1/users/login", {
+      method: "POST",
+      body: JSON.stringify({ username: "any", password: "any" })
+    }).then(res => res.json()).then(data => {
+      const loginPassed = Boolean(data && data.success === true && data.accessToken && data.user && data.user.role === "admin");
+      report(`${file}: Chuối Chiên TV /users/login intercepted returning VIP Cinema Pro token & user`, loginPassed);
+    });
+
+    // Test 4.15: Chuối Chiên TV /users/profile API mock intercepted
+    ctx.window.fetch("https://api.chuoichientv.net/v1/users/profile", {
+      headers: { Authorization: "Bearer cinema-pro-vip-jwt-token" }
+    }).then(res => res.json()).then(data => {
+      const profilePassed = Boolean(data && data.success === true && data.username === "vip_cinemapro" && data.role === "admin");
+      report(`${file}: Chuối Chiên TV /users/profile intercepted returning VIP user profile`, profilePassed);
+    });
+
+  } catch (err) {
+    report(`${file}: Chuối Chiên VIP Patcher execution`, false, err.stack);
+  }
+});
+
 // ═════════════════════════════════════════════════════════════════
 // 5. LIVE FOOTBALL STREAMING & SPORTS AD-NUKER AUDIT
 // ═════════════════════════════════════════════════════════════════
