@@ -92,18 +92,18 @@ function renderCinemaProIcon(size) {
       if (dist <= radius) {
         const isBorder = dist > radius - stroke || x < stroke || x >= size - stroke || y < stroke || y >= size - stroke;
         if (isBorder) {
-          // Emerald glow border
+          // Luxury Gold border gradient (#ffd98a -> #ffb627 -> #c8902a)
           const grad = y / size;
-          const r = Math.round(16 * (1 - grad) + 5 * grad);
-          const g = Math.round(185 * (1 - grad) + 150 * grad);
-          const b = Math.round(129 * (1 - grad) + 105 * grad);
+          const r = Math.round(255 * (1 - grad) + 200 * grad);
+          const g = Math.round(217 * (1 - grad) + 144 * grad);
+          const b = Math.round(138 * (1 - grad) + 42 * grad);
           setPixel(x, y, r, g, b, 255);
         } else {
-          // Dark obsidian background gradient (#0f172a to #020617)
+          // Deepest warm black background (#060605 to #0b0a08)
           const grad = y / size;
-          const r = Math.round(15 * (1 - grad) + 2 * grad);
-          const g = Math.round(23 * (1 - grad) + 6 * grad);
-          const b = Math.round(42 * (1 - grad) + 23 * grad);
+          const r = Math.round(6 * (1 - grad) + 11 * grad);
+          const g = Math.round(6 * (1 - grad) + 10 * grad);
+          const b = Math.round(5 * (1 - grad) + 8 * grad);
           setPixel(x, y, r, g, b, 255);
         }
       }
@@ -120,12 +120,12 @@ function renderCinemaProIcon(size) {
   const crownLeft = Math.round((size - crownWidth) / 2);
   const crownRight = crownLeft + crownWidth;
 
-  // Draw Crown Base Band (Emerald/Gold)
+  // Draw Crown Base Band (Gold Deep)
   const bandHeight = Math.max(2, Math.round(size * 0.12));
   const bandTop = crownBottom - bandHeight;
   for (let y = bandTop; y <= crownBottom; y++) {
     for (let x = crownLeft; x <= crownRight; x++) {
-      setPixel(x, y, 16, 185, 129, 255); // Emerald base band
+      setPixel(x, y, 200, 144, 42, 255); // Rich gold base band
     }
   }
 
