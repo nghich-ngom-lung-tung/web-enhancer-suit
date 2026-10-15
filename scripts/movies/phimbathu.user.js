@@ -969,6 +969,20 @@
       });
     }
     
+    try {
+      if (url && (url.includes("/encrypted/token") || url.includes("/chat/send") || url.includes("/chat/history"))) {
+        const realTok = typeof window !== "undefined" && window.localStorage ? window.localStorage.getItem("guestAccessToken") : null;
+        if (realTok && !realTok.includes("cinema-pro-vip") && init && init.headers) {
+          if (typeof init.headers.set === "function") {
+            const a = init.headers.get("Authorization") || init.headers.get("authorization");
+            if (a && a.includes("cinema-pro-vip")) init.headers.set("Authorization", "Bearer " + realTok);
+          } else if (typeof init.headers === "object") {
+            const a = init.headers.Authorization || init.headers.authorization;
+            if (a && a.includes("cinema-pro-vip")) init.headers.Authorization = "Bearer " + realTok;
+          }
+        }
+      }
+    } catch (e) {}
     checkAndCaptureUrl(url);
     const fetchPromise = origFetchMain.apply(this, arguments);
     try {

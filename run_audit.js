@@ -952,6 +952,12 @@ chuoiChienScripts.forEach(file => {
       report(`${file}: Chuối Chiên TV /ads intercepted returning empty ads array (banner & bet buttons defused)`, adsPassed);
     });
 
+    // Test 4.17: Chuối Chiên TV live matches & chat endpoints must NOT be intercepted as ads
+    const mockMatchCheck = ctx.getRophimMockJsonString ? ctx.getRophimMockJsonString("https://api-v2.chuoichientv.net/v2/matches/pinned") : null;
+    const mockChatCheck = ctx.getRophimMockJsonString ? ctx.getRophimMockJsonString("https://api-v2.chuoichientv.net/v2/chat/send") : null;
+    const liveStreamsNotBlocked = (mockMatchCheck === null && mockChatCheck === null);
+    report(`${file}: Chuối Chiên TV live matches (/matches/pinned) & chat (/chat/send) endpoints unblocked`, liveStreamsNotBlocked);
+
   } catch (err) {
     report(`${file}: Chuối Chiên VIP Patcher execution`, false, err.stack);
   }

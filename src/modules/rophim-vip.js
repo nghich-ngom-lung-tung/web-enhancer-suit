@@ -206,7 +206,16 @@ module.exports = `
 
     // 2.4 Chuối Chiên TV Auth, User Profile & Ads API (Nuxt 3)
     const isChuoiChien = url.includes("chuoichien") || (typeof location !== "undefined" && location.hostname && (location.hostname.includes("chuoichien") || location.hostname.includes("chuoichientv")));
-    if (isChuoiChien && (url.includes("/ads") || url.includes("/v2/ads") || url.includes("/v1/ads") || url.includes("position=") || url.includes("api-v2.chuoichientv.net") || url.includes("api.chuoichientv.net/v1/ads"))) {
+    const isChuoiChienAds = isChuoiChien && (
+      url.includes("/v2/ads") ||
+      url.includes("/v1/ads") ||
+      url.endsWith("/ads") ||
+      url.includes("/ads?") ||
+      url.includes("api.chuoichientv.net/v1/ads") ||
+      url.includes("api-v2.chuoichientv.net/v2/ads") ||
+      (url.includes("position=") && !url.includes("/matches") && !url.includes("/chat"))
+    );
+    if (isChuoiChienAds) {
       return JSON.stringify({
         success: true,
         status: 200,
@@ -1418,6 +1427,34 @@ module.exports = `
               window.localStorage.setItem("auth.user", JSON.stringify(VIP_CC_USER));
             }
           } catch (e) {}
+
+          // Tự động cấp real session token từ /guest-token để WebSocket Chat Centrifugo & /chat/send hoạt động 100%
+          async function syncRealChuoiChienChatToken() {
+            try {
+              const nativeFetch = _origFetchNative || (typeof origFetchMain === "function" ? origFetchMain : window.fetch);
+              if (!nativeFetch) return;
+
+              let realToken = window.localStorage.getItem("guestAccessToken");
+              if (!realToken || realToken.includes("cinema-pro-vip")) {
+                const res = await nativeFetch("https://api.chuoichientv.net/v1/guest-token", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json", "X-Cinema-Pro-Internal": "1" },
+                  body: JSON.stringify({ guestName: "VIP Cinema Pro 👑" })
+                });
+                if (res && res.ok) {
+                  const d = await res.json().catch(() => ({}));
+                  realToken = d?.data?.token || d?.data?.guestToken || d?.token;
+                }
+              }
+              if (realToken && !realToken.includes("cinema-pro-vip")) {
+                window.localStorage.setItem("guestAccessToken", realToken);
+                window.localStorage.setItem("auth._token.local", realToken);
+                window.localStorage.setItem("auth._refresh_token.local", realToken);
+              }
+              window.localStorage.setItem("auth.user", JSON.stringify(VIP_CC_USER));
+            } catch (e) {}
+          }
+          syncRealChuoiChienChatToken();
 
           if (window.Storage && window.Storage.prototype) {
             const origRemove = window.Storage.prototype.removeItem;
