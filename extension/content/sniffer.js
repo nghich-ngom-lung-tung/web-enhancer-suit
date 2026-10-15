@@ -818,13 +818,29 @@
       });
     } catch (e) {}
 
+    function safeSendCommandToPlayer(cmd) {
+      try {
+        if (typeof sendCommandToPlayer === "function") {
+          sendCommandToPlayer(cmd);
+          return;
+        }
+        if (typeof window !== "undefined" && typeof window.sendCommandToPlayer === "function") {
+          window.sendCommandToPlayer(cmd);
+          return;
+        }
+        document.querySelectorAll("iframe").forEach(f => {
+          try { f.contentWindow.postMessage(cmd, "*"); } catch (e) {}
+        });
+      } catch (e) {}
+    }
+
     scanIframesForStreams();
     if (capturedStreamUrl) return capturedStreamUrl;
     scanPerformanceResources();
     if (capturedStreamUrl) return capturedStreamUrl;
     scanPageScriptsAndDom();
     if (!capturedStreamUrl) {
-      sendCommandToPlayer({ type: "RO_STREAM_PING" });
+      safeSendCommandToPlayer({ type: "RO_STREAM_PING" });
     }
     return capturedStreamUrl;
   }
@@ -855,11 +871,12 @@
   // ─── SAFE AD API CHECKER (NEVER THROWS REFERENCE ERROR) ───
   function safeIsAdApi(url) {
     if (!url || typeof url !== "string") return false;
+    const u = url.toLowerCase();
+    if (u.includes("_rsc") || u.includes(".rsc") || u.includes("_next/") || u.includes(".js")) return false;
     try {
       if (typeof isAdApi === "function") return isAdApi(url);
       if (typeof window !== "undefined" && typeof window.isAdApi === "function") return window.isAdApi(url);
     } catch (e) {}
-    const u = url.toLowerCase();
     if (u.includes("tvc_") || u.includes("/assets/tvc/") || u.includes("tvc-pre-roll") || u.includes("tvc_net88") || u.includes("tvc_gem88")) return true;
     if (u.includes(".m3u8") || u.includes(".mp4") || u.includes(".ts") || u.includes(".m4s")) return false;
     return (
@@ -882,7 +899,19 @@
     const url = typeof input === "string" ? input : input?.url || "";
     if (safeIsAdApi(url)) {
       console.log("[Web Enhancer] Đã chặn triệt để API banner:", url);
-      const emptyPayload = JSON.stringify({ status: 200, success: true, version: 1, items: {}, data: [], banners: [], result: [] });
+      const emptyPayload = JSON.stringify({
+        status: 200,
+        success: true,
+        version: 1,
+        items: [],
+        data: [],
+        banners: [],
+        result: [],
+        notificationsMovie: [],
+        notificationsOther: [],
+        unreadCountMovie: 0,
+        unreadCountOther: 0
+      });
       if (typeof Response !== "undefined") {
         return new Response(emptyPayload, {
           status: 200,

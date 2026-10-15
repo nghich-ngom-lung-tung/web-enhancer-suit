@@ -206,6 +206,7 @@ const playerControlsJs = `/**
 ${playerControlsCode}
 
   // Export to window for modular extension architecture
+  window.sendCommandToPlayer = typeof sendCommandToPlayer === "function" ? sendCommandToPlayer : undefined;
   window.copyM3u8 = typeof copyM3u8 === "function" ? copyM3u8 : undefined;
   window.openPotPlayer = typeof openPotPlayer === "function" ? openPotPlayer : undefined;
   window.openVlcPlayer = typeof openVlcPlayer === "function" ? openVlcPlayer : undefined;

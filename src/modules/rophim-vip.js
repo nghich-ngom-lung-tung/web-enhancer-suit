@@ -7,6 +7,11 @@ module.exports = `
   const VIP_EXPIRY_DATE = new Date(2099, 6, 18, 0, 0, 0);
   const VIP_EXPIRY_TIMESTAMP = Math.floor(VIP_EXPIRY_DATE.getTime() / 1000);
   const COIN_BALANCE = 999999999;
+  const ROPHIM_MIRROR_DOMAINS = [
+    "moviehdthai.com",
+    "cobephim.cfd",
+    "rophim10.work"
+  ];
   const ROPHIM_KEYWORDS = [
     "/baseapi/api/v1/tcoin",
     "tcoin",
@@ -45,9 +50,6 @@ module.exports = `
     "netanime.cc",
     "api.netanime.net",
     "api.netanime.cc",
-    "moviehdthai.com",
-    "cobephim.cfd",
-    "rophim10.work",
     "/api/profile",
     "/header-login",
     "header-login",
@@ -92,11 +94,18 @@ module.exports = `
 
   function isRophimTarget(url) {
     if (!url || typeof url !== "string") return false;
-    return ROPHIM_KEYWORDS.some(k => url.includes(k));
+    const u = url.toLowerCase();
+    if (u.includes("_rsc") || u.includes(".rsc") || u.includes("_next/") || u.includes(".js") || u.includes(".css")) return false;
+    return ROPHIM_KEYWORDS.some(k => u.includes(k));
   }
 
   function getMotchillVipUser(curUser) {
     const base = curUser || {};
+    const defaultRoles = [
+      { id: 1, name: "admin" },
+      { id: 2, name: "vip" },
+      { id: 3, name: "premium" }
+    ];
     return {
       id: base.id || 999999,
       username: base.username || "VIP Cinema Pro",
@@ -110,7 +119,10 @@ module.exports = `
       role: "VIP",
       is_role: "admin",
       is_vip: true,
+      is_premium: true,
       gender: 1,
+      roles: (base.roles && Array.isArray(base.roles) && base.roles.length > 0) ? base.roles : defaultRoles,
+      permissions: ["admin", "vip", "premium", "superadmin"],
       current_vip: {
         package_id: 999,
         package_name: "VIP Vĩnh Viễn 2099",
@@ -443,15 +455,19 @@ module.exports = `
 
     // 12. Notifications (home & unread counts)
     if (url.includes("/notifications")) {
+      const notiData = {
+        notificationsMovie: [],
+        notificationsOther: [],
+        unreadCountMovie: 0,
+        unreadCountOther: 0
+      };
       return JSON.stringify({
         status: 200,
         success: true,
-        data: {
-          notificationsMovie: [],
-          notificationsOther: [],
-          unreadCountMovie: 0,
-          unreadCountOther: 0
-        }
+        code: 200,
+        ...notiData,
+        data: notiData,
+        result: notiData
       });
     }
 
@@ -534,15 +550,19 @@ module.exports = `
       };
     }
     if (url && url.includes("/notifications")) {
+      const notiData = {
+        notificationsMovie: [],
+        notificationsOther: [],
+        unreadCountMovie: 0,
+        unreadCountOther: 0
+      };
       return {
         status: 200,
         success: true,
-        data: {
-          notificationsMovie: [],
-          notificationsOther: [],
-          unreadCountMovie: 0,
-          unreadCountOther: 0
-        }
+        code: 200,
+        ...notiData,
+        data: notiData,
+        result: notiData
       };
     }
     if (url && (url.includes("/histories") || url.includes("/watch-progress"))) {
@@ -624,14 +644,22 @@ module.exports = `
     if (url && (url.includes("/api/auth/session") || url.includes("/user/profile") || url.includes("/user/info"))) {
       if (!data.user) data.user = {};
       data.user.is_vip = true;
+      data.user.is_premium = true;
       data.user.vip_expires_at = VIP_EXPIRY_TIMESTAMP;
       data.user.thungBalance = COIN_BALANCE;
       data.user.coin_balance = COIN_BALANCE;
       data.user.role = "VIP";
+      data.user.is_role = "admin";
+      data.user.roles = (data.user.roles && Array.isArray(data.user.roles) && data.user.roles.length > 0) ? data.user.roles : [
+        { id: 1, name: "admin" },
+        { id: 2, name: "vip" },
+        { id: 3, name: "premium" }
+      ];
+      data.user.permissions = ["admin", "vip", "premium", "superadmin"];
       data.user.access_token = "cinema-pro-vip-token";
       data.user.token = "cinema-pro-vip-token";
-      data.user.image = "/images/avatars/10.jpg";
-      data.user.avatar = "/images/avatars/10.jpg";
+      data.user.image = data.user.image || "/images/avatars/10.jpg";
+      data.user.avatar = data.user.avatar || "/images/avatars/10.jpg";
       data.access_token = "cinema-pro-vip-token";
       data.token = "cinema-pro-vip-token";
       data.expires = VIP_EXPIRY_DATE.toISOString();
@@ -668,9 +696,18 @@ module.exports = `
       if (!obj || typeof obj !== "object") return;
       if ("is_vip" in obj || "vip_expires_at" in obj || "coin_balance" in obj || "thungBalance" in obj) {
         obj.is_vip = true;
+        obj.is_premium = true;
         obj.vip_expires_at = VIP_EXPIRY_TIMESTAMP;
         obj.coin_balance = COIN_BALANCE;
         obj.thungBalance = COIN_BALANCE;
+        if (!obj.roles || !Array.isArray(obj.roles) || obj.roles.length === 0) {
+          obj.roles = [
+            { id: 1, name: "admin" },
+            { id: 2, name: "vip" },
+            { id: 3, name: "premium" }
+          ];
+        }
+        if (!obj.permissions) obj.permissions = ["admin", "vip", "premium", "superadmin"];
       }
       if (obj.result) recurse(obj.result);
       if (obj.user) recurse(obj.user);

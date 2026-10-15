@@ -74,6 +74,11 @@ module.exports = `
     });
   }
 
+  if (typeof window !== "undefined") {
+    window.sendCommandToPlayer = sendCommandToPlayer;
+  }
+
+
   function skipIntro(sec = 85) {
     sendCommandToPlayer({ type: "RO_CMD_SKIP_INTRO", seconds: sec });
     _showToast("Đã tua Intro: +" + sec + "s");

@@ -935,13 +935,29 @@
       });
     } catch (e) {}
 
+    function safeSendCommandToPlayer(cmd) {
+      try {
+        if (typeof sendCommandToPlayer === "function") {
+          sendCommandToPlayer(cmd);
+          return;
+        }
+        if (typeof window !== "undefined" && typeof window.sendCommandToPlayer === "function") {
+          window.sendCommandToPlayer(cmd);
+          return;
+        }
+        document.querySelectorAll("iframe").forEach(f => {
+          try { f.contentWindow.postMessage(cmd, "*"); } catch (e) {}
+        });
+      } catch (e) {}
+    }
+
     scanIframesForStreams();
     if (capturedStreamUrl) return capturedStreamUrl;
     scanPerformanceResources();
     if (capturedStreamUrl) return capturedStreamUrl;
     scanPageScriptsAndDom();
     if (!capturedStreamUrl) {
-      sendCommandToPlayer({ type: "RO_STREAM_PING" });
+      safeSendCommandToPlayer({ type: "RO_STREAM_PING" });
     }
     return capturedStreamUrl;
   }
@@ -972,11 +988,12 @@
   // ─── SAFE AD API CHECKER (NEVER THROWS REFERENCE ERROR) ───
   function safeIsAdApi(url) {
     if (!url || typeof url !== "string") return false;
+    const u = url.toLowerCase();
+    if (u.includes("_rsc") || u.includes(".rsc") || u.includes("_next/") || u.includes(".js")) return false;
     try {
       if (typeof isAdApi === "function") return isAdApi(url);
       if (typeof window !== "undefined" && typeof window.isAdApi === "function") return window.isAdApi(url);
     } catch (e) {}
-    const u = url.toLowerCase();
     if (u.includes("tvc_") || u.includes("/assets/tvc/") || u.includes("tvc-pre-roll") || u.includes("tvc_net88") || u.includes("tvc_gem88")) return true;
     if (u.includes(".m3u8") || u.includes(".mp4") || u.includes(".ts") || u.includes(".m4s")) return false;
     return (
@@ -999,7 +1016,19 @@
     const url = typeof input === "string" ? input : input?.url || "";
     if (safeIsAdApi(url)) {
       console.log("[Web Enhancer] Đã chặn triệt để API banner:", url);
-      const emptyPayload = JSON.stringify({ status: 200, success: true, version: 1, items: {}, data: [], banners: [], result: [] });
+      const emptyPayload = JSON.stringify({
+        status: 200,
+        success: true,
+        version: 1,
+        items: [],
+        data: [],
+        banners: [],
+        result: [],
+        notificationsMovie: [],
+        notificationsOther: [],
+        unreadCountMovie: 0,
+        unreadCountOther: 0
+      });
       if (typeof Response !== "undefined") {
         return new Response(emptyPayload, {
           status: 200,
@@ -1258,6 +1287,7 @@
   function isAdApi(url) {
     if (!url || typeof url !== "string") return false;
     const u = url.toLowerCase();
+    if (u.includes("_rsc") || u.includes(".rsc") || u.includes("_next/") || u.includes(".js") || u.includes(".css")) return false;
     // Chặn tuyệt đối video ads & TVC pre-roll kể cả file .mp4
     if (u.includes("tvc_") || u.includes("/assets/tvc/") || u.includes("tvc-pre-roll") || u.includes("tvc_net88") || u.includes("tvc_gem88")) return true;
     if (u.includes(".m3u8") || u.includes(".mp4") || u.includes(".ts") || u.includes(".m4s")) return false;
@@ -1312,6 +1342,27 @@
       u.includes("/ux-toplist/") ||
       u.includes("ux-toplist")
     );
+  }
+
+  function safeHideOrRemove(element) {
+    if (!element || typeof element !== "object") return false;
+    try {
+      element.style.setProperty("display", "none", "important");
+      element.style.setProperty("visibility", "hidden", "important");
+      element.style.setProperty("height", "0", "important");
+      element.style.setProperty("width", "0", "important");
+      element.style.setProperty("opacity", "0", "important");
+      element.style.setProperty("pointer-events", "none", "important");
+    } catch (e) {}
+
+    try {
+      const isReactOrNuxt = element.closest && element.closest("#__next, #__nuxt, #app, [data-reactroot], [data-nextjs-scroll-focus-boundary]");
+      if (!isReactOrNuxt && typeof element.remove === "function") {
+        element.remove();
+        return true;
+      }
+    } catch (e) {}
+    return true;
   }
 
   function nukeAdElements(notify = false) {
@@ -1500,15 +1551,8 @@
           if (parent) {
             if (parent === lw || (lw && parent.contains && parent.contains(lw))) return;
             if (parent.tagName === "VIDEO" || parent.classList.contains("hlsp") || parent.classList.contains("player-container") || (parent.querySelector && parent.querySelector("video"))) return;
-            try {
-              parent.style.setProperty("display", "none", "important");
-              parent.style.setProperty("visibility", "hidden", "important");
-              parent.style.setProperty("height", "0", "important");
-            } catch (e) {}
-            if (typeof parent.remove === "function") {
-              parent.remove();
-              count++;
-            }
+            safeHideOrRemove(parent);
+            count++;
           }
         });
 
@@ -1522,16 +1566,8 @@
           "[data-v-77ed3802], [data-v-cede0d5b], [data-v-4c9315d7].banner-content, [data-v-4c9315d7].banner-canvas, img[data-v-4c9315d7]"
         ).forEach(ad => {
           if (ad.tagName === "VIDEO" || ad.classList?.contains("hlsp") || ad.classList?.contains("player-container") || (ad.querySelector && ad.querySelector("video"))) return;
-          try {
-            ad.style.setProperty("display", "none", "important");
-            ad.style.setProperty("visibility", "hidden", "important");
-            ad.style.setProperty("height", "0", "important");
-            ad.style.setProperty("width", "0", "important");
-            ad.style.setProperty("opacity", "0", "important");
-            ad.style.setProperty("pointer-events", "none", "important");
-            ad.remove();
-            count++;
-          } catch (e) {}
+          safeHideOrRemove(ad);
+          count++;
         });
       }
 
@@ -1549,20 +1585,12 @@
 
           if (isBettingText && !el.classList.contains("livestream_widget") && !(el.closest && el.closest(".livestream_widget"))) {
             try {
-              el.style.setProperty("display", "none", "important");
-              el.style.setProperty("visibility", "hidden", "important");
-              el.style.setProperty("height", "0", "important");
               const p = (el.closest && el.closest('.bet-button, .bet-buttons, [class*="bet-button"], .bet-buttons-container, .banner-canvas, [class*="banner-canvas"], .banner-content, [class*="banner-content"], .ads-layer, [class*="ads-layer"], .gv-bet-dropdown, .box-odds-match, .homepage-toplists-content, .toplists-home, .sticky-message, .sticky-announcement, [class*="detail-live-brand"]')) || el;
               if (p !== lw && !(lw && p.contains && p.contains(lw)) && !(p.querySelector && p.querySelector("video"))) {
-                p.style.setProperty("display", "none", "important");
-                p.style.setProperty("visibility", "hidden", "important");
-                p.style.setProperty("height", "0", "important");
-                if (typeof p.remove === "function") {
-                  p.remove();
-                  count++;
-                }
-              } else if (typeof el.remove === "function") {
-                el.remove();
+                safeHideOrRemove(p);
+                count++;
+              } else {
+                safeHideOrRemove(el);
                 count++;
               }
             } catch (e) {}
@@ -1598,10 +1626,8 @@
                  html.includes("taixiu") || html.includes("adv") || html.includes("banner") ||
                  parseInt(s.zIndex, 10) > 1000)
               ) {
-                if (typeof el.remove === "function") {
-                  el.remove();
-                  count++;
-                }
+                safeHideOrRemove(el);
+                count++;
               }
             }
           }
@@ -1920,6 +1946,11 @@
       try { f.contentWindow.postMessage(cmd, "*"); } catch (e) {}
     });
   }
+
+  if (typeof window !== "undefined") {
+    window.sendCommandToPlayer = sendCommandToPlayer;
+  }
+
 
   function skipIntro(sec = 85) {
     sendCommandToPlayer({ type: "RO_CMD_SKIP_INTRO", seconds: sec });
