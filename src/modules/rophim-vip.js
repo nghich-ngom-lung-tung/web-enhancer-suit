@@ -1561,19 +1561,59 @@ module.exports = `
         }
 
         // 3. Chuối Chiên In-Player Banner & Bet Button Cleaner
+        try {
+          const injectCcStyle = () => {
+            let s = document.getElementById("cc-nuke-player-ads");
+            if (!s && typeof document !== "undefined") {
+              s = document.createElement("style");
+              s.id = "cc-nuke-player-ads";
+              s.textContent = "[data-v-4c9315d7], [data-v-cede0d5b], " +
+                ".banner-canvas, [class*='banner-canvas'], div.banner-canvas, " +
+                ".banner-content, [class*='banner-content'], div.banner-content, " +
+                ".banner-container, [class*='banner-container'], div.banner-container, " +
+                ".banner-image, img.banner-image, [class*='banner-image'], " +
+                ".bet-button-content, button.bet-button-content, " +
+                ".bet-button-player, .bet-buttons-container, " +
+                "img[src*='1920x60'], img[src*='cdnvip.chuoichientv.net'], " +
+                "img[alt*='FB88'], img[alt*='net-88'], img[alt*='banner_player'] { " +
+                "display: none !important; " +
+                "visibility: hidden !important; " +
+                "height: 0 !important; " +
+                "width: 0 !important; " +
+                "opacity: 0 !important; " +
+                "pointer-events: none !important; " +
+                "position: absolute !important; " +
+                "top: -9999px !important; " +
+                "left: -9999px !important; " +
+                "max-height: 0 !important; " +
+                "max-width: 0 !important; " +
+                "margin: 0 !important; " +
+                "padding: 0 !important; }";
+              (document.head || document.documentElement).appendChild(s);
+            }
+          };
+          injectCcStyle();
+          if (typeof document !== "undefined") {
+            document.addEventListener("DOMContentLoaded", injectCcStyle);
+          }
+        } catch (e) {}
+
         function cleanChuoiChienPlayerAds() {
           try {
             if (typeof document === "undefined") return;
 
-            // Diệt sạch banner dưới video player (1920x60.gif, banner-image, net88, fb88)
+            // Diệt sạch banner dưới video player (1920x60.gif, banner-canvas, banner-content, banner-image, net88, fb88)
             const banners = document.querySelectorAll(
+              ".banner-canvas, [class*='banner-canvas'], div.banner-canvas, " +
+              ".banner-content, [class*='banner-content'], div.banner-content, " +
+              ".banner-container, [class*='banner-container'], div.banner-container, " +
               ".banner-image, img.banner-image, [class*='banner-image'], " +
               "img[src*='1920x60'], img[src*='cdnvip.chuoichientv.net'], " +
               "[alt*='net-88-banner-player'], [alt*='banner-player'], [alt*='banner_player'], [alt*='FB88'], [alt*='net-88'], " +
-              "[data-position='live-under-player'], .banner-player, .banner-container, .banner-content"
+              "[data-position='live-under-player'], .banner-player, [data-v-4c9315d7]"
             );
             banners.forEach(b => {
-              if (b.tagName === "VIDEO" || b.classList.contains("hlsp")) return;
+              if (b.tagName === "VIDEO" || b.classList.contains("hlsp") || (b.querySelector && b.querySelector("video"))) return;
               try {
                 b.style.setProperty("display", "none", "important");
                 b.style.setProperty("visibility", "hidden", "important");
@@ -1581,6 +1621,8 @@ module.exports = `
                 b.style.setProperty("width", "0", "important");
                 b.style.setProperty("opacity", "0", "important");
                 b.style.setProperty("pointer-events", "none", "important");
+                b.style.setProperty("position", "absolute", "important");
+                b.style.setProperty("top", "-9999px", "important");
                 b.remove();
               } catch (e) {}
             });
@@ -1592,7 +1634,7 @@ module.exports = `
               "[data-position*='bet-button'], [data-v-cede0d5b]"
             );
             betButtons.forEach(btn => {
-              if (btn.tagName === "VIDEO" || btn.classList.contains("hlsp")) return;
+              if (btn.tagName === "VIDEO" || btn.classList.contains("hlsp") || (btn.querySelector && btn.querySelector("video"))) return;
               try {
                 btn.style.setProperty("display", "none", "important");
                 btn.style.setProperty("visibility", "hidden", "important");
@@ -1600,6 +1642,8 @@ module.exports = `
                 btn.style.setProperty("width", "0", "important");
                 btn.style.setProperty("opacity", "0", "important");
                 btn.style.setProperty("pointer-events", "none", "important");
+                btn.style.setProperty("position", "absolute", "important");
+                btn.style.setProperty("top", "-9999px", "important");
                 btn.remove();
               } catch (e) {}
             });
@@ -1617,7 +1661,15 @@ module.exports = `
           } else {
             runChuoiChienPatcher();
           }
-          setInterval(runChuoiChienPatcher, 500);
+          setInterval(runChuoiChienPatcher, 200);
+          if (window.MutationObserver) {
+            try {
+              new MutationObserver(() => cleanChuoiChienPlayerAds()).observe(
+                document.documentElement || document.body,
+                { childList: true, subtree: true }
+              );
+            } catch (e) {}
+          }
         }
       } catch (e) {}
     }

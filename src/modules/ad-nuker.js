@@ -248,7 +248,7 @@ module.exports = `
       '.player-logo-wrapper', '.player-logo-inner', '.player-logo-ad', '[class*="player-logo-"]', '[class*="player-logo"]',
       '.bet-button-player', '.bet-buttons-container', '.bet-button-content', 'button.bet-button-content', '[class*="bet-button-player"]', '[class*="bet-buttons-container"]', '[class*="bet-button-content"]',
       '[data-v-77ed3802]', '[data-v-77cd3882]', '[data-v-4c9315d7]', '[data-v-cede0d5b]',
-      '.banner-player', '.banner-container', '.banner-content', '.banner-image', 'img.banner-image', '.banner-item',
+      '.banner-player', '.banner-canvas', 'div.banner-canvas', '[class*="banner-canvas"]', '.banner-container', '.banner-content', '.banner-image', 'img.banner-image', '.banner-item',
       '[class*="banner-player"]', '[class*="banner-container"]', '[class*="banner-content"]', '[class*="banner-image"]', '[class*="banner-item"]',
       '.banner-content.active', '[class*="banner-content"][class*="active"]',
       '.bet-button', '.bet-buttons', '[class*="bet-button"]', '[class*="bet-buttons"]', '[class*="bet-btn"]',
@@ -350,8 +350,7 @@ module.exports = `
             el.classList.contains("giovang-fixture-player-shell") ||
             el.classList.contains("livestream_widget__content") ||
             el.classList.contains("hlsp") ||
-            el.classList.contains("player-container") ||
-            (el.closest && el.closest(".hlsp"))
+            el.classList.contains("player-container")
           ) {
             return;
           }
@@ -366,10 +365,10 @@ module.exports = `
           ) {
             return;
           }
-          const parent = (el.closest && el.closest('.sspp-area, div[class*="sspp"], .component.ads, [class*="component ads"], .adtop, .adbot, .no-ads, .anti-bad-ad, .ad-1170x150, [class*="ad-1170x150"], div[style*="fixed"]:not(.livestream_widget):not(.giovang-fixture-player-shell), div[style*="sticky"], div[class*="catfish"], #banner_popup, .banner_popup, #corner-start-popup, .corner-start-popup, [class*="devqc"], .ads-layer, [class*="ads-layer"], .player-logo-wrapper, .bet-button-player, .banner-player, .banner-container, .banner-content, .banner-item, .bet-button, .bet-buttons, [class*="bet-button"], .corner-popup-wrap, .marquee-container, .fixture-banner, [class*="balloon-wrapper"], [class*="banner-pos-"], [class*="ad-popup-modal"], .match-detail__offer, .teambox__odds, .homepage-toplists-content, .toplists-home, .box-odds-match, .gv-bet-dropdown, .sticky-message, .sticky-announcement, [class*="detail-live-brand"], .video-ad-layer, [class*="video-ad-layer"], .ad-msg, [class*="ad-msg"], .random-content')) || el;
+          const parent = (el.closest && el.closest('.sspp-area, div[class*="sspp"], .component.ads, [class*="component ads"], .adtop, .adbot, .no-ads, .anti-bad-ad, .ad-1170x150, [class*="ad-1170x150"], div[style*="fixed"]:not(.livestream_widget):not(.giovang-fixture-player-shell), div[style*="sticky"], div[class*="catfish"], #banner_popup, .banner_popup, #corner-start-popup, .corner-start-popup, [class*="devqc"], .ads-layer, [class*="ads-layer"], .player-logo-wrapper, .bet-button-player, .banner-player, .banner-canvas, [class*="banner-canvas"], .banner-container, .banner-content, .banner-item, .bet-button, .bet-buttons, [class*="bet-button"], .corner-popup-wrap, .marquee-container, .fixture-banner, [class*="balloon-wrapper"], [class*="banner-pos-"], [class*="ad-popup-modal"], .match-detail__offer, .teambox__odds, .homepage-toplists-content, .toplists-home, .box-odds-match, .gv-bet-dropdown, .sticky-message, .sticky-announcement, [class*="detail-live-brand"], .video-ad-layer, [class*="video-ad-layer"], .ad-msg, [class*="ad-msg"], .random-content')) || el;
           if (parent) {
             if (parent === lw || (lw && parent.contains && parent.contains(lw))) return;
-            if (parent.classList.contains("hlsp") || parent.classList.contains("player-container") || (parent.querySelector && parent.querySelector(".hlsp"))) return;
+            if (parent.tagName === "VIDEO" || parent.classList.contains("hlsp") || parent.classList.contains("player-container") || (parent.querySelector && parent.querySelector("video"))) return;
             try {
               parent.style.setProperty("display", "none", "important");
               parent.style.setProperty("visibility", "hidden", "important");
@@ -386,12 +385,12 @@ module.exports = `
         document.querySelectorAll(
           ".ads-layer, [class*='ads-layer'], .player-logo-wrapper, .player-logo-inner, " +
           ".bet-button-player, .bet-buttons-container, .bet-button-content, button.bet-button-content, [class*='bet-button'], " +
-          ".banner-player, .banner-container, .banner-content, .banner-image, img.banner-image, [class*='banner-image'], " +
+          ".banner-player, .banner-canvas, [class*='banner-canvas'], div.banner-canvas, .banner-container, .banner-content, div.banner-content, .banner-image, img.banner-image, [class*='banner-image'], " +
           "img[src*='1920x60'], img[src*='cdnvip.chuoichientv.net'], img[alt*='banner-player'], img[alt*='banner_player'], " +
           "img[alt*='FB88'], img[alt*='net-88'], [data-position='live-under-player'], [data-position*='bet-button'], " +
           "[data-v-77ed3802], [data-v-cede0d5b], [data-v-4c9315d7]"
         ).forEach(ad => {
-          if (ad.tagName === "VIDEO" || ad.classList.contains("hlsp") || (ad.classList.contains("player-container") && ad.querySelector && ad.querySelector(".hlsp"))) return;
+          if (ad.tagName === "VIDEO" || ad.classList.contains("hlsp") || ad.classList.contains("player-container") || (ad.querySelector && ad.querySelector("video"))) return;
           try {
             ad.style.setProperty("display", "none", "important");
             ad.style.setProperty("visibility", "hidden", "important");
@@ -422,8 +421,8 @@ module.exports = `
               el.style.setProperty("display", "none", "important");
               el.style.setProperty("visibility", "hidden", "important");
               el.style.setProperty("height", "0", "important");
-              const p = (el.closest && el.closest('.bet-button, .bet-buttons, [class*="bet-button"], .bet-buttons-container, .banner-content, [class*="banner-content"], .ads-layer, [class*="ads-layer"], .gv-bet-dropdown, .box-odds-match, .homepage-toplists-content, .toplists-home, .sticky-message, .sticky-announcement, [class*="detail-live-brand"]')) || el;
-              if (p !== lw && !(lw && p.contains && p.contains(lw)) && !(p.querySelector && p.querySelector(".hlsp"))) {
+              const p = (el.closest && el.closest('.bet-button, .bet-buttons, [class*="bet-button"], .bet-buttons-container, .banner-canvas, [class*="banner-canvas"], .banner-content, [class*="banner-content"], .ads-layer, [class*="ads-layer"], .gv-bet-dropdown, .box-odds-match, .homepage-toplists-content, .toplists-home, .sticky-message, .sticky-announcement, [class*="detail-live-brand"]')) || el;
+              if (p !== lw && !(lw && p.contains && p.contains(lw)) && !(p.querySelector && p.querySelector("video"))) {
                 p.style.setProperty("display", "none", "important");
                 p.style.setProperty("visibility", "hidden", "important");
                 p.style.setProperty("height", "0", "important");

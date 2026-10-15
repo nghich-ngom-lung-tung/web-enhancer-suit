@@ -64,7 +64,7 @@ function generateUserscript(site, isMasterAllInOne = false, allSites = [], custo
   const scriptDesc = isMasterAllInOne
     ? "Bản Master Gộp Tất Cả Trong Một: Mở khóa VIP 2099 + Vô hạn Coin + Chặn 100% AdBlock/Stream Guard/Ads tàng hình + Tóm link M3U8 PotPlayer/VLC + Phím tắt Tua 5s/Skip Intro 85s/Đọc truyện A-D cuộn trang W-S & Bộ lọc Anime OLED HDR trên 45+ website phim, anime, bóng đá trực tiếp và truyện tranh Việt Nam!"
     : site.desc;
-  const scriptVersion = isMasterAllInOne ? "5.4.7" : (site.version || "5.4.7");
+  const scriptVersion = isMasterAllInOne ? "5.4.8" : (site.version || "5.4.8");
   const enableRophimVip = isMasterAllInOne || Boolean(site.isRophim);
   const siteTitle = isMasterAllInOne ? "Web Enhancer (All-In-One)" : site.name;
 
@@ -129,9 +129,22 @@ ${adNukerCode}
   // ═══════════════════════════════════════════════════════════════
   const css = ${JSON.stringify(fullCss)};
 
-  const styleEl = document.createElement("style");
-  styleEl.textContent = css;
-  (document.head || document.documentElement).appendChild(styleEl);
+  function injectCinemaProStyles() {
+    let s = document.getElementById("cinema-pro-suite-styles");
+    if (!s) {
+      s = document.createElement("style");
+      s.id = "cinema-pro-suite-styles";
+      s.textContent = css;
+      (document.head || document.documentElement).appendChild(s);
+    }
+  }
+  injectCinemaProStyles();
+  if (typeof document !== "undefined") {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", injectCinemaProStyles);
+    }
+    window.addEventListener("load", injectCinemaProStyles);
+  }
 
 ${hubUiCode}
 
