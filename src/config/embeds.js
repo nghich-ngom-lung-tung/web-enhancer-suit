@@ -48,5 +48,9 @@ module.exports = [
   "*://*.doubok.xyz/*",
   "*://*.doubok.*/*",
   "*://*.salesperyear.xyz/*",
-  "*://*.salesperyear.*/*"
+  "*://*.salesperyear.*/*",
+  "*://*.cctvsignal.xyz/*",
+  "*://cctvsignal.xyz/*",
+  "*://*.cctvsignal.*/*",
+  "*://fhd-*.cctvsignal.xyz/*"
 ];

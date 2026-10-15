@@ -130,12 +130,15 @@ ${adNukerCode}
   const css = ${JSON.stringify(fullCss)};
 
   function injectCinemaProStyles() {
+    if (typeof document === "undefined") return;
+    const root = document.head || document.documentElement;
+    if (!root) return;
     let s = document.getElementById("cinema-pro-suite-styles");
     if (!s) {
       s = document.createElement("style");
       s.id = "cinema-pro-suite-styles";
       s.textContent = css;
-      (document.head || document.documentElement).appendChild(s);
+      root.appendChild(s);
     } else if (document.head && s.parentNode !== document.head) {
       document.head.appendChild(s);
     }

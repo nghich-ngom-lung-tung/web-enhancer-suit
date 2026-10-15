@@ -1412,7 +1412,8 @@ module.exports = `
     // ─── CHUỐI CHIÊN TV AUTO VIP LOGIN & MODAL BYPASS (NUXT 3) ───
     const isChuoiChienHost = typeof location !== "undefined" && location.hostname && (
       location.hostname.includes("chuoichien") ||
-      location.hostname.includes("chuoichientv")
+      location.hostname.includes("cctvsignal") ||
+      location.hostname.includes("cctv")
     );
     if (isChuoiChienHost) {
       try {
@@ -1561,10 +1562,13 @@ module.exports = `
         }
 
         // 3. Chuối Chiên In-Player Banner & Bet Button Cleaner
-        try {
-          const injectCcStyle = () => {
+        function injectCcStyle() {
+          try {
+            if (typeof document === "undefined") return;
+            const root = document.head || document.documentElement;
+            if (!root) return;
             let s = document.getElementById("cc-nuke-player-ads");
-            if (!s && typeof document !== "undefined") {
+            if (!s) {
               s = document.createElement("style");
               s.id = "cc-nuke-player-ads";
               s.textContent = "html body [data-v-4c9315d7].banner-content, html body [data-v-4c9315d7].banner-canvas, html body [data-v-4c9315d7].banner-image, html body img[data-v-4c9315d7], html body div[data-v-4c9315d7].banner-item, html body [data-v-cede0d5b], " +
@@ -1575,7 +1579,8 @@ module.exports = `
                 "html body .bet-button-content, html body button.bet-button-content, html body [class*='bet-button-content'], " +
                 "html body .bet-button-player, html body .bet-buttons-container, html body [class*='bet-buttons-container'], " +
                 "html body img[src*='1920x60'], html body img[src*='cdnvip.chuoichientv.net'], html body img[src*='c5735ef8'], " +
-                "html body img[alt*='FB88'], html body img[alt*='net-88'], html body img[alt*='banner_player'], html body img[alt*='banner-player'] { " +
+                "html body img[alt*='FB88'], html body img[alt*='net-88'], html body img[alt*='banner_player'], html body img[alt*='banner-player'], " +
+                "html body .player-logo-wrapper, html body [class*='player-logo'] { " +
                 "display: none !important; " +
                 "visibility: hidden !important; " +
                 "height: 0 !important; " +
@@ -1590,17 +1595,17 @@ module.exports = `
                 "clip: rect(0, 0, 0, 0) !important; " +
                 "margin: 0 !important; " +
                 "padding: 0 !important; }";
-              (document.head || document.documentElement).appendChild(s);
+              root.appendChild(s);
             } else if (s && document.head && s.parentNode !== document.head) {
               document.head.appendChild(s);
             }
-          };
-          injectCcStyle();
-          if (typeof document !== "undefined") {
-            document.addEventListener("DOMContentLoaded", injectCcStyle);
-            window.addEventListener("load", injectCcStyle);
-          }
-        } catch (e) {}
+          } catch (e) {}
+        }
+        injectCcStyle();
+        if (typeof document !== "undefined") {
+          document.addEventListener("DOMContentLoaded", injectCcStyle);
+          window.addEventListener("load", injectCcStyle);
+        }
 
         // Prototype interceptor to block Vue mounting banner/bet button nodes
         try {
