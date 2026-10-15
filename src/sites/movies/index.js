@@ -26,5 +26,7 @@ module.exports = [
   require("./ssphim"),
   require("./duphim"),
   require("./coiphim"),
-  require("./ghienblog")
+  require("./ghienblog"),
+  require("./moviehdthai"),
+  require("./cobephim")
 ];

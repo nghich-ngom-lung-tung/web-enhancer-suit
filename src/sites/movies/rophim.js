@@ -29,7 +29,9 @@ module.exports = {
     "*://*.rophime.com/*",
     "*://rophime.com/*",
     "*://*.rophim10.store/*",
-    "*://rophim10.store/*"
+    "*://rophim10.store/*",
+    "*://*.rophim10.work/*",
+    "*://rophim10.work/*"
   ],
   "includes": [
     "*://*rophim*/*"

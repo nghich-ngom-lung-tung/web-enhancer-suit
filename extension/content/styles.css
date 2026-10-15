@@ -605,6 +605,46 @@ html, body {
   pointer-events: none !important;
 }
 
+:root {
+        --primary-color: #51f085 !important;
+        --primary-text: #51f085 !important;
+      }
+      .dev.dev-up { color: #51f085 !important; }
+      .tag-imdb { border: 1px solid #51f085 !important; }
+      .tag-imdb:before { color: #51f085 !important; }
+      .app-box-fix { display: none !important; }
+      .tcoin-disabled .tcoin-menu-highlight { display: block !important; }
+      .tcoin-menu-highlight { display: block !important; }
+      .tcoin-disabled .tcoin-highlight { display: block !important; }
+      .tcoin-highlight__text .heading-xs { font-weight: bold !important; }
+      .ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+
+:root {
+        --primary-color: #51f085 !important;
+        --primary-text: #51f085 !important;
+      }
+      .dev.dev-up { color: #51f085 !important; }
+      .tag-imdb { border: 1px solid #51f085 !important; }
+      .tag-imdb:before { color: #51f085 !important; }
+      .app-box-fix { display: none !important; }
+      .tcoin-disabled .tcoin-menu-highlight { display: block !important; }
+      .tcoin-menu-highlight { display: block !important; }
+      .tcoin-disabled .tcoin-highlight { display: block !important; }
+      .tcoin-highlight__text .heading-xs { font-weight: bold !important; }
+      .ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+
 #ad_top, #ad_bottom, .ad-banner, .banner_middle, div[id*="adv_"], .catfish-banner, div[class*="qc_"], .anti-adblock-alert, #overlay-banner, div[style*="z-index: 2147483647"] {
   display: none !important;
   visibility: hidden !important;

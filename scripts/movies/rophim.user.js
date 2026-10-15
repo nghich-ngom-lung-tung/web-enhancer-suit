@@ -28,6 +28,8 @@
 // @match        *://rophime.com/*
 // @match        *://*.rophim10.store/*
 // @match        *://rophim10.store/*
+// @match        *://*.rophim10.work/*
+// @match        *://rophim10.work/*
 // @match        *://*.streamvsmov.com/*
 // @match        *://streamvsmov.com/*
 // @match        *://*.streamvsmov.net/*
@@ -179,6 +181,9 @@
     "netanime.cc",
     "api.netanime.net",
     "api.netanime.cc",
+    "moviehdthai.com",
+    "cobephim.cfd",
+    "rophim10.work",
     "/api/profile",
     "/header-login",
     "header-login",
@@ -986,7 +991,13 @@
       }
     }
 
-    const isRophimHost = location.hostname && (location.hostname.includes("rophim") || location.hostname.includes("ro-phim") || location.hostname.includes("netanime"));
+    const isRophimHost = location.hostname && (
+      location.hostname.includes("rophim") ||
+      location.hostname.includes("ro-phim") ||
+      location.hostname.includes("netanime") ||
+      location.hostname.includes("moviehdthai") ||
+      location.hostname.includes("cobephim")
+    );
     if (isRophimHost) {
       if (typeof window !== "undefined" && window.localStorage) {
         try {
@@ -1026,7 +1037,11 @@
           } catch (e) {}
 
           // 2. Chuẩn bị thông tin tài khoản VIP
-          const credKey = (typeof location !== "undefined" && location.hostname && location.hostname.includes("netanime")) ? "NETANIME_CREDENTIALS" : "RO_CREDENTIALS";
+          const credKey = (typeof location !== "undefined" && location.hostname) ? (
+            location.hostname.includes("netanime") ? "NETANIME_CREDENTIALS" :
+            location.hostname.includes("moviehdthai") ? "MOVIEHDTHAI_CREDENTIALS" :
+            location.hostname.includes("cobephim") ? "COBEPHIM_CREDENTIALS" : "RO_CREDENTIALS"
+          ) : "RO_CREDENTIALS";
           let creds = null;
           try {
             const saved = window.localStorage.getItem(credKey);

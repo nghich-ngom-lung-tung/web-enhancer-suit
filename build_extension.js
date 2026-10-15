@@ -49,7 +49,7 @@ generateAllIcons(ICONS_DIR);
 // 3. Normalize match patterns strictly according to Chrome Extension MV3 Spec
 function getCompactManifestMatches(patterns) {
   const result = new Set();
-  const commonTlds = ["com", "net", "org", "cc", "me", "tv", "vip", "xyz", "site", "top", "live", "club", "vn", "to", "pro", "ws"];
+  const commonTlds = ["com", "net", "org", "cc", "me", "tv", "vip", "xyz", "site", "top", "live", "club", "vn", "to", "pro", "ws", "work", "cfd"];
 
   patterns.forEach(p => {
     let clean = (p || "").trim();
