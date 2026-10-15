@@ -1444,11 +1444,11 @@
           ".ads-layer, [class*='ads-layer'], .player-logo-wrapper, .player-logo-inner, " +
           ".bet-button-player, .bet-buttons-container, .bet-button-content, button.bet-button-content, [class*='bet-button'], " +
           ".banner-player, .banner-canvas, [class*='banner-canvas'], div.banner-canvas, .banner-container, .banner-content, div.banner-content, .banner-image, img.banner-image, [class*='banner-image'], " +
-          "img[src*='1920x60'], img[src*='cdnvip.chuoichientv.net'], img[alt*='banner-player'], img[alt*='banner_player'], " +
+          "img[src*='1920x60'], img[src*='cdnvip.chuoichientv.net'], img[src*='c5735ef8'], img[alt*='banner-player'], img[alt*='banner_player'], " +
           "img[alt*='FB88'], img[alt*='net-88'], [data-position='live-under-player'], [data-position*='bet-button'], " +
-          "[data-v-77ed3802], [data-v-cede0d5b], [data-v-4c9315d7]"
+          "[data-v-77ed3802], [data-v-cede0d5b], [data-v-4c9315d7].banner-content, [data-v-4c9315d7].banner-canvas, img[data-v-4c9315d7]"
         ).forEach(ad => {
-          if (ad.tagName === "VIDEO" || ad.classList.contains("hlsp") || ad.classList.contains("player-container") || (ad.querySelector && ad.querySelector("video"))) return;
+          if (ad.tagName === "VIDEO" || ad.classList?.contains("hlsp") || ad.classList?.contains("player-container") || (ad.querySelector && ad.querySelector("video"))) return;
           try {
             ad.style.setProperty("display", "none", "important");
             ad.style.setProperty("visibility", "hidden", "important");
@@ -1563,6 +1563,8 @@
       s.id = "cinema-pro-suite-styles";
       s.textContent = css;
       (document.head || document.documentElement).appendChild(s);
+    } else if (document.head && s.parentNode !== document.head) {
+      document.head.appendChild(s);
     }
   }
   injectCinemaProStyles();

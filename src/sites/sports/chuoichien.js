@@ -3,7 +3,7 @@ module.exports = {
   name: "Chuối Chiên TV VIP & Cinema Pro Suite",
   file: "chuoichien.user.js",
   desc: "Chặn 100% popup quảng cáo Chuối Chiên TV + Bắt link M3U8 bóng đá trực tiếp PotPlayer/VLC + Auto VIP Login 2099 + Theater Mode",
-  version: "5.4.8",
+  version: "5.4.9",
   category: "sports",
   isRophim: true,
   domains: [
@@ -12,7 +12,7 @@ module.exports = {
     "*://live08.chuoichientv.me/*", "*://live07.chuoichientv.me/*",
     "*://chuoichientv.link/*", "*://*.chuoichientv.link/*",
     "*://chuoichien.tv/*", "*://*.chuoichien.tv/*",
-    "*://chuoichien.net/*", "*://*.chuoichien.net/*",
+    "*://chuoichien.net/*", "*://*.chuoichientv.net/*",
     "*://chuoichientv.info/*", "*://*.chuoichientv.info/*",
     "*://chuoichientv.xyz/*", "*://*.chuoichientv.xyz/*"
   ],
@@ -20,5 +20,21 @@ module.exports = {
     "*://*chuoichientv*/*",
     "*://*chuoichien*/*"
   ],
-  siteCss: `.ads-layer, [class*="ads-layer"], div.ads-layer, .player-logo-wrapper, .player-logo-inner, .player-logo-ad, [class*="player-logo-"], [class*="player-logo"], .bet-button-player, .bet-buttons-container, .bet-button-content, button.bet-button-content, [class*="bet-button-player"], [class*="bet-buttons-container"], [class*="bet-button-content"], [data-v-77ed3802], [data-v-77cd3882], [data-v-cede0d5b], [data-v-4c9315d7], .banner-player, .banner-canvas, div.banner-canvas, [class*="banner-canvas"], .banner-container, .banner-content, .banner-image, img.banner-image, .banner-item, [class*="banner-player"], [class*="banner-container"], [class*="banner-content"], [class*="banner-image"], [class*="banner-item"], .banner-content.active, [class*="banner-content"][class*="active"], .bet-button, .bet-buttons, [class*="bet-button"], [class*="bet-buttons"], [class*="bet-btn"], [data-position*="bet-button"], [data-position="live-under-player"], [data-position*="catfish"], .ad-wrapper, .ad-container, [class*="ad-container"], img[alt*="FB88_banner_player"], img[alt*="net-88-banner-player"], img[alt*="net-88-logo"], img[alt*="banner_player"], img[src*="1920x60"], img[src*="cdnvip.chuoichientv.net"], img[src*="c5735ef8"], a[href*="net88.boats"], a[href*="logolive-30x30"], img[src*="FB88"], img[src*="fb88"], img[src*="net88"], img[src*="NET88"], img[src*="xBet"], .ads-container, .banner-ads, div[id*="ad_"], div[class*="ad_box"], .catfish, #catfish, div[style*="z-index: 9999999"]`
+  siteCss: `html body [data-v-4c9315d7].banner-content, html body [data-v-4c9315d7].banner-canvas, html body [data-v-4c9315d7].banner-image, html body img[data-v-4c9315d7], html body div[data-v-4c9315d7].banner-item, html body [data-v-cede0d5b], html body .bet-button-content, html body button.bet-button-content, html body [class*="bet-button-content"], html body .bet-button-player, html body .bet-buttons-container, html body [class*="bet-buttons-container"], html body .banner-canvas, html body div.banner-canvas, html body [class*="banner-canvas"], html body .banner-content, html body div.banner-content, html body [class*="banner-content"], html body .banner-container, html body div.banner-container, html body [class*="banner-container"], html body .banner-image, html body img.banner-image, html body [class*="banner-image"], html body .banner-item, html body [class*="banner-item"], html body .ads-layer, html body [class*="ads-layer"], html body div.ads-layer, html body .player-logo-wrapper, html body .player-logo-inner, html body .player-logo-ad, html body [class*="player-logo-"], html body [class*="player-logo"], html body [data-v-77ed3802], html body [data-v-77cd3882], html body .bet-button, html body .bet-buttons, html body [class*="bet-button"], html body [class*="bet-buttons"], html body [class*="bet-btn"], html body [data-position*="bet-button"], html body [data-position="live-under-player"], html body [data-position*="catfish"], html body .ad-wrapper, html body .ad-container, html body [class*="ad-container"], html body img[alt*="FB88_banner_player"], html body img[alt*="net-88-banner-player"], html body img[alt*="net-88-logo"], html body img[alt*="banner_player"], html body img[alt*="banner-player"], html body img[src*="1920x60"], html body img[src*="cdnvip.chuoichientv.net"], html body img[src*="c5735ef8"], html body a[href*="net88.boats"], html body a[href*="logolive-30x30"], html body img[src*="FB88"], html body img[src*="fb88"], html body img[src*="net88"], html body img[src*="NET88"], html body img[src*="xBet"], html body .ads-container, html body .banner-ads, html body div[id*="ad_"], html body div[class*="ad_box"], html body .catfish, html body #catfish, html body div[style*="z-index: 9999999"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  top: -99999px !important;
+  left: -99999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  max-width: 0 !important;
+  max-height: 0 !important;
+  clip: rect(0, 0, 0, 0) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}`
 };
+
