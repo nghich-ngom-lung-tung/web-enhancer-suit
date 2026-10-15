@@ -1294,6 +1294,8 @@ if (manifestObj) {
     report("extension matches: rophim10.work pattern present", matches.some(m => m.includes("rophim10.work")));
     report("extension matches: moviehdthai.com pattern present", matches.some(m => m.includes("moviehdthai.com")));
     report("extension matches: cobephim.cfd pattern present", matches.some(m => m.includes("cobephim.cfd")));
+    report("extension matches: clubc.org embed pattern present", matches.some(m => m.includes("clubc.org")));
+    report("extension matches: darkbytes.xyz embed pattern present", matches.some(m => m.includes("darkbytes.xyz")));
   }
 
   // Validate script syntax
@@ -1333,6 +1335,11 @@ if (manifestObj) {
   report("extension/popup/popup.css: Non-empty Glassmorphism stylesheet", cssContent.length > 500 && cssContent.includes(".popup-container"));
   report("extension/content/styles.css: Master stylesheet compiled", fs.existsSync(path.join(extDir, "content", "styles.css")) && fs.statSync(path.join(extDir, "content", "styles.css")).size > 20000);
 
+  // Validate Anti-Crash Shield & TVC Bypass
+  const adNukerCode = fs.readFileSync(path.join(extDir, "content", "ad-nuker.js"), "utf8");
+  report("extension/content/ad-nuker.js: Anti-crash iframe protection present", adNukerCode.includes("crash.html") && adNukerCode.includes("HTMLIFrameElement.prototype"));
+  report("extension/content/ad-nuker.js: rophim-tvc-shown pre-roll bypass present", adNukerCode.includes("rophim-tvc-shown"));
+
   // Validate Extension VIP Patcher for new sites
   const vipPatcherCode = fs.readFileSync(path.join(extDir, "content", "vip-patcher.js"), "utf8");
   const hasExtRophimKeywords = vipPatcherCode.includes("moviehdthai.com") && vipPatcherCode.includes("cobephim.cfd") && vipPatcherCode.includes("rophim10.work");
@@ -1343,6 +1350,13 @@ if (manifestObj) {
 
   const hasExtCredKeys = vipPatcherCode.includes("MOVIEHDTHAI_CREDENTIALS") && vipPatcherCode.includes("COBEPHIM_CREDENTIALS");
   report("extension/content/vip-patcher.js: Per-site credential storage isolated", hasExtCredKeys);
+
+  // Validate userscript embed mappings
+  const moviehdthaiScript = fs.readFileSync(path.join(__dirname, "scripts", "movies", "moviehdthai.user.js"), "utf8");
+  report("scripts/movies/moviehdthai.user.js: clubc.org embed domain mapped", moviehdthaiScript.includes("clubc.org"));
+
+  const cobephimScript = fs.readFileSync(path.join(__dirname, "scripts", "movies", "cobephim.user.js"), "utf8");
+  report("scripts/movies/cobephim.user.js: darkbytes.xyz embed domain mapped", cobephimScript.includes("darkbytes.xyz"));
 }
 
 // Final check after promise tick

@@ -9,6 +9,7 @@ module.exports = `
     localStorage.setItem("corner_start_popup_dismissed", "9999999999999");
     localStorage.setItem("is_banner_popup", "1");
     localStorage.setItem("giovang_tvc_pre_roll_daily", JSON.stringify({ date: "2099-12-31", count: 99999 }));
+    localStorage.setItem("rophim-tvc-shown", "1");
     localStorage.setItem("__widget_data:/api/widget", JSON.stringify({ version: 1, items: {} }));
     localStorage.setItem("__pc_geo", "VN");
 
@@ -34,8 +35,39 @@ module.exports = `
     Storage.prototype.getItem = function (key) {
       if (key === "popup_last_shown" || key === "corner_start_popup_dismissed") return "9999999999999";
       if (key === "giovang_tvc_pre_roll_daily") return JSON.stringify({ date: "2099-12-31", count: 99999 });
+      if (key === "rophim-tvc-shown") return "1";
       return origGetItem.apply(this, arguments);
     };
+  } catch (e) {}
+
+  // ─── ANTI-CRASH & DEVTOOLS-DETECTOR ATTACK SHIELD ───
+  try {
+    if (typeof HTMLIFrameElement !== "undefined") {
+      const origIframeSrc = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, "src");
+      if (origIframeSrc && origIframeSrc.set) {
+        const origSet = origIframeSrc.set;
+        Object.defineProperty(HTMLIFrameElement.prototype, "src", {
+          set: function (val) {
+            if (typeof val === "string" && (val.includes("crash.html") || val.includes("/embed/crash"))) {
+              console.warn("[Cinema Pro] Blocked malicious anti-tamper crash.html redirect on iframe:", val);
+              return;
+            }
+            return origSet.call(this, val);
+          },
+          get: origIframeSrc.get,
+          configurable: true
+        });
+      }
+
+      const origSetAttr = HTMLIFrameElement.prototype.setAttribute;
+      HTMLIFrameElement.prototype.setAttribute = function (name, val) {
+        if (typeof name === "string" && name.toLowerCase() === "src" && typeof val === "string" && (val.includes("crash.html") || val.includes("/embed/crash"))) {
+          console.warn("[Cinema Pro] Blocked malicious crash.html setAttribute on iframe:", val);
+          return;
+        }
+        return origSetAttr.apply(this, arguments);
+      };
+    }
   } catch (e) {}
 
   // ─── GHIENPHIM & COIPHIM TVC VIDEO ADS DEFUSER ───

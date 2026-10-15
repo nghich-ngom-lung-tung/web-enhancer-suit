@@ -77,6 +77,8 @@
     host.includes("vidembed") ||
     host.includes("doubok") ||
     host.includes("salesperyear") ||
+    host.includes("clubc") ||
+    host.includes("darkbytes") ||
     path.includes("embed") ||
     path.includes("/v/") ||
     path.includes("/video/");
