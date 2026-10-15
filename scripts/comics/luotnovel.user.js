@@ -618,13 +618,12 @@
   });
 
   try {
+    localStorage.removeItem("RO_CAPTURED_STREAM");
     window.addEventListener("storage", function (e) {
       if (e.key === "RO_CAPTURED_STREAM" && e.newValue) {
         checkAndCaptureUrl(e.newValue);
       }
     });
-    const stored = localStorage.getItem("RO_CAPTURED_STREAM");
-    if (stored) checkAndCaptureUrl(stored);
   } catch (e) {}
 
   try {
@@ -910,10 +909,6 @@
 
   function ensureStreamUrl() {
     if (capturedStreamUrl) return capturedStreamUrl;
-    try {
-      const stored = localStorage.getItem("RO_CAPTURED_STREAM");
-      if (stored && checkAndCaptureUrl(stored)) return capturedStreamUrl;
-    } catch (e) {}
 
     // GhienPhim, CoiPhim & DuPhim In-Memory Playlist & Player Sniffing
     try {

@@ -43,6 +43,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         streamTextEl.textContent = activeStreamUrl;
         streamTextEl.classList.remove("placeholder");
         streamActionsEl.style.display = "flex";
+      } else {
+        activeStreamUrl = "";
+        streamTextEl.textContent = "Chưa phát hiện luồng video. Hãy bấm phát video trên trang!";
+        streamTextEl.classList.add("placeholder");
+        streamActionsEl.style.display = "none";
       }
     });
   }

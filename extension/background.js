@@ -23,6 +23,16 @@ chrome.tabs.onRemoved.addListener((tabId) => {
   tabStreams.delete(tabId);
 });
 
+// Reset stream when a tab navigates or reloads
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.status === "loading") {
+    tabStreams.delete(tabId);
+    try {
+      chrome.action.setBadgeText({ tabId, text: "" });
+    } catch (e) {}
+  }
+});
+
 // Message handler between content scripts, popup, and background
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   const tabId = sender.tab ? sender.tab.id : null;
