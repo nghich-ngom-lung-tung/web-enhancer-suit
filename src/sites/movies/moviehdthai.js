@@ -10,6 +10,7 @@ module.exports = {
     "*://www.moviehdthai.com/*",
     "*://*.moviehdthai.com/*",
     "*://*.clubc.org/*",
+    "*://clubc.org/*",
     "*://api.clubc.org/*"
   ],
   "includes": [

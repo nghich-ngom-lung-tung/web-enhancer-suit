@@ -1217,10 +1217,10 @@
     window.playAdVideo = function () {
       try {
         const layer = document.querySelector(".video-ad-layer");
-        if (layer) layer.remove();
+        if (layer) safeHideOrRemove(layer);
         const vids = document.querySelectorAll("#video-premium, #video-second, #video-third, video[src*='tvc']");
         vids.forEach(v => {
-          try { v.pause(); v.src = ""; v.remove(); } catch (e) {}
+          try { v.pause(); v.src = ""; safeHideOrRemove(v); } catch (e) {}
         });
       } catch (e) {}
     };
@@ -1361,14 +1361,10 @@
       element.style.setProperty("width", "0", "important");
       element.style.setProperty("opacity", "0", "important");
       element.style.setProperty("pointer-events", "none", "important");
-    } catch (e) {}
-
-    try {
-      const isReactOrNuxt = element.closest && element.closest("#__next, #__nuxt, #app, [data-reactroot], [data-nextjs-scroll-focus-boundary]");
-      if (!isReactOrNuxt && typeof element.remove === "function") {
-        element.remove();
-        return true;
-      }
+      element.style.setProperty("position", "absolute", "important");
+      element.style.setProperty("clip", "rect(0,0,0,0)", "important");
+      element.style.setProperty("margin", "0", "important");
+      element.style.setProperty("padding", "0", "important");
     } catch (e) {}
     return true;
   }
@@ -1512,7 +1508,7 @@
           if (tvcVideo.id === "video-premium" || tvcVideo.id === "video-second" || tvcVideo.id === "video-third") {
             tvcVideo.pause();
             tvcVideo.src = "";
-            tvcVideo.remove();
+            safeHideOrRemove(tvcVideo);
           }
         } catch (e) {}
       });
@@ -1525,8 +1521,7 @@
       const tvcLayers = document.querySelectorAll(".video-ad-layer, [class*='video-ad-layer'], .ad-msg, [class*='ad-msg'], .random-content");
       tvcLayers.forEach(layer => {
         try {
-          layer.style.setProperty("display", "none", "important");
-          layer.remove();
+          safeHideOrRemove(layer);
         } catch (e) {}
       });
 

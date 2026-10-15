@@ -50,6 +50,24 @@ generateAllIcons(ICONS_DIR);
 function getCompactManifestMatches(patterns) {
   const result = new Set();
   const commonTlds = ["com", "net", "org", "cc", "me", "tv", "vip", "xyz", "site", "top", "live", "club", "vn", "to", "pro", "ws", "work", "cfd"];
+  const chromeValidRegex = /^(\*|https?):\/\/(\*|\*\.[a-z0-9\-]+(\.[a-z0-9\-]+)+|[a-z0-9\-]+(\.[a-z0-9\-]+)+)\/.*$/i;
+
+  const addPattern = (p) => {
+    if (!p) return;
+    const clean = p.trim();
+    if (!chromeValidRegex.test(clean)) return;
+    result.add(clean);
+
+    // Chrome MV3 requires BOTH root domain AND subdomain wildcard to match both:
+    // e.g. *://cobephim.cfd/* AND *://*.cobephim.cfd/*
+    if (clean.includes("://*.")) {
+      const rootP = clean.replace("://*.", "://");
+      if (chromeValidRegex.test(rootP)) result.add(rootP);
+    } else if (clean.includes("://") && !clean.includes("://*")) {
+      const subP = clean.replace("://", "://*.");
+      if (chromeValidRegex.test(subP)) result.add(subP);
+    }
+  };
 
   patterns.forEach(p => {
     let clean = (p || "").trim();
@@ -57,14 +75,11 @@ function getCompactManifestMatches(patterns) {
 
     // Normalize prefix e.g. live*.foo.com -> *.foo.com
     clean = clean.replace(/:\/\/[a-z0-9_-]+\*\./gi, "://*.");
-    if (!clean.includes("://*.") && clean.includes("://")) {
-      clean = clean.replace(/:\/\/([a-z0-9])/i, "://*.$1");
-    }
 
     // Expand wildcard TLD e.g. *.domain.*/*
     if (clean.includes(".*/*")) {
       commonTlds.forEach(tld => {
-        result.add(clean.replace(".*/*", "." + tld + "/*"));
+        addPattern(clean.replace(".*/*", "." + tld + "/*"));
       });
       return;
     }
@@ -76,16 +91,13 @@ function getCompactManifestMatches(patterns) {
         const [_, base, suffix, tld] = match;
         const variants = ["", "new", "tv", "viet", "full", "hot", "max", "one", "plus", "pro", "online", "zone", "top", "vip"];
         variants.forEach(v => {
-          result.add("*://*." + base + v + suffix + "." + tld + "/*");
+          addPattern("*://*." + base + v + suffix + "." + tld + "/*");
         });
         return;
       }
     }
 
-    const chromeValidRegex = /^(\*|https?):\/\/(\*|\*\.[a-z0-9\-]+(\.[a-z0-9\-]+)+|[a-z0-9\-]+(\.[a-z0-9\-]+)+)\/.*$/i;
-    if (chromeValidRegex.test(clean)) {
-      result.add(clean);
-    }
+    addPattern(clean);
   });
 
   return Array.from(result).sort();

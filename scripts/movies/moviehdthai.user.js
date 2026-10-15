@@ -127,14 +127,29 @@
   const ROPHIM_MIRROR_DOMAINS = [
     "moviehdthai.com",
     "cobephim.cfd",
-    "rophim10.work"
+    "rophim10.work",
+    "darkbytes.xyz",
+    "clubc.org"
   ];
   const ROPHIM_KEYWORDS = [
+    "darkbytes.xyz",
+    "darkbytes",
+    "clubc.org",
+    "clubc",
     "/baseapi/api/v1/tcoin",
     "tcoin",
     "/baseapi/api/v1/user/",
     "/baseapi/api/v1/vip/",
+    "/api/v1/user/",
+    "/api/v1/vip/",
     "/baseapi/api/v1/bookmarks",
+    "/users/bookmarks",
+    "/bookmarks",
+    "/api/v1/bookmarks",
+    "/users/reminds",
+    "/reminds",
+    "/users/reviews",
+    "/reviews",
     "/baseapi/api/v1/histories",
     "/baseapi/api/v1/notifications",
     "/baseapi/api/v1/notifications/home",
@@ -556,17 +571,47 @@
       });
     }
 
-    // 11. Bookmarks (chặn 401 gây fallback guest mode trên Next.js)
-    if (url.includes("/bookmarks")) {
+    // 11. Bookmarks (chặn 401 gây fallback guest mode & TypeError includes trên Next.js Redux)
+    if (url.includes("/bookmarks") || url.includes("bookmarks")) {
+      const bookmarkData = {
+        movieIds: [],
+        actorIds: [],
+        data: [],
+        items: [],
+        total: 0,
+        page: 1,
+        limit: 100
+      };
       return JSON.stringify({
         status: 200,
         success: true,
-        data: {
-          data: [],
-          total: 0,
-          page: 1,
-          limit: 100
-        }
+        code: 200,
+        ...bookmarkData,
+        data: bookmarkData,
+        result: bookmarkData
+      });
+    }
+
+    // 11.1 Reminds & Reviews
+    if (url.includes("/reminds") || url.includes("reminds")) {
+      return JSON.stringify({
+        status: 200,
+        success: true,
+        code: 200,
+        reminds: [],
+        data: [],
+        result: []
+      });
+    }
+
+    if (url.includes("/reviews") || url.includes("reviews")) {
+      return JSON.stringify({
+        status: 200,
+        success: true,
+        code: 200,
+        reviews: [],
+        data: [],
+        result: []
       });
     }
 
@@ -654,16 +699,43 @@
       }
       return data;
     }
-    if (url && url.includes("/bookmarks")) {
+    if (url && (url.includes("/bookmarks") || url.includes("bookmarks"))) {
+      const bookmarkData = {
+        movieIds: (data && Array.isArray(data.movieIds)) ? data.movieIds : ((data && data.data && Array.isArray(data.data.movieIds)) ? data.data.movieIds : []),
+        actorIds: (data && Array.isArray(data.actorIds)) ? data.actorIds : ((data && data.data && Array.isArray(data.data.actorIds)) ? data.data.actorIds : []),
+        data: (data && data.data) ? data.data : [],
+        items: (data && data.items) ? data.items : [],
+        total: (data && typeof data.total === "number") ? data.total : 0,
+        page: 1,
+        limit: 100
+      };
       return {
         status: 200,
         success: true,
-        data: {
-          data: [],
-          total: 0,
-          page: 1,
-          limit: 100
-        }
+        code: 200,
+        ...bookmarkData,
+        data: bookmarkData,
+        result: bookmarkData
+      };
+    }
+    if (url && (url.includes("/reminds") || url.includes("reminds"))) {
+      return {
+        status: 200,
+        success: true,
+        code: 200,
+        reminds: [],
+        data: [],
+        result: []
+      };
+    }
+    if (url && (url.includes("/reviews") || url.includes("reviews"))) {
+      return {
+        status: 200,
+        success: true,
+        code: 200,
+        reviews: [],
+        data: [],
+        result: []
       };
     }
     if (url && url.includes("/notifications")) {
@@ -3171,10 +3243,10 @@
     window.playAdVideo = function () {
       try {
         const layer = document.querySelector(".video-ad-layer");
-        if (layer) layer.remove();
+        if (layer) safeHideOrRemove(layer);
         const vids = document.querySelectorAll("#video-premium, #video-second, #video-third, video[src*='tvc']");
         vids.forEach(v => {
-          try { v.pause(); v.src = ""; v.remove(); } catch (e) {}
+          try { v.pause(); v.src = ""; safeHideOrRemove(v); } catch (e) {}
         });
       } catch (e) {}
     };
@@ -3315,14 +3387,10 @@
       element.style.setProperty("width", "0", "important");
       element.style.setProperty("opacity", "0", "important");
       element.style.setProperty("pointer-events", "none", "important");
-    } catch (e) {}
-
-    try {
-      const isReactOrNuxt = element.closest && element.closest("#__next, #__nuxt, #app, [data-reactroot], [data-nextjs-scroll-focus-boundary]");
-      if (!isReactOrNuxt && typeof element.remove === "function") {
-        element.remove();
-        return true;
-      }
+      element.style.setProperty("position", "absolute", "important");
+      element.style.setProperty("clip", "rect(0,0,0,0)", "important");
+      element.style.setProperty("margin", "0", "important");
+      element.style.setProperty("padding", "0", "important");
     } catch (e) {}
     return true;
   }
@@ -3466,7 +3534,7 @@
           if (tvcVideo.id === "video-premium" || tvcVideo.id === "video-second" || tvcVideo.id === "video-third") {
             tvcVideo.pause();
             tvcVideo.src = "";
-            tvcVideo.remove();
+            safeHideOrRemove(tvcVideo);
           }
         } catch (e) {}
       });
@@ -3479,8 +3547,7 @@
       const tvcLayers = document.querySelectorAll(".video-ad-layer, [class*='video-ad-layer'], .ad-msg, [class*='ad-msg'], .random-content");
       tvcLayers.forEach(layer => {
         try {
-          layer.style.setProperty("display", "none", "important");
-          layer.remove();
+          safeHideOrRemove(layer);
         } catch (e) {}
       });
 
