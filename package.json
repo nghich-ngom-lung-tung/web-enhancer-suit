@@ -1,0 +1,25 @@
+{
+  "name": "web-enhancer-suite",
+  "version": "5.4.9",
+  "description": "Universal Cinema Pro & Web Enhancer Suite for Movies, Anime, Live Sports & Comics (Userscripts & Manifest V3 Extension)",
+  "main": "scripts/core.js",
+  "scripts": {
+    "build": "node build_all.js",
+    "build:scripts": "node build_all_scripts.js",
+    "build:extension": "node build_extension.js",
+    "test": "node run_audit.js",
+    "audit": "node run_audit.js"
+  },
+  "keywords": [
+    "userscript",
+    "extension",
+    "manifest-v3",
+    "cinema-pro",
+    "rophim",
+    "anime",
+    "comics",
+    "adblock"
+  ],
+  "author": "nghich-ngom-lung-tung",
+  "license": "MIT"
+}

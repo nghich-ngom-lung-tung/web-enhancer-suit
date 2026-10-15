@@ -1220,6 +1220,111 @@ report("isNoRefererCdn: Returns true for fbcdn.net", fbNoRef === true);
 const standardCdnRef = vm.runInContext(`window.isNoRefererCdn("https://costa.salesperyear.xyz/stream.m3u8")`, vmContext);
 report("isNoRefererCdn: Returns false for standard movie streaming servers", standardCdnRef === false);
 
+// ═════════════════════════════════════════════════════════════════
+// 6. BROWSER EXTENSION (MANIFEST V3) VERIFICATION
+// ═════════════════════════════════════════════════════════════════
+console.log("\n🧩 PHASE 6: Standalone Browser Extension (Manifest V3) Audit");
+
+const extDir = path.join(__dirname, "extension");
+const manifestPath = path.join(extDir, "manifest.json");
+
+let manifestObj = null;
+let manifestValidJson = false;
+try {
+  manifestObj = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  manifestValidJson = true;
+} catch (e) {}
+
+report("extension/manifest.json: File exists and valid JSON", manifestValidJson);
+
+if (manifestObj) {
+  report("extension/manifest.json: manifest_version is 3", manifestObj.manifest_version === 3);
+  report("extension/manifest.json: Name & version defined", manifestObj.name && manifestObj.version === "5.4.9");
+  report("extension/manifest.json: Background service worker configured", manifestObj.background && manifestObj.background.service_worker === "background.js");
+  report("extension/manifest.json: DeclarativeNetRequest permissions granted", manifestObj.permissions && manifestObj.permissions.includes("declarativeNetRequest") && manifestObj.permissions.includes("storage"));
+  report("extension/manifest.json: Host permissions cover <all_urls>", manifestObj.host_permissions && manifestObj.host_permissions.includes("<all_urls>"));
+  report("extension/manifest.json: Action popup defined", manifestObj.action && manifestObj.action.default_popup === "popup/popup.html");
+
+  // Validate PNG icons
+  const iconSizes = ["16", "48", "128"];
+  iconSizes.forEach(sz => {
+    const iconRel = manifestObj.icons && manifestObj.icons[sz];
+    const iconFile = path.join(extDir, iconRel || "");
+    const exists = fs.existsSync(iconFile);
+    let validPng = false;
+    if (exists) {
+      const buf = fs.readFileSync(iconFile);
+      validPng = buf.length > 50 && buf[0] === 0x89 && buf[1] === 0x50 && buf[2] === 0x4E && buf[3] === 0x47;
+    }
+    report(`extension/icons/icon${sz}.png: Valid PNG binary header & non-empty`, validPng);
+  });
+
+  // Validate declarativeNetRequest rules
+  const rulesPath = path.join(extDir, "rules.json");
+  let rulesObj = null;
+  try {
+    rulesObj = JSON.parse(fs.readFileSync(rulesPath, "utf8"));
+  } catch (e) {}
+  report("extension/rules.json: Valid ruleset array", Array.isArray(rulesObj) && rulesObj.length >= 10);
+  if (Array.isArray(rulesObj)) {
+    const hasRefererRule = rulesObj.some(r => r.action && r.action.type === "modifyHeaders" && r.action.requestHeaders && r.action.requestHeaders.some(h => h.header === "Referer"));
+    report("extension/rules.json: EdgeMaxCDN Referer bypass rule present", hasRefererRule);
+    const hasBetBlock = rulesObj.some(r => r.action && r.action.type === "block" && r.condition && (r.condition.urlFilter.includes("fb88") || r.condition.urlFilter.includes("net88")));
+    report("extension/rules.json: Network-level betting ad block rules present", hasBetBlock);
+  }
+
+  // Validate Content Scripts
+  const cs = manifestObj.content_scripts;
+  report("extension/manifest.json: Content scripts defined", Array.isArray(cs) && cs.length >= 2);
+
+  if (Array.isArray(cs)) {
+    const mainWorldScript = cs.find(c => c.world === "MAIN");
+    report("extension/manifest.json: MAIN world content script configured for page hooking", Boolean(mainWorldScript && mainWorldScript.js.includes("content/content.js")));
+    report("extension/manifest.json: MAIN world script runs at document_start", Boolean(mainWorldScript && mainWorldScript.run_at === "document_start"));
+    report("extension/manifest.json: MAIN world script applies to all_frames", Boolean(mainWorldScript && mainWorldScript.all_frames === true));
+
+    const bridgeScript = cs.find(c => c.js && c.js.includes("content/bridge.js"));
+    report("extension/manifest.json: Isolated bridge script configured for runtime messaging", Boolean(bridgeScript));
+
+    // Validate Chrome match pattern compliance on 100% of patterns
+    const chromePatternRegex = /^(\*|https?):\/\/(\*|\*\.[a-z0-9\-]+(\.[a-z0-9\-]+)+|[a-z0-9\-]+(\.[a-z0-9\-]+)+)\/.*$/i;
+    const matches = (mainWorldScript && mainWorldScript.matches) || [];
+    const invalidMatches = matches.filter(m => !chromePatternRegex.test(m));
+    report(`extension matches: 100% compliance with Chrome MV3 pattern specification (${matches.length} patterns)`, invalidMatches.length === 0, invalidMatches.slice(0, 3).join(", "));
+  }
+
+  // Validate script syntax
+  const filesToSyntaxCheck = [
+    { file: path.join(extDir, "background.js"), name: "extension/background.js" },
+    { file: path.join(extDir, "content", "bridge.js"), name: "extension/content/bridge.js" },
+    { file: path.join(extDir, "content", "content.js"), name: "extension/content/content.js" },
+    { file: path.join(extDir, "popup", "popup.js"), name: "extension/popup/popup.js" }
+  ];
+
+  filesToSyntaxCheck.forEach(({ file, name }) => {
+    let passed = false;
+    let err = "";
+    try {
+      const code = fs.readFileSync(file, "utf8");
+      new vm.Script(code, { filename: name });
+      passed = true;
+    } catch (e) {
+      err = e.message;
+    }
+    report(`${name}: ES2022 Syntax Valid`, passed, err);
+  });
+
+  // Validate Popup UI files
+  const popupHtml = path.join(extDir, "popup", "popup.html");
+  const popupCss = path.join(extDir, "popup", "popup.css");
+  const htmlContent = fs.existsSync(popupHtml) ? fs.readFileSync(popupHtml, "utf8") : "";
+  const cssContent = fs.existsSync(popupCss) ? fs.readFileSync(popupCss, "utf8") : "";
+
+  report("extension/popup/popup.html: Contains UI controls & stream detection container", htmlContent.includes("current-host") && htmlContent.includes("stream-text") && htmlContent.includes("btn-toggle-hdr"));
+  report("extension/popup/popup.css: Non-empty Glassmorphism stylesheet", cssContent.length > 500 && cssContent.includes(".popup-container"));
+  report("extension/content/styles.css: Master stylesheet compiled", fs.existsSync(path.join(extDir, "content", "styles.css")) && fs.statSync(path.join(extDir, "content", "styles.css")).size > 20000);
+}
+
 // Final check after promise tick
 setTimeout(() => {
   console.log("\n================================================================");

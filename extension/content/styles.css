@@ -1,0 +1,1246 @@
+/* ═══════════════════════════════════════════════════════════════
+   Cinema Pro Suite - Adblock & Anti-Banner CSS
+   Diệt sạch banner catfish, popup, cá cược, video ads
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Xóa sạch mọi container banner quảng cáo */
+.ad-container, .ads-holder, .banner-left, .banner-right,
+div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"],
+.ads-wrapper, #chancoc, .modal-adblock, .adv-holder, .pm-ads,
+.hh3d-ads, .dp-ads, .tvhay-ads, .ah-ads, #box-ads, .ah-banner,
+.bl-ads, .a47-ads, .ophim-ads, .biphim-ads, .dhtv-ads,
+.motphim-ads, .mephim-ads, .ghienphim-ads, .fullphim-ads, .phimhay-ads,
+.atvn-ads, .hhkf-ads, .hhpanda-ads, .vst-ads, .p247-ads, .phd-ads, .pbh-ads,
+.pv-ads, .btv-ads, .hdo-ads, .chay-ads, .xpp-ads, .ts-ads, .ss-ads,
+[class*="ad_placement"], [id*="google_ads"], div[style*="z-index: 9999999"],
+div[style*="zIndex: 9999999"], div[style*="backdrop-filter: blur(25px)"],
+
+/* Diệt sạch banner catfish, fixed bottom bar và cá cược */
+.catfish, #catfish, .catfish-banner, #catfish-banner, div[class*="catfish"], div[id*="catfish"],
+div[class*="bottom-ads"], div[class*="bottom_ads"], div[class*="bottom-banner"], div[class*="bottom_banner"],
+div[id*="bottom-ads"], div[id*="bottom_ads"], div[id*="bottom-banner"], div[id*="bottom_banner"],
+div[class*="footer-ads"], div[class*="footer_ads"], div[class*="footer-banner"], div[class*="footer_banner"],
+div[class*="floating-banner"], div[class*="floating_banner"], div[class*="float-ads"], div[class*="float_ads"],
+div[class*="sticky-ads"], div[class*="sticky-banner"], div[id*="sticky-ads"], div[id*="sticky-banner"],
+div[class*="qc_bottom"], div[id*="qc_bottom"], div[class*="qc-bottom"], div[id*="qc-bottom"],
+div[id*="box-bottom"], div[class*="box-bottom"], div[id*="ads_bottom"], div[class*="ads_bottom"],
+div[id*="floating_bottom"], div[class*="floating_bottom"], div[id*="float_bottom"],
+
+/* Diệt sạch banner & popup Truyện Tranh (ZetTruyen, TopTruyen, NetTruyen, TruyenQQ, TruyenVN) */
+.ads-tool-banner-container, [class*="ads-tool-banner-container"], .close-catfish,
+[data-zone], [data-zone="top"], [data-zone="top_content"], [data-zone="bottom"],
+.advertisement, #video-chapter, div[id*="video-chapter"], div[class*="advertisement"],
+#top-banner-reading-container, #top-banner-reading-container-sub, #mid-banner-reading-container,
+#ad_info_top, #ad_info_2, #ad_info, div[id*="ad_info"], div[id*="banner-reading"],
+.community-banner, .iframe-content-mobile, .iframe-content-desktop, .banner.text-center,
+.ads-static-header, .ads-static-home-detail-chapter, .ads-static-home-middle, div[class*="ads-static"],
+.popup_layer, .popup_content, #popup_content,
+#ads, .wrapper-ads, .mission-ads, .tr-ads-click, .popup-noti, .notification-popup, #couter-wrapper, [class*="mission-ads"],
+
+/* Diệt tận gốc Banner Rophim, Thể thao, Giovang, Chuoichien & Thapcam */
+.sspp-area, [class*="sspp-area"], [class*="sspp_area"], [class*="sspp-"],
+.display-single, [class*="display-single"], .is-demo, [class*="is-demo"],
+.is-image, div[class*="is-image"],
+#banner_popup, .banner_popup, .banner_inner, .banner_cursor,
+.grid_banner_devqc, .devqc-manager-resources, .w-banner_devqc-bd, .banner_devqc-bdn-button,
+.devqc-catfish, .gvbanner-catfish, [class*="devqc"], [id*="devqc"],
+#banners-bottom-container, .banners-bottom, .banners-bottom-grid, #open-banner-bottom,
+.popup-menu, #popupMenu, .floating-balloon-container, .popup-anim, .popup-item,
+a[data-brand-id], a.seo4s-resolve-link, a[class*="seo4s"],
+.bg-modaltrungthuong, .modal-trungthuong, .close-modal-trungthuong,
+.tvc-pre-roll, .video-wrapper.tvc-pre-roll, .tvc-pre-roll__video, .tvc-pre-roll__skip, .tvc-pre-roll__link-overlay, [class*="tvc-pre-roll"],
+.xlz-ads-item, .block-catfish, .xlz-btn-8xbet, [class*="xlz-ads"],
+.odds-comp-logo, a.odds-comp-logo, .grid-match__odds,
+.marquee-container, .marquee-box, [class*="marquee-container"],
+.odds-button, div[class*="odds-button"], [class*="odds-button"],
+.teambox__odds, [class*="teambox__odds"], .btn-odds, [class*="btn-odds"], .match-detail__offer, .offer__buttons, .offer__bet__col, [class*="match-detail__offer"],
+.fixture-banner, [class*="fixture-banner"], [class*="balloon-wrapper"], [class*="btn-balloon"], [class*="popup-item"],
+[class*="banner-pos-"], [class*="ad-strip-pos"], [class*="ad-popup-modal"], [class*="banner-pos"], [id*="banner-pos"],
+.top-ads, .ads-728-90, .adspot-wrap, .adspot-1, .adspot-2, [class*="adspot"], [id*="adspot"], ins[data-revive-id],
+.banner-match, .gv-skeleton-banner, [class*="gv-skeleton-banner"],
+.ads-layer, [class*="ads-layer"], div.ads-layer,
+.player-logo-wrapper, .player-logo-inner, .player-logo-ad, [class*="player-logo-"], [class*="player-logo"],
+.bet-button-player, .bet-buttons-container, .bet-button-content, [class*="bet-button-player"], [class*="bet-buttons-container"], [class*="bet-button-content"],
+[data-v-77ed3802], [data-v-77cd3882], [data-v-4c9315d7], [data-v-cede0d5b],
+.banner-player, .banner-canvas, div.banner-canvas, [class*="banner-canvas"], .banner-container, .banner-content, .banner-image, .banner-item,
+[class*="banner-player"], [class*="banner-container"], [class*="banner-content"], [class*="banner-image"], [class*="banner-item"],
+.banner-content.active, [class*="banner-content"][class*="active"],
+.bet-button, .bet-buttons, [class*="bet-button"], [class*="bet-buttons"], [class*="bet-btn"],
+.homepage-toplists-content, section.homepage-toplists-content, [class*="homepage-toplists"],
+.toplists-home, [class*="toplists-home"], .devvn-topfive-wrapper, [class*="devvn-topfive"],
+.topfive-card, [class*="topfive-card"],
+.box-odds-match, [class*="box-odds-match"], .title-odds, [class*="title-odds"],
+.gv-bet-dropdown, [class*="gv-bet-dropdown"], .gv-bet-dropdown-toggle, [class*="gv-bet-dropdown-toggle"],
+.gv-bet-dropdown-menu, [class*="gv-bet-dropdown-menu"],
+.gv-bet-brand-link--image, [class*="gv-bet-brand-link"], .gv-bet-brand-link__img,
+a[aria-label="Top Nhà Cái"], img[src*="nav-toplist.svg"], img[src*="nav-active-toplist.svg"],
+img[src*="kbv.svg"], img[src*="bet-net88"], img[src*="bet-gem88"],
+.sticky-message, .sticky-announcement, [class*="sticky-announcement"], [class*="sticky-message"],
+.sticky-header, .sticky-icon-inline, .sticky-title, .sticky-content-text,
+.detail-live-brand, [class*="detail-live-brand"], .detail-live-brand-title, .detail-live-brand-logo,
+[id*="notification-banner"], [class*="notification-banner"],
+.notification-banner-message-wrapper, .notification-banner-message-item, .gwd_notification,
+#betbutton-world-cup, a.btn-bet, a.bet-cta, .adspot-55, .adspot-56, .adspot-57,
+#corner-start-popup, .corner-start-popup, .corner-start-popup-backdrop, .corner-start-popup-content, .corner-start-popup-inner,
+.corner-popup-wrap, .corner-popup-box, [class*="corner-popup"], [id*="corner-popup"],
+.block-balloon-right, .block-balloon-left, .close-balloon-left, .close-balloon-right, [class*="balloon-"],
+.bookmaker-title, .tf-section, .tf-theme-style4, [class*="tf-s3-"], [class*="tf-section"],
+.fixed-ads, .fixed-ads-1, .block-fixed-ads-1, [class*="block-fixed-ads"], [class*="fixed-ads"],
+.live-ads-temp-1, .live-ads-temp-2, .live-ads-temp-3, .live-ads-temp-4, .live-ads-temp-5, [class*="live-ads-temp"],
+.left-ads, .right-ads,
+img[alt*="FB88_banner_player"], img[alt*="net-88-banner-player"], img[alt*="net-88-logo"], img[alt*="banner_player"],
+img[src*="1920x60"], img[src*="cdnvip.chuoichientv.net"], img[src*="c5735ef8"],
+a[href*="net88.boats"], a[href*="logolive-30x30"],
+img[src*="giovang-popup"], img[src*="hit.club"], img[src*="go88"], img[src*="sun.win"],
+img[src*="1280x1280px"], img[src*="balloon_1111"], img[src*="FB88"], img[src*="fb88"], img[src*="banner_player"],
+img[src*="net88"], img[src*="NET88"], img[src*="xBet"],
+img[src*="/images/company/"], img[src*="company"], img[src*="21-1.png"], img[alt="company"],
+a[href*="15.235.211.192"], a[href*="top-nha-cai"], a[href*="xoilacz"], a[href*="fb88.com"],
+a[href*="154.82."], a[href*="2138046"], a[href*="9922"],
+img[src*="/media/"][src*=".gif"],
+div.slide:has(.sspp-area), div.slide:has(.display-single),
+div.fluid-gap:has(.sspp-area), div.fluid-gap:has(.display-single),
+a[href*="vsbet"], a[href*="bet88"], a[href*="colatv"], a[href*="colascore"], a[href*="kubet"], a[href*="fun88"],
+a[href*="w88"], a[href*="fb88"], a[href*="bk8"], a[href*="casino"], a[href*="nhacai"], a[href*="nohu"],
+a[href*="taixiu"], a[href*="gamebai"], a[href*="keonhacai"], a[href*="bongda"], a[href*="link1s"],
+a[href*="tructiephotlink"], a[href*="branchseo"], a[href*="/mlink/"], a[href*="1-1-1-1"],
+div[style*="position: fixed"][style*="bottom: 0"]:not(#ro-vip-hub):not(#ro-hub-menu):not(.livestream_widget):not(.giovang-fixture-player-shell),
+div[style*="position: fixed"][style*="bottom:0"]:not(#ro-vip-hub):not(#ro-hub-menu):not(.livestream_widget):not(.giovang-fixture-player-shell),
+div[style*="position:fixed"][style*="bottom: 0"]:not(#ro-vip-hub):not(#ro-hub-menu):not(.livestream_widget):not(.giovang-fixture-player-shell),
+div[style*="position:fixed"][style*="bottom:0"]:not(#ro-vip-hub):not(#ro-hub-menu):not(.livestream_widget):not(.giovang-fixture-player-shell) {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
+/* Diệt tuyệt đối các Modal Popup & Floating Ads đè trang */
+#banner_popup, #banner_popup.show, div#banner_popup, div#banner_popup.show,
+.banner_popup, .banner_popup.show, div.banner_popup, div.banner_popup.show,
+#corner-start-popup, .corner-start-popup, .corner-start-popup-backdrop, .corner-start-popup-content,
+.corner-popup-wrap, .corner-popup-box,
+.ads-layer, [class*="ads-layer"], div.ads-layer,
+.player-logo-wrapper, .player-logo-inner, .player-logo-ad, [class*="player-logo-"], [class*="player-logo"],
+.bet-button-player, .bet-buttons-container, .bet-button-content, button.bet-button-content, [class*="bet-button-player"], [class*="bet-buttons-container"], [class*="bet-button-content"],
+[data-v-77ed3802], [data-v-77cd3882], [data-v-4c9315d7], [data-v-cede0d5b],
+.banner-player, .banner-canvas, div.banner-canvas, [class*="banner-canvas"], .banner-container, .banner-content, .banner-image, img.banner-image, .banner-item,
+[class*="banner-player"], [class*="banner-container"], [class*="banner-content"], [class*="banner-image"], [class*="banner-item"],
+.banner-content.active, [class*="banner-content"][class*="active"],
+.bet-button, .bet-buttons, [class*="bet-button"], [class*="bet-buttons"], [class*="bet-btn"],
+[data-position*="bet-button"], [data-position="live-under-player"], [data-position*="catfish"],
+.ad-wrapper, .ad-container[data-position],
+.homepage-toplists-content, section.homepage-toplists-content, [class*="homepage-toplists"],
+.toplists-home, [class*="toplists-home"], .devvn-topfive-wrapper, [class*="devvn-topfive"],
+.topfive-card, [class*="topfive-card"],
+.box-odds-match, [class*="box-odds-match"], .title-odds, [class*="title-odds"],
+.gv-bet-dropdown, [class*="gv-bet-dropdown"], .gv-bet-dropdown-toggle, [class*="gv-bet-dropdown-toggle"],
+.gv-bet-dropdown-menu, [class*="gv-bet-dropdown-menu"],
+.gv-bet-brand-link--image, [class*="gv-bet-brand-link"], .gv-bet-brand-link__img,
+.sticky-message, .sticky-announcement, [class*="sticky-announcement"], [class*="sticky-message"],
+.sticky-header, .sticky-icon-inline, .sticky-title, .sticky-content-text,
+.detail-live-brand, [class*="detail-live-brand"], .detail-live-brand-title, .detail-live-brand-logo,
+[id*="notification-banner"], [class*="notification-banner"],
+.modal-backdrop, .bg-modaltrungthuong, .modal-trungthuong,
+.floating-balloon-container, #popupMenu, .popup-menu, .popup-item, [class*="popup-item"],
+.fixture-banner, [class*="fixture-banner"], .balloon-wrapper, [class*="balloon-wrapper"], .btn-balloon, [class*="btn-balloon"],
+.grid_banner_devqc, .devqc-manager-resources, .w-banner_devqc-bd, .banner_devqc-bdn-button,
+.devqc-catfish, .gvbanner-catfish, [class*="devqc"], [id*="devqc"],
+.tvc-pre-roll, .video-wrapper.tvc-pre-roll, .tvc-pre-roll__video, .tvc-pre-roll__skip, .tvc-pre-roll__link-overlay,
+.marquee-container, .marquee-box, .odds-button,
+[class*="banner-pos-"], [class*="ad-strip-pos"], [class*="ad-popup-modal"],
+.match-detail__offer, .offer__buttons, .offer__bet__col, [class*="match-detail__offer"],
+.teambox__odds, [class*="teambox__odds"], .btn-odds, [class*="btn-odds"], .block-int, .block-k {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  z-index: -999999 !important;
+  width: 0 !important;
+  height: 0 !important;
+  max-width: 0 !important;
+  max-height: 0 !important;
+}
+
+/* Đảm bảo khung Player bóng đá Giờ Vàng, Chuối Chiên và các web thể thao luôn hiển thị nguyên vẹn */
+.livestream_widget, .giovang-fixture-player-shell, .giovang-fixture-player-mount, .livestream_widget__content,
+.hlsp, .player-container, video {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
+html, body {
+  overflow: auto !important;
+  position: static !important;
+}
+
+
+:root {
+        --primary-color: #51f085 !important;
+        --primary-text: #51f085 !important;
+      }
+      .dev.dev-up { color: #51f085 !important; }
+      .tag-imdb { border: 1px solid #51f085 !important; }
+      .tag-imdb:before { color: #51f085 !important; }
+      .app-box-fix { display: none !important; }
+      .tcoin-disabled .tcoin-menu-highlight { display: block !important; }
+      .tcoin-menu-highlight { display: block !important; }
+      .tcoin-disabled .tcoin-highlight { display: block !important; }
+      .tcoin-highlight__text .heading-xs { font-weight: bold !important; }
+
+:root {
+        --color-primary: #51f085 !important;
+        --primary-color: #51f085 !important;
+        --primary-text: #51f085 !important;
+      }
+      .ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+
+.ad-banner, .banner-ads, #box-ads, div[id*="ad_"], div[class*="ad_box"], .ads-placement, #catfish, .modal-adblock, div[style*="z-index: 9999999"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-banner, div[class*="banner-ads"], div[id*="ad_"], .adsbox, #chancoc, .modal-adblock, div[style*="z-index: 9999999"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .adv-holder, .pm-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .dp-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .bl-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .p1080-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .xp-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .biphim-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .motphim-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .mephim-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.video-ad-layer,
+    [class*="video-ad-layer"],
+    .ad-msg,
+    [class*="ad-msg"],
+    .random-content,
+    #video-premium,
+    #video-second,
+    #video-third,
+    .btn-video-ad,
+    .btn-skip-video,
+    [class*="btn-skip-video"],
+    .ad-floater,
+    .component.ads,
+    [class*="component ads"],
+    .ads,
+    .source-banner,
+    .promotion-popup,
+    .popuptet-bg,
+    .new-target-goal,
+    .new-floater-goal,
+    .adtop,
+    .adbot,
+    [class*="adtop"],
+    [class*="adbot"],
+    .ad-1170x150,
+    [class*="ad-1170x150"],
+    .no-ads,
+    .anti-bad-ad,
+    [class*="no-ads"],
+    [class*="anti-bad-ad"],
+    a[aria-label*="Advertisement"],
+    a[aria-label="Advertisement"],
+    img[src*="newbanner2025"],
+    img[src*="no-ads.png"],
+    a[href*="shortlink.linkroyal"],
+    a[href*="hdbet"],
+    a[href*="go8.best"],
+    a[href*="tin888"],
+    a[href*="bom88"],
+    a[href*="ok999"],
+    .ad-container,
+    .ads-holder,
+    .banner-left,
+    .banner-right,
+    div[id*="ad-"],
+    div[class*="banner-ads"],
+    div[id*="catfish"],
+    .ads-wrapper,
+    #chancoc,
+    .modal-adblock,
+    .ghienphim-ads,
+    .catfish,
+    #catfish,
+    [class*="catfish"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .fullphim-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .phimhay-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .p247-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .phd-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .pbh-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .pv-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .btv-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .hdo-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .chay-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .xpp-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .ts-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .ss-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.video-ad-layer,
+    [class*="video-ad-layer"],
+    .ad-msg,
+    [class*="ad-msg"],
+    .random-content,
+    #video-premium,
+    #video-second,
+    #video-third,
+    .btn-video-ad,
+    .btn-skip-video,
+    [class*="btn-skip-video"],
+    .ad-floater,
+    .component.ads,
+    [class*="component ads"],
+    .ads,
+    .source-banner,
+    .promotion-popup,
+    .popuptet-bg,
+    .new-target-goal,
+    .new-floater-goal,
+    .adtop,
+    .adbot,
+    [class*="adtop"],
+    [class*="adbot"],
+    .ad-1170x150,
+    [class*="ad-1170x150"],
+    .no-ads,
+    .anti-bad-ad,
+    [class*="no-ads"],
+    [class*="anti-bad-ad"],
+    a[aria-label*="Advertisement"],
+    a[aria-label="Advertisement"],
+    img[src*="newbanner2025"],
+    img[src*="no-ads.png"],
+    a[href*="shortlink.linkroyal"],
+    a[href*="hdbet"],
+    a[href*="go8.best"],
+    a[href*="tin888"],
+    a[href*="bom88"],
+    a[href*="ok999"],
+    .ad-container,
+    .ads-holder,
+    .banner-left,
+    .banner-right,
+    div[id*="ad-"],
+    div[class*="banner-ads"],
+    div[id*="catfish"],
+    .ads-wrapper,
+    #chancoc,
+    .modal-adblock,
+    .catfish,
+    #catfish,
+    [class*="catfish"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.video-ad-layer,
+    [class*="video-ad-layer"],
+    .ad-msg,
+    [class*="ad-msg"],
+    .random-content,
+    #video-premium,
+    #video-second,
+    #video-third,
+    .btn-video-ad,
+    .btn-skip-video,
+    [class*="btn-skip-video"],
+    .ad-floater,
+    .component.ads,
+    [class*="component ads"],
+    .ads,
+    .source-banner,
+    .promotion-popup,
+    .popuptet-bg,
+    .new-target-goal,
+    .new-floater-goal,
+    .adtop,
+    .adbot,
+    [class*="adtop"],
+    [class*="adbot"],
+    .ad-1170x150,
+    [class*="ad-1170x150"],
+    .no-ads,
+    .anti-bad-ad,
+    [class*="no-ads"],
+    [class*="anti-bad-ad"],
+    a[aria-label*="Advertisement"],
+    a[aria-label="Advertisement"],
+    img[src*="newbanner2025"],
+    img[src*="no-ads.png"],
+    a[href*="shortlink.linkroyal"],
+    a[href*="hdbet"],
+    a[href*="go8.best"],
+    a[href*="tin888"],
+    a[href*="bom88"],
+    a[href*="ok999"],
+    .ad-container,
+    .ads-holder,
+    .banner-left,
+    .banner-right,
+    div[id*="ad-"],
+    div[class*="banner-ads"],
+    div[id*="catfish"],
+    .ads-wrapper,
+    #chancoc,
+    .modal-adblock,
+    .catfish,
+    #catfish,
+    [class*="catfish"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-floater,
+    .component.ads,
+    [class*="component ads"],
+    .ads,
+    .adtop,
+    .adbot,
+    [class*="adtop"],
+    [class*="adbot"],
+    .ad-1170x150,
+    [class*="ad-1170x150"],
+    .no-ads,
+    .anti-bad-ad,
+    [class*="no-ads"],
+    [class*="anti-bad-ad"],
+    a[aria-label*="Advertisement"],
+    a[aria-label="Advertisement"],
+    img[src*="newbanner2025"],
+    img[src*="no-ads.png"],
+    a[href*="shortlink.linkroyal"],
+    a[href*="hdbet"],
+    a[href*="go8.best"],
+    a[href*="tin888"],
+    a[href*="bom88"],
+    a[href*="ok999"],
+    .ad-container,
+    .ads-holder,
+    div[id*="ad-"],
+    div[class*="banner-ads"],
+    div[id*="catfish"],
+    .ads-wrapper,
+    #chancoc,
+    .modal-adblock,
+    .catfish,
+    #catfish,
+    [class*="catfish"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+#ad_top, #ad_bottom, .ad-banner, .banner_middle, div[id*="adv_"], .catfish-banner, div[class*="qc_"], .anti-adblock-alert, #overlay-banner, div[style*="z-index: 2147483647"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .hh3d-ads, .ads-banner {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .ah-ads, #box-ads, .ah-banner {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .a47-ads, #box-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .dhtv-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .ah-ads, #box-ads, .ah-banner {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .atvn-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .hhkf-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .hhpanda-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+:root {
+        --primary-color: #51f085 !important;
+        --primary-text: #51f085 !important;
+      }
+      .dev.dev-up { color: #51f085 !important; }
+      .tag-imdb { border: 1px solid #51f085 !important; }
+      .tag-imdb:before { color: #51f085 !important; }
+      .app-box-fix { display: none !important; }
+      .tcoin-disabled .tcoin-menu-highlight { display: block !important; }
+      .tcoin-menu-highlight { display: block !important; }
+      .tcoin-disabled .tcoin-highlight { display: block !important; }
+      .tcoin-highlight__text .heading-xs { font-weight: bold !important; }
+      .ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+
+.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .tvhay-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .vst-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .ophim-ads {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+#banner_popup, .banner_popup, .banner_inner, .banner_cursor, .grid_banner_devqc, .devqc-manager-resources, .w-banner_devqc-bd, .banner_devqc-bdn-button, .devqc-catfish, .gvbanner-catfish, [class*="devqc"], [id*="devqc"], #banners-bottom-container, .banners-bottom, .banners-bottom-grid, #open-banner-bottom, .popup-menu, #popupMenu, .floating-balloon-container, .popup-anim, .popup-item, [class*="popup-item"], a[data-brand-id], a.seo4s-resolve-link, a[class*="seo4s"], .bg-modaltrungthuong, .modal-trungthuong, .close-modal-trungthuong, .gv-skeleton-banner, .gv-skeleton-banner-main, .banner-match, div[class*="gv-skeleton-banner"], div[class*="banner-match"], div[id*="banner-match"], .ads-banner, #catfish, div[style*="z-index: 9999999"], img[src*="giovang-popup"], img[src*="hit.club"], img[src*="go88"], img[src*="sun.win"], .tvc-pre-roll, .video-wrapper.tvc-pre-roll, .tvc-pre-roll__video, .tvc-pre-roll__skip, .tvc-pre-roll__link-overlay, [class*="tvc-pre-roll"], .fixture-banner, [class*="fixture-banner"], .balloon-wrapper, [class*="balloon-wrapper"], .btn-balloon, [class*="btn-balloon"], .homepage-toplists-content, section.homepage-toplists-content, [class*="homepage-toplists"], .toplists-home, [class*="toplists-home"], .devvn-topfive-wrapper, [class*="devvn-topfive"], .topfive-card, [class*="topfive-card"], .box-odds-match, [class*="box-odds-match"], .title-odds, [class*="title-odds"], .gv-bet-dropdown, [class*="gv-bet-dropdown"], .gv-bet-dropdown-toggle, [class*="gv-bet-dropdown-toggle"], .gv-bet-dropdown-menu, [class*="gv-bet-dropdown-menu"], .gv-bet-brand-link--image, [class*="gv-bet-brand-link"], .gv-bet-brand-link__img, a[aria-label="Top Nhà Cái"], img[src*="nav-toplist.svg"], img[src*="nav-active-toplist.svg"], img[src*="kbv.svg"], img[src*="bet-net88"], img[src*="bet-gem88"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+div[class*="catfish"], div[class*="banner_"], div[class*="ads_"], .ads-holder, #catfish, a[href*="telegram"], a[href*="t.me/khoga"], [class*="banner-pos-"], [class*="ad-strip-pos"], [class*="ad-popup-modal"], [class*="banner-pos"], [id*="banner-pos"], a[href*="fb88.com"], div[style*="z-index: 9999999"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+html body [data-v-4c9315d7].banner-content, html body [data-v-4c9315d7].banner-canvas, html body [data-v-4c9315d7].banner-image, html body img[data-v-4c9315d7], html body div[data-v-4c9315d7].banner-item, html body [data-v-cede0d5b], html body .bet-button-content, html body button.bet-button-content, html body [class*="bet-button-content"], html body .bet-button-player, html body .bet-buttons-container, html body [class*="bet-buttons-container"], html body .banner-canvas, html body div.banner-canvas, html body [class*="banner-canvas"], html body .banner-content, html body div.banner-content, html body [class*="banner-content"], html body .banner-container, html body div.banner-container, html body [class*="banner-container"], html body .banner-image, html body img.banner-image, html body [class*="banner-image"], html body .banner-item, html body [class*="banner-item"], html body .ads-layer, html body [class*="ads-layer"], html body div.ads-layer, html body .player-logo-wrapper, html body .player-logo-inner, html body .player-logo-ad, html body [class*="player-logo-"], html body [class*="player-logo"], html body [data-v-77ed3802], html body [data-v-77cd3882], html body .bet-button, html body .bet-buttons, html body [class*="bet-button"], html body [class*="bet-buttons"], html body [class*="bet-btn"], html body [data-position*="bet-button"], html body [data-position="live-under-player"], html body [data-position*="catfish"], html body .ad-wrapper, html body .ad-container, html body [class*="ad-container"], html body img[alt*="FB88_banner_player"], html body img[alt*="net-88-banner-player"], html body img[alt*="net-88-logo"], html body img[alt*="banner_player"], html body img[alt*="banner-player"], html body img[src*="1920x60"], html body img[src*="cdnvip.chuoichientv.net"], html body img[src*="c5735ef8"], html body a[href*="net88.boats"], html body a[href*="logolive-30x30"], html body img[src*="FB88"], html body img[src*="fb88"], html body img[src*="net88"], html body img[src*="NET88"], html body img[src*="xBet"], html body .ads-container, html body .banner-ads, html body div[id*="ad_"], html body div[class*="ad_box"], html body .catfish, html body #catfish, html body div[style*="z-index: 9999999"], html body .boxchat-sticky-ad, html body [class*="boxchat-sticky-ad"], html body .login-prompt {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  top: -99999px !important;
+  left: -99999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  max-width: 0 !important;
+  max-height: 0 !important;
+  clip: rect(0, 0, 0, 0) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#corner-start-popup, .corner-start-popup, .corner-start-popup-backdrop, .corner-start-popup-content, .corner-start-popup-inner, .corner-popup-wrap, .corner-popup-box, [class*="corner-popup"], [id*="corner-popup"], .block-balloon-right, .block-balloon-left, [class*="balloon-"], .bookmaker-title, .tf-section, .tf-theme-style4, [class*="tf-s3-"], [class*="tf-section"], .fixed-ads, .fixed-ads-1, .block-fixed-ads-1, [class*="block-fixed-ads"], [class*="fixed-ads"], .live-ads-temp-1, .live-ads-temp-2, .live-ads-temp-3, .live-ads-temp-4, .live-ads-temp-5, [class*="live-ads-temp"], .left-ads, .right-ads, .top-ads, .ads-728-90, .adspot-wrap, .adspot-1, .adspot-2, .adspot-55, .adspot-56, .adspot-57, div[class*="adspot"], div[id*="adspot"], ins[data-revive-id], img[src*="1280x1280px"], img[src*="balloon_1111"], a[href*="tructiephotlink"], a[href*="branchseo"], a[href*="/mlink/"], a[href*="1-1-1-1"], .catfish-banner, #catfish, div[style*="z-index: 9999999"], .sticky-message, .sticky-announcement, [class*="sticky-announcement"], [class*="sticky-message"], .sticky-header, .sticky-icon-inline, .sticky-title, .sticky-content-text, .detail-live-brand, [class*="detail-live-brand"], .detail-live-brand-title, .detail-live-brand-logo, [id*="notification-banner"], [class*="notification-banner"], .notification-banner-message-wrapper, .notification-banner-message-item, .gwd_notification, #betbutton-world-cup, a.btn-bet, a.bet-cta {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.xlz-ads-item, .block-catfish, .xlz-btn-8xbet, div[class*="xlz-ads"], a[href*="8xbet"], a[href*="bet"], div[id*="catfish"], #catfish, div[style*="z-index: 9999999"], .odds-comp-logo, a.odds-comp-logo, .grid-match__odds, .marquee-container, .marquee-box, [class*="marquee-container"], .odds-button, div[class*="odds-button"], [class*="odds-button"], img[src*="/images/company/"], img[src*="company"], img[src*="21-1.png"], img[alt="company"], a[href*="15.235.211.192"], a[href*="top-nha-cai"], a[href*="xoilacz"], .teambox__odds, [class*="teambox__odds"], .btn-odds, [class*="btn-odds"], .match-detail__offer, .offer__buttons, .offer__bet__col, [class*="match-detail__offer"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.ads-tool-banner-container,
+    .close-catfish,
+    [data-zone],
+    [data-zone="top"],
+    [data-zone="top_content"],
+    [data-zone="bottom"],
+    div[style*="z-index: 2147483000"],
+    div[style*="z-index: 2147483001"],
+    div[id*="aclib"],
+    #aclib,
+    iframe[src*="acscdn.com"],
+    iframe[src*="yougetwhatyoupayfor.net"],
+    .catfish,
+    #catfish,
+    [class*="catfish"],
+    #banners-container,
+    .banners-container {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    .chapter-images-container {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 12px !important;
+      width: 100% !important;
+      max-width: 1000px !important;
+      margin: 0 auto !important;
+    }
+    .chapter-images-container img {
+      display: block !important;
+      margin: 0 auto !important;
+      max-width: 100% !important;
+      height: auto !important;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+      border-radius: 4px;
+    }
+
+.advertisement,
+    #video-chapter,
+    div[id*="video-chapter"],
+    div[class*="advertisement"],
+    iframe[src*="chaseherbalpasty.com"],
+    iframe[src*="dekkopinolin.com"],
+    iframe[src*="crittereasilyhangover.com"],
+    iframe[src*="google"],
+    ins.adsbygoogle,
+    .banner-qc,
+    .catfish,
+    #catfish,
+    [class*="catfish"] {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    .page-chapter {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin: 0 auto 12px auto !important;
+      text-align: center !important;
+      width: 100% !important;
+    }
+    .page-chapter img {
+      display: block !important;
+      margin: 0 auto !important;
+      max-width: 1000px !important;
+      width: auto !important;
+      height: auto !important;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+      border-radius: 4px;
+    }
+
+.banner.text-center,
+    .banner,
+    div[class*="banner"],
+    #popup_content,
+    .popup_content,
+    .popup_layer,
+    .iframe-content-mobile,
+    .iframe-content-desktop,
+    iframe[src*="acscdn.com"],
+    div[id*="aclib"],
+    #aclib,
+    .catfish,
+    #catfish,
+    [class*="catfish"] {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    .reading-detail,
+    .reading-detail .page-chapter {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin: 0 auto 12px auto !important;
+      text-align: center !important;
+      width: 100% !important;
+    }
+    .reading-detail img,
+    .page-chapter img {
+      display: block !important;
+      margin: 0 auto !important;
+      max-width: 1000px !important;
+      width: auto !important;
+      height: auto !important;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+      border-radius: 4px;
+    }
+
+#top-banner-reading-container,
+    #top-banner-reading-container-sub,
+    #mid-banner-reading-container,
+    #ad_info_top,
+    #ad_info_2,
+    #ad_info,
+    div[id*="ad_info"],
+    div[id*="banner-reading"],
+    .community-banner,
+    .banner-content,
+    .banner-left,
+    .banner-right,
+    .catfish,
+    #catfish,
+    [class*="catfish"] {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    #chapter_content,
+    .chapter_content_div,
+    .story-see-content {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin: 0 auto 12px auto !important;
+      text-align: center !important;
+      width: 100% !important;
+    }
+    #chapter_content img,
+    .chapter_content_div img,
+    .story-see-content img {
+      display: block !important;
+      margin: 0 auto !important;
+      max-width: 1000px !important;
+      width: auto !important;
+      height: auto !important;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+      border-radius: 4px;
+    }
+
+.ads-static-header,
+    .ads-static-home-detail-chapter,
+    .ads-static-home-middle,
+    div[class*="ads-static"],
+    .catfish,
+    #catfish,
+    [class*="catfish"] {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    .chapter-content,
+    .content-container {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin: 0 auto 12px auto !important;
+      text-align: center !important;
+      width: 100% !important;
+    }
+    .chapter-content img,
+    .content-container img {
+      display: block !important;
+      margin: 0 auto !important;
+      max-width: 1000px !important;
+      width: auto !important;
+      height: auto !important;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+      border-radius: 4px;
+    }
+
+#ads,
+    .wrapper-ads,
+    .mission-ads,
+    .tr-ads-click,
+    .popup-noti,
+    .notification-popup,
+    #couter-wrapper,
+    [class*="mission-ads"],
+    .banner-bottom,
+    .catfish,
+    #catfish,
+    [class*="catfish"] {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    .chapter-detail,
+    .reading-detail,
+    #scontent,
+    .scontent,
+    .box_text {
+      max-width: 960px !important;
+      margin: 0 auto !important;
+      line-height: 1.8 !important;
+      font-size: 19px !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+      word-break: break-word !important;
+    }
+    .chapter-detail img,
+    .reading-detail img,
+    .page-chapter img {
+      display: block !important;
+      margin: 12px auto !important;
+      max-width: 1000px !important;
+      width: auto !important;
+      height: auto !important;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+      border-radius: 4px;
+    }
+
+.advertisement,
+    .ad-container,
+    .ads-holder,
+    .banner-qc,
+    .ads,
+    [class*="banner-ads"],
+    div[id*="ad-"],
+    div[id*="catfish"],
+    .ads-wrapper,
+    #chancoc,
+    .modal-adblock,
+    .catfish,
+    #catfish,
+    [class*="catfish"],
+    iframe[src*="seotraffic.io.vn"],
+    iframe[src*="acscdn.com"],
+    iframe[src*="chaseherbalpasty.com"],
+    iframe[src*="dekkopinolin.com"],
+    a[href*="bet"],
+    a[href*="casino"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Cinema Pro Suite - Theater Mode & OLED HDR CSS
+   ═══════════════════════════════════════════════════════════════ */
+
+video.ro-enhanced-hdr {
+  filter: contrast(1.10) saturate(1.25) brightness(1.04) !important;
+}
+
+body.ro-theater-active {
+  background-color: #050608 !important;
+}
+
+body.ro-theater-active header,
+body.ro-theater-active footer,
+body.ro-theater-active .sidebar,
+body.ro-theater-active .sidebar-right,
+body.ro-theater-active nav {
+  opacity: 0.1 !important;
+  transition: opacity 0.3s ease;
+}
+
+body.ro-theater-active header:hover,
+body.ro-theater-active footer:hover,
+body.ro-theater-active nav:hover {
+  opacity: 1 !important;
+}
+
+body.ro-theater-active .player-wrapper,
+body.ro-theater-active .player-container,
+body.ro-theater-active #player,
+body.ro-theater-active #live-player-content,
+body.ro-theater-active #embed-player,
+body.ro-theater-active #iframe-stream,
+body.ro-theater-active .col-player,
+body.ro-theater-active iframe {
+  max-height: 88vh !important;
+  box-shadow: 0 10px 50px rgba(81, 240, 133, 0.25) !important;
+  border-radius: 14px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   Cinema Pro Suite - VIP Hub UI CSS (Sleek Modern Glassmorphism)
+   ═══════════════════════════════════════════════════════════════ */
+
+#ro-vip-hub {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 2147483647;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+#ro-hub-toggle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.45);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+#ro-hub-toggle:hover {
+  transform: scale(1.1) rotate(6deg);
+  box-shadow: 0 6px 26px rgba(16, 185, 129, 0.65);
+}
+
+#ro-hub-toggle svg {
+  width: 24px;
+  height: 24px;
+}
+
+#ro-hub-menu {
+  display: none;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 14px;
+  width: 290px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  flex-direction: column;
+  gap: 8px;
+  color: #e2e8f0;
+}
+
+#ro-hub-menu.show {
+  display: flex;
+  animation: roFadeIn 0.2s ease-out;
+}
+
+@keyframes roFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ro-menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f1f5f9;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.ro-menu-btn:hover {
+  background: rgba(16, 185, 129, 0.18);
+  border-color: rgba(16, 185, 129, 0.4);
+  transform: translateX(-2px);
+}
+
+.ro-btn-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ro-icon {
+  width: 15px;
+  height: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ro-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ro-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #a1a1aa;
+}
+
+#ro-stream-preview {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 11px;
+  word-break: break-all;
+  color: #51f085;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  display: none;
+  cursor: pointer;
+}
+
+.ro-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.ro-toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 2147483647;
+  background: rgba(15, 23, 42, 0.95);
+  color: #51f085;
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: 1px solid rgba(81, 240, 133, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  font-size: 14px;
+  font-weight: 600;
+  pointer-events: none;
+  animation: roToastAnim 2.2s forwards;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@keyframes roToastAnim {
+  0% { opacity: 0; transform: translateY(-10px); }
+  15% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-10px); }
+}

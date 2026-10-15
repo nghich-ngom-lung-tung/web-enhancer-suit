@@ -7,16 +7,16 @@
   <strong>Bộ công cụ Userscript toàn diện số 1 Việt Nam dành cho Web Xem Phim, Anime, Thể Thao Trực Tiếp và Truyện Tranh</strong>
 </p>
 
-[![Version](https://img.shields.io/badge/Version-5.4.9_Modular-8b5cf6?style=for-the-badge&logo=javascript&logoColor=white)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit)
-[![Test Suite](https://img.shields.io/badge/Tests-1073%2F1073_Passing-10b981?style=for-the-badge&logo=checkmarx&logoColor=white)](file:///run_audit.js)
+[![Version](https://img.shields.io/badge/Version-5.4.9_Dual--Build-8b5cf6?style=for-the-badge&logo=javascript&logoColor=white)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit)
+[![Test Suite](https://img.shields.io/badge/Tests-1099%2F1099_Passing-10b981?style=for-the-badge&logo=checkmarx&logoColor=white)](file:///run_audit.js)
 [![Health Score](https://img.shields.io/badge/Health_Score-100%25_Production_Ready-047857?style=for-the-badge&logo=speedtest&logoColor=white)](file:///run_audit.js)
-[![Platforms](https://img.shields.io/badge/Platform-Tampermonkey_%7C_Violentmonkey-3b82f6?style=for-the-badge&logo=googlechrome&logoColor=white)](https://www.tampermonkey.net/)
+[![Platforms](https://img.shields.io/badge/Platform-Extension_(MV3)_%7C_Tampermonkey-3b82f6?style=for-the-badge&logo=googlechrome&logoColor=white)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit)
 [![Sites](https://img.shields.io/badge/Supported_Sites-53%2B_Platforms-f59e0b?style=for-the-badge&logo=safari&logoColor=white)](#-danh-s%C3%A1ch-website-h%E1%BB%97-tr%E1%BB%A3)
 [![License](https://img.shields.io/badge/License-MIT-6366f1?style=for-the-badge)](LICENSE)
 
 <br/>
 
-[🚀 Cài Đặt Nhanh](#-c%C3%A0i-%C4%91%E1%BA%B7t-si%C3%AAu-nhanh-1-click) • [✨ Tính Năng VIP](#-kho-t%C3%ADnh-n%C4%83ng-vip-cinema-pro) • [⌨️ Bảng Phím Tắt](#%EF%B8%8F-b%E1%BA%A3ng-ph%C3%ADm-t%E1%BA%AFt-th%E1%BA%A7n-th%C3%A1nh-cheatsheet) • [📺 Hướng Dẫn VLC & PotPlayer](#-h%C6%B0%E1%BB%9Bng-d%E1%BA%ABn-ph%C3%A1t-stream-qua-vlc--potplayer) • [📁 Kiến Trúc Mã Nguồn](#-ki%E1%BA%BFn-tr%C3%BAc-modular-v549)
+[🚀 Cài Đặt Nhanh](#-h%C6%B0%E1%BB%9Bng-d%E1%BA%ABn-c%C3%A0i-%C4%91%E1%BA%B7t-2-l%E1%BB%B1a-ch%E1%BB%8Dn) • [✨ Tính Năng VIP](#-kho-t%C3%ADnh-n%C4%83ng-vip-cinema-pro) • [⌨️ Bảng Phím Tắt](#%EF%B8%8F-b%E1%BA%A3ng-ph%C3%ADm-t%E1%BA%AFt-th%E1%BA%A7n-th%C3%A1nh-cheatsheet) • [📺 Hướng Dẫn VLC & PotPlayer](#-h%C6%B0%E1%BB%9Bng-d%E1%BA%ABn-ph%C3%A1t-stream-qua-vlc--potplayer) • [📁 Kiến Trúc Mã Nguồn](#-ki%E1%BA%BFn-tr%C3%BAc-modular-v549)
 
 </div>
 
@@ -47,19 +47,45 @@
 
 ---
 
-## 🚀 Cài Đặt Siêu Nhanh (1-Click)
+## 🚀 Hướng Dẫn Cài Đặt (2 Lựa Chọn)
 
-### 📌 Bước 1: Chuẩn bị trình duyệt
-Cài đặt tiện ích mở rộng Userscript tương thích với trình duyệt của bạn (khuyên dùng **Tampermonkey**):
-* 🌐 **[Cài đặt Tampermonkey cho Chrome / Edge / Brave / Cốc Cốc](https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=vi)**
-* 🦊 **[Cài đặt Tampermonkey cho Firefox](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/)**
+Dự án cung cấp **2 phương án cài đặt** linh hoạt tùy theo nhu cầu của bạn:
 
 ---
 
-### 📌 Bước 2: Chọn gói Script cài đặt
-
+### 🌟 LỰA CHỌN 1: TIỆN ÍCH TRÌNH DUYỆT ĐỘC LẬP (BROWSER EXTENSION - MANIFEST V3)
 > [!TIP]
-> **Khuyên dùng:** Bạn chỉ cần cài duy nhất gói **MASTER ALL-IN-ONE**. Gói này đã gộp toàn bộ tính năng và tự động nhận diện chạy trên toàn bộ 53+ website mà không cần cài lẻ từng trang!
+> **Khuyên dùng cho trải nghiệm tối ưu:** Hoạt động độc lập không cần cài thêm Tampermonkey, tích hợp Popup Glassmorphism điều khiển trực tiếp trên thanh công cụ trình duyệt, và sở hữu cơ chế chặn quảng cáo mạng **`declarativeNetRequest`** triệt để ngay tầng network!
+
+```
+extension/
+├── manifest.json       # Chuẩn Manifest V3 mới nhất
+├── background.js      # Service Worker xử lý luồng stream & badge
+├── rules.json          # DeclarativeNetRequest rules chặn ads & bypass Referer
+├── icons/              # Bộ icon 16x16, 48x48, 128x128 chuẩn pixel
+├── popup/              # Giao diện điều khiển Glassmorphism siêu đẹp
+└── content/            # Bộ lõi inject tối ưu từ src/
+```
+
+#### 📌 Cách cài đặt Extension trong 30 giây:
+1. **Tải mã nguồn dự án:** Bấm vào nút màu xanh lá **Code** > **Download ZIP** trên GitHub và giải nén (hoặc `git clone`).
+2. **Mở trang quản lý Tiện ích:** Mở trình duyệt (Chrome, Edge, Brave, Cốc Cốc, Opera...) và truy cập đường dẫn:
+   * Chrome/Brave/Cốc Cốc: `chrome://extensions`
+   * Edge: `edge://extensions`
+3. **Bật Chế độ dành cho nhà phát triển (Developer mode):** Gạt công tắc ở góc trên bên phải màn hình.
+4. **Cài đặt tiện ích:** Bấm nút **Tải tiện ích đã giải nén (Load unpacked)** ở góc trái, sau đó chọn thư mục `extension` trong thư mục dự án vừa giải nén.
+5. 🎉 **Hoàn tất!** Icon vương miện Cinema Pro sẽ xuất hiện trên thanh công cụ của bạn.
+
+---
+
+### ⚡ LỰA CHỌN 2: CÀI ĐẶT QUA USERSCRIPT (TAMPERMONKEY)
+Dành cho bạn nào thích quản lý bằng Tampermonkey / Violentmonkey và tự động nhận bản cập nhật mới nhất từ GitHub.
+
+#### 📌 Bước 1: Cài tiện ích Tampermonkey
+* 🌐 **[Cài đặt Tampermonkey cho Chrome / Edge / Brave / Cốc Cốc](https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=vi)**
+* 🦊 **[Cài đặt Tampermonkey cho Firefox](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/)**
+
+#### 📌 Bước 2: Bấm 1-Click cài đặt bản Master Gộp
 
 <div align="center">
 
@@ -233,47 +259,46 @@ Dự án tuân theo chuẩn thiết kế chia module độc lập, tách biệt 
 ```text
 web-enhancer-suit/
 ├── src/
-│   ├── config/              # Bộ ánh xạ nhúng iframe & danh mục site
-│   │   ├── embeds.js        # Nhận diện OOPIF Player (cctvsignal, streamc, vidsrc...)
-│   │   └── sites.js         # Danh bạ 53+ website được hỗ trợ
-│   ├── css/                 # Giao diện CSS độc lập
-│   │   ├── adblock.css      # Quy tắc triệt tiêu quảng cáo, catfish, sticky banner
-│   │   ├── hub.css          # Giao diện Glassmorphism Floating Control Menu
-│   │   ├── theater.css      # CSS Rạp phim & OLED HDR filter
-│   │   └── embed-guard.css  # CSS bảo vệ trình phát nhúng
-│   ├── modules/             # Các khối logic lõi
-│   │   ├── icons.js         # Thư viện SVG biểu tượng chuẩn vector
-│   │   ├── sniffer.js       # Engine tự động bẫy luồng HLS/M3U8 & MP4
-│   │   ├── player-controls.js # Xử lý phím tắt, tải M3U và điều khiển từ xa
-│   │   ├── ad-nuker.js      # Bộ máy triệt tiêu AdBlocker detection & popups
-│   │   ├── hub-ui.js        # Giao diện điều khiển nổi & OSD Toast Engine
-│   │   └── rophim-vip.js    # VIP Mock Backend, Token Normalizer & Chat Sync
+│   ├── build/               # Công cụ dựng icon PNG chuẩn pixel
+│   ├── config/              # Bộ ánh xạ nhúng iframe & danh mục site (embeds.js, sites.js)
+│   ├── css/                 # Giao diện CSS độc lập (adblock, hub, theater, embed-guard)
+│   ├── modules/             # Các khối logic lõi (sniffer, controls, ad-nuker, hub-ui, vip)
 │   ├── sites/               # Cấu hình chi tiết từng site (anime, movies, tv, sports, comics)
 │   └── template.js          # Trình kết nối Module và sinh Metadata Userscript
-├── scripts/                 # Thư mục xuất bản 55 Userscripts hoàn chỉnh
-├── build_all_scripts.js     # Compiler đóng gói tự động
-└── run_audit.js             # Bộ Test Suite kiểm định 1073 Assertions
+├── scripts/                 # Option 1: Thư mục xuất bản 55 Userscripts hoàn chỉnh
+├── extension/               # Option 2: Tiện ích mở rộng độc lập (Manifest V3)
+│   ├── manifest.json        # Manifest V3 (Action, MV3 Service Worker, DeclarativeNetRequest)
+│   ├── background.js        # Background Service Worker quản lý stream & badge
+│   ├── rules.json           # Network-level rules chặn ads & bypass stream Referer
+│   ├── icons/               # Bộ icon 16x16, 48x48, 128x128
+│   ├── popup/               # Giao diện Popup Glassmorphism thanh công cụ
+│   └── content/             # Compiled content.js, bridge.js & styles.css
+├── build_all.js             # Dual-Build Engine biên dịch cả Userscripts & Extension
+├── build_all_scripts.js     # Compiler đóng gói Userscripts
+├── build_extension.js       # Compiler đóng gói Browser Extension
+├── package.json             # Cấu hình dự án & npm run commands
+└── run_audit.js             # Bộ Test Suite kiểm định 1099 Assertions (100% Health Score)
 ```
 
 ---
 
 ## 🧪 Kiểm Định Tự Động (Test Suite)
 
-Dự án sở hữu bộ kiểm thử độc lập với **1073 Unit & Runtime Assertions** chạy qua môi trường giả lập Node.js VM Sandbox:
+Dự án sở hữu bộ kiểm thử độc lập với **1099 Unit & Runtime Assertions** chạy qua môi trường giả lập Node.js VM Sandbox & Extension Audit:
 
 ```bash
-# Biên dịch toàn bộ các script
-node build_all_scripts.js
+# Biên dịch cả Userscripts & Extension
+npm run build        # hoặc: node build_all.js
 
 # Chạy bộ test suite toàn diện
-node run_audit.js
+npm test             # hoặc: node run_audit.js
 ```
 
 ```text
 ================================================================
 🎯 COMPREHENSIVE TEST AUDIT COMPLETE:
-   Total Unit & Runtime Assertions : 1073
-   Passed Assertions               : 1073
+   Total Unit & Runtime Assertions : 1099
+   Passed Assertions               : 1099
    Failed Assertions               : 0
    Overall Health Score            : 100.0%
 ================================================================

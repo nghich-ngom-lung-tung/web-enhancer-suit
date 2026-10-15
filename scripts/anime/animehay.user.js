@@ -702,6 +702,11 @@
     ) {
       capturedStreamUrl = clean;
       try { localStorage.setItem("RO_CAPTURED_STREAM", clean); } catch (e) {}
+      try {
+        if (typeof window !== "undefined" && window.postMessage) {
+          window.postMessage({ type: "CINEMA_PRO_STREAM_FOUND", url: clean, title: (typeof document !== "undefined" ? document.title : "") }, "*");
+        }
+      } catch (e) {}
       const preview = document.getElementById("ro-stream-preview");
       if (preview) {
         preview.style.display = "block";
