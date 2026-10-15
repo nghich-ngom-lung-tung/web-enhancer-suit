@@ -480,11 +480,11 @@
   // ═══════════════════════════════════════════════════════════════
   // 2. TOP WINDOW M3U8 SNIFFER & POSTMESSAGE BRIDGE
   // ═══════════════════════════════════════════════════════════════
-  let capturedStreamUrl = "";
-  let currentSpeed = 1.0;
-  let currentVolume = 1.0;
-  let isHdrEnabled = false;
-  let isTheaterMode = false;
+  var capturedStreamUrl = (typeof window !== "undefined" && window.capturedStreamUrl) || "";
+  var currentSpeed = 1.0;
+  var currentVolume = 1.0;
+  var isHdrEnabled = false;
+  var isTheaterMode = false;
 
   window.addEventListener("message", function (event) {
     if (event.data && event.data.type === "stream-guard-hello") {
@@ -575,6 +575,7 @@
       (u.includes(".mp4") && !u.includes("trailer") && !u.includes("preview") && !u.includes("ad_") && !u.includes("tvc") && !u.includes("ad-site"))
     ) {
       capturedStreamUrl = clean;
+      if (typeof window !== "undefined") window.capturedStreamUrl = clean;
       try { localStorage.setItem("RO_CAPTURED_STREAM", clean); } catch (e) {}
       try {
         if (typeof window !== "undefined" && window.postMessage) {
@@ -851,21 +852,58 @@
     }, true);
   } catch (e) {}
 
+  // ─── SAFE AD API CHECKER (NEVER THROWS REFERENCE ERROR) ───
+  function safeIsAdApi(url) {
+    if (!url || typeof url !== "string") return false;
+    try {
+      if (typeof isAdApi === "function") return isAdApi(url);
+      if (typeof window !== "undefined" && typeof window.isAdApi === "function") return window.isAdApi(url);
+    } catch (e) {}
+    const u = url.toLowerCase();
+    if (u.includes("tvc_") || u.includes("/assets/tvc/") || u.includes("tvc-pre-roll") || u.includes("tvc_net88") || u.includes("tvc_gem88")) return true;
+    if (u.includes(".m3u8") || u.includes(".mp4") || u.includes(".ts") || u.includes(".m4s")) return false;
+    return (
+      u.includes("/ads") ||
+      u.includes("/banners") ||
+      u.includes("/banner/") ||
+      u.includes("/api/widget/data") ||
+      u.includes("acscdn.com") ||
+      u.includes("yougetwhatyoupayfor.net") ||
+      u.includes("chaseherbalpasty.com") ||
+      u.includes("bom88") ||
+      u.includes("tin888") ||
+      u.includes("net88")
+    );
+  }
+
   // ─── HOOK FETCH TRÊN TRANG CHÍNH & CHẶN API BANNER ───
   const origFetchMain = window.fetch;
   window.fetch = async function (input, init) {
     const url = typeof input === "string" ? input : input?.url || "";
-    if (isAdApi(url)) {
+    if (safeIsAdApi(url)) {
       console.log("[Web Enhancer] Đã chặn triệt để API banner:", url);
-      return new Response(JSON.stringify({ status: 200, success: true, version: 1, items: {}, data: [], banners: [], result: [] }), {
+      const emptyPayload = JSON.stringify({ status: 200, success: true, version: 1, items: {}, data: [], banners: [], result: [] });
+      if (typeof Response !== "undefined") {
+        return new Response(emptyPayload, {
+          status: 200,
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+      return {
         status: 200,
-        headers: { "Content-Type": "application/json" }
-      });
+        ok: true,
+        headers: { get: (h) => (h && h.toLowerCase() === "content-type" ? "application/json" : null) },
+        json: async () => JSON.parse(emptyPayload),
+        text: async () => emptyPayload,
+        clone: function () { return this; }
+      };
     }
-    if (typeof getRophimMockResponse === "function") {
-      const mockRes = getRophimMockResponse(url, init);
+    try {
+      const mockRes = typeof getRophimMockResponse === "function"
+        ? getRophimMockResponse(url, init)
+        : (typeof window !== "undefined" && typeof window.getRophimMockResponse === "function" ? window.getRophimMockResponse(url, init) : null);
       if (mockRes) return mockRes;
-    }
+    } catch (e) {}
     try {
       if (url && (url.includes("/encrypted/token") || url.includes("/chat/send") || url.includes("/chat/history"))) {
         const realTok = typeof window !== "undefined" && window.localStorage ? window.localStorage.getItem("guestAccessToken") : null;
@@ -895,7 +933,15 @@
         } catch (e) {}
       }).catch(() => {});
     } catch (e) {}
-    return handleRophimFetchResponse(fetchPromise, url, init);
+    try {
+      if (typeof handleRophimFetchResponse === "function") {
+        return handleRophimFetchResponse(fetchPromise, url, init);
+      }
+      if (typeof window !== "undefined" && typeof window.handleRophimFetchResponse === "function") {
+        return window.handleRophimFetchResponse(fetchPromise, url, init);
+      }
+    } catch (e) {}
+    return fetchPromise;
   };
 
   // ─── HOOK XHR TRÊN TRANG CHÍNH ───
@@ -912,15 +958,17 @@
     
     const origSend = xhr.send;
     xhr.send = function (body) {
-      if (isAdApi(targetUrl)) {
+      if (safeIsAdApi(targetUrl)) {
         try {
           Object.defineProperty(xhr, "status", { value: 200, writable: false });
           Object.defineProperty(xhr, "responseText", { value: "{}", writable: false });
         } catch (e) {}
         return;
       }
-      if (typeof getRophimMockXhr === "function") {
-        const mockStr = getRophimMockXhr(targetUrl, body);
+      try {
+        const mockStr = typeof getRophimMockXhr === "function"
+          ? getRophimMockXhr(targetUrl, body)
+          : (typeof window !== "undefined" && typeof window.getRophimMockXhr === "function" ? window.getRophimMockXhr(targetUrl, body) : null);
         if (mockStr) {
           try {
             let parsedObj = null;
@@ -962,7 +1010,7 @@
           } catch (e) {}
           return;
         }
-      }
+      } catch (e) {}
       xhr.addEventListener("load", function () {
         try {
           if (xhr.responseText && (xhr.responseText.includes(".m3u8") || xhr.responseText.includes("/hls/") || xhr.responseText.includes(".mpd") || xhr.responseText.includes(".mp4"))) {
@@ -970,7 +1018,13 @@
             found.forEach(u => checkAndCaptureUrl(u));
           }
         } catch (e) {}
-        handleRophimXhrResponse(xhr, targetUrl);
+        try {
+          if (typeof handleRophimXhrResponse === "function") {
+            handleRophimXhrResponse(xhr, targetUrl);
+          } else if (typeof window !== "undefined" && typeof window.handleRophimXhrResponse === "function") {
+            window.handleRophimXhrResponse(xhr, targetUrl);
+          }
+        } catch (e) {}
       });
       if (origSend) return origSend.apply(this, arguments);
     };
@@ -984,9 +1038,19 @@
     });
   } catch (e) {}
 
+  if (typeof window !== "undefined") {
+    window.unwrapStreamUrl = typeof unwrapStreamUrl === "function" ? unwrapStreamUrl : undefined;
+    window.ensureStreamUrl = typeof ensureStreamUrl === "function" ? ensureStreamUrl : undefined;
+    window.isNoRefererCdn = typeof isNoRefererCdn === "function" ? isNoRefererCdn : undefined;
+    window.capturedStreamUrl = typeof capturedStreamUrl !== "undefined" ? capturedStreamUrl : "";
+    window.getCapturedStreamUrl = () => (typeof capturedStreamUrl !== "undefined" && capturedStreamUrl) || (typeof window !== "undefined" && window.capturedStreamUrl) || "";
+  }
+
 
   // Export to window for modular extension architecture
   window.unwrapStreamUrl = typeof unwrapStreamUrl === "function" ? unwrapStreamUrl : undefined;
   window.ensureStreamUrl = typeof ensureStreamUrl === "function" ? ensureStreamUrl : undefined;
   window.isNoRefererCdn = typeof isNoRefererCdn === "function" ? isNoRefererCdn : undefined;
+  window.capturedStreamUrl = typeof capturedStreamUrl !== "undefined" ? capturedStreamUrl : "";
+  window.getCapturedStreamUrl = typeof getCapturedStreamUrl === "function" ? getCapturedStreamUrl : () => window.capturedStreamUrl || "";
 })();

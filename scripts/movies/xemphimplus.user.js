@@ -591,11 +591,11 @@
   // ═══════════════════════════════════════════════════════════════
   // 2. TOP WINDOW M3U8 SNIFFER & POSTMESSAGE BRIDGE
   // ═══════════════════════════════════════════════════════════════
-  let capturedStreamUrl = "";
-  let currentSpeed = 1.0;
-  let currentVolume = 1.0;
-  let isHdrEnabled = false;
-  let isTheaterMode = false;
+  var capturedStreamUrl = (typeof window !== "undefined" && window.capturedStreamUrl) || "";
+  var currentSpeed = 1.0;
+  var currentVolume = 1.0;
+  var isHdrEnabled = false;
+  var isTheaterMode = false;
 
   window.addEventListener("message", function (event) {
     if (event.data && event.data.type === "stream-guard-hello") {
@@ -686,6 +686,7 @@
       (u.includes(".mp4") && !u.includes("trailer") && !u.includes("preview") && !u.includes("ad_") && !u.includes("tvc") && !u.includes("ad-site"))
     ) {
       capturedStreamUrl = clean;
+      if (typeof window !== "undefined") window.capturedStreamUrl = clean;
       try { localStorage.setItem("RO_CAPTURED_STREAM", clean); } catch (e) {}
       try {
         if (typeof window !== "undefined" && window.postMessage) {
@@ -962,16 +963,51 @@
     }, true);
   } catch (e) {}
 
+  // ─── SAFE AD API CHECKER (NEVER THROWS REFERENCE ERROR) ───
+  function safeIsAdApi(url) {
+    if (!url || typeof url !== "string") return false;
+    try {
+      if (typeof isAdApi === "function") return isAdApi(url);
+      if (typeof window !== "undefined" && typeof window.isAdApi === "function") return window.isAdApi(url);
+    } catch (e) {}
+    const u = url.toLowerCase();
+    if (u.includes("tvc_") || u.includes("/assets/tvc/") || u.includes("tvc-pre-roll") || u.includes("tvc_net88") || u.includes("tvc_gem88")) return true;
+    if (u.includes(".m3u8") || u.includes(".mp4") || u.includes(".ts") || u.includes(".m4s")) return false;
+    return (
+      u.includes("/ads") ||
+      u.includes("/banners") ||
+      u.includes("/banner/") ||
+      u.includes("/api/widget/data") ||
+      u.includes("acscdn.com") ||
+      u.includes("yougetwhatyoupayfor.net") ||
+      u.includes("chaseherbalpasty.com") ||
+      u.includes("bom88") ||
+      u.includes("tin888") ||
+      u.includes("net88")
+    );
+  }
+
   // ─── HOOK FETCH TRÊN TRANG CHÍNH & CHẶN API BANNER ───
   const origFetchMain = window.fetch;
   window.fetch = async function (input, init) {
     const url = typeof input === "string" ? input : input?.url || "";
-    if (isAdApi(url)) {
+    if (safeIsAdApi(url)) {
       console.log("[Web Enhancer] Đã chặn triệt để API banner:", url);
-      return new Response(JSON.stringify({ status: 200, success: true, version: 1, items: {}, data: [], banners: [], result: [] }), {
+      const emptyPayload = JSON.stringify({ status: 200, success: true, version: 1, items: {}, data: [], banners: [], result: [] });
+      if (typeof Response !== "undefined") {
+        return new Response(emptyPayload, {
+          status: 200,
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+      return {
         status: 200,
-        headers: { "Content-Type": "application/json" }
-      });
+        ok: true,
+        headers: { get: (h) => (h && h.toLowerCase() === "content-type" ? "application/json" : null) },
+        json: async () => JSON.parse(emptyPayload),
+        text: async () => emptyPayload,
+        clone: function () { return this; }
+      };
     }
     
     try {
@@ -1020,7 +1056,7 @@
     
     const origSend = xhr.send;
     xhr.send = function (body) {
-      if (isAdApi(targetUrl)) {
+      if (safeIsAdApi(targetUrl)) {
         try {
           Object.defineProperty(xhr, "status", { value: 200, writable: false });
           Object.defineProperty(xhr, "responseText", { value: "{}", writable: false });
@@ -1048,6 +1084,14 @@
       try { window.XMLHttpRequest[k] = origXhrMain[k]; } catch (e) {}
     });
   } catch (e) {}
+
+  if (typeof window !== "undefined") {
+    window.unwrapStreamUrl = typeof unwrapStreamUrl === "function" ? unwrapStreamUrl : undefined;
+    window.ensureStreamUrl = typeof ensureStreamUrl === "function" ? ensureStreamUrl : undefined;
+    window.isNoRefererCdn = typeof isNoRefererCdn === "function" ? isNoRefererCdn : undefined;
+    window.capturedStreamUrl = typeof capturedStreamUrl !== "undefined" ? capturedStreamUrl : "";
+    window.getCapturedStreamUrl = () => (typeof capturedStreamUrl !== "undefined" && capturedStreamUrl) || (typeof window !== "undefined" && window.capturedStreamUrl) || "";
+  }
 
 
 
@@ -1559,9 +1603,19 @@
       }
     } catch (e) {}
 
-    if (notify && typeof showToast === "function") {
-      showToast(count > 0 ? ("Đã quét sạch " + count + " banner quảng cáo!") : "Đã quét sạch banner!");
+    if (notify) {
+      const toastMsg = count > 0 ? ("Đã quét sạch " + count + " banner quảng cáo!") : "Đã quét sạch banner!";
+      if (typeof window !== "undefined" && typeof window.showToast === "function") {
+        window.showToast(toastMsg);
+      } else if (typeof showToast === "function") {
+        showToast(toastMsg);
+      }
     }
+  }
+
+  if (typeof window !== "undefined") {
+    window.isAdApi = isAdApi;
+    window.nukeAdElements = nukeAdElements;
   }
 
   // Tự động quét sạch banner quảng cáo ngầm
@@ -1604,17 +1658,31 @@
 
   // ─── TOAST NOTIFICATIONS (ZERO EMOJIS, CLEAN TEXT) ───
   function showToast(msg) {
+    if (typeof document === "undefined" || !document.body) {
+      console.log("[Cinema Pro]", msg);
+      return;
+    }
     const t = document.createElement("div");
     t.className = "ro-toast";
     t.innerHTML = msg;
     document.body.appendChild(t);
-    setTimeout(() => t.remove(), 2200);
+    setTimeout(() => {
+      try { t.remove(); } catch (e) {}
+    }, 2200);
+  }
+  if (typeof window !== "undefined") {
+    window.showToast = showToast;
   }
 
   // ─── VIP CONTROL HUB DOM CREATION ───
   function initVipHub() {
+    if (typeof document === "undefined") return;
     if (document.getElementById("ro-vip-hub")) return;
-    const isComic = typeof isComicPage === "function" && isComicPage() && !document.querySelector("video");
+    if (!document.body) {
+      document.addEventListener("DOMContentLoaded", () => setTimeout(initVipHub, 200), { once: true });
+      return;
+    }
+    const isComic = (typeof isComicPage === "function" ? isComicPage() : (typeof window !== "undefined" && typeof window.isComicPage === "function" ? window.isComicPage() : false)) && !document.querySelector("video");
     const hub = document.createElement("div");
     hub.id = "ro-vip-hub";
     hub.innerHTML = isComic ? `
@@ -1735,27 +1803,84 @@
       if (el) el.addEventListener("click", fn);
     };
 
-    bind("ro-comic-prev-btn", () => navigateComicChapter(-1));
-    bind("ro-comic-next-btn", () => navigateComicChapter(1));
+    const execAction = (fnName, ...args) => {
+      try {
+        if (typeof window !== "undefined" && typeof window[fnName] === "function") {
+          return window[fnName](...args);
+        }
+        if (typeof eval !== "undefined") {
+          const fn = eval("(typeof " + fnName + " === 'function' ? " + fnName + " : null)");
+          if (fn) return fn(...args);
+        }
+      } catch (e) {
+        console.warn("[Cinema Pro] Action not found:", fnName);
+      }
+    };
+
+    bind("ro-comic-prev-btn", () => execAction("navigateComicChapter", -1));
+    bind("ro-comic-next-btn", () => execAction("navigateComicChapter", 1));
     bind("ro-comic-up-btn", () => window.scrollBy({ top: -450, behavior: "smooth" }));
     bind("ro-comic-down-btn", () => window.scrollBy({ top: 450, behavior: "smooth" }));
-    bind("ro-stream-preview", copyM3u8);
-    bind("ro-potplayer-btn", openPotPlayer);
-    bind("ro-vlc-btn", openVlcPlayer);
-    bind("ro-copym3u8-btn", copyM3u8);
-    bind("ro-m3ufile-btn", downloadM3uFile);
-    bind("ro-skipintro-btn", () => skipIntro(85));
-    bind("ro-fullscreen-btn", toggleFullscreen);
-    bind("ro-hdr-btn", toggleHdr);
-    bind("ro-theater-btn", toggleTheater);
-    bind("ro-nukeads-btn", () => nukeAdElements(true));
-    bind("ro-vol-down", () => adjustVolume(-0.05));
-    bind("ro-vol-up", () => adjustVolume(0.05));
-    bind("ro-speed-down", () => adjustSpeed(-1));
-    bind("ro-speed-up", () => adjustSpeed(1));
+    bind("ro-stream-preview", () => execAction("copyM3u8"));
+    bind("ro-potplayer-btn", () => execAction("openPotPlayer"));
+    bind("ro-vlc-btn", () => execAction("openVlcPlayer"));
+    bind("ro-copym3u8-btn", () => execAction("copyM3u8"));
+    bind("ro-m3ufile-btn", () => execAction("downloadM3uFile"));
+    bind("ro-skipintro-btn", () => execAction("skipIntro", 85));
+    bind("ro-fullscreen-btn", () => execAction("toggleFullscreen"));
+    bind("ro-hdr-btn", () => execAction("toggleHdr"));
+    bind("ro-theater-btn", () => execAction("toggleTheater"));
+    bind("ro-nukeads-btn", () => execAction("nukeAdElements", true));
+    bind("ro-vol-down", () => execAction("adjustVolume", -0.05));
+    bind("ro-vol-up", () => execAction("adjustVolume", 0.05));
+    bind("ro-speed-down", () => execAction("adjustSpeed", -1));
+    bind("ro-speed-up", () => execAction("adjustSpeed", 1));
+  }
+
+  if (typeof window !== "undefined") {
+    window.initVipHub = initVipHub;
   }
 
 
+
+  const _showToast = (msg) => {
+    try {
+      if (typeof window !== "undefined" && typeof window.showToast === "function") {
+        return window.showToast(msg);
+      }
+      if (typeof eval !== "undefined") {
+        const fn = eval("(typeof showToast === 'function' ? showToast : null)");
+        if (fn && fn !== _showToast) return fn(msg);
+      }
+    } catch (e) {}
+    console.log("[Cinema Pro]", msg);
+  };
+
+  const getSafeCapturedStreamUrl = () => {
+    if (typeof capturedStreamUrl !== "undefined" && capturedStreamUrl) return capturedStreamUrl;
+    if (typeof window !== "undefined" && window.capturedStreamUrl) return window.capturedStreamUrl;
+    if (typeof window !== "undefined" && typeof window.getCapturedStreamUrl === "function") {
+      const u = window.getCapturedStreamUrl();
+      if (u) return u;
+    }
+    try {
+      const s = localStorage.getItem("RO_CAPTURED_STREAM");
+      if (s) return s;
+    } catch (e) {}
+    return "";
+  };
+
+  const callEnsureStreamUrl = () => {
+    try {
+      if (typeof ensureStreamUrl === "function") ensureStreamUrl();
+      else if (typeof window !== "undefined" && typeof window.ensureStreamUrl === "function") window.ensureStreamUrl();
+    } catch (e) {}
+  };
+
+  var currentSpeed = (typeof currentSpeed !== "undefined" ? currentSpeed : ((typeof window !== "undefined" && window.__cinema_speed) || 1.0));
+  var currentVolume = (typeof currentVolume !== "undefined" ? currentVolume : ((typeof window !== "undefined" && window.__cinema_volume) || 1.0));
+  var isHdrEnabled = (typeof isHdrEnabled !== "undefined" ? isHdrEnabled : ((typeof window !== "undefined" && window.__cinema_hdr) || false));
+  var isTheaterMode = (typeof isTheaterMode !== "undefined" ? isTheaterMode : ((typeof window !== "undefined" && window.__cinema_theater) || false));
 
   function sendCommandToPlayer(cmd) {
     const video = document.querySelector("video");
@@ -1792,17 +1917,17 @@
 
   function skipIntro(sec = 85) {
     sendCommandToPlayer({ type: "RO_CMD_SKIP_INTRO", seconds: sec });
-    showToast("Đã tua Intro: +" + sec + "s");
+    _showToast("Đã tua Intro: +" + sec + "s");
   }
 
   function seekRelative(delta = 5) {
     sendCommandToPlayer({ type: "RO_CMD_SEEK", delta });
-    showToast(delta > 0 ? ("Tua tới: +" + delta + "s") : ("Tua lùi: " + delta + "s"));
+    _showToast(delta > 0 ? ("Tua tới: +" + delta + "s") : ("Tua lùi: " + delta + "s"));
   }
 
   function seekToPercent(pct = 0) {
     sendCommandToPlayer({ type: "RO_CMD_SEEK_PERCENT", percent: pct });
-    showToast("Vị trí video: " + pct + "%");
+    _showToast("Vị trí video: " + pct + "%");
   }
 
   function adjustVolume(delta) {
@@ -1810,25 +1935,25 @@
     newVol = Math.max(0, Math.min(1.0, newVol));
     currentVolume = newVol;
     sendCommandToPlayer({ type: "RO_CMD_VOLUME", volume: currentVolume });
-    showToast("Âm lượng: " + Math.round(currentVolume * 100) + "%");
+    _showToast("Âm lượng: " + Math.round(currentVolume * 100) + "%");
   }
 
   function toggleHdr() {
     isHdrEnabled = !isHdrEnabled;
     sendCommandToPlayer({ type: "RO_CMD_TOGGLE_HDR" });
-    showToast(isHdrEnabled ? "Anime OLED HDR: BẬT" : "OLED HDR: TẮT");
+    _showToast(isHdrEnabled ? "Anime OLED HDR: BẬT" : "OLED HDR: TẮT");
   }
 
   function toggleTheater() {
     isTheaterMode = !isTheaterMode;
     document.body.classList.toggle("ro-theater-active", isTheaterMode);
-    showToast(isTheaterMode ? "Chế độ Rạp phim: BẬT" : "Chế độ Rạp phim: TẮT");
+    _showToast(isTheaterMode ? "Chế độ Rạp phim: BẬT" : "Chế độ Rạp phim: TẮT");
   }
 
   function toggleFullscreen() {
     if (document.fullscreenElement) {
       try { document.exitFullscreen().catch(() => {}); } catch (e) {}
-      showToast("Đã thoát Toàn màn hình");
+      _showToast("Đã thoát Toàn màn hình");
     } else {
       const playerWrapper = document.querySelector(".player-wrapper, .player-container, #player, iframe, video");
       const target = playerWrapper || document.documentElement;
@@ -1836,7 +1961,7 @@
         try { target.requestFullscreen().catch(() => {}); } catch (e) {}
       }
       sendCommandToPlayer({ type: "RO_CMD_FULLSCREEN" });
-      showToast("Toàn màn hình");
+      _showToast("Toàn màn hình");
     }
   }
 
@@ -1857,12 +1982,13 @@
   }
 
   function openPotPlayer() {
-    ensureStreamUrl();
-    if (!capturedStreamUrl) {
-      showToast("Đang chờ bắt link video, hãy bấm Play trước!");
+    callEnsureStreamUrl();
+    const stream = getSafeCapturedStreamUrl();
+    if (!stream) {
+      _showToast("Đang chờ bắt link video, hãy bấm Play trước!");
       return;
     }
-    const cleanUrl = capturedStreamUrl.trim();
+    const cleanUrl = stream.trim();
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(cleanUrl).catch(() => {});
     }
@@ -1877,33 +2003,35 @@
     const ref = getStreamReferer(cleanUrl);
     const potTarget = ref ? (cleanUrl + "|Referer=" + encodeURIComponent(ref)) : cleanUrl;
     window.location.href = "potplayer://" + potTarget;
-    showToast("Đang mở PotPlayer...");
+    _showToast("Đang mở PotPlayer...");
   }
 
   function openVlcPlayer() {
-    ensureStreamUrl();
-    if (!capturedStreamUrl) {
-      showToast("Đang chờ bắt link video, hãy bấm Play trước!");
+    callEnsureStreamUrl();
+    const stream = getSafeCapturedStreamUrl();
+    if (!stream) {
+      _showToast("Đang chờ bắt link video, hãy bấm Play trước!");
       return;
     }
-    const cleanUrl = capturedStreamUrl.trim();
+    const cleanUrl = stream.trim();
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(cleanUrl).catch(() => {});
     }
     window.location.href = "vlc://" + encodeURIComponent(cleanUrl);
-    showToast("Đang mở VLC... Nếu VLC báo lỗi MRL do CDN chặn Referer, hãy bấm 'Tải Playlist .M3U' hoặc dùng PotPlayer!");
+    _showToast("Đang mở VLC... Nếu VLC báo lỗi MRL do CDN chặn Referer, hãy bấm 'Tải Playlist .M3U' hoặc dùng PotPlayer!");
   }
 
   function copyM3u8() {
-    ensureStreamUrl();
-    if (!capturedStreamUrl) {
-      showToast("Đang tìm link video, hãy bấm Play trước!");
+    callEnsureStreamUrl();
+    const stream = getSafeCapturedStreamUrl();
+    if (!stream) {
+      _showToast("Đang tìm link video, hãy bấm Play trước!");
       return;
     }
-    const cleanUrl = capturedStreamUrl.trim();
+    const cleanUrl = stream.trim();
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(cleanUrl).then(() => {
-        showToast("Đã copy link M3U8 chuẩn: " + (cleanUrl.length > 40 ? cleanUrl.slice(0, 37) + "..." : cleanUrl));
+        _showToast("Đã copy link M3U8 chuẩn: " + (cleanUrl.length > 40 ? cleanUrl.slice(0, 37) + "..." : cleanUrl));
       }).catch(() => fallbackCopy(cleanUrl));
     } else {
       fallbackCopy(cleanUrl);
@@ -1921,19 +2049,20 @@
       ta.setSelectionRange(0, 99999);
       document.execCommand("copy");
       ta.remove();
-      showToast("Đã copy link M3U8 chuẩn: " + (text.length > 40 ? text.slice(0, 37) + "..." : text));
+      _showToast("Đã copy link M3U8 chuẩn: " + (text.length > 40 ? text.slice(0, 37) + "..." : text));
     } catch (e) {
       prompt("Sao chép link video:", text);
     }
   }
 
   function downloadM3uFile() {
-    ensureStreamUrl();
-    if (!capturedStreamUrl) {
-      showToast("Chưa có link video, hãy bấm Play trước!");
+    callEnsureStreamUrl();
+    const stream = getSafeCapturedStreamUrl();
+    if (!stream) {
+      _showToast("Chưa có link video, hãy bấm Play trước!");
       return;
     }
-    const cleanUrl = capturedStreamUrl.trim();
+    const cleanUrl = stream.trim();
     const title = (document.title || "Cinema_Pro_Stream").replace(/[/\?%*:|"<>]/g, "_").trim();
     function getStreamReferer(url) {
       if (isNoRefererCdn(url)) return "";
@@ -1956,7 +2085,7 @@
       a.remove();
       URL.revokeObjectURL(a.href);
     }, 1000);
-    showToast("Đã tải playlist .m3u (Kèm Referer cho VLC & PotPlayer)!");
+    _showToast("Đã tải playlist .m3u (Kèm Referer cho VLC & PotPlayer)!");
   }
 
   function adjustSpeed(delta) {
@@ -1966,7 +2095,7 @@
     idx = Math.max(0, Math.min(speeds.length - 1, idx + delta));
     currentSpeed = speeds[idx];
     sendCommandToPlayer({ type: "RO_CMD_SET_SPEED", speed: currentSpeed });
-    showToast("Tốc độ phát: " + currentSpeed + "x");
+    _showToast("Tốc độ phát: " + currentSpeed + "x");
   }
 
   function isComicPage() {
@@ -2008,7 +2137,7 @@
       }
       if (prevBtn) {
         prevBtn.click();
-        showToast("Đang chuyển về chương trước...");
+        _showToast("Đang chuyển về chương trước...");
         return;
       }
     } else {
@@ -2024,7 +2153,7 @@
       }
       if (nextBtn) {
         nextBtn.click();
-        showToast("Đang chuyển tới chương tiếp theo...");
+        _showToast("Đang chuyển tới chương tiếp theo...");
         return;
       }
     }
@@ -2039,11 +2168,11 @@
         if (optVal && optVal.startsWith("http")) {
           location.href = optVal;
         }
-        showToast("Đang tải: " + (select.options[nextIdx].text || "Chương mới"));
+        _showToast("Đang tải: " + (select.options[nextIdx].text || "Chương mới"));
         return;
       }
     }
-    showToast(direction < 0 ? "Đã ở chương đầu tiên!" : "Đã ở chương mới nhất!");
+    _showToast(direction < 0 ? "Đã ở chương đầu tiên!" : "Đã ở chương mới nhất!");
   }
 
   // ─── GLOBAL KEYBOARD SHORTCUTS ───
@@ -2108,7 +2237,8 @@
       toggleTheater();
     } else if (key === "x") {
       e.preventDefault();
-      nukeAdElements(true);
+      if (typeof nukeAdElements === "function") nukeAdElements(true);
+      else if (typeof window !== "undefined" && typeof window.nukeAdElements === "function") window.nukeAdElements(true);
     } else if (e.key === "[") {
       e.preventDefault();
       adjustSpeed(-1);
@@ -2126,6 +2256,21 @@
       seekToPercent(parseInt(e.key, 10) * 10);
     }
   });
+
+  if (typeof window !== "undefined") {
+    window.copyM3u8 = copyM3u8;
+    window.openPotPlayer = openPotPlayer;
+    window.openVlcPlayer = openVlcPlayer;
+    window.downloadM3uFile = downloadM3uFile;
+    window.skipIntro = skipIntro;
+    window.toggleFullscreen = toggleFullscreen;
+    window.toggleHdr = toggleHdr;
+    window.toggleTheater = toggleTheater;
+    window.adjustVolume = adjustVolume;
+    window.adjustSpeed = adjustSpeed;
+    window.isComicPage = isComicPage;
+    window.navigateComicChapter = navigateComicChapter;
+  }
 
 
   if (document.body) initVipHub();

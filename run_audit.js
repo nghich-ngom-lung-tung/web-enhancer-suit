@@ -1357,6 +1357,153 @@ if (manifestObj) {
 
   const cobephimScript = fs.readFileSync(path.join(__dirname, "scripts", "movies", "cobephim.user.js"), "utf8");
   report("scripts/movies/cobephim.user.js: darkbytes.xyz embed domain mapped", cobephimScript.includes("darkbytes.xyz"));
+
+  // ─── RUNTIME ISOLATION & REGRESSION PREVENTION AUDIT ───
+  // Regression Test 1: sniffer.js fetch hook in isolation without isAdApi in scope
+  try {
+    const snifferContent = fs.readFileSync(path.join(extDir, "content", "sniffer.js"), "utf8");
+    const mockWindow = {
+      location: { href: "https://rophim10.work/phimhay", hostname: "rophim10.work", origin: "https://rophim10.work" },
+      document: { title: "RoPhim", querySelector: () => null, getElementById: () => null },
+      fetch: async (input) => ({ status: 200, clone: () => ({ text: async () => "" }) }),
+      Response: typeof Response !== "undefined" ? Response : class Response { constructor(b, i) { this.body = b; this.init = i; } },
+      XMLHttpRequest: function () { this.open = () => {}; this.send = () => {}; this.addEventListener = () => {}; },
+      addEventListener: () => {},
+      localStorage: { getItem: () => null, setItem: () => {} },
+      postMessage: () => {},
+      setInterval: () => 1,
+      clearInterval: () => {},
+      setTimeout: (fn) => setTimeout(fn, 0),
+      clearTimeout: () => {},
+      console: { log: () => {}, warn: () => {}, error: () => {} }
+    };
+    mockWindow.window = mockWindow;
+    const testCtx = vm.createContext(mockWindow);
+    vm.runInContext(snifferContent, testCtx);
+
+    let fetchThrew = false;
+    let fetchErrMsg = "";
+    try {
+      const p1 = mockWindow.fetch("https://rophim10.work/api/auth/session");
+      if (p1 && p1.catch) p1.catch(e => { fetchThrew = true; fetchErrMsg = e.message; });
+      const p2 = mockWindow.fetch("https://rophim10.work/banner/ads");
+      if (p2 && p2.catch) p2.catch(e => { fetchThrew = true; fetchErrMsg = e.message; });
+    } catch (e) {
+      fetchThrew = true;
+      fetchErrMsg = e.message;
+    }
+    report("extension/content/sniffer.js: fetch hook executes in isolation without isAdApi ReferenceError", !fetchThrew, fetchErrMsg);
+  } catch (e) {
+    report("extension/content/sniffer.js: fetch hook executes in isolation without isAdApi ReferenceError", false, e.message);
+  }
+
+  // Regression Test 2: hub-ui.js executes and binds buttons without copyM3u8 ReferenceError
+  try {
+    const hubContent = fs.readFileSync(path.join(extDir, "content", "hub-ui.js"), "utf8");
+    const mockElements = new Map();
+    const mockBody = {
+      children: [],
+      appendChild: (el) => { mockBody.children.push(el); return el; }
+    };
+    const mockDoc = {
+      body: mockBody,
+      getElementById: (id) => mockElements.get(id) || null,
+      createElement: (tag) => {
+        const el = {
+          tagName: tag.toUpperCase(),
+          children: [],
+          classList: { toggle: () => {}, remove: () => {}, add: () => {} },
+          style: {},
+          addEventListener: (evt, fn) => { el["_on_" + evt] = fn; },
+          querySelector: (sel) => {
+            const id = sel.replace("#", "");
+            return mockElements.get(id) || null;
+          },
+          querySelectorAll: () => []
+        };
+        Object.defineProperty(el, "innerHTML", {
+          set: (html) => {
+            el._html = html;
+            const matches = html.match(/id="([^"]+)"/g) || [];
+            matches.forEach(m => {
+              const id = m.replace('id="', '').replace('"', '');
+              mockElements.set(id, {
+                id,
+                style: {},
+                classList: { toggle: () => {}, remove: () => {}, add: () => {} },
+                addEventListener: (evt, fn) => { el["_on_" + evt] = fn; }
+              });
+            });
+          },
+          get: () => el._html || ""
+        });
+        return el;
+      },
+      addEventListener: () => {}
+    };
+    const mockWindow = {
+      document: mockDoc,
+      RO_ICONS: require("./src/modules/icons"),
+      addEventListener: () => {},
+      scrollBy: () => {}
+    };
+    mockWindow.window = mockWindow;
+    const testCtx = vm.createContext(mockWindow);
+    vm.runInContext(hubContent, testCtx);
+
+    let hubThrew = false;
+    let hubErrMsg = "";
+    try {
+      if (typeof mockWindow.initVipHub === "function") {
+        mockWindow.initVipHub();
+      }
+    } catch (e) {
+      hubThrew = true;
+      hubErrMsg = e.message;
+    }
+    report("extension/content/hub-ui.js: initVipHub executes in isolation without copyM3u8 ReferenceError", !hubThrew, hubErrMsg);
+  } catch (e) {
+    report("extension/content/hub-ui.js: initVipHub executes in isolation without copyM3u8 ReferenceError", false, e.message);
+  }
+
+  // Regression Test 3: player-controls.js executes actions without ReferenceError
+  try {
+    const controlsContent = fs.readFileSync(path.join(extDir, "content", "player-controls.js"), "utf8");
+    const mockWindow = {
+      document: {
+        querySelector: () => null,
+        querySelectorAll: () => [],
+        body: { classList: { toggle: () => {} } },
+        title: "Test Video"
+      },
+      navigator: { clipboard: { writeText: () => Promise.resolve() } },
+      localStorage: { getItem: () => null, setItem: () => {} },
+      location: { href: "https://cobephim.cfd/watch/123", hostname: "cobephim.cfd" },
+      addEventListener: () => {},
+      console: { log: () => {}, warn: () => {}, error: () => {} }
+    };
+    mockWindow.window = mockWindow;
+    const testCtx = vm.createContext(mockWindow);
+    vm.runInContext(controlsContent, testCtx);
+
+    let controlsThrew = false;
+    let controlsErrMsg = "";
+    try {
+      mockWindow.copyM3u8();
+      mockWindow.openPotPlayer();
+      mockWindow.openVlcPlayer();
+      mockWindow.skipIntro(85);
+      mockWindow.toggleHdr();
+      mockWindow.toggleTheater();
+      mockWindow.adjustVolume(0.1);
+    } catch (e) {
+      controlsThrew = true;
+      controlsErrMsg = e.message;
+    }
+    report("extension/content/player-controls.js: player actions execute cleanly in isolation without ReferenceError", !controlsThrew, controlsErrMsg);
+  } catch (e) {
+    report("extension/content/player-controls.js: player actions execute cleanly in isolation without ReferenceError", false, e.message);
+  }
 }
 
 // Final check after promise tick

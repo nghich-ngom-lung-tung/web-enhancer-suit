@@ -510,9 +510,19 @@ module.exports = `
       }
     } catch (e) {}
 
-    if (notify && typeof showToast === "function") {
-      showToast(count > 0 ? ("Đã quét sạch " + count + " banner quảng cáo!") : "Đã quét sạch banner!");
+    if (notify) {
+      const toastMsg = count > 0 ? ("Đã quét sạch " + count + " banner quảng cáo!") : "Đã quét sạch banner!";
+      if (typeof window !== "undefined" && typeof window.showToast === "function") {
+        window.showToast(toastMsg);
+      } else if (typeof showToast === "function") {
+        showToast(toastMsg);
+      }
     }
+  }
+
+  if (typeof window !== "undefined") {
+    window.isAdApi = isAdApi;
+    window.nukeAdElements = nukeAdElements;
   }
 
   // Tự động quét sạch banner quảng cáo ngầm

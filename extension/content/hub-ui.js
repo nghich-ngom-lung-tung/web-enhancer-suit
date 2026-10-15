@@ -6,17 +6,31 @@
 
   // ─── TOAST NOTIFICATIONS (ZERO EMOJIS, CLEAN TEXT) ───
   function showToast(msg) {
+    if (typeof document === "undefined" || !document.body) {
+      console.log("[Cinema Pro]", msg);
+      return;
+    }
     const t = document.createElement("div");
     t.className = "ro-toast";
     t.innerHTML = msg;
     document.body.appendChild(t);
-    setTimeout(() => t.remove(), 2200);
+    setTimeout(() => {
+      try { t.remove(); } catch (e) {}
+    }, 2200);
+  }
+  if (typeof window !== "undefined") {
+    window.showToast = showToast;
   }
 
   // ─── VIP CONTROL HUB DOM CREATION ───
   function initVipHub() {
+    if (typeof document === "undefined") return;
     if (document.getElementById("ro-vip-hub")) return;
-    const isComic = typeof isComicPage === "function" && isComicPage() && !document.querySelector("video");
+    if (!document.body) {
+      document.addEventListener("DOMContentLoaded", () => setTimeout(initVipHub, 200), { once: true });
+      return;
+    }
+    const isComic = (typeof isComicPage === "function" ? isComicPage() : (typeof window !== "undefined" && typeof window.isComicPage === "function" ? window.isComicPage() : false)) && !document.querySelector("video");
     const hub = document.createElement("div");
     hub.id = "ro-vip-hub";
     hub.innerHTML = isComic ? `
@@ -137,24 +151,42 @@
       if (el) el.addEventListener("click", fn);
     };
 
-    bind("ro-comic-prev-btn", () => navigateComicChapter(-1));
-    bind("ro-comic-next-btn", () => navigateComicChapter(1));
+    const execAction = (fnName, ...args) => {
+      try {
+        if (typeof window !== "undefined" && typeof window[fnName] === "function") {
+          return window[fnName](...args);
+        }
+        if (typeof eval !== "undefined") {
+          const fn = eval("(typeof " + fnName + " === 'function' ? " + fnName + " : null)");
+          if (fn) return fn(...args);
+        }
+      } catch (e) {
+        console.warn("[Cinema Pro] Action not found:", fnName);
+      }
+    };
+
+    bind("ro-comic-prev-btn", () => execAction("navigateComicChapter", -1));
+    bind("ro-comic-next-btn", () => execAction("navigateComicChapter", 1));
     bind("ro-comic-up-btn", () => window.scrollBy({ top: -450, behavior: "smooth" }));
     bind("ro-comic-down-btn", () => window.scrollBy({ top: 450, behavior: "smooth" }));
-    bind("ro-stream-preview", copyM3u8);
-    bind("ro-potplayer-btn", openPotPlayer);
-    bind("ro-vlc-btn", openVlcPlayer);
-    bind("ro-copym3u8-btn", copyM3u8);
-    bind("ro-m3ufile-btn", downloadM3uFile);
-    bind("ro-skipintro-btn", () => skipIntro(85));
-    bind("ro-fullscreen-btn", toggleFullscreen);
-    bind("ro-hdr-btn", toggleHdr);
-    bind("ro-theater-btn", toggleTheater);
-    bind("ro-nukeads-btn", () => nukeAdElements(true));
-    bind("ro-vol-down", () => adjustVolume(-0.05));
-    bind("ro-vol-up", () => adjustVolume(0.05));
-    bind("ro-speed-down", () => adjustSpeed(-1));
-    bind("ro-speed-up", () => adjustSpeed(1));
+    bind("ro-stream-preview", () => execAction("copyM3u8"));
+    bind("ro-potplayer-btn", () => execAction("openPotPlayer"));
+    bind("ro-vlc-btn", () => execAction("openVlcPlayer"));
+    bind("ro-copym3u8-btn", () => execAction("copyM3u8"));
+    bind("ro-m3ufile-btn", () => execAction("downloadM3uFile"));
+    bind("ro-skipintro-btn", () => execAction("skipIntro", 85));
+    bind("ro-fullscreen-btn", () => execAction("toggleFullscreen"));
+    bind("ro-hdr-btn", () => execAction("toggleHdr"));
+    bind("ro-theater-btn", () => execAction("toggleTheater"));
+    bind("ro-nukeads-btn", () => execAction("nukeAdElements", true));
+    bind("ro-vol-down", () => execAction("adjustVolume", -0.05));
+    bind("ro-vol-up", () => execAction("adjustVolume", 0.05));
+    bind("ro-speed-down", () => execAction("adjustSpeed", -1));
+    bind("ro-speed-up", () => execAction("adjustSpeed", 1));
+  }
+
+  if (typeof window !== "undefined") {
+    window.initVipHub = initVipHub;
   }
 
 

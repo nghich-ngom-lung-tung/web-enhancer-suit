@@ -2,6 +2,45 @@
  * Cinema Pro Suite - Player Controls & Hotkeys Module (Zero Emojis)
  */
 module.exports = `
+  const _showToast = (msg) => {
+    try {
+      if (typeof window !== "undefined" && typeof window.showToast === "function") {
+        return window.showToast(msg);
+      }
+      if (typeof eval !== "undefined") {
+        const fn = eval("(typeof showToast === 'function' ? showToast : null)");
+        if (fn && fn !== _showToast) return fn(msg);
+      }
+    } catch (e) {}
+    console.log("[Cinema Pro]", msg);
+  };
+
+  const getSafeCapturedStreamUrl = () => {
+    if (typeof capturedStreamUrl !== "undefined" && capturedStreamUrl) return capturedStreamUrl;
+    if (typeof window !== "undefined" && window.capturedStreamUrl) return window.capturedStreamUrl;
+    if (typeof window !== "undefined" && typeof window.getCapturedStreamUrl === "function") {
+      const u = window.getCapturedStreamUrl();
+      if (u) return u;
+    }
+    try {
+      const s = localStorage.getItem("RO_CAPTURED_STREAM");
+      if (s) return s;
+    } catch (e) {}
+    return "";
+  };
+
+  const callEnsureStreamUrl = () => {
+    try {
+      if (typeof ensureStreamUrl === "function") ensureStreamUrl();
+      else if (typeof window !== "undefined" && typeof window.ensureStreamUrl === "function") window.ensureStreamUrl();
+    } catch (e) {}
+  };
+
+  var currentSpeed = (typeof currentSpeed !== "undefined" ? currentSpeed : ((typeof window !== "undefined" && window.__cinema_speed) || 1.0));
+  var currentVolume = (typeof currentVolume !== "undefined" ? currentVolume : ((typeof window !== "undefined" && window.__cinema_volume) || 1.0));
+  var isHdrEnabled = (typeof isHdrEnabled !== "undefined" ? isHdrEnabled : ((typeof window !== "undefined" && window.__cinema_hdr) || false));
+  var isTheaterMode = (typeof isTheaterMode !== "undefined" ? isTheaterMode : ((typeof window !== "undefined" && window.__cinema_theater) || false));
+
   function sendCommandToPlayer(cmd) {
     const video = document.querySelector("video");
     if (video) {
@@ -37,17 +76,17 @@ module.exports = `
 
   function skipIntro(sec = 85) {
     sendCommandToPlayer({ type: "RO_CMD_SKIP_INTRO", seconds: sec });
-    showToast("Đã tua Intro: +" + sec + "s");
+    _showToast("Đã tua Intro: +" + sec + "s");
   }
 
   function seekRelative(delta = 5) {
     sendCommandToPlayer({ type: "RO_CMD_SEEK", delta });
-    showToast(delta > 0 ? ("Tua tới: +" + delta + "s") : ("Tua lùi: " + delta + "s"));
+    _showToast(delta > 0 ? ("Tua tới: +" + delta + "s") : ("Tua lùi: " + delta + "s"));
   }
 
   function seekToPercent(pct = 0) {
     sendCommandToPlayer({ type: "RO_CMD_SEEK_PERCENT", percent: pct });
-    showToast("Vị trí video: " + pct + "%");
+    _showToast("Vị trí video: " + pct + "%");
   }
 
   function adjustVolume(delta) {
@@ -55,25 +94,25 @@ module.exports = `
     newVol = Math.max(0, Math.min(1.0, newVol));
     currentVolume = newVol;
     sendCommandToPlayer({ type: "RO_CMD_VOLUME", volume: currentVolume });
-    showToast("Âm lượng: " + Math.round(currentVolume * 100) + "%");
+    _showToast("Âm lượng: " + Math.round(currentVolume * 100) + "%");
   }
 
   function toggleHdr() {
     isHdrEnabled = !isHdrEnabled;
     sendCommandToPlayer({ type: "RO_CMD_TOGGLE_HDR" });
-    showToast(isHdrEnabled ? "Anime OLED HDR: BẬT" : "OLED HDR: TẮT");
+    _showToast(isHdrEnabled ? "Anime OLED HDR: BẬT" : "OLED HDR: TẮT");
   }
 
   function toggleTheater() {
     isTheaterMode = !isTheaterMode;
     document.body.classList.toggle("ro-theater-active", isTheaterMode);
-    showToast(isTheaterMode ? "Chế độ Rạp phim: BẬT" : "Chế độ Rạp phim: TẮT");
+    _showToast(isTheaterMode ? "Chế độ Rạp phim: BẬT" : "Chế độ Rạp phim: TẮT");
   }
 
   function toggleFullscreen() {
     if (document.fullscreenElement) {
       try { document.exitFullscreen().catch(() => {}); } catch (e) {}
-      showToast("Đã thoát Toàn màn hình");
+      _showToast("Đã thoát Toàn màn hình");
     } else {
       const playerWrapper = document.querySelector(".player-wrapper, .player-container, #player, iframe, video");
       const target = playerWrapper || document.documentElement;
@@ -81,7 +120,7 @@ module.exports = `
         try { target.requestFullscreen().catch(() => {}); } catch (e) {}
       }
       sendCommandToPlayer({ type: "RO_CMD_FULLSCREEN" });
-      showToast("Toàn màn hình");
+      _showToast("Toàn màn hình");
     }
   }
 
@@ -102,12 +141,13 @@ module.exports = `
   }
 
   function openPotPlayer() {
-    ensureStreamUrl();
-    if (!capturedStreamUrl) {
-      showToast("Đang chờ bắt link video, hãy bấm Play trước!");
+    callEnsureStreamUrl();
+    const stream = getSafeCapturedStreamUrl();
+    if (!stream) {
+      _showToast("Đang chờ bắt link video, hãy bấm Play trước!");
       return;
     }
-    const cleanUrl = capturedStreamUrl.trim();
+    const cleanUrl = stream.trim();
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(cleanUrl).catch(() => {});
     }
@@ -122,33 +162,35 @@ module.exports = `
     const ref = getStreamReferer(cleanUrl);
     const potTarget = ref ? (cleanUrl + "|Referer=" + encodeURIComponent(ref)) : cleanUrl;
     window.location.href = "potplayer://" + potTarget;
-    showToast("Đang mở PotPlayer...");
+    _showToast("Đang mở PotPlayer...");
   }
 
   function openVlcPlayer() {
-    ensureStreamUrl();
-    if (!capturedStreamUrl) {
-      showToast("Đang chờ bắt link video, hãy bấm Play trước!");
+    callEnsureStreamUrl();
+    const stream = getSafeCapturedStreamUrl();
+    if (!stream) {
+      _showToast("Đang chờ bắt link video, hãy bấm Play trước!");
       return;
     }
-    const cleanUrl = capturedStreamUrl.trim();
+    const cleanUrl = stream.trim();
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(cleanUrl).catch(() => {});
     }
     window.location.href = "vlc://" + encodeURIComponent(cleanUrl);
-    showToast("Đang mở VLC... Nếu VLC báo lỗi MRL do CDN chặn Referer, hãy bấm 'Tải Playlist .M3U' hoặc dùng PotPlayer!");
+    _showToast("Đang mở VLC... Nếu VLC báo lỗi MRL do CDN chặn Referer, hãy bấm 'Tải Playlist .M3U' hoặc dùng PotPlayer!");
   }
 
   function copyM3u8() {
-    ensureStreamUrl();
-    if (!capturedStreamUrl) {
-      showToast("Đang tìm link video, hãy bấm Play trước!");
+    callEnsureStreamUrl();
+    const stream = getSafeCapturedStreamUrl();
+    if (!stream) {
+      _showToast("Đang tìm link video, hãy bấm Play trước!");
       return;
     }
-    const cleanUrl = capturedStreamUrl.trim();
+    const cleanUrl = stream.trim();
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(cleanUrl).then(() => {
-        showToast("Đã copy link M3U8 chuẩn: " + (cleanUrl.length > 40 ? cleanUrl.slice(0, 37) + "..." : cleanUrl));
+        _showToast("Đã copy link M3U8 chuẩn: " + (cleanUrl.length > 40 ? cleanUrl.slice(0, 37) + "..." : cleanUrl));
       }).catch(() => fallbackCopy(cleanUrl));
     } else {
       fallbackCopy(cleanUrl);
@@ -166,19 +208,20 @@ module.exports = `
       ta.setSelectionRange(0, 99999);
       document.execCommand("copy");
       ta.remove();
-      showToast("Đã copy link M3U8 chuẩn: " + (text.length > 40 ? text.slice(0, 37) + "..." : text));
+      _showToast("Đã copy link M3U8 chuẩn: " + (text.length > 40 ? text.slice(0, 37) + "..." : text));
     } catch (e) {
       prompt("Sao chép link video:", text);
     }
   }
 
   function downloadM3uFile() {
-    ensureStreamUrl();
-    if (!capturedStreamUrl) {
-      showToast("Chưa có link video, hãy bấm Play trước!");
+    callEnsureStreamUrl();
+    const stream = getSafeCapturedStreamUrl();
+    if (!stream) {
+      _showToast("Chưa có link video, hãy bấm Play trước!");
       return;
     }
-    const cleanUrl = capturedStreamUrl.trim();
+    const cleanUrl = stream.trim();
     const title = (document.title || "Cinema_Pro_Stream").replace(/[/\\?%*:|"<>]/g, "_").trim();
     function getStreamReferer(url) {
       if (isNoRefererCdn(url)) return "";
@@ -201,7 +244,7 @@ module.exports = `
       a.remove();
       URL.revokeObjectURL(a.href);
     }, 1000);
-    showToast("Đã tải playlist .m3u (Kèm Referer cho VLC & PotPlayer)!");
+    _showToast("Đã tải playlist .m3u (Kèm Referer cho VLC & PotPlayer)!");
   }
 
   function adjustSpeed(delta) {
@@ -211,7 +254,7 @@ module.exports = `
     idx = Math.max(0, Math.min(speeds.length - 1, idx + delta));
     currentSpeed = speeds[idx];
     sendCommandToPlayer({ type: "RO_CMD_SET_SPEED", speed: currentSpeed });
-    showToast("Tốc độ phát: " + currentSpeed + "x");
+    _showToast("Tốc độ phát: " + currentSpeed + "x");
   }
 
   function isComicPage() {
@@ -253,7 +296,7 @@ module.exports = `
       }
       if (prevBtn) {
         prevBtn.click();
-        showToast("Đang chuyển về chương trước...");
+        _showToast("Đang chuyển về chương trước...");
         return;
       }
     } else {
@@ -269,7 +312,7 @@ module.exports = `
       }
       if (nextBtn) {
         nextBtn.click();
-        showToast("Đang chuyển tới chương tiếp theo...");
+        _showToast("Đang chuyển tới chương tiếp theo...");
         return;
       }
     }
@@ -284,11 +327,11 @@ module.exports = `
         if (optVal && optVal.startsWith("http")) {
           location.href = optVal;
         }
-        showToast("Đang tải: " + (select.options[nextIdx].text || "Chương mới"));
+        _showToast("Đang tải: " + (select.options[nextIdx].text || "Chương mới"));
         return;
       }
     }
-    showToast(direction < 0 ? "Đã ở chương đầu tiên!" : "Đã ở chương mới nhất!");
+    _showToast(direction < 0 ? "Đã ở chương đầu tiên!" : "Đã ở chương mới nhất!");
   }
 
   // ─── GLOBAL KEYBOARD SHORTCUTS ───
@@ -353,7 +396,8 @@ module.exports = `
       toggleTheater();
     } else if (key === "x") {
       e.preventDefault();
-      nukeAdElements(true);
+      if (typeof nukeAdElements === "function") nukeAdElements(true);
+      else if (typeof window !== "undefined" && typeof window.nukeAdElements === "function") window.nukeAdElements(true);
     } else if (e.key === "[") {
       e.preventDefault();
       adjustSpeed(-1);
@@ -371,4 +415,19 @@ module.exports = `
       seekToPercent(parseInt(e.key, 10) * 10);
     }
   });
+
+  if (typeof window !== "undefined") {
+    window.copyM3u8 = copyM3u8;
+    window.openPotPlayer = openPotPlayer;
+    window.openVlcPlayer = openVlcPlayer;
+    window.downloadM3uFile = downloadM3uFile;
+    window.skipIntro = skipIntro;
+    window.toggleFullscreen = toggleFullscreen;
+    window.toggleHdr = toggleHdr;
+    window.toggleTheater = toggleTheater;
+    window.adjustVolume = adjustVolume;
+    window.adjustSpeed = adjustSpeed;
+    window.isComicPage = isComicPage;
+    window.navigateComicChapter = navigateComicChapter;
+  }
 `;

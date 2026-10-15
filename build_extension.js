@@ -158,6 +158,8 @@ ${getSnifferCode(true)}
   window.unwrapStreamUrl = typeof unwrapStreamUrl === "function" ? unwrapStreamUrl : undefined;
   window.ensureStreamUrl = typeof ensureStreamUrl === "function" ? ensureStreamUrl : undefined;
   window.isNoRefererCdn = typeof isNoRefererCdn === "function" ? isNoRefererCdn : undefined;
+  window.capturedStreamUrl = typeof capturedStreamUrl !== "undefined" ? capturedStreamUrl : "";
+  window.getCapturedStreamUrl = typeof getCapturedStreamUrl === "function" ? getCapturedStreamUrl : () => window.capturedStreamUrl || "";
 })();
 `;
 fs.writeFileSync(path.join(CONTENT_DIR, "sniffer.js"), snifferJs, "utf8");
@@ -172,6 +174,7 @@ const adNukerJs = `/**
 ${adNukerCode}
 
   // Export to window for modular extension architecture
+  window.isAdApi = typeof isAdApi === "function" ? isAdApi : undefined;
   window.nukeAdElements = typeof nukeAdElements === "function" ? nukeAdElements : undefined;
 })();
 `;
@@ -203,9 +206,18 @@ const playerControlsJs = `/**
 ${playerControlsCode}
 
   // Export to window for modular extension architecture
+  window.copyM3u8 = typeof copyM3u8 === "function" ? copyM3u8 : undefined;
+  window.openPotPlayer = typeof openPotPlayer === "function" ? openPotPlayer : undefined;
+  window.openVlcPlayer = typeof openVlcPlayer === "function" ? openVlcPlayer : undefined;
+  window.downloadM3uFile = typeof downloadM3uFile === "function" ? downloadM3uFile : undefined;
+  window.skipIntro = typeof skipIntro === "function" ? skipIntro : undefined;
+  window.toggleFullscreen = typeof toggleFullscreen === "function" ? toggleFullscreen : undefined;
   window.toggleHdr = typeof toggleHdr === "function" ? toggleHdr : undefined;
   window.toggleTheater = typeof toggleTheater === "function" ? toggleTheater : undefined;
-  window.skipIntro = typeof skipIntro === "function" ? skipIntro : undefined;
+  window.adjustVolume = typeof adjustVolume === "function" ? adjustVolume : undefined;
+  window.adjustSpeed = typeof adjustSpeed === "function" ? adjustSpeed : undefined;
+  window.isComicPage = typeof isComicPage === "function" ? isComicPage : undefined;
+  window.navigateComicChapter = typeof navigateComicChapter === "function" ? navigateComicChapter : undefined;
 })();
 `;
 fs.writeFileSync(path.join(CONTENT_DIR, "player-controls.js"), playerControlsJs, "utf8");
@@ -219,13 +231,17 @@ const contentJs = `/**
 (() => {
   "use strict";
 
-  // 1. Initialize VIP Control Hub
-  if (document.body) {
-    if (typeof window.initVipHub === "function") window.initVipHub();
-  } else {
-    document.addEventListener("DOMContentLoaded", () => {
+  // 1. Initialize VIP Control Hub safely (delay 400ms to allow React / Next.js SSR hydration to settle)
+  const startHub = () => {
+    setTimeout(() => {
       if (typeof window.initVipHub === "function") window.initVipHub();
-    }, { once: true });
+    }, 400);
+  };
+
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    startHub();
+  } else {
+    document.addEventListener("DOMContentLoaded", startHub, { once: true });
   }
 
   // 2. Hook Stream Sniffer on DOM ready & full load
@@ -312,9 +328,9 @@ const manifest = {
       matches: manifestMatches,
       js: [
         "content/icons.js",
+        "content/ad-nuker.js",
         "content/vip-patcher.js",
         "content/sniffer.js",
-        "content/ad-nuker.js",
         "content/hub-ui.js",
         "content/player-controls.js",
         "content/content.js"

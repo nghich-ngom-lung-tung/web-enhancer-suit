@@ -972,9 +972,9 @@
       ],
       "js": [
         "content/icons.js",
+        "content/ad-nuker.js",
         "content/vip-patcher.js",
         "content/sniffer.js",
-        "content/ad-nuker.js",
         "content/hub-ui.js",
         "content/player-controls.js",
         "content/content.js"

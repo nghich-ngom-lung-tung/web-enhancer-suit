@@ -5,13 +5,17 @@
 (() => {
   "use strict";
 
-  // 1. Initialize VIP Control Hub
-  if (document.body) {
-    if (typeof window.initVipHub === "function") window.initVipHub();
-  } else {
-    document.addEventListener("DOMContentLoaded", () => {
+  // 1. Initialize VIP Control Hub safely (delay 400ms to allow React / Next.js SSR hydration to settle)
+  const startHub = () => {
+    setTimeout(() => {
       if (typeof window.initVipHub === "function") window.initVipHub();
-    }, { once: true });
+    }, 400);
+  };
+
+  if (document.readyState === "complete" || document.readyState === "interactive") {
+    startHub();
+  } else {
+    document.addEventListener("DOMContentLoaded", startHub, { once: true });
   }
 
   // 2. Hook Stream Sniffer on DOM ready & full load
