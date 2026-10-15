@@ -10,14 +10,17 @@
   window.addEventListener("message", (event) => {
     if (event.source !== window || !event.data || typeof event.data !== "object") return;
 
-    if (event.data.type === "CINEMA_PRO_STREAM_FOUND") {
-      try {
-        chrome.runtime.sendMessage({
-          action: "STREAM_DETECTED",
-          url: event.data.url,
-          title: event.data.title || document.title
-        });
-      } catch (e) {}
+    if (event.data.type === "CINEMA_PRO_STREAM_FOUND" || event.data.type === "RO_STREAM_FOUND") {
+      const streamUrl = event.data.url || event.data.streamUrl;
+      if (streamUrl) {
+        try {
+          chrome.runtime.sendMessage({
+            action: "STREAM_DETECTED",
+            url: streamUrl,
+            title: event.data.title || document.title
+          });
+        } catch (e) {}
+      }
     }
   });
 

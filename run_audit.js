@@ -1297,6 +1297,12 @@ if (manifestObj) {
   const filesToSyntaxCheck = [
     { file: path.join(extDir, "background.js"), name: "extension/background.js" },
     { file: path.join(extDir, "content", "bridge.js"), name: "extension/content/bridge.js" },
+    { file: path.join(extDir, "content", "icons.js"), name: "extension/content/icons.js" },
+    { file: path.join(extDir, "content", "vip-patcher.js"), name: "extension/content/vip-patcher.js" },
+    { file: path.join(extDir, "content", "sniffer.js"), name: "extension/content/sniffer.js" },
+    { file: path.join(extDir, "content", "ad-nuker.js"), name: "extension/content/ad-nuker.js" },
+    { file: path.join(extDir, "content", "hub-ui.js"), name: "extension/content/hub-ui.js" },
+    { file: path.join(extDir, "content", "player-controls.js"), name: "extension/content/player-controls.js" },
     { file: path.join(extDir, "content", "content.js"), name: "extension/content/content.js" },
     { file: path.join(extDir, "popup", "popup.js"), name: "extension/popup/popup.js" }
   ];
