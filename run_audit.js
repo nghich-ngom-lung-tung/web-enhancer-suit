@@ -1291,6 +1291,9 @@ if (manifestObj) {
     const matches = (mainWorldScript && mainWorldScript.matches) || [];
     const invalidMatches = matches.filter(m => !chromePatternRegex.test(m));
     report(`extension matches: 100% compliance with Chrome MV3 pattern specification (${matches.length} patterns)`, invalidMatches.length === 0, invalidMatches.slice(0, 3).join(", "));
+    report("extension matches: rophim10.work pattern present", matches.some(m => m.includes("rophim10.work")));
+    report("extension matches: moviehdthai.com pattern present", matches.some(m => m.includes("moviehdthai.com")));
+    report("extension matches: cobephim.cfd pattern present", matches.some(m => m.includes("cobephim.cfd")));
   }
 
   // Validate script syntax
@@ -1329,6 +1332,17 @@ if (manifestObj) {
   report("extension/popup/popup.html: Contains UI controls & stream detection container", htmlContent.includes("current-host") && htmlContent.includes("stream-text") && htmlContent.includes("btn-toggle-hdr"));
   report("extension/popup/popup.css: Non-empty Glassmorphism stylesheet", cssContent.length > 500 && cssContent.includes(".popup-container"));
   report("extension/content/styles.css: Master stylesheet compiled", fs.existsSync(path.join(extDir, "content", "styles.css")) && fs.statSync(path.join(extDir, "content", "styles.css")).size > 20000);
+
+  // Validate Extension VIP Patcher for new sites
+  const vipPatcherCode = fs.readFileSync(path.join(extDir, "content", "vip-patcher.js"), "utf8");
+  const hasExtRophimKeywords = vipPatcherCode.includes("moviehdthai.com") && vipPatcherCode.includes("cobephim.cfd") && vipPatcherCode.includes("rophim10.work");
+  report("extension/content/vip-patcher.js: Keywords cover moviehdthai, cobephim, and rophim10", hasExtRophimKeywords);
+
+  const hasExtHostCheck = vipPatcherCode.includes("moviehdthai") && vipPatcherCode.includes("cobephim");
+  report("extension/content/vip-patcher.js: isRophimHost covers moviehdthai and cobephim", hasExtHostCheck);
+
+  const hasExtCredKeys = vipPatcherCode.includes("MOVIEHDTHAI_CREDENTIALS") && vipPatcherCode.includes("COBEPHIM_CREDENTIALS");
+  report("extension/content/vip-patcher.js: Per-site credential storage isolated", hasExtCredKeys);
 }
 
 // Final check after promise tick
