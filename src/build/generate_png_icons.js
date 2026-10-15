@@ -203,8 +203,12 @@ function generateAllIcons(outputDir) {
   fs.mkdirSync(outputDir, { recursive: true });
   const sizes = [16, 48, 128];
   sizes.forEach(size => {
-    const png = renderCinemaProIcon(size);
     const dest = path.join(outputDir, `icon${size}.png`);
+    if (fs.existsSync(dest) && fs.statSync(dest).size > 0) {
+      console.log(`  ✓ Preserved icon${size}.png (${fs.statSync(dest).size} bytes) -> ${dest}`);
+      return;
+    }
+    const png = renderCinemaProIcon(size);
     fs.writeFileSync(dest, png);
     console.log(`  ✓ Generated icon${size}.png (${png.length} bytes) -> ${dest}`);
   });
