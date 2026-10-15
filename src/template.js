@@ -62,7 +62,7 @@ function generateUserscript(site, isMasterAllInOne = false, allSites = [], custo
     ? "Web Enhancer Suite (All-In-One) - Phim, Anime, Bóng Đá & Truyện Tranh"
     : site.name;
   const scriptDesc = isMasterAllInOne
-    ? "Bản Master Gộp Tất Cả Trong Một: Mở khóa VIP 2099 + Vô hạn Coin + Chặn 100% AdBlock/Stream Guard/Ads tàng hình + Tóm link M3U8 PotPlayer/VLC + Phím tắt Tua 5s/Skip Intro 85s/Đọc truyện A-D cuộn trang W-S & Bộ lọc Anime OLED HDR trên 45+ website phim, anime, bóng đá trực tiếp và truyện tranh Việt Nam!"
+    ? "Bản Master: Tối ưu trải nghiệm xem phim, anime, bóng đá và truyện tranh. Chặn quảng cáo thông minh, phím tắt điều khiển, bộ lọc OLED HDR và hỗ trợ phát PotPlayer/VLC trên 50+ website tại Việt Nam."
     : site.desc;
   const scriptVersion = isMasterAllInOne ? "5.4.9" : (site.version || "5.4.9");
   const enableRophimVip = isMasterAllInOne || Boolean(site.isRophim);
