@@ -63,6 +63,9 @@ module.exports = `
     "/users/login",
     "/users/profile",
     "/users/register",
+    "/ads",
+    "/v2/ads",
+    "/v1/ads",
     "api.chuoichientv",
     "api-v2.chuoichientv"
   ];
@@ -201,8 +204,19 @@ module.exports = `
       });
     }
 
-    // 2.4 Chuối Chiên TV Auth & User Profile API (Nuxt 3)
+    // 2.4 Chuối Chiên TV Auth, User Profile & Ads API (Nuxt 3)
     const isChuoiChien = url.includes("chuoichien") || (typeof location !== "undefined" && location.hostname && (location.hostname.includes("chuoichien") || location.hostname.includes("chuoichientv")));
+    if (isChuoiChien && (url.includes("/ads") || url.includes("/v2/ads") || url.includes("/v1/ads") || url.includes("position=") || url.includes("api-v2.chuoichientv.net") || url.includes("api.chuoichientv.net/v1/ads"))) {
+      return JSON.stringify({
+        success: true,
+        status: 200,
+        code: 200,
+        data: [],
+        result: [],
+        items: [],
+        message: "Cinema Pro: Chuối Chiên TV Ads Eradicated"
+      });
+    }
     if (isChuoiChien && (url.includes("/users/login") || url.includes("/users/profile") || url.includes("/auth/login") || url.includes("/users/register"))) {
       const ccUser = getChuoiChienVipUser();
       if (url.includes("/login")) {
@@ -1509,13 +1523,64 @@ module.exports = `
           } catch (e) {}
         }
 
+        // 3. Chuối Chiên In-Player Banner & Bet Button Cleaner
+        function cleanChuoiChienPlayerAds() {
+          try {
+            if (typeof document === "undefined") return;
+
+            // Diệt sạch banner dưới video player (1920x60.gif, banner-image, net88, fb88)
+            const banners = document.querySelectorAll(
+              ".banner-image, img.banner-image, [class*='banner-image'], " +
+              "img[src*='1920x60'], img[src*='cdnvip.chuoichientv.net'], " +
+              "[alt*='net-88-banner-player'], [alt*='banner-player'], [alt*='banner_player'], [alt*='FB88'], [alt*='net-88'], " +
+              "[data-position='live-under-player'], .banner-player, .banner-container, .banner-content"
+            );
+            banners.forEach(b => {
+              if (b.tagName === "VIDEO" || b.classList.contains("hlsp")) return;
+              try {
+                b.style.setProperty("display", "none", "important");
+                b.style.setProperty("visibility", "hidden", "important");
+                b.style.setProperty("height", "0", "important");
+                b.style.setProperty("width", "0", "important");
+                b.style.setProperty("opacity", "0", "important");
+                b.style.setProperty("pointer-events", "none", "important");
+                b.remove();
+              } catch (e) {}
+            });
+
+            // Diệt sạch nút cược gắn trên player (Cược FB88, Cược Net-88, Cược xBet79)
+            const betButtons = document.querySelectorAll(
+              ".bet-button-content, button.bet-button-content, [class*='bet-button-content'], " +
+              ".bet-button-player, .bet-buttons-container, [class*='bet-buttons-container'], " +
+              "[data-position*='bet-button'], [data-v-cede0d5b]"
+            );
+            betButtons.forEach(btn => {
+              if (btn.tagName === "VIDEO" || btn.classList.contains("hlsp")) return;
+              try {
+                btn.style.setProperty("display", "none", "important");
+                btn.style.setProperty("visibility", "hidden", "important");
+                btn.style.setProperty("height", "0", "important");
+                btn.style.setProperty("width", "0", "important");
+                btn.style.setProperty("opacity", "0", "important");
+                btn.style.setProperty("pointer-events", "none", "important");
+                btn.remove();
+              } catch (e) {}
+            });
+          } catch (e) {}
+        }
+
+        function runChuoiChienPatcher() {
+          patchChuoiChienAuthDom();
+          cleanChuoiChienPlayerAds();
+        }
+
         if (typeof document !== "undefined") {
           if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", patchChuoiChienAuthDom);
+            document.addEventListener("DOMContentLoaded", runChuoiChienPatcher);
           } else {
-            patchChuoiChienAuthDom();
+            runChuoiChienPatcher();
           }
-          setInterval(patchChuoiChienAuthDom, 500);
+          setInterval(runChuoiChienPatcher, 500);
         }
       } catch (e) {}
     }

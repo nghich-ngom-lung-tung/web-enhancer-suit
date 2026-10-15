@@ -946,6 +946,12 @@ chuoiChienScripts.forEach(file => {
       report(`${file}: Chuối Chiên TV /users/profile intercepted returning VIP user profile`, profilePassed);
     });
 
+    // Test 4.16: Chuối Chiên TV /ads API mock intercepted (empty ads payload)
+    ctx.window.fetch("https://api-v2.chuoichientv.net/v2/ads").then(res => res.json()).then(data => {
+      const adsPassed = Boolean(data && data.success === true && Array.isArray(data.data) && data.data.length === 0);
+      report(`${file}: Chuối Chiên TV /ads intercepted returning empty ads array (banner & bet buttons defused)`, adsPassed);
+    });
+
   } catch (err) {
     report(`${file}: Chuối Chiên VIP Patcher execution`, false, err.stack);
   }
