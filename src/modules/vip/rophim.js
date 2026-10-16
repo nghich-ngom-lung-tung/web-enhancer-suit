@@ -423,6 +423,36 @@ module.exports = `
       });
     }
 
+    // 1b. User Profile
+    if (url.includes("/users/profile") || url.includes("/user/profile")) {
+      const realUser = getRealProvisionedUser();
+      const u = {
+        id: realUser?.id || 999999,
+        name: realUser?.name || "VIP Cinema Pro",
+        email: realUser?.email || "vip@rophim.vip",
+        role: "VIP",
+        is_vip: true,
+        is_premium: true,
+        thungBalance: COIN_BALANCE,
+        coin_balance: COIN_BALANCE,
+        roles: [
+          { id: 1, name: "admin" },
+          { id: 2, name: "vip" },
+          { id: 3, name: "premium" }
+        ],
+        permissions: ["admin", "vip", "premium", "superadmin"]
+      };
+      return JSON.stringify({
+        status: true,
+        statusCode: 200,
+        code: 200,
+        data: u,
+        result: u,
+        user: u,
+        ...u
+      });
+    }
+
     // 2. Comments & Reactions
     const isEmbedOnlyHost = typeof location !== "undefined" && location.hostname && (
       location.hostname.includes("darkbytes.xyz") ||
@@ -492,8 +522,13 @@ module.exports = `
     if (url.includes("mark-all-as-read")) {
       return JSON.stringify({
         status: true,
+        statusCode: 200,
         code: 200,
-        message: "Đã đánh dấu đọc tất cả"
+        message: "Đã đánh dấu đọc tất cả",
+        notificationsMovie: [],
+        notificationsOther: [],
+        unreadCountMovie: 0,
+        unreadCountOther: 0
       });
     }
 
@@ -644,12 +679,23 @@ module.exports = `
     }
 
     // 10. Notifications
-    if (url.includes("/notifications")) {
+    if (url.includes("/notifications") || url.includes("/notification") || url.includes("notification")) {
+      const emptyNoti = {
+        notificationsMovie: [],
+        notificationsOther: [],
+        unreadCountMovie: 0,
+        unreadCountOther: 0
+      };
       return JSON.stringify({
         status: true,
         statusCode: 200,
         code: 200,
-        data: [],
+        notificationsMovie: [],
+        notificationsOther: [],
+        unreadCountMovie: 0,
+        unreadCountOther: 0,
+        data: emptyNoti,
+        result: emptyNoti,
         items: [],
         unreadCount: 0,
         unread_count: 0

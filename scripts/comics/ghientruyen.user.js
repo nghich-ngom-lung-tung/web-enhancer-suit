@@ -556,6 +556,21 @@
       }
       return data;
     }
+    if (url && (url.includes("/notification") || url.includes("notification"))) {
+      if (data && typeof data === "object") {
+        if (!Array.isArray(data.notificationsMovie)) data.notificationsMovie = [];
+        if (!Array.isArray(data.notificationsOther)) data.notificationsOther = [];
+        if (typeof data.unreadCountMovie !== "number") data.unreadCountMovie = 0;
+        if (typeof data.unreadCountOther !== "number") data.unreadCountOther = 0;
+        if (data.data && typeof data.data === "object") {
+          if (!Array.isArray(data.data.notificationsMovie)) data.data.notificationsMovie = [];
+          if (!Array.isArray(data.data.notificationsOther)) data.data.notificationsOther = [];
+          if (typeof data.data.unreadCountMovie !== "number") data.data.unreadCountMovie = 0;
+          if (typeof data.data.unreadCountOther !== "number") data.data.unreadCountOther = 0;
+        }
+      }
+      return data;
+    }
     const recurse = obj => {
       if (!obj || typeof obj !== "object") return;
       if ("is_vip" in obj || "vip_expires_at" in obj || "coin_balance" in obj || "thungBalance" in obj) {
