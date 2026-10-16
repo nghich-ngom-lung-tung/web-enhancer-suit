@@ -3335,32 +3335,36 @@
   // Active Login Modal & Anon Trigger Neutralizer for MePhim
   try {
     function autoDismissMephimLogin() {
-      if (typeof document === "undefined") return;
+      if (typeof document === "undefined" || !document || typeof document.getElementById !== "function") return;
 
       // If anon trigger is present in DOM, simulate auto-login and dispatch update
       const anonTrigger = document.getElementById("user-anon-trigger");
       if (anonTrigger) {
         try {
           const u = getMephimVipUser();
-          window.localStorage.setItem("mephim_logged_in_user", JSON.stringify({
-            username: u.username,
-            email: u.email
-          }));
-          window.dispatchEvent(new Event("mephim_progress_updated"));
+          if (typeof window !== "undefined" && window.localStorage) {
+            window.localStorage.setItem("mephim_logged_in_user", JSON.stringify({
+              username: u.username,
+              email: u.email
+            }));
+            window.dispatchEvent(new Event("mephim_progress_updated"));
+          }
         } catch (e) {}
       }
 
       // Close login modal dropdown if currently expanded (button containing "ĐĂNG NHẬP")
-      const loginPopup = document.querySelector(".user-anon-trigger ~ div, div:has(input[placeholder*='đăng nhập' i])");
-      if (loginPopup) {
-        const closeBtn = loginPopup.querySelector("button:has(svg), .close-btn, button[aria-label*='close' i]");
-        if (closeBtn) {
-          try { closeBtn.click(); } catch (e) {}
+      if (typeof document.querySelector === "function") {
+        const loginPopup = document.querySelector(".user-anon-trigger ~ div, div:has(input[placeholder*='đăng nhập' i])");
+        if (loginPopup) {
+          const closeBtn = loginPopup.querySelector("button:has(svg), .close-btn, button[aria-label*='close' i]");
+          if (closeBtn) {
+            try { closeBtn.click(); } catch (e) {}
+          }
         }
       }
     }
 
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && typeof document !== "undefined" && typeof document.addEventListener === "function") {
       setInterval(autoDismissMephimLogin, 500);
       document.addEventListener("DOMContentLoaded", autoDismissMephimLogin);
       window.addEventListener("load", autoDismissMephimLogin);

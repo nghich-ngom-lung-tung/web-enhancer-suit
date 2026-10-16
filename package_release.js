@@ -82,17 +82,17 @@ console.log(`  ✓ Copied master userscript -> ${masterScriptDestGeneric}`);
 
 // 5. Generate Release Notes template
 const releaseNotesPath = path.join(releaseDir, `RELEASE_NOTES_v${version}.md`);
-const releaseNotes = `# <img src="https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/extension/icons/icon48.png" width="30" height="30" align="center" /> Web Enhancer Suite v${version} — Chill Guy Capybara Edition
+const releaseNotes = `# 👑 Web Enhancer Suite v${version} — Chill Guy Capybara Edition 🕶️✨
 
-### ✦ Điểm nổi bật phiên bản v${version}
+### 🌟 Điểm nổi bật phiên bản v${version}
 
 > [!TIP]
-> **Biểu tượng Mascot Chill Guy Capybara độc quyền**
+> **🕶️ Linh vật Chill Guy Capybara độc quyền**
 > • Linh vật **Chill Guy Capybara** 3D thư thái kết hợp kính 3D anaglyph và vương miện VIP hoàng gia.
 > • Xuất bản đầy đủ các kích thước chuẩn Chrome MV3: \`16x16\`, \`48x48\`, \`128x128\` với bo góc squircle macOS trong suốt sắc nét.
 
 > [!NOTE]
-> **Cải tiến cốt lõi & Khắc phục lỗi gần đây:**
+> **💎 Cải tiến cốt lõi & Khắc phục lỗi gần đây:**
 > • **ChoPhim VIP & Social:** Hỗ trợ lưu trữ & đồng bộ Emoji tương tác, khung Avatar VIP và huy hiệu Premium; Khắc phục triệt để lỗi gửi bình luận/chat thời gian thực trên React; Tự động xử lý lỗi DOM hydration collision (\`removeChild\`).
 > • **RoPhim & Hệ thống Clones:** Bổ sung hỗ trợ domain mới \`rophim10.work\`, \`moviehdthai.com\`, \`cobephim.cfd\`; Mở khóa luồng video nhúng qua \`clubc.org\` và \`darkbytes.xyz\`.
 > • **Film4k & NetAnime:** Tự động vượt qua Landing Gate & đóng hội thoại cộng đồng; Mở khóa VIP vĩnh viễn 2099 & túi tiền xu tối đa 999,999,999 Coin.
@@ -100,10 +100,10 @@ const releaseNotes = `# <img src="https://raw.githubusercontent.com/nghich-ngom-
 
 ---
 
-### ◆ Chi tiết 57+ Nền tảng được tối ưu hóa
+### 🎬 Chi tiết 57+ Nền tảng được tối ưu hóa
 
 <details open>
-<summary><b>▸ 1. Phim & Điện Ảnh (32 Website) — Bấm để thu gọn / mở rộng</b></summary>
+<summary><b>🎬 1. Phim & Điện Ảnh (32 Website) — Bấm để thu gọn / mở rộng</b></summary>
 <br/>
 
 | STT | Website | Tên miền hỗ trợ tiêu biểu | Tính năng mở khóa |
@@ -144,7 +144,7 @@ const releaseNotes = `# <img src="https://raw.githubusercontent.com/nghich-ngom-
 </details>
 
 <details open>
-<summary><b>▸ 2. Anime & Hoạt Hình (10 Website) — Bấm để thu gọn / mở rộng</b></summary>
+<summary><b>🎌 2. Anime & Hoạt Hình (10 Website) — Bấm để thu gọn / mở rộng</b></summary>
 <br/>
 
 | STT | Website | Tên miền hỗ trợ tiêu biểu | Tính năng mở khóa |
@@ -163,7 +163,7 @@ const releaseNotes = `# <img src="https://raw.githubusercontent.com/nghich-ngom-
 </details>
 
 <details open>
-<summary><b>▸ 3. Truyền Hình & TV Series (2 Website) — Bấm để thu gọn / mở rộng</b></summary>
+<summary><b>📺 3. Truyền Hình & TV Series (2 Website) — Bấm để thu gọn / mở rộng</b></summary>
 <br/>
 
 | STT | Website | Tên miền hỗ trợ tiêu biểu | Tính năng mở khóa |
@@ -174,7 +174,7 @@ const releaseNotes = `# <img src="https://raw.githubusercontent.com/nghich-ngom-
 </details>
 
 <details open>
-<summary><b>▸ 4. Thể Thao & Trực Tiếp Bóng Đá (5 Website) — Bấm để thu gọn / mở rộng</b></summary>
+<summary><b>⚽ 4. Thể Thao & Trực Tiếp Bóng Đá (5 Website) — Bấm để thu gọn / mở rộng</b></summary>
 <br/>
 
 | STT | Website | Tên miền hỗ trợ tiêu biểu | Tính năng mở khóa |
@@ -188,7 +188,7 @@ const releaseNotes = `# <img src="https://raw.githubusercontent.com/nghich-ngom-
 </details>
 
 <details open>
-<summary><b>▸ 5. Truyện Tranh, Manga & Webtoon (7 Website) — Bấm để thu gọn / mở rộng</b></summary>
+<summary><b>📖 5. Truyện Tranh, Manga & Webtoon (7 Website) — Bấm để thu gọn / mở rộng</b></summary>
 <br/>
 
 | STT | Website | Tên miền hỗ trợ tiêu biểu | Tính năng mở khóa |
@@ -204,7 +204,7 @@ const releaseNotes = `# <img src="https://raw.githubusercontent.com/nghich-ngom-
 </details>
 
 <details open>
-<summary><b>▸ 6. Embeds & Máy Chủ Phát Luồng (1 Nền Tảng) — Bấm để thu gọn / mở rộng</b></summary>
+<summary><b>⚡ 6. Embeds & Máy Chủ Phát Luồng (1 Nền Tảng) — Bấm để thu gọn / mở rộng</b></summary>
 <br/>
 
 | STT | Website | Tên miền hỗ trợ tiêu biểu | Tính năng mở khóa |
@@ -215,25 +215,25 @@ const releaseNotes = `# <img src="https://raw.githubusercontent.com/nghich-ngom-
 
 ---
 
-### ◆ Tệp tải về trong bản phát hành (Assets)
+### 📦 Tệp tải về trong bản phát hành (Assets)
 
 | Tệp tin | Định dạng | Hướng dẫn sử dụng |
 |---|---|---|
-| **\`${zipName}\`** | Tiện ích mở rộng Chrome (Manifest V3) | Tải về, giải nén và nạp qua \`chrome://extensions\` (Chế độ Nhà phát triển) |
-| **\`web-enhancer-all.user.js\`** | Master Userscript (57+ Website) | Cài đặt 1-click qua Tampermonkey hoặc Violentmonkey |
+| 🧩 **\`${zipName}\`** | Tiện ích mở rộng Chrome (Manifest V3) | Tải về, giải nén và nạp qua \`chrome://extensions\` (Chế độ Nhà phát triển) |
+| 📜 **\`web-enhancer-all.user.js\`** | Master Userscript (57+ Website) | Cài đặt 1-click qua Tampermonkey hoặc Violentmonkey |
 
 ---
 
-### ◆ Hướng dẫn cài đặt
+### 🚀 Hướng dẫn cài đặt
 
-#### Cách 1: Cài đặt Chrome Extension (Khuyên dùng)
+#### 🧩 Cách 1: Cài đặt Chrome Extension (Khuyên dùng)
 1. Tải file **\`${zipName}\`** bên dưới về máy và giải nén thành một thư mục.
 2. Mở trình duyệt Chrome / Edge / Brave / Cốc Cốc và truy cập: \`chrome://extensions\`
 3. Bật công tắc **Developer mode** (Chế độ dành cho nhà phát triển) ở góc trên bên phải.
 4. Bấm nút **Load unpacked** (Tải tiện ích đã giải nén) và chọn thư mục vừa giải nén.
 5. Ghim tiện ích lên thanh công cụ để trải nghiệm biểu tượng Capybara mới!
 
-#### Cách 2: Cài đặt Userscript qua Tampermonkey
+#### 📜 Cách 2: Cài đặt Userscript qua Tampermonkey
 1. Đảm bảo trình duyệt đã cài tiện ích **Tampermonkey** hoặc **Violentmonkey**.
 2. Nhấp vào file **\`web-enhancer-all.user.js\`** bên dưới và bấm **Install**.
 `;
