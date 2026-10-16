@@ -137,6 +137,41 @@
   "use strict";
 
 
+  // ─── REACT DOM MUTATION DEFENDER (PREVENT NOTFOUNDERROR CRASH) ───
+  try {
+    if (typeof Node !== "undefined" && Node.prototype && !Node.prototype._cpro_guarded) {
+      Node.prototype._cpro_guarded = true;
+      const origRemoveChild = Node.prototype.removeChild;
+      Node.prototype.removeChild = function (child) {
+        try {
+          return origRemoveChild.call(this, child);
+        } catch (err) {
+          if (err && (err.name === "NotFoundError" || (err.message && err.message.includes("not a child")))) {
+            try {
+              if (child && child.parentNode && typeof child.parentNode.removeChild === "function") {
+                return child.parentNode.removeChild(child);
+              }
+            } catch (e) {}
+            return child;
+          }
+          throw err;
+        }
+      };
+
+      const origInsertBefore = Node.prototype.insertBefore;
+      Node.prototype.insertBefore = function (newNode, refNode) {
+        try {
+          return origInsertBefore.call(this, newNode, refNode);
+        } catch (err) {
+          if (err && (err.name === "NotFoundError" || (err.message && err.message.includes("not a child")))) {
+            return this.appendChild(newNode);
+          }
+          throw err;
+        }
+      };
+    }
+  } catch (e) {}
+
   // ─── LAYER 5: VIP 2099 & COIN RESPONSE PATCHER (MODULAR ARCHITECTURE) ───
   const _origFetchNative = (typeof window !== "undefined" && window.fetch) ? window.fetch.bind(window) : null;
   const VIP_EXPIRY_DATE = new Date(2099, 6, 18, 0, 0, 0);

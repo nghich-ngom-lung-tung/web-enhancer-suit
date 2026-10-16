@@ -126,12 +126,82 @@
   "use strict";
 
 
+  // ─── REACT DOM MUTATION DEFENDER (PREVENT NOTFOUNDERROR CRASH) ───
+  try {
+    if (typeof Node !== "undefined" && Node.prototype && !Node.prototype._cpro_guarded) {
+      Node.prototype._cpro_guarded = true;
+      const origRemoveChild = Node.prototype.removeChild;
+      Node.prototype.removeChild = function (child) {
+        try {
+          return origRemoveChild.call(this, child);
+        } catch (err) {
+          if (err && (err.name === "NotFoundError" || (err.message && err.message.includes("not a child")))) {
+            try {
+              if (child && child.parentNode && typeof child.parentNode.removeChild === "function") {
+                return child.parentNode.removeChild(child);
+              }
+            } catch (e) {}
+            return child;
+          }
+          throw err;
+        }
+      };
+
+      const origInsertBefore = Node.prototype.insertBefore;
+      Node.prototype.insertBefore = function (newNode, refNode) {
+        try {
+          return origInsertBefore.call(this, newNode, refNode);
+        } catch (err) {
+          if (err && (err.name === "NotFoundError" || (err.message && err.message.includes("not a child")))) {
+            return this.appendChild(newNode);
+          }
+          throw err;
+        }
+      };
+    }
+  } catch (e) {}
+
   // ─── LAYER 5: VIP 2099 & COIN RESPONSE PATCHER (MODULAR ARCHITECTURE) ───
   const _origFetchNative = (typeof window !== "undefined" && window.fetch) ? window.fetch.bind(window) : null;
   const VIP_EXPIRY_DATE = new Date(2099, 6, 18, 0, 0, 0);
   const VIP_EXPIRY_TIMESTAMP = Math.floor(VIP_EXPIRY_DATE.getTime() / 1000);
   const COIN_BALANCE = 999999999;
 
+
+  // ─── REACT DOM MUTATION DEFENDER (PREVENT NOTFOUNDERROR CRASH) ───
+  try {
+    if (typeof Node !== "undefined" && Node.prototype && !Node.prototype._cpro_guarded) {
+      Node.prototype._cpro_guarded = true;
+      const origRemoveChild = Node.prototype.removeChild;
+      Node.prototype.removeChild = function (child) {
+        try {
+          return origRemoveChild.call(this, child);
+        } catch (err) {
+          if (err && (err.name === "NotFoundError" || (err.message && err.message.includes("not a child")))) {
+            try {
+              if (child && child.parentNode && typeof child.parentNode.removeChild === "function") {
+                return child.parentNode.removeChild(child);
+              }
+            } catch (e) {}
+            return child;
+          }
+          throw err;
+        }
+      };
+
+      const origInsertBefore = Node.prototype.insertBefore;
+      Node.prototype.insertBefore = function (newNode, refNode) {
+        try {
+          return origInsertBefore.call(this, newNode, refNode);
+        } catch (err) {
+          if (err && (err.name === "NotFoundError" || (err.message && err.message.includes("not a child")))) {
+            return this.appendChild(newNode);
+          }
+          throw err;
+        }
+      };
+    }
+  } catch (e) {}
 
   // ─── CHOPHIM VIP 2099 & TVC VIDEO AD KILLER ───
   function getChophimVipUser() {
@@ -149,6 +219,8 @@
       avatar: null,
       avatarUrl: null,
       avatarFrame: null,
+      selectedEmoji: null,
+      showPremiumBadge: true,
       cpCoinBalance: 999999999,
       coin_balance: 999999999,
       coins: 999999999
@@ -243,7 +315,7 @@
       });
 
       // 2. Click skip button in pre-roll overlay (Bỏ qua sau Xs -> Bỏ qua)
-      const skipButtons = document.querySelectorAll("div[class*='z-[70]'] button, button:has(span)");
+      const skipButtons = document.querySelectorAll("div[class*='z-[70]'] button, div[class*='ad-'] button, div[id*='ad-'] button");
       skipButtons.forEach(btn => {
         const txt = btn.textContent || "";
         if (txt.includes("Bỏ qua") || txt.includes("Bỏ qua sau")) {
@@ -263,11 +335,12 @@
       });
 
       // 4. Auto-dismiss login modal / Turnstile popup if presented
-      const loginModals = document.querySelectorAll("div[class*='fixed'][class*='inset-0'], div[role='dialog']");
+      const loginModals = document.querySelectorAll("div[role='dialog'], div[class*='fixed'][class*='inset-0'][class*='z-[5'], div[class*='fixed'][class*='inset-0'][class*='z-[6'], div[class*='fixed'][class*='inset-0'][class*='z-[7'], div[class*='fixed'][class*='inset-0'][class*='z-[8'], div[class*='fixed'][class*='inset-0'][class*='z-[9']");
       loginModals.forEach(m => {
         const text = m.textContent || "";
-        if ((text.includes("Đăng nhập") || text.includes("Đăng ký")) && (text.includes("Cloudflare") || text.includes("Turnstile") || text.includes("Mật khẩu") || text.includes("Google"))) {
-          const closeBtn = m.querySelector("button[aria-label*='close' i], button[aria-label*='đóng' i], button svg.lucide-x, button:has(svg)");
+        const isAuthPopup = (text.includes("Đăng nhập") || text.includes("Đăng ký tài khoản")) && (text.includes("Cloudflare") || text.includes("Turnstile") || (text.includes("Mật khẩu") && text.includes("Email")));
+        if (isAuthPopup) {
+          const closeBtn = m.querySelector("button[aria-label*='close' i], button[aria-label*='đóng' i], button svg.lucide-x");
           if (closeBtn && !m.hasAttribute("data-modal-closed")) {
             m.setAttribute("data-modal-closed", "1");
             try { closeBtn.click(); } catch (e) {}
@@ -290,12 +363,28 @@
 
     const u = getChophimVipUser();
 
-    // 1. Current Auth Me check
+    // 1. Current Auth Me & session checks
     if (url.includes("/api/auth/me") || url.includes("/auth/me")) {
       return JSON.stringify({
         user: u,
         blocked: false,
         temporary: false
+      });
+    }
+    if (url.includes("/api/auth/session")) {
+      return JSON.stringify({
+        user: u,
+        expires: "2099-12-31T23:59:59.000Z"
+      });
+    }
+    if (url.includes("/api/auth/csrf")) {
+      return JSON.stringify({
+        csrfToken: "chophim_vip_csrf_token"
+      });
+    }
+    if (url.includes("/api/set-auth-cookie")) {
+      return JSON.stringify({
+        success: true
       });
     }
 
@@ -334,9 +423,123 @@
       });
     }
 
-    // 6. Watch history & user bookmarks/notifications bypass (prevent 401s)
-    if (url.includes("/api/watch-history") || url.includes("/watch-history")) {
-      return JSON.stringify({ success: true, history: [], items: [], data: [] });
+    // 6. Subscription API Suite (/users/goi-dang-ky)
+    if (url.includes("/api/subscription/family")) {
+      return JSON.stringify({
+        role: "none",
+        family: null,
+        incomingInvites: []
+      });
+    }
+    if (url.includes("/api/subscription/plans")) {
+      return JSON.stringify({
+        plans: [
+          {
+            id: "plan_1m",
+            name: "1 Tháng",
+            durationDays: 30,
+            priceCoins: 30000,
+            tier: "premium",
+            description: "Trải nghiệm VIP Cinema Pro trọn vẹn",
+            features: [
+              "Không quảng cáo toàn site",
+              "Chất lượng Full HD & 4K",
+              "Mở khóa toàn bộ kho phim VIP",
+              "Hỗ trợ phát PotPlayer / VLC"
+            ]
+          },
+          {
+            id: "plan_3m",
+            name: "3 Tháng",
+            durationDays: 90,
+            priceCoins: 80000,
+            tier: "premium",
+            description: "Gói tiết kiệm 3 tháng",
+            features: [
+              "Không quảng cáo toàn site",
+              "Chất lượng Full HD & 4K",
+              "Mở khóa toàn bộ kho phim VIP",
+              "Hỗ trợ phát PotPlayer / VLC"
+            ]
+          },
+          {
+            id: "plan_12m",
+            name: "1 Năm",
+            durationDays: 365,
+            priceCoins: 280000,
+            tier: "premium",
+            description: "VIP Trọn Đời Không Giới Hạn",
+            features: [
+              "Không quảng cáo toàn site",
+              "Chất lượng Full HD & 4K",
+              "Mở khóa toàn bộ kho phim VIP",
+              "Hỗ trợ phát PotPlayer / VLC"
+            ]
+          }
+        ]
+      });
+    }
+    if (url.includes("/api/subscription/history")) {
+      return JSON.stringify({
+        history: [
+          {
+            id: "sub_cpro_2099",
+            planName: "VIP Cinema Pro 2099",
+            durationDays: 36500,
+            priceCoins: 0,
+            status: "active",
+            createdAt: new Date().toISOString(),
+            expiresAt: "2099-12-31T23:59:59.000Z"
+          }
+        ]
+      });
+    }
+    if (url.includes("/api/subscription/coupon/validate")) {
+      return JSON.stringify({
+        valid: true,
+        couponId: "vip_cp_2099",
+        code: "CINEMAPRO",
+        discountType: "percent",
+        discountValue: 100,
+        discountAmount: 0,
+        finalPrice: 0
+      });
+    }
+    if (url.includes("/api/subscription/purchase")) {
+      return JSON.stringify({
+        success: true,
+        message: "Đăng ký gói VIP thành công!"
+      });
+    }
+    if (url.includes("/api/users/coupons")) {
+      return JSON.stringify({
+        coupons: []
+      });
+    }
+
+    // 7. Scratch Cards API
+    if (url.includes("/api/scratch-cards/")) {
+      return JSON.stringify({
+        success: true,
+        history: [],
+        feed: [],
+        products: [],
+        pity: { count: 0 },
+        cards: []
+      });
+    }
+
+    // 8. TV Pairing & Code
+    if (url.includes("/api/tv/auth/codes")) {
+      return JSON.stringify({ success: true, code: "888888" });
+    }
+    if (url.includes("/api/tv/auth/pairings/approve")) {
+      return JSON.stringify({ success: true, message: "Đã liên kết TV thành công" });
+    }
+
+    // 9. Watch history & continue watching & user bookmarks/notifications bypass
+    if (url.includes("/api/watch-history") || url.includes("/watch-history") || url.includes("/histories/continue-watching")) {
+      return JSON.stringify({ success: true, history: [], histories: [], items: [], data: [] });
     }
     if (url.includes("/api/favorites")) {
       return JSON.stringify({ success: true, favorites: [], items: [], slugs: [], data: [] });
@@ -348,7 +551,7 @@
       return JSON.stringify({ success: true, lists: [], items: [], slugs: [], data: [] });
     }
 
-    // 7. Block direct ad requests
+    // 10. Block direct ad requests
     if (url.includes("/ads/i9.mp4") || (url.includes("/ads/") && url.endsWith(".mp4"))) {
       return JSON.stringify({ blocked: true });
     }

@@ -1060,6 +1060,19 @@ chophimScripts.forEach(file => {
     console: window.console,
     HTMLMediaElement: window.HTMLMediaElement,
     Storage: window.Storage,
+    Node: class Node {
+      appendChild(n) { return n; }
+      removeChild(c) {
+        const err = new Error("Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.");
+        err.name = "NotFoundError";
+        throw err;
+      }
+      insertBefore(n, r) {
+        const err = new Error("Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.");
+        err.name = "NotFoundError";
+        throw err;
+      }
+    },
     BroadcastChannel: class {
       constructor(name) { this.name = name; }
       postMessage() {}
@@ -1097,6 +1110,29 @@ chophimScripts.forEach(file => {
       const loginPassed = Boolean(data?.success === true && data?.user?.subscriptionTier === "premium");
       report(`${file}: ChoPhim /api/auth/login intercepted with instant success & VIP pass`, loginPassed);
     });
+
+    // Intercept /api/subscription/family
+    ctx.window.fetch("/api/subscription/family").then(res => res.json()).then(data => {
+      const famPassed = Boolean(data && data.role === "none" && data.family === null);
+      report(`${file}: ChoPhim /api/subscription/family intercepted with valid family object`, famPassed);
+    });
+
+    // Intercept /api/subscription/plans
+    ctx.window.fetch("/api/subscription/plans").then(res => res.json()).then(data => {
+      const plansPassed = Boolean(Array.isArray(data?.plans) && data.plans.length > 0 && data.plans[0].durationDays);
+      report(`${file}: ChoPhim /api/subscription/plans intercepted returning valid VIP plans`, plansPassed);
+    });
+
+    // Test React DOM removeChild Defender
+    let defenderPassed = false;
+    try {
+      const nodeInstance = new ctx.Node();
+      const removed = nodeInstance.removeChild({});
+      defenderPassed = Boolean(removed !== null);
+    } catch (e) {
+      defenderPassed = false;
+    }
+    report(`${file}: ChoPhim React DOM removeChild Defender safely prevents NotFoundError crash`, defenderPassed);
   } catch (err) {
     report(`${file}: ChoPhim VIP execution`, false, err.stack);
   }
