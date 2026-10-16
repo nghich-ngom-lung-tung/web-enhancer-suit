@@ -257,8 +257,26 @@
     return ROPHIM_KEYWORDS.some(k => u.includes(k));
   }
 
+  function getRealProvisionedUser() {
+    try {
+      if (typeof window === "undefined" || !window.localStorage || !window.location) return null;
+      const host = window.location.hostname || "";
+      const storageKey = "cinema_pro_real_user_" + host;
+      const cached = window.localStorage.getItem(storageKey);
+      if (cached) {
+        const u = JSON.parse(cached);
+        if (u && u.id) return u;
+      }
+    } catch (e) {}
+    return null;
+  }
+
   function getMotchillVipUser(curUser) {
-    const base = curUser || {};
+    let base = curUser || {};
+    const realUser = getRealProvisionedUser();
+    if (realUser) {
+      base = { ...realUser, ...base, id: realUser.id, access_token: realUser.access_token || base.access_token };
+    }
     const defaultRoles = [
       { id: 1, name: "admin" },
       { id: 2, name: "vip" },
@@ -349,6 +367,103 @@
     } catch (e) {}
   }
 
+  // ─── REAL SERVER SESSION AUTO-PROVISIONER (ROPHIM & MIRRORS) ───
+  async function ensureRealRophimSession() {
+    try {
+      if (typeof window === "undefined" || !window.localStorage) return null;
+      const host = (window.location && window.location.hostname) || "";
+      const isRophimDomain = host.includes("rophim") || host.includes("moviehdthai") || host.includes("cobephim");
+      if (!isRophimDomain) return null;
+
+      const storageKey = "cinema_pro_real_user_" + host;
+      const cached = window.localStorage.getItem(storageKey);
+      if (cached) {
+        try {
+          const userObj = JSON.parse(cached);
+          if (userObj && userObj.id && userObj.access_token) {
+            return userObj;
+          }
+        } catch (e) {}
+      }
+
+      const fetchFn = _origFetchNative || (typeof window.fetch === "function" ? window.fetch.bind(window) : null);
+      if (!fetchFn) return null;
+
+      const uniqueSuffix = Date.now() + "_" + Math.floor(Math.random() * 10000);
+      const email = "vip" + uniqueSuffix + "@gmail.com";
+      const password = "CinemaProVIP2099!";
+      const name = "VIP Cinema Pro";
+
+      // 1. Register account on backend
+      const regRes = await fetchFn("/baseapi/api/v1/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Cinema-Pro-Internal": "1" },
+        body: JSON.stringify({ name, email, password })
+      });
+      const regData = await regRes.json();
+      if (!regData || (!regData.id && regData.status !== 200)) return null;
+      const realUserId = regData.id;
+
+      // 2. Get NextAuth CSRF token
+      const csrfRes = await fetchFn("/api/auth/csrf", {
+        headers: { "X-Cinema-Pro-Internal": "1" },
+        credentials: "include"
+      });
+      const csrfData = await csrfRes.json();
+      const csrfToken = csrfData?.csrfToken;
+      if (!csrfToken) return null;
+
+      // 3. Sign in to NextAuth
+      const formBody = new URLSearchParams({
+        csrfToken: csrfToken,
+        email: email,
+        password: password,
+        redirect: "false",
+        json: "true"
+      }).toString();
+
+      await fetchFn("/api/auth/callback/credentials", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-Cinema-Pro-Internal": "1",
+          "X-Auth-Return-Redirect": "1"
+        },
+        body: formBody,
+        credentials: "include"
+      });
+
+      // 4. Retrieve real session with access_token
+      const sessRes = await fetchFn("/api/auth/session", {
+        headers: { "X-Cinema-Pro-Internal": "1" },
+        credentials: "include"
+      });
+      const sessData = await sessRes.json();
+      const realUser = sessData?.user;
+      if (realUser && realUser.id && realUser.access_token) {
+        window.localStorage.setItem(storageKey, JSON.stringify(realUser));
+        window.localStorage.setItem("guestAccessToken", realUser.access_token);
+        return realUser;
+      } else if (realUserId) {
+        const fallbackObj = {
+          id: realUserId,
+          email: email,
+          name: name,
+          avatar: "/images/avatars/10.jpg"
+        };
+        window.localStorage.setItem(storageKey, JSON.stringify(fallbackObj));
+        return fallbackObj;
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  if (typeof window !== "undefined") {
+    setTimeout(() => {
+      try { ensureRealRophimSession(); } catch (e) {}
+    }, 150);
+  }
+
   function getRophimMockJsonString(url, init) {
     if (!url || typeof url !== "string") return null;
 
@@ -421,7 +536,6 @@
       });
     }
 
-    // 2.2 Comments Post (Bình luận & Đánh giá phim - Hoạt động ngay lập tức cho cả khách & VIP mà không bị 401 hoặc crash)
     const isCommentsPost = (url.includes("/comments") || url.includes("/baseapi/api/v1/comments") || url.includes("/api/v1/comments")) && 
                            !url.includes("/comments/movie/") && 
                            !url.includes("/reactions") && 
@@ -429,6 +543,11 @@
                            !url.includes("/get-child-comments") && 
                            !url.includes("/report") && 
                            (Boolean(bodyStr) || (init && init.method && init.method.toUpperCase() === "POST"));
+
+    const realUser = getRealProvisionedUser();
+    if (isCommentsPost && realUser && realUser.id && realUser.access_token) {
+      return null;
+    }
 
     if (isCommentsPost) {
       let payload = {};
