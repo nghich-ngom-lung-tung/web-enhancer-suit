@@ -1,17 +1,21 @@
 <div align="center">
 
-# 🎬 Web Enhancer Suite
+<a href="https://github.com/nghich-ngom-lung-tung/web-enhancer-suit">
+  <img src="extension/icons/icon128.png" alt="Web Enhancer Suite Logo" width="128" height="128" />
+</a>
+
+# Web Enhancer Suite
 ### 👑 Cinema Pro & Comic Edition — v5.4.9
 
 <p align="center">
-  <strong>Bộ công cụ Userscript toàn diện số 1 Việt Nam dành cho Web Xem Phim, Anime, Thể Thao Trực Tiếp và Truyện Tranh</strong>
+  <strong>Bộ công cụ Tiện ích mở rộng & Userscript toàn diện số 1 Việt Nam dành cho Web Xem Phim, Anime, Thể Thao Trực Tiếp và Truyện Tranh</strong>
 </p>
 
 [![Version](https://img.shields.io/badge/Version-5.4.9_Dual--Build-8b5cf6?style=for-the-badge&logo=javascript&logoColor=white)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit)
-[![Test Suite](https://img.shields.io/badge/Tests-1159%2F1159_Passing-10b981?style=for-the-badge&logo=checkmarx&logoColor=white)](file:///run_audit.js)
-[![Health Score](https://img.shields.io/badge/Health_Score-100%25_Production_Ready-047857?style=for-the-badge&logo=speedtest&logoColor=white)](file:///run_audit.js)
+[![Test Suite](https://img.shields.io/badge/Tests-1190%2F1190_Passing-10b981?style=for-the-badge&logo=checkmarx&logoColor=white)](run_audit.js)
+[![Health Score](https://img.shields.io/badge/Health_Score-100%25_Production_Ready-047857?style=for-the-badge&logo=speedtest&logoColor=white)](run_audit.js)
 [![Platforms](https://img.shields.io/badge/Platform-Extension_(MV3)_%7C_Tampermonkey-3b82f6?style=for-the-badge&logo=googlechrome&logoColor=white)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit)
-[![Sites](https://img.shields.io/badge/Supported_Sites-55%2B_Platforms-f59e0b?style=for-the-badge&logo=safari&logoColor=white)](#-danh-s%C3%A1ch-website-h%E1%BB%97-tr%E1%BB%A3)
+[![Sites](https://img.shields.io/badge/Supported_Sites-56%2B_Platforms-f59e0b?style=for-the-badge&logo=safari&logoColor=white)](#-danh-s%C3%A1ch-website-h%E1%BB%97-tr%E1%BB%A3)
 [![License](https://img.shields.io/badge/License-MIT-6366f1?style=for-the-badge)](LICENSE)
 
 <br/>
@@ -91,7 +95,7 @@ Dành cho bạn nào thích quản lý bằng Tampermonkey / Violentmonkey và t
 
 ### ⭐ GÓI TỔNG HỢP TOÀN NĂNG (ALL-IN-ONE) ⭐
 
-[![Install All-In-One](https://img.shields.io/badge/CÀI_ĐẶT_BẢN_GỘP_MASTER_(55+_WEBSITES)-10b981?style=for-the-badge&logo=tampermonkey&logoColor=white)](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/web-enhancer-all.user.js)
+[![Install All-In-One](https://img.shields.io/badge/CÀI_ĐẶT_BẢN_GỘP_MASTER_(56+_WEBSITES)-10b981?style=for-the-badge&logo=tampermonkey&logoColor=white)](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/web-enhancer-all.user.js)
 
 *Tự động kích hoạt trên tất cả web Phim, Anime, Bóng Đá và Truyện Tranh bên dưới*
 
@@ -149,6 +153,7 @@ Dành cho bạn nào thích quản lý bằng Tampermonkey / Violentmonkey và t
 | 🍙 **TopSub (Vietsub)** | 🟢 Sẵn sàng | [👉 **Cài đặt TopSub**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/topsub.user.js) | `topsub.org` |
 | 🌟 **MovieHDThai** | 🟢 Sẵn sàng | [👉 **Cài đặt MovieHDThai**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/moviehdthai.user.js) | `moviehdthai.com` |
 | 💃 **Cô Bé Phim (CoBePhim)** | 🟢 Sẵn sàng | [👉 **Cài đặt CoBePhim**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/cobephim.user.js) | `cobephim.cfd` |
+| 🎬 **Film4k** | 🟢 Sẵn sàng | [👉 **Cài đặt Film4k**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/film4k.user.js) | `film4k.net`, `film4knet.ngaodacopho.workers.dev` |
 
 </details>
 
@@ -267,7 +272,7 @@ web-enhancer-suit/
 │   ├── modules/             # Các khối logic lõi (sniffer, controls, ad-nuker, hub-ui, vip)
 │   ├── sites/               # Cấu hình chi tiết từng site (anime, movies, tv, sports, comics)
 │   └── template.js          # Trình kết nối Module và sinh Metadata Userscript
-├── scripts/                 # Option 1: Thư mục xuất bản 55 Userscripts hoàn chỉnh
+├── scripts/                 # Option 1: Thư mục xuất bản 56 Userscripts hoàn chỉnh
 ├── extension/               # Option 2: Tiện ích mở rộng độc lập (Manifest V3)
 │   ├── manifest.json        # Manifest V3 (Action, MV3 Service Worker, DeclarativeNetRequest)
 │   ├── background.js        # Background Service Worker quản lý stream & badge
@@ -279,14 +284,14 @@ web-enhancer-suit/
 ├── build_all_scripts.js     # Compiler đóng gói Userscripts
 ├── build_extension.js       # Compiler đóng gói Browser Extension
 ├── package.json             # Cấu hình dự án & npm run commands
-└── run_audit.js             # Bộ Test Suite kiểm định 1099 Assertions (100% Health Score)
+└── run_audit.js             # Bộ Test Suite kiểm định 1190 Assertions (100% Health Score)
 ```
 
 ---
 
 ## 🧪 Kiểm Định Tự Động (Test Suite)
 
-Dự án sở hữu bộ kiểm thử độc lập với **1099 Unit & Runtime Assertions** chạy qua môi trường giả lập Node.js VM Sandbox & Extension Audit:
+Dự án sở hữu bộ kiểm thử độc lập với **1190 Unit & Runtime Assertions** chạy qua môi trường giả lập Node.js VM Sandbox & Extension Audit:
 
 ```bash
 # Biên dịch cả Userscripts & Extension
@@ -299,8 +304,8 @@ npm test             # hoặc: node run_audit.js
 ```text
 ================================================================
 🎯 COMPREHENSIVE TEST AUDIT COMPLETE:
-   Total Unit & Runtime Assertions : 1159
-   Passed Assertions               : 1159
+   Total Unit & Runtime Assertions : 1190
+   Passed Assertions               : 1190
    Failed Assertions               : 0
    Overall Health Score            : 100.0%
 ================================================================
