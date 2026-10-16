@@ -2500,7 +2500,69 @@
       return JSON.stringify({ success: true, lists: [], items: [], slugs: [], data: [] });
     }
 
-    // 10. Block direct ad requests
+    // 10. Comment & Chat Interception (Bypass 401 & Prevent undefined comment crash)
+    if (url.includes("/api/comments") || url.includes("/api/v1/comments")) {
+      const method = (init && init.method ? init.method.toUpperCase() : "GET");
+
+      // POST new comment or reply
+      if (method === "POST" && !url.includes("/like") && !url.includes("/dislike") && !url.includes("/pin")) {
+        let body = {};
+        if (init && init.body) {
+          try { body = typeof init.body === "string" ? JSON.parse(init.body) : init.body; } catch (e) {}
+        }
+        const commentId = "cp_cmt_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
+        const newComment = {
+          id: commentId,
+          content: body.content || "",
+          isSpoiler: Boolean(body.isSpoiler),
+          isPinned: false,
+          parentId: body.parentId || null,
+          replyCount: 0,
+          likesCount: 0,
+          dislikesCount: 0,
+          isLiked: false,
+          isDisliked: false,
+          userId: u.id || "vip_cinema_pro_2099",
+          user: {
+            id: u.id || "vip_cinema_pro_2099",
+            displayName: u.displayName || "VIP Cinema Pro",
+            avatarUrl: u.avatarUrl || null,
+            avatarFrame: u.avatarFrame || null,
+            selectedEmoji: u.selectedEmoji || null,
+            subscriptionTier: "premium",
+            role: "vip",
+            showPremiumBadge: u.showPremiumBadge !== false
+          },
+          createdAt: new Date().toISOString()
+        };
+
+        return JSON.stringify({
+          success: true,
+          comment: newComment,
+          data: newComment,
+          result: newComment
+        });
+      }
+
+      // DELETE comment
+      if (method === "DELETE") {
+        return JSON.stringify({ success: true, message: "Đã xóa bình luận" });
+      }
+    }
+
+    if (url.includes("/api/comments/like") || url.includes("/api/comments/dislike")) {
+      return JSON.stringify({ success: true, ok: true });
+    }
+
+    if (url.includes("/api/comments/pin")) {
+      return JSON.stringify({ success: true });
+    }
+
+    if (url.includes("/api/comments/reply")) {
+      return JSON.stringify({ replies: [], hasNextPage: false });
+    }
+
+    // 11. Block direct ad requests
     if (url.includes("/ads/i9.mp4") || (url.includes("/ads/") && url.endsWith(".mp4"))) {
       return JSON.stringify({ blocked: true });
     }
@@ -2840,6 +2902,7 @@
           statusCode: 200,
           code: 200,
           message: "Bình luận phim thành công.",
+          comment: fallbackComment,
           data: fallbackComment,
           result: fallbackComment
         }), {
@@ -2941,6 +3004,7 @@
             statusCode: 200,
             code: 200,
             message: "Bình luận phim thành công.",
+            comment: fallbackComment,
             data: fallbackComment,
             result: fallbackComment
           });
@@ -2951,7 +3015,7 @@
           Object.defineProperty(xhr, "responseURL", { value: url, configurable: true, writable: true });
           Object.defineProperty(xhr, "response", {
             get: function () {
-              if (this.responseType === "json") return { status: true, code: 200, message: "Bình luận phim thành công.", data: fallbackComment, result: fallbackComment };
+              if (this.responseType === "json") return { status: true, code: 200, message: "Bình luận phim thành công.", comment: fallbackComment, data: fallbackComment, result: fallbackComment };
               return okResponse;
             },
             configurable: true

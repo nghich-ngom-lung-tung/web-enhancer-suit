@@ -1143,6 +1143,16 @@ chophimScripts.forEach(file => {
       const updatePassed = Boolean(data?.user?.selectedEmoji === "pepe-test" && data?.user?.avatarFrame === "frame_5.png");
       report(`${file}: ChoPhim /api/auth/update-profile saves and returns selectedEmoji & avatarFrame`, updatePassed);
     });
+
+    // Test POST /api/comments returning valid comment object with id
+    ctx.window.fetch("/api/comments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug: "phim-test", content: "Phim hay qua!", isSpoiler: false })
+    }).then(res => res.json()).then(data => {
+      const commentPassed = Boolean(data?.success === true && data?.comment?.id && data?.comment?.content === "Phim hay qua!");
+      report(`${file}: ChoPhim POST /api/comments returns valid comment object with id`, commentPassed);
+    });
   } catch (err) {
     report(`${file}: ChoPhim VIP execution`, false, err.stack);
   }

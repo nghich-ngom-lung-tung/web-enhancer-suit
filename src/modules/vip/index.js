@@ -291,6 +291,7 @@ ${activeCodes}
           statusCode: 200,
           code: 200,
           message: "Bình luận phim thành công.",
+          comment: fallbackComment,
           data: fallbackComment,
           result: fallbackComment
         }), {
@@ -392,6 +393,7 @@ ${activeCodes}
             statusCode: 200,
             code: 200,
             message: "Bình luận phim thành công.",
+            comment: fallbackComment,
             data: fallbackComment,
             result: fallbackComment
           });
@@ -402,7 +404,7 @@ ${activeCodes}
           Object.defineProperty(xhr, "responseURL", { value: url, configurable: true, writable: true });
           Object.defineProperty(xhr, "response", {
             get: function () {
-              if (this.responseType === "json") return { status: true, code: 200, message: "Bình luận phim thành công.", data: fallbackComment, result: fallbackComment };
+              if (this.responseType === "json") return { status: true, code: 200, message: "Bình luận phim thành công.", comment: fallbackComment, data: fallbackComment, result: fallbackComment };
               return okResponse;
             },
             configurable: true
