@@ -29,5 +29,6 @@ module.exports = [
   require("./ghienblog"),
   require("./moviehdthai"),
   require("./cobephim"),
-  require("./film4k")
+  require("./film4k"),
+  require("./chophim")
 ];

@@ -671,6 +671,22 @@ html, body {
       background: #000 !important;
     }
 
+.ad-container,
+    .ads-holder,
+    div[id*="ad-"],
+    div[class*="banner-ads"],
+    div[id*="catfish"],
+    .ads-wrapper,
+    #chancoc,
+    .modal-adblock,
+    [class*="ad-floater"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 #ad_top, #ad_bottom, .ad-banner, .banner_middle, div[id*="adv_"], .catfish-banner, div[class*="qc_"], .anti-adblock-alert, #overlay-banner, div[style*="z-index: 2147483647"] {
   display: none !important;
   visibility: hidden !important;

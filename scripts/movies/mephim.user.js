@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MePhim VIP & Cinema Pro Suite
 // @namespace    http://tampermonkey.net/
-// @version      5.2
+// @version      5.4.9
 // @description  Diệt sạch quảng cáo Mê Phim TV + M3U8 Stream Sniffer PotPlayer/VLC + Tua Intro 85s + Chế độ Rạp phim
 // @author       Sfrank1e
 // @match        *://*.mephimtv.com/*
@@ -10,6 +10,8 @@
 // @match        *://mephim.net/*
 // @match        *://*.mephim.tv/*
 // @match        *://mephim.tv/*
+// @match        *://mephim.ddns.net/*
+// @match        *://*.mephim.ddns.net/*
 // @match        *://*.streamvsmov.com/*
 // @match        *://streamvsmov.com/*
 // @match        *://*.streamvsmov.net/*
@@ -101,6 +103,7 @@
 // @match        *://*.clubc.org/*
 // @match        *://clubc.org/*
 // @match        *://api.clubc.org/*
+// @include      *://*mephim*/*
 // @include      *://embed*.streamc.xyz/*
 // @include      *://stream*.xyz/*
 // @include      *://stream*.top/*
@@ -2002,7 +2005,7 @@
             <span class="ro-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg></span>
             <span>MePhim VIP & Cinema Pro Suite</span>
           </span>
-          <span style="font-size: 11px; opacity: 0.7;">v5.2</span>
+          <span style="font-size: 11px; opacity: 0.7;">v5.4.9</span>
         </div>
         <button class="ro-menu-btn" id="ro-comic-prev-btn">
           <span class="ro-btn-left"><span class="ro-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" x2="5" y1="19" y2="5"/></svg></span><span>Chương Trước</span></span>
@@ -2037,7 +2040,7 @@
             <span class="ro-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="2.18" ry="2.18"/><line x1="7" x2="7" y1="2" y2="22"/><line x1="17" x2="17" y1="2" y2="22"/><line x1="2" x2="22" y1="12" y2="12"/><line x1="2" x2="7" y1="7" y2="7"/><line x1="2" x2="7" y1="17" y2="17"/><line x1="17" x2="22" y1="17" y2="17"/><line x1="17" x2="22" y1="7" y2="7"/></svg></span>
             <span>MePhim VIP & Cinema Pro Suite</span>
           </span>
-          <span style="font-size: 11px; opacity: 0.7;">v5.2</span>
+          <span style="font-size: 11px; opacity: 0.7;">v5.4.9</span>
         </div>
         <div id="ro-stream-preview" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 6px 10px; font-size: 11px; word-break: break-all; color: #51f085; font-family: monospace; display: none; cursor: pointer;" title="Bấm để copy link"></div>
         <button class="ro-menu-btn" id="ro-copym3u8-btn">

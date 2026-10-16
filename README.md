@@ -12,10 +12,10 @@
 </p>
 
 [![Version](https://img.shields.io/badge/Version-5.4.9_Dual--Build-8b5cf6?style=for-the-badge&logo=javascript&logoColor=white)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit)
-[![Test Suite](https://img.shields.io/badge/Tests-1190%2F1190_Passing-10b981?style=for-the-badge&logo=checkmarx&logoColor=white)](run_audit.js)
+[![Test Suite](https://img.shields.io/badge/Tests-1207%2F1207_Passing-10b981?style=for-the-badge&logo=checkmarx&logoColor=white)](run_audit.js)
 [![Health Score](https://img.shields.io/badge/Health_Score-100%25_Production_Ready-047857?style=for-the-badge&logo=speedtest&logoColor=white)](run_audit.js)
 [![Platforms](https://img.shields.io/badge/Platform-Extension_(MV3)_%7C_Tampermonkey-3b82f6?style=for-the-badge&logo=googlechrome&logoColor=white)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit)
-[![Sites](https://img.shields.io/badge/Supported_Sites-56%2B_Platforms-f59e0b?style=for-the-badge&logo=safari&logoColor=white)](#-danh-s%C3%A1ch-website-h%E1%BB%97-tr%E1%BB%A3)
+[![Sites](https://img.shields.io/badge/Supported_Sites-57%2B_Platforms-f59e0b?style=for-the-badge&logo=safari&logoColor=white)](#-danh-s%C3%A1ch-website-h%E1%BB%97-tr%E1%BB%A3)
 [![License](https://img.shields.io/badge/License-MIT-6366f1?style=for-the-badge)](LICENSE)
 
 <br/>
@@ -95,7 +95,7 @@ Dành cho bạn nào thích quản lý bằng Tampermonkey / Violentmonkey và t
 
 ### ⭐ GÓI TỔNG HỢP TOÀN NĂNG (ALL-IN-ONE) ⭐
 
-[![Install All-In-One](https://img.shields.io/badge/CÀI_ĐẶT_BẢN_GỘP_MASTER_(56+_WEBSITES)-10b981?style=for-the-badge&logo=tampermonkey&logoColor=white)](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/web-enhancer-all.user.js)
+[![Install All-In-One](https://img.shields.io/badge/CÀI_ĐẶT_BẢN_GỘP_MASTER_(57+_WEBSITES)-10b981?style=for-the-badge&logo=tampermonkey&logoColor=white)](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/web-enhancer-all.user.js)
 
 *Tự động kích hoạt trên tất cả web Phim, Anime, Bóng Đá và Truyện Tranh bên dưới*
 
@@ -136,7 +136,7 @@ Dành cho bạn nào thích quản lý bằng Tampermonkey / Violentmonkey và t
 | 🏮 **Động Phim (DongPhim)** | 🟢 Sẵn sàng | [👉 **Cài đặt DongPhim**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/dongphim.user.js) | `dongphim.net`, `dongphim.tv` |
 | 📺 **BiPhim & PhimChill** | 🟢 Sẵn sàng | [👉 **Cài đặt BiPhim**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/biphim.user.js) | `biphim.net`, `phimchill.tv` |
 | 🍿 **Mọt Phim (MotPhim)** | 🟢 Sẵn sàng | [👉 **Cài đặt MotPhim**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/motphim.user.js) | `motphim.to`, `motphimtv.me` |
-| 🎬 **Mê Phim (MePhim)** | 🟢 Sẵn sàng | [👉 **Cài đặt MePhim**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/mephim.user.js) | `mephimtv.com`, `mephim.net` |
+| 🎬 **Mê Phim (MePhim)** | 🟢 Sẵn sàng | [👉 **Cài đặt MePhim**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/mephim.user.js) | `mephimtv.com`, `mephim.net`, `mephim.ddns.net` |
 | 🌟 **Full Phim (FullPhim)** | 🟢 Sẵn sàng | [👉 **Cài đặt FullPhim**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/fullphim.user.js) | `fullphim.net`, `fullphim.tv` |
 | 🔥 **Nắng Cực TV** | 🟢 Sẵn sàng | [👉 **Cài đặt Nắng Cực**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/nangcuc.user.js) | `nangcuc.tv`, `nangcuctv.cc` |
 | ⚡ **SSPhim (Phim Nhanh)** | 🟢 Sẵn sàng | [👉 **Cài đặt SSPhim**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/ssphim.user.js) | `ssphim.net`, `ssphim.tv` |
@@ -154,6 +154,7 @@ Dành cho bạn nào thích quản lý bằng Tampermonkey / Violentmonkey và t
 | 🌟 **MovieHDThai** | 🟢 Sẵn sàng | [👉 **Cài đặt MovieHDThai**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/moviehdthai.user.js) | `moviehdthai.com` |
 | 💃 **Cô Bé Phim (CoBePhim)** | 🟢 Sẵn sàng | [👉 **Cài đặt CoBePhim**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/cobephim.user.js) | `cobephim.cfd` |
 | 🎬 **Film4k** | 🟢 Sẵn sàng | [👉 **Cài đặt Film4k**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/film4k.user.js) | `film4k.net`, `film4knet.ngaodacopho.workers.dev` |
+| 🛒 **Chợ Phim (ChoPhim)** | 🟢 Sẵn sàng | [👉 **Cài đặt ChoPhim**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/chophim.user.js) | `chophim.fun` |
 
 </details>
 
@@ -272,7 +273,7 @@ web-enhancer-suit/
 │   ├── modules/             # Các khối logic lõi (sniffer, controls, ad-nuker, hub-ui, vip)
 │   ├── sites/               # Cấu hình chi tiết từng site (anime, movies, tv, sports, comics)
 │   └── template.js          # Trình kết nối Module và sinh Metadata Userscript
-├── scripts/                 # Option 1: Thư mục xuất bản 56 Userscripts hoàn chỉnh
+├── scripts/                 # Option 1: Thư mục xuất bản 57 Userscripts hoàn chỉnh
 ├── extension/               # Option 2: Tiện ích mở rộng độc lập (Manifest V3)
 │   ├── manifest.json        # Manifest V3 (Action, MV3 Service Worker, DeclarativeNetRequest)
 │   ├── background.js        # Background Service Worker quản lý stream & badge
