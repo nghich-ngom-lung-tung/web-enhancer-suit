@@ -280,8 +280,6 @@
       email: base.email || "vip@motchill.online",
       avatar: base.avatar || "/images/avatars/10.jpg",
       image: base.image || "/images/avatars/10.jpg",
-      access_token: base.access_token || "cinema-pro-vip-token",
-      token: base.token || "cinema-pro-vip-token",
       role: "VIP",
       is_role: "admin",
       is_vip: true,
@@ -374,14 +372,51 @@
       const user = getMotchillVipUser();
       return JSON.stringify({
         user: user,
-        access_token: "cinema-pro-vip-token",
-        token: "cinema-pro-vip-token",
         is_vip: true,
         vip_expires_at: VIP_EXPIRY_TIMESTAMP,
         role: "VIP",
         thungBalance: COIN_BALANCE,
         coin_balance: COIN_BALANCE,
         expires: VIP_EXPIRY_DATE.toISOString()
+      });
+    }
+
+    // 2.1 Darkbytes & RoPhim Comments & Reactions Mock (tránh lỗi 401 & crash undefined.substring trên cobephim / moviehdthai / rophim)
+    if (url.includes("/comments/movie/") && url.includes("/reactions")) {
+      return JSON.stringify({
+        status: true,
+        statusCode: 200,
+        data: [],
+        result: [],
+        reactions: [],
+        userReaction: null,
+        reaction: null,
+        message: "Thành công"
+      });
+    }
+    if (url.includes("/api/v1/comments") || (url.includes("/comments") && !url.includes("/comments/top") && !url.includes("/comments/movie/"))) {
+      return JSON.stringify({
+        status: true,
+        statusCode: 200,
+        data: {
+          id: 999999,
+          user_id: 999999,
+          content: "",
+          user: {
+            id: 999999,
+            name: "VIP Cinema Pro",
+            username: "vip_cinemapro",
+            avatar: "/images/avatars/10.jpg"
+          },
+          reactions: [],
+          createdAt: new Date().toISOString()
+        },
+        result: {
+          status: true,
+          reactions: []
+        },
+        reactions: [],
+        message: "Thành công"
       });
     }
 
@@ -456,9 +491,7 @@
         msg: "Thành công",
         data: user,
         result: user,
-        user: user,
-        token: "cinema-pro-vip-token",
-        access_token: "cinema-pro-vip-token"
+        user: user
       });
     }
 
@@ -479,8 +512,8 @@
         success: true,
         code: 200,
         msg: "Thành công",
-        result: { token: "cinema-pro-vip-token" },
-        data: { token: "cinema-pro-vip-token" }
+        result: { status: true },
+        data: { status: true }
       });
     }
 
@@ -937,12 +970,8 @@
         { id: 3, name: "premium" }
       ];
       data.user.permissions = ["admin", "vip", "premium", "superadmin"];
-      data.user.access_token = "cinema-pro-vip-token";
-      data.user.token = "cinema-pro-vip-token";
       data.user.image = data.user.image || "/images/avatars/10.jpg";
       data.user.avatar = data.user.avatar || "/images/avatars/10.jpg";
-      data.access_token = "cinema-pro-vip-token";
-      data.token = "cinema-pro-vip-token";
       data.expires = VIP_EXPIRY_DATE.toISOString();
       return data;
     }
@@ -1200,8 +1229,10 @@
           if (!nativeFetch) return;
 
           const _h = location.hostname || "";
-          const isRophimLikeHost = _h.includes("rophim") || _h.includes("netanime") || _h.includes("moviehdthai") || _h.includes("cobephim") || ROPHIM_MIRROR_DOMAINS.some(d => _h.includes(d));
-          if (!isRophimLikeHost && !force) return;
+          // Chỉ chạy trên domain thực sự có NextAuth server session middleware và có /baseapi/api/v1/auth/register (NetAnime & RoPhim)
+          // Tuyệt đối không chạy trên cobephim.cfd (endpoint 404) hoặc moviehdthai.com (credentials login 401)
+          const isEligibleHost = _h.includes("netanime") || (_h.includes("rophim") && !_h.includes("moviehdthai") && !_h.includes("cobephim"));
+          if (!isEligibleHost && !force) return;
 
           // 1. Kiểm tra xem server đã có session cookie hợp lệ chưa (dùng header X-Cinema-Pro-Internal để bypass mock)
           if (!force && window.sessionStorage && window.sessionStorage.getItem("RO_SERVER_SESSION_READY") === "1") {
@@ -1241,16 +1272,22 @@
               email: "vip_" + rand + "@gmail.com",
               password: "CinemaPro_" + rand + "!"
             };
-            try {
-              window.localStorage.setItem(credKey, JSON.stringify(newCreds));
-            } catch (e) {}
 
-            await nativeFetch("/baseapi/api/v1/auth/register", {
+            const regRes = await nativeFetch("/baseapi/api/v1/auth/register", {
               method: "POST",
               headers: { "Content-Type": "application/json", "X-Cinema-Pro-Internal": "1" },
               body: JSON.stringify(newCreds),
               credentials: "include"
-            }).catch(() => {});
+            }).catch(() => null);
+
+            // BẮT BUỘC: Nếu đăng ký thất bại (404/500), dừng ngay lập tức, không gọi credentials login!
+            if (!regRes || !regRes.ok) {
+              return null;
+            }
+
+            try {
+              window.localStorage.setItem(credKey, JSON.stringify(newCreds));
+            } catch (e) {}
 
             return newCreds;
           }
@@ -1258,12 +1295,13 @@
           if (!creds || !creds.email || !creds.password || force) {
             creds = await createAndRegister();
           }
+          if (!creds) return;
 
           // 3. Lấy CSRF token từ NextAuth (real server)
           const csrfRes = await nativeFetch("/api/auth/csrf", {
             headers: { "X-Cinema-Pro-Internal": "1" },
             credentials: "include"
-          });
+          }).catch(() => null);
           let csrfToken = "";
           if (csrfRes && csrfRes.ok) {
             const csrfData = await csrfRes.json().catch(() => ({}));
@@ -1279,7 +1317,7 @@
             json: "true"
           }).toString();
 
-          let loginRes = await nativeFetch("/api/auth/callback/credentials", {
+          const loginRes = await nativeFetch("/api/auth/callback/credentials", {
             method: "POST",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
@@ -1287,35 +1325,11 @@
             },
             body: postParams,
             credentials: "include"
-          });
+          }).catch(() => null);
 
-          // Nếu login thất bại (tài khoản cũ không khớp hoặc DB reset), tạo tài khoản mới và đăng nhập lại ngay
+          // Nếu login thất bại, dừng lại ngay, không thử lại để tránh 401 spam
           if (!loginRes || !loginRes.ok) {
-            creds = await createAndRegister();
-            const csrfRes2 = await nativeFetch("/api/auth/csrf", {
-              headers: { "X-Cinema-Pro-Internal": "1" },
-              credentials: "include"
-            });
-            if (csrfRes2 && csrfRes2.ok) {
-              const csrfData2 = await csrfRes2.json().catch(() => ({}));
-              csrfToken = csrfData2.csrfToken || csrfToken;
-            }
-            const postParams2 = new URLSearchParams({
-              email: creds.email,
-              password: creds.password,
-              csrfToken: csrfToken,
-              json: "true"
-            }).toString();
-
-            loginRes = await nativeFetch("/api/auth/callback/credentials", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "X-Cinema-Pro-Internal": "1"
-              },
-              body: postParams2,
-              credentials: "include"
-            });
+            return;
           }
 
           if (loginRes && loginRes.ok) {
@@ -1335,12 +1349,26 @@
               document.dispatchEvent(new Event("visibilitychange"));
             } catch (e) {}
           }
-        } catch (e) {
-          console.error("[Cinema Pro] Server session provisioning error:", e);
-        }
+        } catch (e) {}
       }
 
-      setTimeout(() => { ensureRophimServerSession(); }, 50);
+      // Kích hoạt khi người dùng click vào nút tài khoản / profile
+      if (typeof document !== "undefined") {
+        document.addEventListener("click", function (e) {
+          const a = e.target && e.target.closest && e.target.closest("a[href*='/user/profile'], a[href*='/user/playlist'], a[href*='/user/thong-bao'], [data-user-nav]");
+          if (a) {
+            ensureRophimServerSession(false);
+          }
+        }, true);
+      }
+
+      // Trên NetAnime & RoPhim: tự động kích hoạt 1 lần nếu chưa có session cookie
+      const _curH = (typeof location !== "undefined" && location.hostname) ? location.hostname : "";
+      if (_curH.includes("netanime") || (_curH.includes("rophim") && !_curH.includes("moviehdthai") && !_curH.includes("cobephim"))) {
+        if (typeof window !== "undefined" && window.sessionStorage && window.sessionStorage.getItem("RO_SERVER_SESSION_READY") !== "1") {
+          setTimeout(() => { ensureRophimServerSession(); }, 150);
+        }
+      }
 
       // 5. Phục hồi giao diện nếu rơi vào trang raw RSC text/x-component (?callbackUrl=...)
       try {
@@ -3115,15 +3143,30 @@
       if (mockRes) return mockRes;
     } catch (e) {}
     try {
-      if (url && (url.includes("/encrypted/token") || url.includes("/chat/send") || url.includes("/chat/history"))) {
-        const realTok = typeof window !== "undefined" && window.localStorage ? window.localStorage.getItem("guestAccessToken") : null;
-        if (realTok && !realTok.includes("cinema-pro-vip") && init && init.headers) {
-          if (typeof init.headers.set === "function") {
-            const a = init.headers.get("Authorization") || init.headers.get("authorization");
-            if (a && a.includes("cinema-pro-vip")) init.headers.set("Authorization", "Bearer " + realTok);
-          } else if (typeof init.headers === "object") {
-            const a = init.headers.Authorization || init.headers.authorization;
-            if (a && a.includes("cinema-pro-vip")) init.headers.Authorization = "Bearer " + realTok;
+      if (init && init.headers) {
+        if (typeof init.headers.get === "function") {
+          const a = init.headers.get("Authorization") || init.headers.get("authorization");
+          if (a && a.includes("cinema-pro-vip")) {
+            const realTok = typeof window !== "undefined" && window.localStorage ? window.localStorage.getItem("guestAccessToken") : null;
+            if (realTok && !realTok.includes("cinema-pro-vip")) {
+              init.headers.set("Authorization", "Bearer " + realTok);
+            } else if (typeof init.headers.delete === "function") {
+              init.headers.delete("Authorization");
+              init.headers.delete("authorization");
+            } else {
+              init.headers.set("Authorization", "");
+            }
+          }
+        } else if (typeof init.headers === "object") {
+          const a = init.headers.Authorization || init.headers.authorization;
+          if (a && String(a).includes("cinema-pro-vip")) {
+            const realTok = typeof window !== "undefined" && window.localStorage ? window.localStorage.getItem("guestAccessToken") : null;
+            if (realTok && !realTok.includes("cinema-pro-vip")) {
+              init.headers.Authorization = "Bearer " + realTok;
+            } else {
+              delete init.headers.Authorization;
+              delete init.headers.authorization;
+            }
           }
         }
       }
@@ -3164,6 +3207,23 @@
       targetUrl = u || "";
       checkAndCaptureUrl(targetUrl);
       if (origOpen) return origOpen.apply(this, arguments);
+    };
+
+    const origSetRequestHeader = xhr.setRequestHeader;
+    xhr.setRequestHeader = function (header, value) {
+      try {
+        if (header && typeof header === "string" && header.toLowerCase() === "authorization") {
+          if (value && typeof value === "string" && value.includes("cinema-pro-vip")) {
+            const realTok = typeof window !== "undefined" && window.localStorage ? window.localStorage.getItem("guestAccessToken") : null;
+            if (realTok && !realTok.includes("cinema-pro-vip")) {
+              value = "Bearer " + realTok;
+            } else {
+              return;
+            }
+          }
+        }
+      } catch (e) {}
+      if (origSetRequestHeader) return origSetRequestHeader.apply(this, arguments);
     };
     
     const origSend = xhr.send;

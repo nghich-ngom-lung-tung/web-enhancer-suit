@@ -1053,15 +1053,30 @@
     }
     
     try {
-      if (url && (url.includes("/encrypted/token") || url.includes("/chat/send") || url.includes("/chat/history"))) {
-        const realTok = typeof window !== "undefined" && window.localStorage ? window.localStorage.getItem("guestAccessToken") : null;
-        if (realTok && !realTok.includes("cinema-pro-vip") && init && init.headers) {
-          if (typeof init.headers.set === "function") {
-            const a = init.headers.get("Authorization") || init.headers.get("authorization");
-            if (a && a.includes("cinema-pro-vip")) init.headers.set("Authorization", "Bearer " + realTok);
-          } else if (typeof init.headers === "object") {
-            const a = init.headers.Authorization || init.headers.authorization;
-            if (a && a.includes("cinema-pro-vip")) init.headers.Authorization = "Bearer " + realTok;
+      if (init && init.headers) {
+        if (typeof init.headers.get === "function") {
+          const a = init.headers.get("Authorization") || init.headers.get("authorization");
+          if (a && a.includes("cinema-pro-vip")) {
+            const realTok = typeof window !== "undefined" && window.localStorage ? window.localStorage.getItem("guestAccessToken") : null;
+            if (realTok && !realTok.includes("cinema-pro-vip")) {
+              init.headers.set("Authorization", "Bearer " + realTok);
+            } else if (typeof init.headers.delete === "function") {
+              init.headers.delete("Authorization");
+              init.headers.delete("authorization");
+            } else {
+              init.headers.set("Authorization", "");
+            }
+          }
+        } else if (typeof init.headers === "object") {
+          const a = init.headers.Authorization || init.headers.authorization;
+          if (a && String(a).includes("cinema-pro-vip")) {
+            const realTok = typeof window !== "undefined" && window.localStorage ? window.localStorage.getItem("guestAccessToken") : null;
+            if (realTok && !realTok.includes("cinema-pro-vip")) {
+              init.headers.Authorization = "Bearer " + realTok;
+            } else {
+              delete init.headers.Authorization;
+              delete init.headers.authorization;
+            }
           }
         }
       }
@@ -1094,6 +1109,23 @@
       targetUrl = u || "";
       checkAndCaptureUrl(targetUrl);
       if (origOpen) return origOpen.apply(this, arguments);
+    };
+
+    const origSetRequestHeader = xhr.setRequestHeader;
+    xhr.setRequestHeader = function (header, value) {
+      try {
+        if (header && typeof header === "string" && header.toLowerCase() === "authorization") {
+          if (value && typeof value === "string" && value.includes("cinema-pro-vip")) {
+            const realTok = typeof window !== "undefined" && window.localStorage ? window.localStorage.getItem("guestAccessToken") : null;
+            if (realTok && !realTok.includes("cinema-pro-vip")) {
+              value = "Bearer " + realTok;
+            } else {
+              return;
+            }
+          }
+        }
+      } catch (e) {}
+      if (origSetRequestHeader) return origSetRequestHeader.apply(this, arguments);
     };
     
     const origSend = xhr.send;
