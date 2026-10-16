@@ -2075,24 +2075,37 @@
     }
   } catch (e) {}
 
-  // ─── CHOPHIM VIP 2099 & TVC VIDEO AD KILLER ───
+  // ─── CHOPHIM VIP 2099 & PERSISTENT PROFILE CUSTOMIZATION ───
   function getChophimVipUser() {
+    let saved = {};
+    try {
+      if (typeof window !== "undefined" && window.localStorage) {
+        const raw = window.localStorage.getItem("chophim-auth-state");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.user && typeof parsed.user === "object") {
+            saved = parsed.user;
+          }
+        }
+      }
+    } catch (e) {}
+
     return {
-      id: "vip_cinema_pro_2099",
-      displayName: "VIP Cinema Pro",
-      name: "VIP Cinema Pro",
-      email: "vip.cinemapro@chophim.fun",
+      id: saved.id || "vip_cinema_pro_2099",
+      displayName: saved.displayName || "VIP Cinema Pro",
+      name: saved.name || "VIP Cinema Pro",
+      email: saved.email || "vip.cinemapro@chophim.fun",
       role: "vip",
       roles: ["vip", "premium", "admin"],
       subscriptionTier: "premium",
       subscriptionExpiresAt: "2099-12-31T23:59:59.000Z",
       isVip: true,
       isAdmin: true,
-      avatar: null,
-      avatarUrl: null,
-      avatarFrame: null,
-      selectedEmoji: null,
-      showPremiumBadge: true,
+      avatar: saved.avatar || null,
+      avatarUrl: saved.avatarUrl || null,
+      avatarFrame: saved.avatarFrame !== undefined ? saved.avatarFrame : null,
+      selectedEmoji: saved.selectedEmoji !== undefined ? saved.selectedEmoji : null,
+      showPremiumBadge: saved.showPremiumBadge !== undefined ? saved.showPremiumBadge : true,
       cpCoinBalance: 999999999,
       coin_balance: 999999999,
       coins: 999999999
@@ -2104,33 +2117,60 @@
     const isChophimHost = typeof location !== "undefined" && location.hostname && location.hostname.includes("chophim");
     if (isChophimHost && typeof window !== "undefined" && window.localStorage) {
       const vipUser = getChophimVipUser();
-      const stateObj = {
-        user: vipUser,
-        isBlocked: false,
-        blockInfo: null,
-        checkedAt: Date.now() + 86400000000
-      };
 
-      // Seed localStorage
+      // Seed localStorage preserving existing custom emoji and frame
       try {
-        window.localStorage.setItem("chophim-auth-state", JSON.stringify(stateObj));
+        const existing = window.localStorage.getItem("chophim-auth-state");
+        if (existing) {
+          const parsed = JSON.parse(existing);
+          if (parsed && parsed.user && typeof parsed.user === "object") {
+            Object.assign(vipUser, parsed.user);
+          }
+        }
+        vipUser.subscriptionTier = "premium";
+        vipUser.cpCoinBalance = 999999999;
+        vipUser.role = "vip";
+        window.localStorage.setItem("chophim-auth-state", JSON.stringify({
+          user: vipUser,
+          isBlocked: false,
+          blockInfo: null,
+          checkedAt: Date.now() + 86400000000
+        }));
         window.localStorage.setItem("chophim:popunder-last-shown", String(Date.now() + 86400000000));
         window.localStorage.setItem("chophim:banner-blocked-until", String(Date.now() + 86400000000));
         window.localStorage.setItem("chophim:popup-ad-dismissed-until", String(Date.now() + 86400000000));
       } catch (e) {}
 
-      // Protect chophim-auth-state from being overwritten with null/empty
+      // Protect chophim-auth-state from being overwritten with null/empty while preserving emoji & frame
       if (typeof window.Storage !== "undefined" && window.Storage.prototype) {
         const origSetItem = window.Storage.prototype.setItem;
         window.Storage.prototype.setItem = function (key, val) {
           if (key === "chophim-auth-state") {
             try {
               const parsed = JSON.parse(val);
-              if (!parsed || !parsed.user || parsed.user.subscriptionTier !== "premium" || typeof parsed.user.cpCoinBalance !== "number") {
-                val = JSON.stringify(stateObj);
+              if (parsed && parsed.user && typeof parsed.user === "object") {
+                parsed.user.subscriptionTier = "premium";
+                parsed.user.cpCoinBalance = 999999999;
+                parsed.user.role = "vip";
+                if (!parsed.user.roles || !parsed.user.roles.includes("admin")) {
+                  parsed.user.roles = ["vip", "premium", "admin"];
+                }
+                val = JSON.stringify(parsed);
+              } else {
+                val = JSON.stringify({
+                  user: getChophimVipUser(),
+                  isBlocked: false,
+                  blockInfo: null,
+                  checkedAt: Date.now() + 86400000000
+                });
               }
             } catch (e) {
-              val = JSON.stringify(stateObj);
+              val = JSON.stringify({
+                user: getChophimVipUser(),
+                isBlocked: false,
+                blockInfo: null,
+                checkedAt: Date.now() + 86400000000
+              });
             }
           }
           return origSetItem.call(this, key, val);
@@ -2146,7 +2186,7 @@
               try {
                 authChannel.postMessage({
                   type: "auth-state",
-                  user: vipUser,
+                  user: getChophimVipUser(),
                   isBlocked: false,
                   blockInfo: null,
                   checkedAt: Date.now() + 86400000000
@@ -2279,10 +2319,45 @@
       });
     }
 
-    // 4. Update profile
+    // 4. Update profile (save selectedEmoji, avatarFrame, showPremiumBadge, displayName, avatarUrl)
     if (url.includes("/api/auth/update-profile")) {
+      let payload = {};
+      if (init && init.body) {
+        try {
+          payload = typeof init.body === "string" ? JSON.parse(init.body) : init.body;
+        } catch (e) {}
+      }
+      const updatedUser = Object.assign({}, u, payload);
+
+      // Persist immediately into localStorage
+      try {
+        if (typeof window !== "undefined" && window.localStorage) {
+          const stateObj = {
+            user: updatedUser,
+            isBlocked: false,
+            blockInfo: null,
+            checkedAt: Date.now() + 86400000000
+          };
+          window.localStorage.setItem("chophim-auth-state", JSON.stringify(stateObj));
+        }
+      } catch (e) {}
+
+      // Broadcast update across tabs
+      try {
+        if (typeof window !== "undefined" && typeof window.BroadcastChannel !== "undefined") {
+          const authChannel = new window.BroadcastChannel("chophim-auth");
+          authChannel.postMessage({
+            type: "auth-state",
+            user: updatedUser,
+            isBlocked: false,
+            blockInfo: null,
+            checkedAt: Date.now() + 86400000000
+          });
+        }
+      } catch (e) {}
+
       return JSON.stringify({
-        user: u,
+        user: updatedUser,
         success: true
       });
     }

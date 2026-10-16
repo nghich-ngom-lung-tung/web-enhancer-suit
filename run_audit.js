@@ -1133,6 +1133,16 @@ chophimScripts.forEach(file => {
       defenderPassed = false;
     }
     report(`${file}: ChoPhim React DOM removeChild Defender safely prevents NotFoundError crash`, defenderPassed);
+
+    // Test /api/auth/update-profile persistence (Emoji & Avatar Frame)
+    ctx.window.fetch("/api/auth/update-profile", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ selectedEmoji: "pepe-test", avatarFrame: "frame_5.png" })
+    }).then(res => res.json()).then(data => {
+      const updatePassed = Boolean(data?.user?.selectedEmoji === "pepe-test" && data?.user?.avatarFrame === "frame_5.png");
+      report(`${file}: ChoPhim /api/auth/update-profile saves and returns selectedEmoji & avatarFrame`, updatePassed);
+    });
   } catch (err) {
     report(`${file}: ChoPhim VIP execution`, false, err.stack);
   }
