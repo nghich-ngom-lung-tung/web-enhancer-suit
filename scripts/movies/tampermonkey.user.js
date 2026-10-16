@@ -3489,6 +3489,12 @@
     localStorage.setItem("__widget_data:/api/widget", JSON.stringify({ version: 1, items: {} }));
     localStorage.setItem("__pc_geo", "VN");
 
+    const todayStr = (function () {
+      try { return new Date().toISOString().slice(0, 10); } catch (e) { return "2026-12-31"; }
+    })();
+    localStorage.setItem("f4k:entered", String(Date.now()));
+    localStorage.setItem("community-dismissed", todayStr);
+
     window.__WidgetConfig = { zones: {} };
     window.__PopConfig = { zones: [] };
     window.aclib = {
@@ -3512,6 +3518,8 @@
       if (key === "popup_last_shown" || key === "corner_start_popup_dismissed") return "9999999999999";
       if (key === "giovang_tvc_pre_roll_daily") return JSON.stringify({ date: "2099-12-31", count: 99999 });
       if (key === "rophim-tvc-shown") return "1";
+      if (key === "f4k:entered") return String(Date.now());
+      if (key === "community-dismissed") return todayStr;
       return origGetItem.apply(this, arguments);
     };
   } catch (e) {}
@@ -3907,7 +3915,8 @@
       'a[href*="vsbet"]', 'a[href*="bet88"]', 'a[href*="colatv"]', 'a[href*="colascore"]', 'a[href*="kubet"]',
       'a[href*="casino"]', 'a[href*="fun88"]', 'a[href*="w88"]', 'a[href*="fb88"]', 'a[href*="nohu"]',
       'a[href*="taixiu"]', 'a[href*="gamebai"]', 'a[href*="keonhacai"]',
-      'a[href*="hitclub"]', 'a[href*="hit.club"]', 'a[href*="go88"]', 'a[href*="sunwin"]'
+      'a[href*="hitclub"]', 'a[href*="hit.club"]', 'a[href*="go88"]', 'a[href*="sunwin"]',
+      '.landing-ad', 'dialog.cdlg', '.cdlg', '.landing-box .landing-ad'
     ];
 
     try {
@@ -3919,6 +3928,21 @@
         if (lw.hasAttribute("data-type")) lw.removeAttribute("data-type");
         if (lw.getAttribute("data-button-ads") !== "[]") lw.setAttribute("data-button-ads", "[]");
         if (lw.getAttribute("data-tvc") !== "[]") lw.setAttribute("data-tvc", "[]");
+      }
+
+      // Tự động bỏ qua Landing Gate & Community Dialog trên Film4k
+      const f4kGate = document.querySelector(".landing-enter, button.landing-enter");
+      if (f4kGate && typeof f4kGate.click === "function") {
+        try { f4kGate.click(); } catch (e) {}
+      }
+      const f4kOk = document.querySelector(".cdlg-ok, button.cdlg-ok");
+      if (f4kOk && typeof f4kOk.click === "function") {
+        try { f4kOk.click(); } catch (e) {}
+      }
+      const f4kDialog = document.querySelector("dialog.cdlg[open]");
+      if (f4kDialog) {
+        try { if (typeof f4kDialog.close === "function") f4kDialog.close(); } catch (e) {}
+        safeHideOrRemove(f4kDialog);
       }
 
       // Tự động bỏ qua và kết thúc video TVC pre-roll nếu xuất hiện (Giờ Vàng, Thể Thao, GhienPhim, CoiPhim)
@@ -4254,11 +4278,16 @@
     const menu = hub.querySelector("#ro-hub-menu");
     if (toggle && menu) {
       toggle.onclick = (e) => {
-        e.stopPropagation();
+        if (e && typeof e.stopPropagation === "function") e.stopPropagation();
         menu.classList.toggle("show");
       };
-      document.addEventListener("click", () => menu.classList.remove("show"));
-      menu.addEventListener("click", (e) => e.stopPropagation());
+      document.addEventListener("click", (e) => {
+        if (e.target && hub.contains(e.target)) return;
+        menu.classList.remove("show");
+      });
+      menu.addEventListener("click", (e) => {
+        if (e && typeof e.stopPropagation === "function") e.stopPropagation();
+      });
     }
 
     const bind = (id, fn) => {

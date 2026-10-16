@@ -650,6 +650,24 @@ html, body {
         pointer-events: none !important;
       }
 
+.landing-ad, dialog.cdlg, .cdlg {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    body.ro-theater-active .player-media-root,
+    body.ro-theater-active .watch-player {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      z-index: 999999 !important;
+      background: #000 !important;
+    }
+
 #ad_top, #ad_bottom, .ad-banner, .banner_middle, div[id*="adv_"], .catfish-banner, div[class*="qc_"], .anti-adblock-alert, #overlay-banner, div[style*="z-index: 2147483647"] {
   display: none !important;
   visibility: hidden !important;

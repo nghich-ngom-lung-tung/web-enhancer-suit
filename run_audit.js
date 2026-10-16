@@ -1303,6 +1303,8 @@ if (manifestObj) {
     report("extension matches: cobephim.cfd pattern present", matches.some(m => m.includes("cobephim.cfd")));
     report("extension matches: clubc.org embed pattern present", matches.some(m => m.includes("clubc.org")));
     report("extension matches: darkbytes.xyz embed pattern present", matches.some(m => m.includes("darkbytes.xyz")));
+    report("extension matches: film4k.net pattern present", matches.some(m => m.includes("film4k.net")));
+    report("extension matches: film4knet.ngaodacopho.workers.dev pattern present", matches.some(m => m.includes("workers.dev")));
   }
 
   // Validate script syntax
@@ -1364,6 +1366,12 @@ if (manifestObj) {
 
   const cobephimScript = fs.readFileSync(path.join(__dirname, "scripts", "movies", "cobephim.user.js"), "utf8");
   report("scripts/movies/cobephim.user.js: darkbytes.xyz embed domain mapped", cobephimScript.includes("darkbytes.xyz"));
+
+  const film4kScript = fs.readFileSync(path.join(__dirname, "scripts", "movies", "film4k.user.js"), "utf8");
+  report("scripts/movies/film4k.user.js: film4k.net domain mapped", film4kScript.includes("film4k.net"));
+  report("scripts/movies/film4k.user.js: workers.dev CDN streaming domain mapped", film4kScript.includes("workers.dev"));
+  report("scripts/movies/film4k.user.js: f4k:entered & community-dismissed auto-bypass present", film4kScript.includes("f4k:entered") && film4kScript.includes("community-dismissed"));
+  report("extension/content/ad-nuker.js: Film4k landing gate and dialog auto-bypass present", adNukerCode.includes("landing-enter") && adNukerCode.includes("cdlg-ok") && adNukerCode.includes("f4k:entered"));
 
   // ─── RUNTIME ISOLATION & REGRESSION PREVENTION AUDIT ───
   // Regression Test 1: sniffer.js fetch hook in isolation without isAdApi in scope

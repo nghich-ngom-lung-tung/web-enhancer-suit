@@ -141,11 +141,16 @@
     const menu = hub.querySelector("#ro-hub-menu");
     if (toggle && menu) {
       toggle.onclick = (e) => {
-        e.stopPropagation();
+        if (e && typeof e.stopPropagation === "function") e.stopPropagation();
         menu.classList.toggle("show");
       };
-      document.addEventListener("click", () => menu.classList.remove("show"));
-      menu.addEventListener("click", (e) => e.stopPropagation());
+      document.addEventListener("click", (e) => {
+        if (e.target && hub.contains(e.target)) return;
+        menu.classList.remove("show");
+      });
+      menu.addEventListener("click", (e) => {
+        if (e && typeof e.stopPropagation === "function") e.stopPropagation();
+      });
     }
 
     const bind = (id, fn) => {
