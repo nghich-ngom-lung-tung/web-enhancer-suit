@@ -1940,13 +1940,18 @@
         "*://zettruyen3.com/*"
       ],
       "js": [
-        "content/icons.js",
-        "content/ad-nuker.js",
-        "content/vip-patcher.js",
-        "content/sniffer.js",
-        "content/hub-ui.js",
-        "content/player-controls.js",
-        "content/content.js"
+        "content/core/icons.js",
+        "content/features/ad-nuker.js",
+        "content/features/sniffer.js",
+        "content/features/player-controls.js",
+        "content/features/hub-ui.js",
+        "content/vip/vip-engine.js",
+        "content/vip/auth.js",
+        "content/vip/cinema.js",
+        "content/vip/anime.js",
+        "content/vip/sports.js",
+        "content/vip/comics.js",
+        "content/core/content.js"
       ],
       "css": [
         "content/styles.css"
@@ -3841,7 +3846,7 @@
         "*://zettruyen3.com/*"
       ],
       "js": [
-        "content/bridge.js"
+        "content/core/bridge.js"
       ],
       "run_at": "document_start",
       "all_frames": true

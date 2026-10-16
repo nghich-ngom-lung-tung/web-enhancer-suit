@@ -1,12 +1,11 @@
 /**
  * Cinema Pro Suite - Content Bridge Script (Isolated World)
- * Bridges MAIN world (content.js) with Extension Runtime & Background Service Worker
+ * Bridges MAIN world with Extension Runtime & Background Service Worker
  */
-
 (function () {
   "use strict";
 
-  // Listen for messages emitted from MAIN world (content.js)
+  // Listen for messages emitted from MAIN world
   window.addEventListener("message", (event) => {
     if (event.source !== window || !event.data || typeof event.data !== "object") return;
 

@@ -1,5 +1,5 @@
 /**
- * Cinema Pro Suite - Ad & Popup Nuker Module
+ * Cinema Pro Suite - Ad & Popup Nuker Feature
  */
 (() => {
   "use strict";

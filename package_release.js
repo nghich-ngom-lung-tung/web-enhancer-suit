@@ -84,17 +84,22 @@ console.log(`  ✓ Copied master userscript -> ${masterScriptDestGeneric}`);
 const releaseNotesPath = path.join(releaseDir, `RELEASE_NOTES_v${version}.md`);
 const releaseNotes = `# 👑 Web Enhancer Suite v${version} — Chill Guy Capybara Edition 🕶️✨
 
+<div align="center">
+  <img src="https://files.catbox.moe/dj52sc.png" alt="Chill Guy Capybara Mascot" width="140" height="140" />
+</div>
+
 ### 🌟 Điểm nổi bật phiên bản v${version}
 
 > [!TIP]
-> **🕶️ Linh vật Chill Guy Capybara độc quyền**
+> **🕶️ Linh vật Chill Guy Capybara độc quyền & Kiến trúc Module hóa**
 > • Linh vật **Chill Guy Capybara** 3D thư thái kết hợp kính 3D anaglyph và vương miện VIP hoàng gia.
 > • Xuất bản đầy đủ các kích thước chuẩn Chrome MV3: \`16x16\`, \`48x48\`, \`128x128\` với bo góc squircle macOS trong suốt sắc nét.
+> • **Tái cấu trúc chuẩn công nghiệp (Industry-Standard Architecture):** Tách nhỏ hệ thống Content Scripts thành các thư mục chuyên biệt: \`core/\`, \`features/\`, \`vip/\` (\`vip-engine.js\`, \`cinema.js\`, \`anime.js\`, \`sports.js\`, \`comics.js\`, \`auth.js\`).
 
 > [!NOTE]
 > **💎 Cải tiến cốt lõi & Khắc phục lỗi gần đây:**
+> • **RoPhim, CoBePhim & MovieHDThai:** Khắc phục triệt để lỗi React Next.js \`TypeError: m.map is not a function\` trên API Watchlist danh sách xem sau; Bổ sung lớp phòng thủ đa tầng cho \`notificationsMovie\` và \`notificationsOther\`.
 > • **ChoPhim VIP & Social:** Hỗ trợ lưu trữ & đồng bộ Emoji tương tác, khung Avatar VIP và huy hiệu Premium; Khắc phục triệt để lỗi gửi bình luận/chat thời gian thực trên React; Tự động xử lý lỗi DOM hydration collision (\`removeChild\`).
-> • **RoPhim & Hệ thống Clones:** Bổ sung hỗ trợ domain mới \`rophim10.work\`, \`moviehdthai.com\`, \`cobephim.cfd\`; Mở khóa luồng video nhúng qua \`clubc.org\` và \`darkbytes.xyz\`.
 > • **Film4k & NetAnime:** Tự động vượt qua Landing Gate & đóng hội thoại cộng đồng; Mở khóa VIP vĩnh viễn 2099 & túi tiền xu tối đa 999,999,999 Coin.
 > • **Trực tiếp bóng đá (Chuối Chiên TV, Xôi Lạc):** Diệt sạch 100% popup quảng cáo và banner cá cược gây lag luồng phát.
 

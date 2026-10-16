@@ -1,5 +1,5 @@
 /**
- * Cinema Pro Suite - VIP Control Hub & Toast Notifications
+ * Cinema Pro Suite - VIP Control Hub & Toast Notifications Feature
  */
 (() => {
   "use strict";

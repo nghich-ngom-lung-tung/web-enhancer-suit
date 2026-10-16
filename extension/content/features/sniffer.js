@@ -1,5 +1,5 @@
 /**
- * Cinema Pro Suite - Stream Sniffer & Anti-Referer Hook
+ * Cinema Pro Suite - Stream Sniffer & Anti-Referer Hook Feature
  */
 (() => {
   "use strict";

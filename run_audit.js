@@ -1539,11 +1539,11 @@ if (manifestObj) {
 
   if (Array.isArray(cs)) {
     const mainWorldScript = cs.find(c => c.world === "MAIN");
-    report("extension/manifest.json: MAIN world content script configured for page hooking", Boolean(mainWorldScript && mainWorldScript.js.includes("content/content.js")));
+    report("extension/manifest.json: MAIN world content script configured for page hooking", Boolean(mainWorldScript && mainWorldScript.js.some(s => s.endsWith("content.js"))));
     report("extension/manifest.json: MAIN world script runs at document_start", Boolean(mainWorldScript && mainWorldScript.run_at === "document_start"));
     report("extension/manifest.json: MAIN world script applies to all_frames", Boolean(mainWorldScript && mainWorldScript.all_frames === true));
 
-    const bridgeScript = cs.find(c => c.js && c.js.includes("content/bridge.js"));
+    const bridgeScript = cs.find(c => c.js && c.js.some(s => s.endsWith("bridge.js")));
     report("extension/manifest.json: Isolated bridge script configured for runtime messaging", Boolean(bridgeScript));
 
     // Validate Chrome match pattern compliance on 100% of patterns
@@ -1563,14 +1563,19 @@ if (manifestObj) {
   // Validate script syntax
   const filesToSyntaxCheck = [
     { file: path.join(extDir, "background.js"), name: "extension/background.js" },
-    { file: path.join(extDir, "content", "bridge.js"), name: "extension/content/bridge.js" },
-    { file: path.join(extDir, "content", "icons.js"), name: "extension/content/icons.js" },
-    { file: path.join(extDir, "content", "vip-patcher.js"), name: "extension/content/vip-patcher.js" },
-    { file: path.join(extDir, "content", "sniffer.js"), name: "extension/content/sniffer.js" },
-    { file: path.join(extDir, "content", "ad-nuker.js"), name: "extension/content/ad-nuker.js" },
-    { file: path.join(extDir, "content", "hub-ui.js"), name: "extension/content/hub-ui.js" },
-    { file: path.join(extDir, "content", "player-controls.js"), name: "extension/content/player-controls.js" },
-    { file: path.join(extDir, "content", "content.js"), name: "extension/content/content.js" },
+    { file: path.join(extDir, "content", "core", "bridge.js"), name: "extension/content/core/bridge.js" },
+    { file: path.join(extDir, "content", "core", "icons.js"), name: "extension/content/core/icons.js" },
+    { file: path.join(extDir, "content", "core", "content.js"), name: "extension/content/core/content.js" },
+    { file: path.join(extDir, "content", "features", "ad-nuker.js"), name: "extension/content/features/ad-nuker.js" },
+    { file: path.join(extDir, "content", "features", "sniffer.js"), name: "extension/content/features/sniffer.js" },
+    { file: path.join(extDir, "content", "features", "player-controls.js"), name: "extension/content/features/player-controls.js" },
+    { file: path.join(extDir, "content", "features", "hub-ui.js"), name: "extension/content/features/hub-ui.js" },
+    { file: path.join(extDir, "content", "vip", "vip-engine.js"), name: "extension/content/vip/vip-engine.js" },
+    { file: path.join(extDir, "content", "vip", "cinema.js"), name: "extension/content/vip/cinema.js" },
+    { file: path.join(extDir, "content", "vip", "anime.js"), name: "extension/content/vip/anime.js" },
+    { file: path.join(extDir, "content", "vip", "sports.js"), name: "extension/content/vip/sports.js" },
+    { file: path.join(extDir, "content", "vip", "comics.js"), name: "extension/content/vip/comics.js" },
+    { file: path.join(extDir, "content", "vip", "auth.js"), name: "extension/content/vip/auth.js" },
     { file: path.join(extDir, "popup", "popup.js"), name: "extension/popup/popup.js" }
   ];
 
@@ -1598,20 +1603,20 @@ if (manifestObj) {
   report("extension/content/styles.css: Master stylesheet compiled", fs.existsSync(path.join(extDir, "content", "styles.css")) && fs.statSync(path.join(extDir, "content", "styles.css")).size > 20000);
 
   // Validate Anti-Crash Shield & TVC Bypass
-  const adNukerCode = fs.readFileSync(path.join(extDir, "content", "ad-nuker.js"), "utf8");
-  report("extension/content/ad-nuker.js: Anti-crash iframe protection present", adNukerCode.includes("crash.html") && adNukerCode.includes("HTMLIFrameElement.prototype"));
-  report("extension/content/ad-nuker.js: rophim-tvc-shown pre-roll bypass present", adNukerCode.includes("rophim-tvc-shown"));
+  const adNukerCode = fs.readFileSync(path.join(extDir, "content", "features", "ad-nuker.js"), "utf8");
+  report("extension/content/features/ad-nuker.js: Anti-crash iframe protection present", adNukerCode.includes("crash.html") && adNukerCode.includes("HTMLIFrameElement.prototype"));
+  report("extension/content/features/ad-nuker.js: rophim-tvc-shown pre-roll bypass present", adNukerCode.includes("rophim-tvc-shown"));
 
-  // Validate Extension VIP Patcher for new sites
-  const vipPatcherCode = fs.readFileSync(path.join(extDir, "content", "vip-patcher.js"), "utf8");
-  const hasExtRophimKeywords = vipPatcherCode.includes("moviehdthai.com") && vipPatcherCode.includes("cobephim.cfd") && vipPatcherCode.includes("rophim10.work");
-  report("extension/content/vip-patcher.js: Keywords cover moviehdthai, cobephim, and rophim10", hasExtRophimKeywords);
+  // Validate Extension VIP Cinema Module for new sites
+  const cinemaCode = fs.readFileSync(path.join(extDir, "content", "vip", "cinema.js"), "utf8");
+  const hasExtRophimKeywords = cinemaCode.includes("moviehdthai.com") && cinemaCode.includes("cobephim.cfd") && cinemaCode.includes("rophim10.work");
+  report("extension/content/vip/cinema.js: Keywords cover moviehdthai, cobephim, and rophim10", hasExtRophimKeywords);
 
-  const hasExtHostCheck = vipPatcherCode.includes("moviehdthai") && vipPatcherCode.includes("cobephim");
-  report("extension/content/vip-patcher.js: isRophimHost covers moviehdthai and cobephim", hasExtHostCheck);
+  const hasExtHostCheck = cinemaCode.includes("moviehdthai") && cinemaCode.includes("cobephim");
+  report("extension/content/vip/cinema.js: isRophimHost covers moviehdthai and cobephim", hasExtHostCheck);
 
-  const hasExtCredKeys = vipPatcherCode.includes("MOVIEHDTHAI_CREDENTIALS") && vipPatcherCode.includes("COBEPHIM_CREDENTIALS");
-  report("extension/content/vip-patcher.js: Per-site credential storage isolated", hasExtCredKeys);
+  const hasExtCredKeys = cinemaCode.includes("MOVIEHDTHAI_CREDENTIALS") && cinemaCode.includes("COBEPHIM_CREDENTIALS");
+  report("extension/content/vip/cinema.js: Per-site credential storage isolated", hasExtCredKeys);
 
   // Validate userscript embed mappings
   const moviehdthaiScript = fs.readFileSync(path.join(__dirname, "scripts", "movies", "moviehdthai.user.js"), "utf8");
@@ -1625,13 +1630,13 @@ if (manifestObj) {
   report("scripts/movies/film4k.user.js: workers.dev CDN streaming domain mapped", film4kScript.includes("workers.dev"));
   report("scripts/movies/film4k.user.js: f4k:entered & community-dismissed auto-bypass present", film4kScript.includes("f4k:entered") && film4kScript.includes("community-dismissed"));
   report("scripts/movies/film4k.user.js: .side-signin & .side-pair hidden via CSS", film4kScript.includes(".side-signin") && film4kScript.includes(".side-pair"));
-  report("extension/content/ad-nuker.js: Film4k landing gate and dialog auto-bypass present", adNukerCode.includes("landing-enter") && adNukerCode.includes("cdlg-ok") && adNukerCode.includes("f4k:entered"));
-  report("extension/content/vip-patcher.js: Film4k VIP user and /api/auth/me interception present", vipPatcherCode.includes("/api/auth/me") && vipPatcherCode.includes("sfrank1e@film4k.vip"));
+  report("extension/content/features/ad-nuker.js: Film4k landing gate and dialog auto-bypass present", adNukerCode.includes("landing-enter") && adNukerCode.includes("cdlg-ok") && adNukerCode.includes("f4k:entered"));
+  report("extension/content/vip/cinema.js: Film4k VIP user and /api/auth/me interception present", cinemaCode.includes("/api/auth/me") && cinemaCode.includes("sfrank1e@film4k.vip"));
 
   // ─── RUNTIME ISOLATION & REGRESSION PREVENTION AUDIT ───
   // Regression Test 1: sniffer.js fetch hook in isolation without isAdApi in scope
   try {
-    const snifferContent = fs.readFileSync(path.join(extDir, "content", "sniffer.js"), "utf8");
+    const snifferContent = fs.readFileSync(path.join(extDir, "content", "features", "sniffer.js"), "utf8");
     const mockWindow = {
       location: { href: "https://rophim10.work/phimhay", hostname: "rophim10.work", origin: "https://rophim10.work" },
       document: { title: "RoPhim", querySelector: () => null, getElementById: () => null },
@@ -1662,14 +1667,14 @@ if (manifestObj) {
       fetchThrew = true;
       fetchErrMsg = e.message;
     }
-    report("extension/content/sniffer.js: fetch hook executes in isolation without isAdApi ReferenceError", !fetchThrew, fetchErrMsg);
+    report("extension/content/features/sniffer.js: fetch hook executes in isolation without isAdApi ReferenceError", !fetchThrew, fetchErrMsg);
   } catch (e) {
-    report("extension/content/sniffer.js: fetch hook executes in isolation without isAdApi ReferenceError", false, e.message);
+    report("extension/content/features/sniffer.js: fetch hook executes in isolation without isAdApi ReferenceError", false, e.message);
   }
 
   // Regression Test 2: hub-ui.js executes and binds buttons without copyM3u8 ReferenceError
   try {
-    const hubContent = fs.readFileSync(path.join(extDir, "content", "hub-ui.js"), "utf8");
+    const hubContent = fs.readFileSync(path.join(extDir, "content", "features", "hub-ui.js"), "utf8");
     const mockElements = new Map();
     const mockBody = {
       children: [],
@@ -1731,14 +1736,14 @@ if (manifestObj) {
       hubThrew = true;
       hubErrMsg = e.message;
     }
-    report("extension/content/hub-ui.js: initVipHub executes in isolation without copyM3u8 ReferenceError", !hubThrew, hubErrMsg);
+    report("extension/content/features/hub-ui.js: initVipHub executes in isolation without copyM3u8 ReferenceError", !hubThrew, hubErrMsg);
   } catch (e) {
-    report("extension/content/hub-ui.js: initVipHub executes in isolation without copyM3u8 ReferenceError", false, e.message);
+    report("extension/content/features/hub-ui.js: initVipHub executes in isolation without copyM3u8 ReferenceError", false, e.message);
   }
 
   // Regression Test 3: player-controls.js executes actions without ReferenceError
   try {
-    const controlsContent = fs.readFileSync(path.join(extDir, "content", "player-controls.js"), "utf8");
+    const controlsContent = fs.readFileSync(path.join(extDir, "content", "features", "player-controls.js"), "utf8");
     const mockWindow = {
       document: {
         querySelector: () => null,
@@ -1770,9 +1775,9 @@ if (manifestObj) {
       controlsThrew = true;
       controlsErrMsg = e.message;
     }
-    report("extension/content/player-controls.js: player actions execute cleanly in isolation without ReferenceError", !controlsThrew, controlsErrMsg);
+    report("extension/content/features/player-controls.js: player actions execute cleanly in isolation without ReferenceError", !controlsThrew, controlsErrMsg);
   } catch (e) {
-    report("extension/content/player-controls.js: player actions execute cleanly in isolation without ReferenceError", false, e.message);
+    report("extension/content/features/player-controls.js: player actions execute cleanly in isolation without ReferenceError", false, e.message);
   }
 }
 

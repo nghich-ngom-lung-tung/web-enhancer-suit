@@ -1,5 +1,5 @@
 /**
- * Cinema Pro Suite - Player Controls & Keyboard Shortcuts
+ * Cinema Pro Suite - Player Controls & Keyboard Shortcuts Feature
  */
 (() => {
   "use strict";
