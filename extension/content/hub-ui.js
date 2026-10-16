@@ -140,16 +140,29 @@
     const toggle = hub.querySelector("#ro-hub-toggle");
     const menu = hub.querySelector("#ro-hub-menu");
     if (toggle && menu) {
-      toggle.onclick = (e) => {
+      const handleToggle = (e) => {
+        if (e && typeof e.preventDefault === "function") e.preventDefault();
         if (e && typeof e.stopPropagation === "function") e.stopPropagation();
         menu.classList.toggle("show");
       };
-      document.addEventListener("click", (e) => {
-        if (e.target && hub.contains(e.target)) return;
-        menu.classList.remove("show");
-      });
-      menu.addEventListener("click", (e) => {
+      toggle.addEventListener("click", handleToggle);
+      toggle.onclick = handleToggle;
+
+      // Bảo vệ toàn bộ #ro-vip-hub: mọi tương tác click/pointer bên trong không bao giờ phát tán ra ngoài
+      const stopHubPropagation = (e) => {
         if (e && typeof e.stopPropagation === "function") e.stopPropagation();
+      };
+      hub.addEventListener("click", stopHubPropagation);
+      hub.addEventListener("pointerdown", stopHubPropagation);
+      hub.addEventListener("mousedown", stopHubPropagation);
+      menu.addEventListener("click", stopHubPropagation);
+
+      // Đóng menu khi click ra ngoài: CHỈ chấp nhận click THẬT từ người dùng (isTrusted = true)
+      // Tuyệt đối không bao giờ đóng khi có click giả lập (synthetic clicks do ad-blocker / video player kích hoạt)
+      document.addEventListener("click", (e) => {
+        if (!e.isTrusted) return;
+        if (e.target && (hub.contains(e.target) || e.target === toggle || e.target === menu || (e.target.closest && e.target.closest("#ro-vip-hub")))) return;
+        menu.classList.remove("show");
       });
     }
 

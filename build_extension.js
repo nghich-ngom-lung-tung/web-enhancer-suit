@@ -311,7 +311,9 @@ const manifest = {
   },
   permissions: [
     "storage",
-    "declarativeNetRequest"
+    "declarativeNetRequest",
+    "activeTab",
+    "tabs"
   ],
   host_permissions: [
     "<all_urls>"

@@ -32,6 +32,6 @@
     } catch (e) {
       sendResponse({ status: "error", error: e.message });
     }
-    return true;
+    return false;
   });
 })();

@@ -51,14 +51,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     } catch (e) {}
 
     sendResponse({ success: true });
-    return true;
+    return false;
   }
 
   if (message.action === "GET_TAB_STREAM") {
     const targetTabId = message.tabId || tabId;
     const stream = tabStreams.get(targetTabId) || null;
     sendResponse({ stream });
-    return true;
+    return false;
   }
 
   if (message.action === "CLEAR_STREAM" && tabId) {
@@ -67,6 +67,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       chrome.action.setBadgeText({ tabId, text: "" });
     } catch (e) {}
     sendResponse({ success: true });
-    return true;
+    return false;
   }
 });

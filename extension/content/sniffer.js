@@ -141,10 +141,13 @@
         video.currentTime = video.duration || 999;
       }
       const skipBtn = document.querySelector(
-        ".jw-skip, .videoAdUiSkipButton, .ytp-ad-skip-button, .skip-ad, button[class*='skip'], .ad-skip"
+        ".jw-skip:not([data-bypassed]), .videoAdUiSkipButton:not([data-bypassed]), .ytp-ad-skip-button:not([data-bypassed]), .skip-ad:not([data-bypassed]), .ad-skip:not([data-bypassed])"
       );
-      if (skipBtn && typeof skipBtn.click === "function") {
-        try { skipBtn.click(); } catch (e) {}
+      if (skipBtn) {
+        skipBtn.setAttribute("data-bypassed", "1");
+        if (typeof skipBtn.click === "function") {
+          try { skipBtn.click(); } catch (e) {}
+        }
       }
     }, 500);
 

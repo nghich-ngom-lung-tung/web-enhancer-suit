@@ -3764,10 +3764,13 @@
         video.currentTime = video.duration || 999;
       }
       const skipBtn = document.querySelector(
-        ".jw-skip, .videoAdUiSkipButton, .ytp-ad-skip-button, .skip-ad, button[class*='skip'], .ad-skip"
+        ".jw-skip:not([data-bypassed]), .videoAdUiSkipButton:not([data-bypassed]), .ytp-ad-skip-button:not([data-bypassed]), .skip-ad:not([data-bypassed]), .ad-skip:not([data-bypassed])"
       );
-      if (skipBtn && typeof skipBtn.click === "function") {
-        try { skipBtn.click(); } catch (e) {}
+      if (skipBtn) {
+        skipBtn.setAttribute("data-bypassed", "1");
+        if (typeof skipBtn.click === "function") {
+          try { skipBtn.click(); } catch (e) {}
+        }
       }
     }, 500);
 
@@ -5395,14 +5398,22 @@
         if (lw.getAttribute("data-tvc") !== "[]") lw.setAttribute("data-tvc", "[]");
       }
 
-      // Tự động bỏ qua Landing Gate & Community Dialog trên Film4k
-      const f4kGate = document.querySelector(".landing-enter, button.landing-enter");
-      if (f4kGate && typeof f4kGate.click === "function") {
-        try { f4kGate.click(); } catch (e) {}
+      // Tự động bỏ qua Landing Gate & Community Dialog trên Film4k (chỉ click 1 lần duy nhất)
+      const f4kGate = document.querySelector(".landing-enter:not([data-f4k-done]), button.landing-enter:not([data-f4k-done])");
+      if (f4kGate) {
+        f4kGate.setAttribute("data-f4k-done", "1");
+        if (typeof f4kGate.click === "function") {
+          try { f4kGate.click(); } catch (e) {}
+        }
+        safeHideOrRemove(f4kGate);
       }
-      const f4kOk = document.querySelector(".cdlg-ok, button.cdlg-ok");
-      if (f4kOk && typeof f4kOk.click === "function") {
-        try { f4kOk.click(); } catch (e) {}
+      const f4kOk = document.querySelector(".cdlg-ok:not([data-f4k-done]), button.cdlg-ok:not([data-f4k-done])");
+      if (f4kOk) {
+        f4kOk.setAttribute("data-f4k-done", "1");
+        if (typeof f4kOk.click === "function") {
+          try { f4kOk.click(); } catch (e) {}
+        }
+        safeHideOrRemove(f4kOk);
       }
       const f4kDialog = document.querySelector("dialog.cdlg[open]");
       if (f4kDialog) {
@@ -5424,9 +5435,10 @@
           }
         } catch (e) {}
       });
-      const skipBtns = document.querySelectorAll(".tvc-pre-roll__skip button, .tvc-pre-roll__skip, [class*='skip'] button, .btn-skip-video, [class*='btn-skip-video']");
+      const skipBtns = document.querySelectorAll(".tvc-pre-roll__skip button:not([data-tvc-done]), .tvc-pre-roll__skip:not([data-tvc-done]), .btn-skip-video:not([data-tvc-done])");
       skipBtns.forEach(skipBtn => {
-        if (skipBtn && typeof skipBtn.click === "function") {
+        skipBtn.setAttribute("data-tvc-done", "1");
+        if (typeof skipBtn.click === "function") {
           try { skipBtn.click(); } catch (e) {}
         }
       });
@@ -5742,16 +5754,29 @@
     const toggle = hub.querySelector("#ro-hub-toggle");
     const menu = hub.querySelector("#ro-hub-menu");
     if (toggle && menu) {
-      toggle.onclick = (e) => {
+      const handleToggle = (e) => {
+        if (e && typeof e.preventDefault === "function") e.preventDefault();
         if (e && typeof e.stopPropagation === "function") e.stopPropagation();
         menu.classList.toggle("show");
       };
-      document.addEventListener("click", (e) => {
-        if (e.target && hub.contains(e.target)) return;
-        menu.classList.remove("show");
-      });
-      menu.addEventListener("click", (e) => {
+      toggle.addEventListener("click", handleToggle);
+      toggle.onclick = handleToggle;
+
+      // Bảo vệ toàn bộ #ro-vip-hub: mọi tương tác click/pointer bên trong không bao giờ phát tán ra ngoài
+      const stopHubPropagation = (e) => {
         if (e && typeof e.stopPropagation === "function") e.stopPropagation();
+      };
+      hub.addEventListener("click", stopHubPropagation);
+      hub.addEventListener("pointerdown", stopHubPropagation);
+      hub.addEventListener("mousedown", stopHubPropagation);
+      menu.addEventListener("click", stopHubPropagation);
+
+      // Đóng menu khi click ra ngoài: CHỈ chấp nhận click THẬT từ người dùng (isTrusted = true)
+      // Tuyệt đối không bao giờ đóng khi có click giả lập (synthetic clicks do ad-blocker / video player kích hoạt)
+      document.addEventListener("click", (e) => {
+        if (!e.isTrusted) return;
+        if (e.target && (hub.contains(e.target) || e.target === toggle || e.target === menu || (e.target.closest && e.target.closest("#ro-vip-hub")))) return;
+        menu.classList.remove("show");
       });
     }
 

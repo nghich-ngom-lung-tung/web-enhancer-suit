@@ -546,14 +546,22 @@
         if (lw.getAttribute("data-tvc") !== "[]") lw.setAttribute("data-tvc", "[]");
       }
 
-      // Tự động bỏ qua Landing Gate & Community Dialog trên Film4k
-      const f4kGate = document.querySelector(".landing-enter, button.landing-enter");
-      if (f4kGate && typeof f4kGate.click === "function") {
-        try { f4kGate.click(); } catch (e) {}
+      // Tự động bỏ qua Landing Gate & Community Dialog trên Film4k (chỉ click 1 lần duy nhất)
+      const f4kGate = document.querySelector(".landing-enter:not([data-f4k-done]), button.landing-enter:not([data-f4k-done])");
+      if (f4kGate) {
+        f4kGate.setAttribute("data-f4k-done", "1");
+        if (typeof f4kGate.click === "function") {
+          try { f4kGate.click(); } catch (e) {}
+        }
+        safeHideOrRemove(f4kGate);
       }
-      const f4kOk = document.querySelector(".cdlg-ok, button.cdlg-ok");
-      if (f4kOk && typeof f4kOk.click === "function") {
-        try { f4kOk.click(); } catch (e) {}
+      const f4kOk = document.querySelector(".cdlg-ok:not([data-f4k-done]), button.cdlg-ok:not([data-f4k-done])");
+      if (f4kOk) {
+        f4kOk.setAttribute("data-f4k-done", "1");
+        if (typeof f4kOk.click === "function") {
+          try { f4kOk.click(); } catch (e) {}
+        }
+        safeHideOrRemove(f4kOk);
       }
       const f4kDialog = document.querySelector("dialog.cdlg[open]");
       if (f4kDialog) {
@@ -575,9 +583,10 @@
           }
         } catch (e) {}
       });
-      const skipBtns = document.querySelectorAll(".tvc-pre-roll__skip button, .tvc-pre-roll__skip, [class*='skip'] button, .btn-skip-video, [class*='btn-skip-video']");
+      const skipBtns = document.querySelectorAll(".tvc-pre-roll__skip button:not([data-tvc-done]), .tvc-pre-roll__skip:not([data-tvc-done]), .btn-skip-video:not([data-tvc-done])");
       skipBtns.forEach(skipBtn => {
-        if (skipBtn && typeof skipBtn.click === "function") {
+        skipBtn.setAttribute("data-tvc-done", "1");
+        if (typeof skipBtn.click === "function") {
           try { skipBtn.click(); } catch (e) {}
         }
       });
