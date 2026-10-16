@@ -256,7 +256,7 @@
       location.hostname.includes("motchill") ||
       location.hostname.includes("phimmotchill")
     );
-    if (isMotchillHost || (typeof window !== "undefined" && window.localStorage)) {
+    if (isMotchillHost && typeof window !== "undefined" && window.localStorage) {
       if (typeof window !== "undefined" && window.localStorage && window.localStorage.getItem("auth_hint") !== "1") {
         window.localStorage.setItem("auth_hint", "1");
       }

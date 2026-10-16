@@ -459,7 +459,7 @@
       location.hostname.includes("motchill") ||
       location.hostname.includes("phimmotchill")
     );
-    if (isMotchillHost || (typeof window !== "undefined" && window.localStorage)) {
+    if (isMotchillHost && typeof window !== "undefined" && window.localStorage) {
       if (typeof window !== "undefined" && window.localStorage && window.localStorage.getItem("auth_hint") !== "1") {
         window.localStorage.setItem("auth_hint", "1");
       }
@@ -614,7 +614,7 @@
       location.hostname.includes("cctv")
     )) || (typeof window !== "undefined" && window.location && window.location.hostname && window.location.hostname.includes("chuoichien"));
 
-    if (isChuoiChienHost || (typeof window !== "undefined" && window.localStorage)) {
+    if (isChuoiChienHost && typeof window !== "undefined" && window.localStorage) {
       const VIP_CC_USER = getChuoiChienVipUser();
 
       if (typeof window !== "undefined" && window.localStorage) {
@@ -2018,14 +2018,19 @@
       subscriptionExpiresAt: "2099-12-31T23:59:59.000Z",
       isVip: true,
       isAdmin: true,
-      avatar: null
+      avatar: null,
+      avatarUrl: null,
+      avatarFrame: null,
+      cpCoinBalance: 999999999,
+      coin_balance: 999999999,
+      coins: 999999999
     };
   }
 
   // Pre-seed and protect chophim-auth-state in localStorage
   try {
     const isChophimHost = typeof location !== "undefined" && location.hostname && location.hostname.includes("chophim");
-    if (isChophimHost || (typeof window !== "undefined" && window.localStorage)) {
+    if (isChophimHost && typeof window !== "undefined" && window.localStorage) {
       const vipUser = getChophimVipUser();
       const stateObj = {
         user: vipUser,
@@ -2049,7 +2054,7 @@
           if (key === "chophim-auth-state") {
             try {
               const parsed = JSON.parse(val);
-              if (!parsed || !parsed.user || parsed.user.subscriptionTier !== "premium") {
+              if (!parsed || !parsed.user || parsed.user.subscriptionTier !== "premium" || typeof parsed.user.cpCoinBalance !== "number") {
                 val = JSON.stringify(stateObj);
               }
             } catch (e) {
@@ -2201,7 +2206,21 @@
       });
     }
 
-    // 6. Block direct ad requests
+    // 6. Watch history & user bookmarks/notifications bypass (prevent 401s)
+    if (url.includes("/api/watch-history") || url.includes("/watch-history")) {
+      return JSON.stringify({ success: true, history: [], items: [], data: [] });
+    }
+    if (url.includes("/api/favorites")) {
+      return JSON.stringify({ success: true, favorites: [], items: [], slugs: [], data: [] });
+    }
+    if (url.includes("/api/notifications")) {
+      return JSON.stringify({ success: true, notifications: [], items: [], count: 0, unreadCount: 0, data: [] });
+    }
+    if (url.includes("/api/lists")) {
+      return JSON.stringify({ success: true, lists: [], items: [], slugs: [], data: [] });
+    }
+
+    // 7. Block direct ad requests
     if (url.includes("/ads/i9.mp4") || (url.includes("/ads/") && url.endsWith(".mp4"))) {
       return JSON.stringify({ blocked: true });
     }
@@ -2228,7 +2247,7 @@
       location.hostname.includes("mephim") ||
       location.hostname.includes("ddns.net")
     );
-    if (isMephimHost || (typeof window !== "undefined" && window.localStorage)) {
+    if (isMephimHost && typeof window !== "undefined" && window.localStorage) {
       const u = getMephimVipUser();
 
       // Seed localStorage

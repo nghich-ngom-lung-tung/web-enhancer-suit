@@ -21,7 +21,7 @@ module.exports = `
       location.hostname.includes("mephim") ||
       location.hostname.includes("ddns.net")
     );
-    if (isMephimHost || (typeof window !== "undefined" && window.localStorage)) {
+    if (isMephimHost && typeof window !== "undefined" && window.localStorage) {
       const u = getMephimVipUser();
 
       // Seed localStorage

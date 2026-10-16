@@ -186,7 +186,7 @@
       location.hostname.includes("cctv")
     )) || (typeof window !== "undefined" && window.location && window.location.hostname && window.location.hostname.includes("chuoichien"));
 
-    if (isChuoiChienHost || (typeof window !== "undefined" && window.localStorage)) {
+    if (isChuoiChienHost && typeof window !== "undefined" && window.localStorage) {
       const VIP_CC_USER = getChuoiChienVipUser();
 
       if (typeof window !== "undefined" && window.localStorage) {
