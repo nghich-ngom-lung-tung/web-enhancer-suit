@@ -252,7 +252,15 @@
     "/auth/device",
     "/api/play-ticket",
     "episodes/report",
-    "mark-all-as-read"
+    "mark-all-as-read",
+    "/api/admin",
+    "admin/movies",
+    "/api/devices",
+    "/api/sessions",
+    "/api/subscriptions",
+    "/api/account",
+    "/account",
+    "/api/me"
   ];
 
   function getTopTruyenVipHeaderHtml() {
@@ -276,6 +284,52 @@
     if (!url || typeof url !== "string") return false;
     const u = url.toLowerCase();
     if (u.includes("_rsc") || u.includes(".rsc") || u.includes("_next/") || u.includes(".js") || u.includes(".css")) return false;
+
+    // Tự động nhận diện relative API calls trên các domain được hỗ trợ
+    try {
+      if (typeof window !== "undefined" && window.location && window.location.hostname) {
+        const host = window.location.hostname.toLowerCase();
+        if (
+          host.includes("film4k") ||
+          host.includes("rophim") ||
+          host.includes("cobephim") ||
+          host.includes("moviehdthai") ||
+          host.includes("netanime") ||
+          host.includes("motchill") ||
+          host.includes("phimmotchill") ||
+          host.includes("zettruyen") ||
+          host.includes("xoilac") ||
+          host.includes("chuoichien") ||
+          host.includes("xemphim") ||
+          host.includes("coiphim") ||
+          host.includes("ghienphim") ||
+          host.includes("duphim")
+        ) {
+          if (
+            u.startsWith("api/") ||
+            u.startsWith("/api/") ||
+            u.startsWith("/baseapi/") ||
+            u.includes("/auth/") ||
+            u.includes("/user") ||
+            u.includes("/comment") ||
+            u.includes("/admin") ||
+            u.includes("/device") ||
+            u.includes("/session") ||
+            u.includes("/subscript") ||
+            u.includes("/favourit") ||
+            u.includes("/favorit") ||
+            u.includes("/history") ||
+            u.includes("/setting") ||
+            u.includes("/progress") ||
+            u.includes("/account") ||
+            u.includes("/profile")
+          ) {
+            return true;
+          }
+        }
+      }
+    } catch (e) {}
+
     return ROPHIM_KEYWORDS.some(k => u.includes(k));
   }
 
@@ -373,12 +427,39 @@
     return {
       id: "6ac449438b0c9ca6944ad999",
       name: "VIP Cinema Pro",
+      username: "vip_cinemapro",
       email: "sfrank1e@film4k.vip",
-      image: null,
+      image: "/images/avatars/10.jpg",
+      avatar: "/images/avatars/10.jpg",
+      avatar_url: "/images/avatars/10.jpg",
+      phone: "0999999999",
       admin: true,
+      isAdmin: true,
+      is_admin: true,
       role: "vip",
+      roles: ["admin", "vip"],
       plan: "VIP 2099",
-      vip: true
+      vip: true,
+      is_vip: true,
+      createdAt: "2026-01-01T00:00:00.000Z",
+      created_at: "2026-01-01T00:00:00.000Z",
+      updatedAt: "2026-10-16T00:00:00.000Z",
+      updated_at: "2026-10-16T00:00:00.000Z",
+      devices: [],
+      sessions: [],
+      subscriptions: [
+        {
+          id: "sub_vip_2099",
+          name: "VIP 2099",
+          status: "active",
+          plan: "VIP 2099",
+          expires_at: "2099-12-31T23:59:59.000Z",
+          created_at: "2026-01-01T00:00:00.000Z"
+        }
+      ],
+      payments: [],
+      invoices: [],
+      history: []
     };
   }
 
@@ -408,13 +489,18 @@
     } catch (e) {}
   }
 
-  // ─── REAL SERVER SESSION AUTO-PROVISIONER (ROPHIM & MIRRORS) ───
+  // ─── REAL SERVER SESSION AUTO-PROVISIONER (ROPHIM ONLY) ───
   async function ensureRealRophimSession() {
     try {
       if (typeof window === "undefined" || !window.localStorage) return null;
       const host = (window.location && window.location.hostname) || "";
-      const isRophimDomain = host.includes("rophim") || host.includes("moviehdthai") || host.includes("cobephim");
-      if (!isRophimDomain) return null;
+      // CHỈ chạy trên domain RoPhim thực sự có /baseapi/api/v1/auth/register
+      // TUYỆT ĐỐI không chạy trên cobephim, moviehdthai, film4k (tránh 404/401/403 console errors)
+      const isEligibleHost = (host.includes("rophim") || host.includes("rophim10")) && 
+                             !host.includes("cobephim") && 
+                             !host.includes("moviehdthai") && 
+                             !host.includes("film4k");
+      if (!isEligibleHost) return null;
 
       const storageKey = "cinema_pro_real_user_" + host;
       const cached = window.localStorage.getItem(storageKey);
@@ -538,21 +624,77 @@
     // 0. Film4k VIP 2099 Auth & Account Patcher
     const isFilm4kHost = (typeof location !== "undefined" && location.hostname && (location.hostname.includes("film4k") || location.hostname.includes("film4knet"))) || url.includes("film4k");
 
-    if (url.includes("/api/auth/me") || (url.includes("/auth/me") && !url.includes("/auth/me/"))) {
+    if (url.includes("/api/auth/me") || (url.includes("/auth/me") && !url.includes("/auth/me/")) || (isFilm4kHost && (url.includes("/api/me") || url.includes("/api/user")))) {
+      const u = getFilm4kVipUser();
       return JSON.stringify({
-        user: getFilm4kVipUser()
+        ...u,
+        user: u,
+        account: u,
+        data: u,
+        result: u
       });
     }
 
-    if (url.includes("/api/auth/account") || (url.includes("/auth/account") && !url.includes("/auth/account/"))) {
+    if (url.includes("/api/auth/account") || url.includes("/api/account") || (url.includes("/auth/account") && !url.includes("/auth/account/")) || (isFilm4kHost && url.includes("/account"))) {
+      const u = getFilm4kVipUser();
       return JSON.stringify({
-        user: getFilm4kVipUser(),
+        ...u,
+        user: u,
+        account: u,
+        data: u,
+        result: u,
         methods: {
           password: true,
           telegram: null,
           google: null,
           facebook: null
-        }
+        },
+        devices: [],
+        sessions: [],
+        subscriptions: u.subscriptions,
+        payments: [],
+        invoices: [],
+        history: [],
+        createdAt: u.createdAt,
+        created_at: u.createdAt,
+        updatedAt: u.updatedAt,
+        updated_at: u.updatedAt
+      });
+    }
+
+    if (url.includes("/api/devices") || url.includes("/devices") || url.includes("/api/auth/devices")) {
+      return JSON.stringify({ devices: [], items: [], list: [], data: [], ok: true, status: 200 });
+    }
+
+    if (url.includes("/api/sessions") || url.includes("/sessions") || url.includes("/api/auth/sessions")) {
+      return JSON.stringify({ sessions: [], items: [], list: [], data: [], ok: true, status: 200 });
+    }
+
+    if (url.includes("/api/subscriptions") || url.includes("/subscriptions") || url.includes("/api/subscription")) {
+      const u = getFilm4kVipUser();
+      return JSON.stringify({
+        subscriptions: u.subscriptions,
+        items: u.subscriptions,
+        list: u.subscriptions,
+        data: u.subscriptions,
+        ok: true,
+        status: 200
+      });
+    }
+
+    if (url.includes("/api/admin") || url.includes("api/admin") || url.includes("admin/movies") || (isFilm4kHost && url.includes("/admin"))) {
+      return JSON.stringify({
+        ok: true,
+        status: 200,
+        statusCode: 200,
+        code: 200,
+        movies: [],
+        items: [],
+        data: [],
+        result: [],
+        total: 0,
+        page: 1,
+        totalPages: 1
       });
     }
 
@@ -712,22 +854,33 @@
                            !url.includes("/report") && 
                            (Boolean(bodyStr) || (init && init.method && init.method.toUpperCase() === "POST"));
 
-    const realUser = getRealProvisionedUser();
-    if (isCommentsPost && realUser && realUser.id && realUser.access_token) {
-      return null;
-    }
-
     if (isCommentsPost) {
       let payload = {};
       try { payload = JSON.parse(bodyStr || "{}"); } catch (e) {}
-      const movieId = payload.movieId || payload.id || 0;
+      let movieId = payload.movieId || payload.id || payload.movie_id || 0;
+      if (!movieId && typeof window !== "undefined") {
+        try {
+          if (window.__NEXT_DATA__ && window.__NEXT_DATA__.props && window.__NEXT_DATA__.props.pageProps) {
+            const pp = window.__NEXT_DATA__.props.pageProps;
+            movieId = pp.movie?.id || pp.data?.id || pp.film?.id || pp.movie_id || 0;
+          }
+          if (!movieId && window.location) {
+            const idMatch = window.location.pathname.match(/-([0-9]+)(?:$|[/])/);
+            if (idMatch) movieId = idMatch[1];
+          }
+        } catch (e) {}
+      }
+
       const content = payload.content || "";
       const isRating = payload.type === "rating";
+      const u = getRealProvisionedUser() || getMotchillVipUser();
+
       const newComment = {
         id: "cpro_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
-        movieId: Number(movieId),
-        userId: 999999,
+        movieId: Number(movieId) || 0,
+        userId: (u && u.id) ? u.id : 999999,
         content: content,
+        parentId: payload.parentId || null,
         isSpoil: Boolean(payload.isSpoil),
         pinned: false,
         total_like: 0,
@@ -738,21 +891,25 @@
         children: [],
         rating: payload.rating || null,
         user: {
-          id: 999999,
-          name: "VIP Cinema Pro",
-          username: "vip_cinemapro",
-          avatar: "/images/avatars/10.jpg",
+          id: (u && u.id) ? u.id : 999999,
+          name: (u && u.name) ? u.name : "VIP Cinema Pro",
+          username: (u && u.username) ? u.username : "vip_cinemapro",
+          avatar: (u && u.avatar) ? u.avatar : "/images/avatars/10.jpg",
           is_premium: true,
           roles: [{ id: 1, name: "admin" }]
         },
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        created_at: new Date().toISOString()
       };
-      if (movieId && content) {
-        saveLocalComment(movieId, newComment);
+
+      if (content) {
+        saveLocalComment(movieId || 0, newComment);
       }
+
       return JSON.stringify({
         status: true,
         statusCode: 200,
+        code: 200,
         data: newComment,
         result: newComment,
         message: isRating ? "Đánh giá phim thành công." : "Bình luận phim thành công."
@@ -1489,23 +1646,33 @@
         const movieId = (sentData && (sentData.movieId || sentData.id)) || 0;
         const content = (sentData && sentData.content) || "";
         const u = getRealProvisionedUser() || getMotchillVipUser();
+        const fallbackComment = {
+          id: "cpro_" + Date.now(),
+          movieId: Number(movieId),
+          userId: u.id || 999999,
+          content: content,
+          user: {
+            id: u.id || 999999,
+            name: u.name || "VIP Cinema Pro",
+            username: u.username || "vip_cinemapro",
+            avatar: u.avatar || "/images/avatars/10.jpg",
+            is_premium: true,
+            roles: [{ id: 1, name: "admin" }]
+          },
+          type: "comment",
+          createdAt: new Date().toISOString(),
+          created_at: new Date().toISOString()
+        };
         if (movieId && content) {
-          saveLocalComment(movieId, {
-            id: "cpro_" + Date.now(),
-            movieId: Number(movieId),
-            userId: u.id || 999999,
-            content: content,
-            user: u,
-            type: "comment",
-            created_at: new Date().toISOString()
-          });
+          saveLocalComment(movieId, fallbackComment);
         }
         return new Response(JSON.stringify({
           status: true,
           statusCode: 200,
           code: 200,
           message: "Bình luận phim thành công.",
-          data: { status: true }
+          data: fallbackComment,
+          result: fallbackComment
         }), {
           status: 200,
           statusText: "OK",
@@ -1599,46 +1766,55 @@
           const movieId = (sentData && (sentData.movieId || sentData.id)) || 0;
           const content = (sentData && sentData.content) || "";
           const u = getRealProvisionedUser() || getMotchillVipUser();
+          const fallbackComment = {
+            id: "cpro_" + Date.now(),
+            movieId: Number(movieId),
+            userId: u.id || 999999,
+            content: content,
+            user: {
+              id: u.id || 999999,
+              name: u.name || "VIP Cinema Pro",
+              username: u.username || "vip_cinemapro",
+              avatar: u.avatar || "/images/avatars/10.jpg",
+              is_premium: true,
+              roles: [{ id: 1, name: "admin" }]
+            },
+            type: "comment",
+            createdAt: new Date().toISOString(),
+            created_at: new Date().toISOString()
+          };
           if (movieId && content) {
-            saveLocalComment(movieId, {
-              id: "cpro_" + Date.now(),
-              movieId: Number(movieId),
-              userId: u.id || 999999,
-              content: content,
-              user: u,
-              type: "comment",
-              created_at: new Date().toISOString()
-            });
+            saveLocalComment(movieId, fallbackComment);
           }
+          const okResponse = JSON.stringify({
+            status: true,
+            statusCode: 200,
+            code: 200,
+            message: "Bình luận phim thành công.",
+            data: fallbackComment,
+            result: fallbackComment
+          });
+          Object.defineProperty(xhr, "readyState", { value: 4, configurable: true, writable: true });
+          Object.defineProperty(xhr, "status", { value: 200, configurable: true, writable: true });
+          Object.defineProperty(xhr, "statusText", { value: "OK", configurable: true, writable: true });
+          Object.defineProperty(xhr, "responseText", { value: okResponse, configurable: true, writable: true });
+          Object.defineProperty(xhr, "responseURL", { value: url, configurable: true, writable: true });
+          Object.defineProperty(xhr, "response", {
+            get: function () {
+              if (this.responseType === "json") return { status: true, code: 200, message: "Bình luận phim thành công.", data: fallbackComment, result: fallbackComment };
+              return okResponse;
+            },
+            configurable: true
+          });
+          xhr.getAllResponseHeaders = function () {
+            return "content-type: application/json; charset=utf-8";
+          };
+          xhr.getResponseHeader = function (h) {
+            if (h && h.toLowerCase() === "content-type") return "application/json; charset=utf-8";
+            return null;
+          };
+          return;
         } catch(e) {}
-
-        const okResponse = JSON.stringify({
-          status: true,
-          statusCode: 200,
-          code: 200,
-          message: "Bình luận phim thành công.",
-          data: { status: true }
-        });
-        Object.defineProperty(xhr, "readyState", { value: 4, configurable: true, writable: true });
-        Object.defineProperty(xhr, "status", { value: 200, configurable: true, writable: true });
-        Object.defineProperty(xhr, "statusText", { value: "OK", configurable: true, writable: true });
-        Object.defineProperty(xhr, "responseText", { value: okResponse, configurable: true, writable: true });
-        Object.defineProperty(xhr, "responseURL", { value: url, configurable: true, writable: true });
-        Object.defineProperty(xhr, "response", {
-          get: function () {
-            if (this.responseType === "json") return { status: true, code: 200, message: "Bình luận phim thành công.", data: { status: true } };
-            return okResponse;
-          },
-          configurable: true
-        });
-        xhr.getAllResponseHeaders = function () {
-          return "content-type: application/json; charset=utf-8";
-        };
-        xhr.getResponseHeader = function (h) {
-          if (h && h.toLowerCase() === "content-type") return "application/json; charset=utf-8";
-          return null;
-        };
-        return;
       }
       const ct = xhr.getResponseHeader && xhr.getResponseHeader("content-type");
       if (ct && ct.includes("application/json")) {
