@@ -248,6 +248,7 @@
   function handleFilm4kMock(url, init) {
     if (!url || typeof url !== "string") return null;
     const isFilm4kHost = (typeof location !== "undefined" && location.hostname && (location.hostname.includes("film4k") || location.hostname.includes("film4knet"))) || url.includes("film4k");
+    if (!isFilm4kHost) return null;
 
     // 1. Auth Me
     if (url.includes("/api/auth/me") || (url.includes("/auth/me") && !url.includes("/auth/me/")) || (isFilm4kHost && (url.includes("/api/me") || url.includes("/api/user")))) {
@@ -516,6 +517,16 @@
 
     if (typeof handleFirebaseMock === "function") {
       const res = handleFirebaseMock(url, init);
+      if (res !== null) return res;
+    }
+
+    if (typeof handleChophimMock === "function") {
+      const res = handleChophimMock(url, init);
+      if (res !== null) return res;
+    }
+
+    if (typeof handleMephimMock === "function") {
+      const res = handleMephimMock(url, init);
       if (res !== null) return res;
     }
 
@@ -2633,28 +2644,32 @@
         safeHideOrRemove(f4kDialog);
       }
 
-      // Tự động bỏ qua và kết thúc video TVC pre-roll nếu xuất hiện (Giờ Vàng, Thể Thao, GhienPhim, CoiPhim)
-      const tvcVideos = document.querySelectorAll(".tvc-pre-roll__video, video[src*='tvc_'], video[src*='assets/tvc/'], #video-premium, #video-second, #video-third");
+      // Tự động bỏ qua và kết thúc video TVC pre-roll nếu xuất hiện (ChoPhim, Giờ Vàng, Thể Thao, GhienPhim, CoiPhim)
+      const tvcVideos = document.querySelectorAll(".tvc-pre-roll__video, video[src*='tvc_'], video[src*='assets/tvc/'], video[src*='/ads/'], video[src*='ads/'], div[class*='z-[70]'] video, #video-premium, #video-second, #video-third");
       tvcVideos.forEach(tvcVideo => {
         try {
           tvcVideo.muted = true;
           tvcVideo.currentTime = tvcVideo.duration || 999;
           tvcVideo.dispatchEvent(new Event("ended"));
-          if (tvcVideo.id === "video-premium" || tvcVideo.id === "video-second" || tvcVideo.id === "video-third") {
+          if (tvcVideo.id === "video-premium" || tvcVideo.id === "video-second" || tvcVideo.id === "video-third" || (tvcVideo.src && tvcVideo.src.includes("/ads/"))) {
             tvcVideo.pause();
             tvcVideo.src = "";
             safeHideOrRemove(tvcVideo);
           }
         } catch (e) {}
       });
-      const skipBtns = document.querySelectorAll(".tvc-pre-roll__skip button:not([data-tvc-done]), .tvc-pre-roll__skip:not([data-tvc-done]), .btn-skip-video:not([data-tvc-done])");
+      const skipBtns = document.querySelectorAll(".tvc-pre-roll__skip button:not([data-tvc-done]), .tvc-pre-roll__skip:not([data-tvc-done]), .btn-skip-video:not([data-tvc-done]), div[class*='z-[70]'] button:not([data-tvc-done]), button:has(span):not([data-tvc-done])");
       skipBtns.forEach(skipBtn => {
-        skipBtn.setAttribute("data-tvc-done", "1");
-        if (typeof skipBtn.click === "function") {
-          try { skipBtn.click(); } catch (e) {}
+        const txt = (skipBtn.textContent || "").trim();
+        if (txt.includes("Bỏ qua") || txt.includes("Skip") || txt.includes("intro") || txt.includes("quảng cáo")) {
+          skipBtn.setAttribute("data-tvc-done", "1");
+          skipBtn.removeAttribute("disabled");
+          if (typeof skipBtn.click === "function") {
+            try { skipBtn.click(); } catch (e) {}
+          }
         }
       });
-      const tvcLayers = document.querySelectorAll(".video-ad-layer, [class*='video-ad-layer'], .ad-msg, [class*='ad-msg'], .random-content");
+      const tvcLayers = document.querySelectorAll(".video-ad-layer, [class*='video-ad-layer'], .ad-msg, [class*='ad-msg'], .random-content, div[class*='z-[70]']");
       tvcLayers.forEach(layer => {
         try {
           safeHideOrRemove(layer);

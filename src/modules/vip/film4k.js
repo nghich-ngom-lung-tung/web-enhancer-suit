@@ -118,6 +118,7 @@ module.exports = `
   function handleFilm4kMock(url, init) {
     if (!url || typeof url !== "string") return null;
     const isFilm4kHost = (typeof location !== "undefined" && location.hostname && (location.hostname.includes("film4k") || location.hostname.includes("film4knet"))) || url.includes("film4k");
+    if (!isFilm4kHost) return null;
 
     // 1. Auth Me
     if (url.includes("/api/auth/me") || (url.includes("/auth/me") && !url.includes("/auth/me/")) || (isFilm4kHost && (url.includes("/api/me") || url.includes("/api/user")))) {

@@ -9,6 +9,8 @@ const sportsCode = require("./sports");
 const comicsCode = require("./comics");
 const firebaseCode = require("./firebase");
 const rophimCode = require("./rophim");
+const chophimCode = require("./chophim");
+const mephimCode = require("./mephim");
 
 const MODULES = {
   film4k: film4kCode,
@@ -16,7 +18,9 @@ const MODULES = {
   sports: sportsCode,
   comics: comicsCode,
   firebase: firebaseCode,
-  rophim: rophimCode
+  rophim: rophimCode,
+  chophim: chophimCode,
+  mephim: mephimCode
 };
 
 function getVipCode(moduleType) {
@@ -79,6 +83,16 @@ ${activeCodes}
 
     if (typeof handleFirebaseMock === "function") {
       const res = handleFirebaseMock(url, init);
+      if (res !== null) return res;
+    }
+
+    if (typeof handleChophimMock === "function") {
+      const res = handleChophimMock(url, init);
+      if (res !== null) return res;
+    }
+
+    if (typeof handleMephimMock === "function") {
+      const res = handleMephimMock(url, init);
       if (res !== null) return res;
     }
 

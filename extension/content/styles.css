@@ -283,7 +283,7 @@ html, body {
   pointer-events: none !important;
 }
 
-.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .mephim-ads {
+.ad-container, .ads-holder, .banner-left, .banner-right, div[id*="ad-"], div[class*="banner-ads"], div[id*="catfish"], .ads-wrapper, #chancoc, .modal-adblock, .mephim-ads, #user-anon-trigger ~ div {
   display: none !important;
   visibility: hidden !important;
   height: 0 !important;
@@ -679,7 +679,8 @@ html, body {
     .ads-wrapper,
     #chancoc,
     .modal-adblock,
-    [class*="ad-floater"] {
+    [class*="ad-floater"],
+    div[class*="z-[70]"] {
   display: none !important;
   visibility: hidden !important;
   height: 0 !important;

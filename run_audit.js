@@ -1028,6 +1028,144 @@ film4kScripts.forEach(file => {
   }
 });
 
+// ChoPhim VIP 2099 & Pre-roll TVC Killer
+const chophimScripts = scriptFiles.filter(f => f.endsWith("chophim.user.js") || f.endsWith("web-enhancer-all.user.js"));
+chophimScripts.forEach(file => {
+  const code = fs.readFileSync(file, "utf8");
+  const { window, document } = createTopWindowMock("chophim.fun");
+
+  window.fetch = async (url) => {
+    return {
+      status: 401,
+      headers: { get: () => "application/json" },
+      clone: () => ({ json: async () => ({ user: null }) }),
+      json: async () => ({ user: null })
+    };
+  };
+
+  const ctx = vm.createContext({
+    window,
+    document,
+    location: window.location,
+    top: window.top,
+    self: window.self,
+    navigator: window.navigator,
+    localStorage: window.localStorage,
+    fetch: window.fetch,
+    XMLHttpRequest: window.XMLHttpRequest,
+    setTimeout: window.setTimeout,
+    clearTimeout: window.clearTimeout,
+    setInterval: window.setInterval,
+    clearInterval: window.clearInterval,
+    console: window.console,
+    HTMLMediaElement: window.HTMLMediaElement,
+    Storage: window.Storage,
+    BroadcastChannel: class {
+      constructor(name) { this.name = name; }
+      postMessage() {}
+      onmessage() {}
+    },
+    Promise,
+    Response: class {
+      constructor(body, init) {
+        this.body = body;
+        this.status = init?.status || 200;
+        this.headers = init?.headers || {};
+      }
+      json() { return Promise.resolve(JSON.parse(this.body)); }
+    }
+  });
+
+  try {
+    vm.runInContext(code, ctx);
+
+    // Verify localStorage auth-state seeded with premium subscriptionTier
+    const authRaw = ctx.window.localStorage.getItem("chophim-auth-state");
+    let authParsed = null;
+    try { authParsed = JSON.parse(authRaw); } catch(e) {}
+    const chophimSeedPassed = Boolean(authParsed?.user?.subscriptionTier === "premium");
+    report(`${file}: ChoPhim auto-initialized subscriptionTier="premium" in localStorage`, chophimSeedPassed);
+
+    // Intercept /api/auth/me
+    ctx.window.fetch("/api/auth/me").then(res => res.json()).then(data => {
+      const mePassed = Boolean(data?.user?.subscriptionTier === "premium" && data?.user?.role === "vip");
+      report(`${file}: ChoPhim /api/auth/me intercepted returning VIP premium user`, mePassed);
+    });
+
+    // Intercept /api/auth/login
+    ctx.window.fetch("/api/auth/login").then(res => res.json()).then(data => {
+      const loginPassed = Boolean(data?.success === true && data?.user?.subscriptionTier === "premium");
+      report(`${file}: ChoPhim /api/auth/login intercepted with instant success & VIP pass`, loginPassed);
+    });
+  } catch (err) {
+    report(`${file}: ChoPhim VIP execution`, false, err.stack);
+  }
+});
+
+// MePhim VIP Admin & Modal Neutralizer
+const mephimScripts = scriptFiles.filter(f => f.endsWith("mephim.user.js") || f.endsWith("web-enhancer-all.user.js"));
+mephimScripts.forEach(file => {
+  const code = fs.readFileSync(file, "utf8");
+  const { window, document } = createTopWindowMock("mephim.ddns.net");
+
+  window.fetch = async (url) => {
+    return {
+      status: 200,
+      headers: { get: () => "application/json" },
+      clone: () => ({ json: async () => ({}) }),
+      json: async () => ({})
+    };
+  };
+
+  const ctx = vm.createContext({
+    window,
+    document,
+    location: window.location,
+    top: window.top,
+    self: window.self,
+    navigator: window.navigator,
+    localStorage: window.localStorage,
+    fetch: window.fetch,
+    XMLHttpRequest: window.XMLHttpRequest,
+    setTimeout: window.setTimeout,
+    clearTimeout: window.clearTimeout,
+    setInterval: window.setInterval,
+    clearInterval: window.clearInterval,
+    console: window.console,
+    HTMLMediaElement: window.HTMLMediaElement,
+    Storage: window.Storage,
+    Promise,
+    Response: class {
+      constructor(body, init) {
+        this.body = body;
+        this.status = init?.status || 200;
+        this.headers = init?.headers || {};
+      }
+      json() { return Promise.resolve(JSON.parse(this.body)); }
+    }
+  });
+
+  try {
+    vm.runInContext(code, ctx);
+
+    // Verify localStorage mephim_logged_in_user seeded
+    const userRaw = ctx.window.localStorage.getItem("mephim_logged_in_user");
+    let userParsed = null;
+    try { userParsed = JSON.parse(userRaw); } catch(e) {}
+    const mephimSeedPassed = Boolean(userParsed?.email === "tnguyenquang946@gmail.com");
+    report(`${file}: MePhim auto-seeded Admin email tnguyenquang946@gmail.com in localStorage`, mephimSeedPassed);
+
+    // Verify admin emails
+    const adminsRaw = ctx.window.localStorage.getItem("mephim_admin_emails");
+    let adminsParsed = [];
+    try { adminsParsed = JSON.parse(adminsRaw); } catch(e) {}
+    const adminsPassed = Boolean(adminsParsed.includes("tnguyenquang946@gmail.com"));
+    report(`${file}: MePhim auto-seeded admin email list in localStorage`, adminsPassed);
+  } catch (err) {
+    report(`${file}: MePhim VIP execution`, false, err.stack);
+  }
+});
+
 // ═════════════════════════════════════════════════════════════════
 // 5. LIVE FOOTBALL STREAMING & SPORTS AD-NUKER AUDIT
 // ═════════════════════════════════════════════════════════════════

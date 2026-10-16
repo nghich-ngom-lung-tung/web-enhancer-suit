@@ -3,7 +3,8 @@ module.exports = {
   "name": "ChoPhim VIP & Cinema Pro Suite",
   "file": "chophim.user.js",
   "desc": "Chặn 100% quảng cáo Chợ Phim (ChoPhim.fun) + M3U8 Stream Sniffer PotPlayer/VLC + Cinema OLED HDR & Rạp Phim",
-  "version": "5.4.9",
+  "version": "5.5.0",
+  "vipModule": "chophim",
   "domains": [
     "*://chophim.fun/*",
     "*://www.chophim.fun/*",
@@ -21,7 +22,8 @@ module.exports = {
     .ads-wrapper,
     #chancoc,
     .modal-adblock,
-    [class*="ad-floater"]
+    [class*="ad-floater"],
+    div[class*="z-[70]"]
   `,
   "category": "movies"
 };
