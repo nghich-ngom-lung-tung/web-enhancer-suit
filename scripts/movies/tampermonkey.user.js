@@ -776,13 +776,19 @@
 
     // 5. Watchlist
     if (url.includes("checkWatchlist") || url.includes("ckWatchlist") || url.includes("/watchlist/checkWatchlist")) {
+      const defaultWatchlist = [
+        { id: 1, name: "Xem sau", check: false },
+        { id: 2, name: "Phim yêu thích", check: false }
+      ];
       return JSON.stringify({
         status: true,
         statusCode: 200,
         code: 200,
-        isBookmarked: true,
-        isWatchlist: true,
-        data: { isBookmarked: true, isWatchlist: true }
+        data: defaultWatchlist,
+        result: defaultWatchlist,
+        items: defaultWatchlist,
+        isBookmarked: false,
+        isWatchlist: false
       });
     }
 
@@ -792,19 +798,25 @@
         statusCode: 200,
         code: 200,
         message: "Thao tác danh sách theo dõi thành công.",
+        data: true,
+        result: true,
         isBookmarked: true,
-        isWatchlist: true,
-        data: { isBookmarked: true, isWatchlist: true }
+        isWatchlist: true
       });
     }
 
     if (url.includes("/watchlist") || url.includes("watchlist")) {
+      const defaultWatchlist = [
+        { id: 1, name: "Xem sau", check: false },
+        { id: 2, name: "Phim yêu thích", check: false }
+      ];
       return JSON.stringify({
         status: true,
         statusCode: 200,
         code: 200,
-        data: [],
-        items: []
+        data: defaultWatchlist,
+        result: defaultWatchlist,
+        items: defaultWatchlist
       });
     }
 
@@ -1035,6 +1047,23 @@
           if (typeof data.data.unreadCountMovie !== "number") data.data.unreadCountMovie = 0;
           if (typeof data.data.unreadCountOther !== "number") data.data.unreadCountOther = 0;
         }
+      }
+      return data;
+    }
+    if (url && (url.includes("checkWatchlist") || url.includes("ckWatchlist") || (url.includes("watchlist") && !url.includes("addWatchlist")))) {
+      if (data && typeof data === "object") {
+        const defaultWatchlist = [
+          { id: 1, name: "Xem sau", check: false },
+          { id: 2, name: "Phim yêu thích", check: false }
+        ];
+        if (!Array.isArray(data.data)) {
+          data.data = defaultWatchlist;
+        }
+        if (!Array.isArray(data.items)) {
+          data.items = defaultWatchlist;
+        }
+        data.status = true;
+        data.code = 200;
       }
       return data;
     }

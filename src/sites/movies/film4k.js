@@ -3,7 +3,7 @@ module.exports = {
   "name": "Film4k VIP & Cinema Pro Suite",
   "file": "film4k.user.js",
   "desc": "Mở khóa 4K UHD + Tự động bỏ qua Landing Gate & Popup + M3U8 Sniffer + 1-Click PotPlayer/VLC + Cinema HDR & OLED",
-  "version": "5.4.9",
+  "version": "1.0.0",
   "isRophim": true,
   "vipModule": "film4k",
   "domains": [

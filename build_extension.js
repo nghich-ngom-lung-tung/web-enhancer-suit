@@ -16,6 +16,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const pkg = require("./package.json");
 
 const SITE_DEFINITIONS = require("./src/config/sites");
 const COMMON_EMBED_MATCHES = require("./src/config/embeds");
@@ -199,7 +200,7 @@ const hubUiJs = `/**
  */
 (() => {
   "use strict";
-${getHubUiCode(icons, "Web Enhancer Suite", "5.4.9")}
+${getHubUiCode(icons, "Web Enhancer Suite", pkg.version)}
 
   // Export to window for modular extension architecture
   window.showToast = typeof showToast === "function" ? showToast : undefined;
@@ -239,7 +240,7 @@ console.log(`  ✓ Compiled content/player-controls.js (${(playerControlsJs.leng
 // 5.7 content.js (Main Orchestrator Entrypoint)
 const contentJs = `/**
  * Cinema Pro Suite - Extension Main Orchestrator (MAIN WORLD)
- * Modular Architecture v5.4.9
+ * Modular Architecture v\${pkg.version}
  */
 (() => {
   "use strict";
@@ -287,7 +288,7 @@ console.log(`  ✓ Compiled content/content.js (${(contentJs.length / 1024).toFi
 const manifest = {
   manifest_version: 3,
   name: "Web Enhancer Suite (Cinema Pro VIP)",
-  version: "5.4.9",
+  version: pkg.version,
   author: "Sfrank1e",
   description: "Tối ưu trải nghiệm xem phim, anime & truyện tranh: Chặn quảng cáo, lọc màu OLED HDR, phím tắt điều khiển và phát qua PotPlayer/VLC.",
   homepage_url: "https://github.com/nghich-ngom-lung-tung/web-enhancer-suit",

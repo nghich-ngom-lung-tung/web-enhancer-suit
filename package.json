@@ -1,6 +1,6 @@
 {
   "name": "web-enhancer-suite",
-  "version": "5.4.9",
+  "version": "1.0.0",
   "description": "Universal Cinema Pro & Web Enhancer Suite for Movies, Anime, Live Sports & Comics (Userscripts & Manifest V3 Extension)",
   "main": "scripts/core.js",
   "scripts": {

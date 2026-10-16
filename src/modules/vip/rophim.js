@@ -589,13 +589,19 @@ module.exports = `
 
     // 5. Watchlist
     if (url.includes("checkWatchlist") || url.includes("ckWatchlist") || url.includes("/watchlist/checkWatchlist")) {
+      const defaultWatchlist = [
+        { id: 1, name: "Xem sau", check: false },
+        { id: 2, name: "Phim yêu thích", check: false }
+      ];
       return JSON.stringify({
         status: true,
         statusCode: 200,
         code: 200,
-        isBookmarked: true,
-        isWatchlist: true,
-        data: { isBookmarked: true, isWatchlist: true }
+        data: defaultWatchlist,
+        result: defaultWatchlist,
+        items: defaultWatchlist,
+        isBookmarked: false,
+        isWatchlist: false
       });
     }
 
@@ -605,19 +611,25 @@ module.exports = `
         statusCode: 200,
         code: 200,
         message: "Thao tác danh sách theo dõi thành công.",
+        data: true,
+        result: true,
         isBookmarked: true,
-        isWatchlist: true,
-        data: { isBookmarked: true, isWatchlist: true }
+        isWatchlist: true
       });
     }
 
     if (url.includes("/watchlist") || url.includes("watchlist")) {
+      const defaultWatchlist = [
+        { id: 1, name: "Xem sau", check: false },
+        { id: 2, name: "Phim yêu thích", check: false }
+      ];
       return JSON.stringify({
         status: true,
         statusCode: 200,
         code: 200,
-        data: [],
-        items: []
+        data: defaultWatchlist,
+        result: defaultWatchlist,
+        items: defaultWatchlist
       });
     }
 

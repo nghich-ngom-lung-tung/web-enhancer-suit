@@ -3,7 +3,7 @@ module.exports = {
   name: "Chuối Chiên TV VIP & Cinema Pro Suite",
   file: "chuoichien.user.js",
   desc: "Chặn 100% popup quảng cáo Chuối Chiên TV + Bắt link M3U8 bóng đá trực tiếp PotPlayer/VLC + Auto VIP Login 2099 + Theater Mode",
-  version: "5.4.9",
+  version: "1.0.0",
   category: "sports",
   isRophim: true,
   vipModule: "sports",

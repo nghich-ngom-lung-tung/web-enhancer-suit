@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Chuối Chiên TV VIP & Cinema Pro Suite
 // @namespace    http://tampermonkey.net/
-// @version      5.4.9
+// @version      1.0.0
 // @description  Chặn 100% popup quảng cáo Chuối Chiên TV + Bắt link M3U8 bóng đá trực tiếp PotPlayer/VLC + Auto VIP Login 2099 + Theater Mode
 // @author       Sfrank1e
 // @match        *://chuoichientv.me/*
@@ -672,6 +672,23 @@
           if (typeof data.data.unreadCountMovie !== "number") data.data.unreadCountMovie = 0;
           if (typeof data.data.unreadCountOther !== "number") data.data.unreadCountOther = 0;
         }
+      }
+      return data;
+    }
+    if (url && (url.includes("checkWatchlist") || url.includes("ckWatchlist") || (url.includes("watchlist") && !url.includes("addWatchlist")))) {
+      if (data && typeof data === "object") {
+        const defaultWatchlist = [
+          { id: 1, name: "Xem sau", check: false },
+          { id: 2, name: "Phim yêu thích", check: false }
+        ];
+        if (!Array.isArray(data.data)) {
+          data.data = defaultWatchlist;
+        }
+        if (!Array.isArray(data.items)) {
+          data.items = defaultWatchlist;
+        }
+        data.status = true;
+        data.code = 200;
       }
       return data;
     }
@@ -2950,7 +2967,7 @@
             <span class="ro-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg></span>
             <span>Chuối Chiên TV VIP & Cinema Pro Suite</span>
           </span>
-          <span style="font-size: 11px; opacity: 0.7;">v5.4.9</span>
+          <span style="font-size: 11px; opacity: 0.7;">v1.0.0</span>
         </div>
         <button class="ro-menu-btn" id="ro-comic-prev-btn">
           <span class="ro-btn-left"><span class="ro-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" x2="5" y1="19" y2="5"/></svg></span><span>Chương Trước</span></span>
@@ -2985,7 +3002,7 @@
             <span class="ro-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="2.18" ry="2.18"/><line x1="7" x2="7" y1="2" y2="22"/><line x1="17" x2="17" y1="2" y2="22"/><line x1="2" x2="22" y1="12" y2="12"/><line x1="2" x2="7" y1="7" y2="7"/><line x1="2" x2="7" y1="17" y2="17"/><line x1="17" x2="22" y1="17" y2="17"/><line x1="17" x2="22" y1="7" y2="7"/></svg></span>
             <span>Chuối Chiên TV VIP & Cinema Pro Suite</span>
           </span>
-          <span style="font-size: 11px; opacity: 0.7;">v5.4.9</span>
+          <span style="font-size: 11px; opacity: 0.7;">v1.0.0</span>
         </div>
         <div id="ro-stream-preview" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 6px 10px; font-size: 11px; word-break: break-all; color: #51f085; font-family: monospace; display: none; cursor: pointer;" title="Bấm để copy link"></div>
         <button class="ro-menu-btn" id="ro-copym3u8-btn">

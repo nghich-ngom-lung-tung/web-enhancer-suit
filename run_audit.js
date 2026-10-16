@@ -1497,8 +1497,9 @@ try {
 report("extension/manifest.json: File exists and valid JSON", manifestValidJson);
 
 if (manifestObj) {
+  const expectedVersion = require("./package.json").version;
   report("extension/manifest.json: manifest_version is 3", manifestObj.manifest_version === 3);
-  report("extension/manifest.json: Name & version defined", manifestObj.name && manifestObj.version === "5.4.9");
+  report("extension/manifest.json: Name & version defined", manifestObj.name && manifestObj.version === expectedVersion);
   report("extension/manifest.json: Background service worker configured", manifestObj.background && manifestObj.background.service_worker === "background.js");
   report("extension/manifest.json: DeclarativeNetRequest permissions granted", manifestObj.permissions && manifestObj.permissions.includes("declarativeNetRequest") && manifestObj.permissions.includes("storage"));
   report("extension/manifest.json: Host permissions cover <all_urls>", manifestObj.host_permissions && manifestObj.host_permissions.includes("<all_urls>"));

@@ -5,14 +5,14 @@
 </a>
 
 # Web Enhancer Suite
-### 👑 Cinema Pro & Comic Edition — v5.5.0
+### 👑 Cinema Pro & Comic Edition — v1.0.0
 
 <p align="center">
   <strong>Bộ công cụ Tiện ích mở rộng & Userscript toàn diện số 1 Việt Nam dành cho Web Xem Phim, Anime, Thể Thao Trực Tiếp và Truyện Tranh</strong>
 </p>
 
 [![CI](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit/actions/workflows/ci.yml/badge.svg)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/Version-5.4.9_Dual--Build-8b5cf6?style=for-the-badge&logo=javascript&logoColor=white)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit)
+[![Version](https://img.shields.io/badge/Version-1.0.0_Dual--Build-8b5cf6?style=for-the-badge&logo=javascript&logoColor=white)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit)
 [![Test Suite](https://img.shields.io/badge/Tests-1227%2F1227_Passing-10b981?style=for-the-badge&logo=checkmarx&logoColor=white)](run_audit.js)
 [![Health Score](https://img.shields.io/badge/Health_Score-100%25_Production_Ready-047857?style=for-the-badge&logo=speedtest&logoColor=white)](run_audit.js)
 [![Platforms](https://img.shields.io/badge/Platform-Extension_(MV3)_%7C_Tampermonkey-3b82f6?style=for-the-badge&logo=googlechrome&logoColor=white)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit)
@@ -21,7 +21,7 @@
 
 <br/>
 
-[🚀 Cài Đặt Nhanh](#-h%C6%B0%E1%BB%9Bng-d%E1%BA%ABn-c%C3%A0i-%C4%91%E1%BA%B7t-2-l%E1%BB%B1a-ch%E1%BB%8Dn) • [✨ Tính Năng VIP](#-kho-t%C3%ADnh-n%C4%83ng-vip-cinema-pro) • [⌨️ Bảng Phím Tắt](#%EF%B8%8F-b%E1%BA%A3ng-ph%C3%ADm-t%E1%BA%AFt-th%E1%BA%A7n-th%C3%A1nh-cheatsheet) • [📺 Hướng Dẫn VLC & PotPlayer](#-h%C6%B0%E1%BB%9Bng-d%E1%BA%ABn-ph%C3%A1t-stream-qua-vlc--potplayer) • [📁 Kiến Trúc Mã Nguồn](#-ki%E1%BA%BFn-tr%C3%BAc-modular-v549)
+[🚀 Cài Đặt Nhanh](#-h%C6%B0%E1%BB%9Bng-d%E1%BA%ABn-c%C3%A0i-%C4%91%E1%BA%B7t-2-l%E1%BB%B1a-ch%E1%BB%8Dn) • [✨ Tính Năng VIP](#-kho-t%C3%ADnh-n%C4%83ng-vip-cinema-pro) • [⌨️ Bảng Phím Tắt](#%EF%B8%8F-b%E1%BA%A3ng-ph%C3%ADm-t%E1%BA%AFt-th%E1%BA%A7n-th%C3%A1nh-cheatsheet) • [📺 Hướng Dẫn VLC & PotPlayer](#-h%C6%B0%E1%BB%9Bng-d%E1%BA%ABn-ph%C3%A1t-stream-qua-vlc--potplayer) • [📁 Kiến Trúc Mã Nguồn](#-ki%E1%BA%BFn-tr%C3%BAc-modular-v100)
 
 </div>
 
@@ -261,7 +261,7 @@ flowchart LR
 
 ---
 
-## 📁 Kiến Trúc Modular (v5.4.9)
+## 📁 Kiến Trúc Modular (v1.0.0)
 
 Dự án tuân theo chuẩn thiết kế chia module độc lập, tách biệt giữa logic xử lý nghiệp vụ, giao diện CSS và dữ liệu nền tảng:
 

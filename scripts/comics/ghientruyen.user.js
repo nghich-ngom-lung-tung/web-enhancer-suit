@@ -571,6 +571,23 @@
       }
       return data;
     }
+    if (url && (url.includes("checkWatchlist") || url.includes("ckWatchlist") || (url.includes("watchlist") && !url.includes("addWatchlist")))) {
+      if (data && typeof data === "object") {
+        const defaultWatchlist = [
+          { id: 1, name: "Xem sau", check: false },
+          { id: 2, name: "Phim yêu thích", check: false }
+        ];
+        if (!Array.isArray(data.data)) {
+          data.data = defaultWatchlist;
+        }
+        if (!Array.isArray(data.items)) {
+          data.items = defaultWatchlist;
+        }
+        data.status = true;
+        data.code = 200;
+      }
+      return data;
+    }
     const recurse = obj => {
       if (!obj || typeof obj !== "object") return;
       if ("is_vip" in obj || "vip_expires_at" in obj || "coin_balance" in obj || "thungBalance" in obj) {

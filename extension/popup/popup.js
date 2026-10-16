@@ -22,6 +22,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const btnToggleTheater = document.getElementById("btn-toggle-theater");
     const btnSkipIntro = document.getElementById("btn-skip-intro");
     const btnNukeAds = document.getElementById("btn-nuke-ads");
+    const versionEl = document.querySelector(".version");
+    if (versionEl && chrome.runtime?.getManifest) {
+      try {
+        const v = chrome.runtime.getManifest().version;
+        if (v) versionEl.textContent = `v${v} (Manifest V3)`;
+      } catch (_) {}
+    }
 
     let currentTab = null;
     let activeStreamUrl = "";

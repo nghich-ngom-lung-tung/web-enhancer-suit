@@ -64,7 +64,8 @@ function generateUserscript(site, isMasterAllInOne = false, allSites = [], custo
   const scriptDesc = isMasterAllInOne
     ? "Bản Master: Tối ưu trải nghiệm xem phim, anime, bóng đá và truyện tranh. Chặn quảng cáo thông minh, phím tắt điều khiển, bộ lọc OLED HDR và hỗ trợ phát PotPlayer/VLC trên 50+ website tại Việt Nam."
     : site.desc;
-  const scriptVersion = isMasterAllInOne ? "5.4.9" : (site.version || "5.4.9");
+  const pkg = require("../package.json");
+  const scriptVersion = isMasterAllInOne ? pkg.version : (site.version || pkg.version);
   const vipModuleType = isMasterAllInOne ? "all" : (site.vipModule || (site.isRophim ? "rophim" : null));
   const enableRophimVip = Boolean(vipModuleType);
   const rophimVipCode = enableRophimVip ? getVipCode(vipModuleType) : "";
