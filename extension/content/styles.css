@@ -657,6 +657,9 @@ html, body {
       opacity: 0 !important;
       pointer-events: none !important;
     }
+    .side-signin, a[href="/login"].side-signin, .side-pair {
+      display: none !important;
+    }
     body.ro-theater-active .player-media-root,
     body.ro-theater-active .watch-player {
       position: fixed !important;

@@ -3,7 +3,8 @@ module.exports = {
   "name": "Film4k VIP & Cinema Pro Suite",
   "file": "film4k.user.js",
   "desc": "Mở khóa 4K UHD + Tự động bỏ qua Landing Gate & Popup + M3U8 Sniffer + 1-Click PotPlayer/VLC + Cinema HDR & OLED",
-  "version": "5.4.4",
+  "version": "5.4.9",
+  "isRophim": true,
   "domains": [
     "*://film4k.net/*",
     "*://www.film4k.net/*",
@@ -20,6 +21,9 @@ module.exports = {
       height: 0 !important;
       opacity: 0 !important;
       pointer-events: none !important;
+    }
+    .side-signin, a[href="/login"].side-signin, .side-pair {
+      display: none !important;
     }
     body.ro-theater-active .player-media-root,
     body.ro-theater-active .watch-player {

@@ -966,6 +966,51 @@ function getSnifferCode(enableRophimVip) {
         }
       }
     } catch (e) {}
+    ${enableRophimVip ? `try {
+      const isFetchCommentSubmit = url && (typeof url === "string") && (url.includes("/comments") || url.includes("/api/v1/comments")) &&
+        !url.includes("/comments/movie/") && !url.includes("/reactions") && !url.includes("/like") &&
+        !url.includes("/get-child-comments") && !url.includes("/report") &&
+        (Boolean(init && init.body) || (init && init.method && init.method.toUpperCase() === "POST"));
+      
+      if (isFetchCommentSubmit) {
+        let realTok = "";
+        let realUserId = null;
+        try {
+          if (typeof window !== "undefined" && window.localStorage) {
+            const h = window.location.hostname || "";
+            const cached = window.localStorage.getItem("cinema_pro_real_user_" + h) || window.localStorage.getItem("cinema_pro_real_user");
+            if (cached) {
+              const u = JSON.parse(cached);
+              if (u && u.access_token) {
+                realTok = u.access_token;
+                realUserId = u.id;
+              }
+            }
+            if (!realTok) realTok = window.localStorage.getItem("guestAccessToken") || "";
+          }
+        } catch(e) {}
+
+        if (init && typeof init === "object") {
+          init.headers = init.headers || {};
+          if (realTok && !realTok.includes("cinema-pro-vip")) {
+            if (typeof init.headers.set === "function") {
+              init.headers.set("Authorization", "Bearer " + realTok);
+            } else if (typeof init.headers === "object") {
+              init.headers["Authorization"] = "Bearer " + realTok;
+            }
+          }
+          if (init.body && typeof init.body === "string" && realUserId) {
+            try {
+              const parsed = JSON.parse(init.body);
+              if (parsed && typeof parsed === "object") {
+                parsed.userId = realUserId;
+                init.body = JSON.stringify(parsed);
+              }
+            } catch(e) {}
+          }
+        }
+      }
+    } catch(e) {}` : ""}
     checkAndCaptureUrl(url);
     const fetchPromise = origFetchMain.apply(this, arguments);
     try {
@@ -1031,6 +1076,50 @@ function getSnifferCode(enableRophimVip) {
         return;
       }
       ${enableRophimVip ? `try {
+        const isCommentSubmit = targetUrl && (targetUrl.includes("/comments") || targetUrl.includes("/api/v1/comments")) &&
+          !targetUrl.includes("/comments/movie/") && !targetUrl.includes("/reactions") && !targetUrl.includes("/like") &&
+          !targetUrl.includes("/get-child-comments") && !targetUrl.includes("/report");
+        
+        if (isCommentSubmit) {
+          xhr._cpro_sent_body = body;
+          xhr._cpro_target_url = targetUrl;
+
+          let realTok = "";
+          let realUserId = null;
+          try {
+            if (typeof window !== "undefined" && window.localStorage) {
+              const h = window.location.hostname || "";
+              const cached = window.localStorage.getItem("cinema_pro_real_user_" + h) || window.localStorage.getItem("cinema_pro_real_user");
+              if (cached) {
+                const u = JSON.parse(cached);
+                if (u && u.access_token) {
+                  realTok = u.access_token;
+                  realUserId = u.id;
+                }
+              }
+              if (!realTok) realTok = window.localStorage.getItem("guestAccessToken") || "";
+            }
+          } catch(e) {}
+
+          if (realTok && !realTok.includes("cinema-pro-vip") && origSetRequestHeader) {
+            try {
+              origSetRequestHeader.call(xhr, "Authorization", "Bearer " + realTok);
+            } catch (e) {}
+          }
+
+          if (body && typeof body === "string") {
+            try {
+              const parsed = JSON.parse(body);
+              if (parsed && typeof parsed === "object") {
+                if (realUserId) parsed.userId = realUserId;
+                body = JSON.stringify(parsed);
+                xhr._cpro_parsed_body = parsed;
+              }
+            } catch(e) {}
+          }
+        }
+      } catch(e) {}` : ""}
+      ${enableRophimVip ? `try {
         const mockStr = typeof getRophimMockXhr === "function"
           ? getRophimMockXhr(targetUrl, body)
           : (typeof window !== "undefined" && typeof window.getRophimMockXhr === "function" ? window.getRophimMockXhr(targetUrl, body) : null);
@@ -1076,6 +1165,17 @@ function getSnifferCode(enableRophimVip) {
           return;
         }
       } catch (e) {}` : ""}
+      xhr.addEventListener("readystatechange", function () {
+        if (xhr.readyState === 4) {
+          ${enableRophimVip ? `try {
+            if (typeof handleRophimXhrResponse === "function") {
+              handleRophimXhrResponse(xhr, targetUrl);
+            } else if (typeof window !== "undefined" && typeof window.handleRophimXhrResponse === "function") {
+              window.handleRophimXhrResponse(xhr, targetUrl);
+            }
+          } catch (e) {}` : ""}
+        }
+      });
       xhr.addEventListener("load", function () {
         try {
           if (xhr.responseText && (xhr.responseText.includes(".m3u8") || xhr.responseText.includes("/hls/") || xhr.responseText.includes(".mpd") || xhr.responseText.includes(".mp4"))) {

@@ -8,6 +8,7 @@ module.exports = `
   const VIP_EXPIRY_TIMESTAMP = Math.floor(VIP_EXPIRY_DATE.getTime() / 1000);
   const COIN_BALANCE = 999999999;
   const ROPHIM_MIRROR_DOMAINS = [
+    "film4k.net",
     "moviehdthai.com",
     "cobephim.cfd",
     "rophim10.work",
@@ -104,6 +105,22 @@ module.exports = `
     "cobephim",
     "rophim10",
     "rophim",
+    "film4k.net",
+    "film4k",
+    "/api/auth/me",
+    "/auth/me",
+    "/api/auth/account",
+    "/auth/account",
+    "/api/favourites",
+    "/favourites",
+    "/api/settings",
+    "/settings",
+    "/api/history",
+    "/history",
+    "/api/progress",
+    "/api/view",
+    "/auth/device",
+    "/api/play-ticket",
     "episodes/report",
     "mark-all-as-read"
   ];
@@ -134,13 +151,19 @@ module.exports = `
 
   function getRealProvisionedUser() {
     try {
+      if (typeof window !== "undefined" && window.__CINEMA_PRO_REAL_USER__) {
+        return window.__CINEMA_PRO_REAL_USER__;
+      }
       if (typeof window === "undefined" || !window.localStorage || !window.location) return null;
       const host = window.location.hostname || "";
       const storageKey = "cinema_pro_real_user_" + host;
-      const cached = window.localStorage.getItem(storageKey);
+      const cached = window.localStorage.getItem(storageKey) || window.localStorage.getItem("cinema_pro_real_user");
       if (cached) {
         const u = JSON.parse(cached);
-        if (u && u.id) return u;
+        if (u && u.id) {
+          if (typeof window !== "undefined") window.__CINEMA_PRO_REAL_USER__ = u;
+          return u;
+        }
       }
     } catch (e) {}
     return null;
@@ -149,7 +172,7 @@ module.exports = `
   function getMotchillVipUser(curUser) {
     let base = curUser || {};
     const realUser = getRealProvisionedUser();
-    if (realUser) {
+    if (realUser && realUser.id) {
       base = { ...realUser, ...base, id: realUser.id, access_token: realUser.access_token || base.access_token };
     }
     const defaultRoles = [
@@ -216,6 +239,19 @@ module.exports = `
     };
   }
 
+  function getFilm4kVipUser() {
+    return {
+      id: "6ac449438b0c9ca6944ad999",
+      name: "VIP Cinema Pro",
+      email: "sfrank1e@film4k.vip",
+      image: null,
+      admin: true,
+      role: "vip",
+      plan: "VIP 2099",
+      vip: true
+    };
+  }
+
   // ─── LOCAL COMMENTS & REACTIONS ENGINE (CINEMA PRO RESILIENT SYSTEM) ───
   function getLocalCommentsKey(movieId) {
     return "cpro_comments_" + (movieId || "default");
@@ -255,8 +291,12 @@ module.exports = `
       if (cached) {
         try {
           const userObj = JSON.parse(cached);
-          if (userObj && userObj.id && userObj.access_token) {
-            return userObj;
+          if (userObj && userObj.id) {
+            window.__CINEMA_PRO_REAL_USER__ = userObj;
+            if (userObj.access_token) {
+              window.localStorage.setItem("guestAccessToken", userObj.access_token);
+              return userObj;
+            }
           }
         } catch (e) {}
       }
@@ -273,9 +313,11 @@ module.exports = `
       const regRes = await fetchFn("/baseapi/api/v1/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-Cinema-Pro-Internal": "1" },
-        body: JSON.stringify({ name, email, password })
-      });
-      const regData = await regRes.json();
+        body: JSON.stringify({ name, email, password }),
+        credentials: "include"
+      }).catch(() => null);
+      if (!regRes || !regRes.ok) return null;
+      const regData = await regRes.json().catch(() => null);
       if (!regData || (!regData.id && regData.status !== 200)) return null;
       const realUserId = regData.id;
 
@@ -283,8 +325,9 @@ module.exports = `
       const csrfRes = await fetchFn("/api/auth/csrf", {
         headers: { "X-Cinema-Pro-Internal": "1" },
         credentials: "include"
-      });
-      const csrfData = await csrfRes.json();
+      }).catch(() => null);
+      if (!csrfRes || !csrfRes.ok) return null;
+      const csrfData = await csrfRes.json().catch(() => null);
       const csrfToken = csrfData?.csrfToken;
       if (!csrfToken) return null;
 
@@ -306,26 +349,31 @@ module.exports = `
         },
         body: formBody,
         credentials: "include"
-      });
+      }).catch(() => null);
 
       // 4. Retrieve real session with access_token
       const sessRes = await fetchFn("/api/auth/session", {
         headers: { "X-Cinema-Pro-Internal": "1" },
         credentials: "include"
-      });
-      const sessData = await sessRes.json();
-      const realUser = sessData?.user;
-      if (realUser && realUser.id && realUser.access_token) {
-        window.localStorage.setItem(storageKey, JSON.stringify(realUser));
-        window.localStorage.setItem("guestAccessToken", realUser.access_token);
-        return realUser;
-      } else if (realUserId) {
+      }).catch(() => null);
+      if (sessRes && sessRes.ok) {
+        const sessData = await sessRes.json().catch(() => null);
+        const realUser = sessData?.user;
+        if (realUser && realUser.id && realUser.access_token) {
+          window.__CINEMA_PRO_REAL_USER__ = realUser;
+          window.localStorage.setItem(storageKey, JSON.stringify(realUser));
+          window.localStorage.setItem("guestAccessToken", realUser.access_token);
+          return realUser;
+        }
+      }
+      if (realUserId) {
         const fallbackObj = {
           id: realUserId,
           email: email,
           name: name,
           avatar: "/images/avatars/10.jpg"
         };
+        window.__CINEMA_PRO_REAL_USER__ = fallbackObj;
         window.localStorage.setItem(storageKey, JSON.stringify(fallbackObj));
         return fallbackObj;
       }
@@ -334,9 +382,10 @@ module.exports = `
   }
 
   if (typeof window !== "undefined") {
+    try { ensureRealRophimSession(); } catch (e) {}
     setTimeout(() => {
       try { ensureRealRophimSession(); } catch (e) {}
-    }, 150);
+    }, 200);
   }
 
   function getRophimMockJsonString(url, init) {
@@ -354,6 +403,110 @@ module.exports = `
       else if (typeof init.body === "object") {
         try { bodyStr = JSON.stringify(init.body); } catch (e) {}
       }
+    }
+
+    // 0. Film4k VIP 2099 Auth & Account Patcher
+    const isFilm4kHost = (typeof location !== "undefined" && location.hostname && (location.hostname.includes("film4k") || location.hostname.includes("film4knet"))) || url.includes("film4k");
+
+    if (url.includes("/api/auth/me") || (url.includes("/auth/me") && !url.includes("/auth/me/"))) {
+      return JSON.stringify({
+        user: getFilm4kVipUser()
+      });
+    }
+
+    if (url.includes("/api/auth/account") || (url.includes("/auth/account") && !url.includes("/auth/account/"))) {
+      return JSON.stringify({
+        user: getFilm4kVipUser(),
+        methods: {
+          password: true,
+          telegram: null,
+          google: null,
+          facebook: null
+        }
+      });
+    }
+
+    if (url.includes("/favourites/toggle") || url.includes("/favorites/toggle")) {
+      return JSON.stringify({
+        saved: true,
+        signedIn: true
+      });
+    }
+
+    if (url.includes("/api/favourites") || (isFilm4kHost && (url.includes("/favourites") || (url.includes("/favorites") && !url.includes("baseapi"))))) {
+      return JSON.stringify({
+        list: [],
+        locale: "vi",
+        signedIn: true
+      });
+    }
+
+    if (url.includes("/api/settings") || (isFilm4kHost && url.includes("/settings") && !url.includes("/users/settings") && !url.includes("settings."))) {
+      return JSON.stringify({
+        user: getFilm4kVipUser(),
+        signedIn: true,
+        settings: {
+          audio: "default",
+          subtitle: "vi",
+          sub_size: "medium",
+          sub_bg: false,
+          auto_play: true,
+          auto_next: true,
+          auto_skip_intro: true
+        }
+      });
+    }
+
+    if (url.includes("/api/history") || (isFilm4kHost && url.includes("/history") && !url.includes("/histories") && !url.includes("/lich-su") && !url.includes("history."))) {
+      return JSON.stringify({
+        movies: [],
+        progress: [],
+        signedIn: true,
+        locale: "vi"
+      });
+    }
+
+    if (url.includes("/api/progress") || (isFilm4kHost && url.includes("/api/view"))) {
+      return JSON.stringify({
+        ok: true,
+        status: 200,
+        signedIn: true
+      });
+    }
+
+    if (isFilm4kHost && (url.includes("/auth/device/code") || url.includes("/api/auth/device/code"))) {
+      return JSON.stringify({
+        code: "VIP-2099",
+        expires: 9999999999
+      });
+    }
+
+    if (isFilm4kHost && (url.includes("/auth/device/poll") || url.includes("/api/auth/device/poll"))) {
+      return JSON.stringify({
+        status: "claimed",
+        user: getFilm4kVipUser()
+      });
+    }
+
+    if (isFilm4kHost && (url.includes("/auth/signout") || url.includes("/api/auth/signout"))) {
+      return JSON.stringify({
+        ok: true
+      });
+    }
+
+    if (isFilm4kHost && (url.includes("/auth/signin") || url.includes("/auth/signup") || url.includes("/api/auth/signin") || url.includes("/api/auth/signup"))) {
+      return JSON.stringify({
+        user: getFilm4kVipUser(),
+        token: "mock_jwt_token_vip_2099",
+        signedIn: true
+      });
+    }
+
+    if (isFilm4kHost && url.includes("/comments") && !url.includes("/reactions")) {
+      return JSON.stringify({
+        comments: [],
+        signedIn: true
+      });
     }
 
     // 1. Session Check (Bắt buộc valid: true để không gọi o() trigger reload)
@@ -378,6 +531,16 @@ module.exports = `
     // 2. NextAuth Session (Chỉ mock session payload cho client UI)
     if (url.includes("/api/auth/session") || (url.includes("/auth/session") && !url.includes("/auth/session/check"))) {
       const user = getMotchillVipUser();
+      const realUser = getRealProvisionedUser();
+      if (realUser) {
+        if (realUser.id) user.id = realUser.id;
+        if (realUser.name) user.name = realUser.name;
+        if (realUser.email) user.email = realUser.email;
+        if (realUser.access_token) {
+          user.access_token = realUser.access_token;
+          user.accessToken = realUser.access_token;
+        }
+      }
       return JSON.stringify({
         user: user,
         is_vip: true,
@@ -910,6 +1073,15 @@ module.exports = `
 
   function patchRophimData(data, url) {
     if (!data || typeof data !== "object") return data;
+    if (url && (url.includes("/watch/") || url.includes("/title/") || url.includes("/api/watch") || url.includes("/api/title"))) {
+      if (data && typeof data === "object") {
+        data.signedIn = true;
+        if (data.user === null || !data.user) {
+          data.user = getFilm4kVipUser();
+        }
+      }
+      return data;
+    }
     if (url && (url.includes("/ads") || url.includes("/banner") || url.includes("/advertising") || url.includes("sspp"))) {
       if (Array.isArray(data)) return [];
       if (data && typeof data === "object") {
@@ -930,7 +1102,7 @@ module.exports = `
         else if (Array.isArray(data)) serverList = data;
         else if (data && data.items && Array.isArray(data.items)) serverList = data.items;
 
-        const filteredLocal = localComments.filter(lc => !serverList.some(sd => String(sd.id) === String(lc.id)));
+        const filteredLocal = localComments.filter(lc => !serverList.some(sd => String(sd.id) === String(lc.id) || (sd.content && lc.content && String(sd.content).trim() === String(lc.content).trim())));
         const merged = [...filteredLocal, ...serverList];
         if (data && typeof data === "object") {
           data.data = merged;
@@ -1513,6 +1685,37 @@ module.exports = `
           };
           checkRawRsc();
           document.addEventListener("DOMContentLoaded", checkRawRsc);
+        }
+      } catch (e) {}
+    }
+
+    const isFilm4kHost = typeof location !== "undefined" && location.hostname && (
+      location.hostname.includes("film4k") ||
+      location.hostname.includes("film4knet")
+    );
+    if (isFilm4kHost) {
+      try {
+        if (typeof location !== "undefined" && (location.pathname === "/login" || location.pathname === "/dang-nhap")) {
+          if (typeof location.replace === "function") {
+            location.replace("/");
+          }
+        }
+        function patchFilm4kAuthDom() {
+          try {
+            if (typeof document === "undefined") return;
+            const signinBtns = document.querySelectorAll(".side-signin, a[href='/login'].side-signin, .side-pair");
+            signinBtns.forEach(btn => {
+              btn.style.setProperty("display", "none", "important");
+            });
+          } catch (e) {}
+        }
+        if (typeof document !== "undefined") {
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", patchFilm4kAuthDom);
+          } else {
+            patchFilm4kAuthDom();
+          }
+          setInterval(patchFilm4kAuthDom, 300);
         }
       } catch (e) {}
     }

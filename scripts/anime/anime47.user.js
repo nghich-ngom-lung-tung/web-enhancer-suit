@@ -1092,6 +1092,7 @@
         }
       }
     } catch (e) {}
+    
     checkAndCaptureUrl(url);
     const fetchPromise = origFetchMain.apply(this, arguments);
     try {
@@ -1149,6 +1150,12 @@
         return;
       }
       
+      
+      xhr.addEventListener("readystatechange", function () {
+        if (xhr.readyState === 4) {
+          
+        }
+      });
       xhr.addEventListener("load", function () {
         try {
           if (xhr.responseText && (xhr.responseText.includes(".m3u8") || xhr.responseText.includes("/hls/") || xhr.responseText.includes(".mpd") || xhr.responseText.includes(".mp4"))) {
@@ -1306,7 +1313,7 @@
         Object.defineProperty(HTMLIFrameElement.prototype, "src", {
           set: function (val) {
             if (typeof val === "string" && (val.includes("crash.html") || val.includes("/embed/crash"))) {
-              console.warn("[Cinema Pro] Blocked malicious anti-tamper crash.html redirect on iframe:", val);
+              // Silent block anti-tamper redirect (avoid triggering chrome://extensions error badge)
               return;
             }
             return origSet.call(this, val);
@@ -1319,7 +1326,7 @@
       const origSetAttr = HTMLIFrameElement.prototype.setAttribute;
       HTMLIFrameElement.prototype.setAttribute = function (name, val) {
         if (typeof name === "string" && name.toLowerCase() === "src" && typeof val === "string" && (val.includes("crash.html") || val.includes("/embed/crash"))) {
-          console.warn("[Cinema Pro] Blocked malicious crash.html setAttribute on iframe:", val);
+          // Silent block anti-tamper setAttribute (avoid triggering chrome://extensions error badge)
           return;
         }
         return origSetAttr.apply(this, arguments);

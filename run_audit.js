@@ -970,6 +970,64 @@ chuoiChienScripts.forEach(file => {
   }
 });
 
+const film4kScripts = scriptFiles.filter(f => f.endsWith("film4k.user.js") || f.endsWith("web-enhancer-all.user.js"));
+film4kScripts.forEach(file => {
+  const code = fs.readFileSync(file, "utf8");
+  const { window, document } = createTopWindowMock("film4k.net");
+  const ctx = vm.createContext({
+    window,
+    document,
+    location: window.location,
+    top: window.top,
+    self: window.self,
+    navigator: window.navigator,
+    localStorage: window.localStorage,
+    fetch: window.fetch,
+    XMLHttpRequest: window.XMLHttpRequest,
+    setTimeout: window.setTimeout,
+    clearTimeout: window.clearTimeout,
+    setInterval: window.setInterval,
+    clearInterval: window.clearInterval,
+    console: window.console,
+    HTMLMediaElement: window.HTMLMediaElement,
+    Storage: window.Storage,
+    Promise,
+    Response: class {
+      constructor(body, init) {
+        this.body = body;
+        this.status = init?.status || 200;
+        this.headers = init?.headers || {};
+      }
+      json() { return Promise.resolve(JSON.parse(this.body)); }
+      text() { return Promise.resolve(String(this.body)); }
+    }
+  });
+
+  try {
+    vm.runInContext(code, ctx);
+
+    // Test: /api/auth/me returns VIP user
+    ctx.window.fetch("https://film4k.net/api/auth/me").then(res => res.json()).then(data => {
+      const mePassed = Boolean(data && data.user && data.user.name === "VIP Cinema Pro" && data.user.role === "vip" && data.user.admin === true);
+      report(`${file}: /api/auth/me intercepted returning VIP Cinema Pro (VIP 2099)`, mePassed);
+    });
+
+    // Test: /api/auth/account returns VIP user and methods
+    ctx.window.fetch("https://film4k.net/api/auth/account").then(res => res.json()).then(data => {
+      const accPassed = Boolean(data && data.user && data.user.name === "VIP Cinema Pro" && data.methods && data.methods.password === true);
+      report(`${file}: /api/auth/account intercepted returning VIP user & methods`, accPassed);
+    });
+
+    // Test: /api/settings returns VIP settings
+    ctx.window.fetch("https://film4k.net/api/settings").then(res => res.json()).then(data => {
+      const settPassed = Boolean(data && data.signedIn === true && data.settings && data.settings.auto_skip_intro === true);
+      report(`${file}: /api/settings intercepted returning VIP settings`, settPassed);
+    });
+  } catch (err) {
+    report(`${file}: Film4k VIP execution`, false, err.stack);
+  }
+});
+
 // ═════════════════════════════════════════════════════════════════
 // 5. LIVE FOOTBALL STREAMING & SPORTS AD-NUKER AUDIT
 // ═════════════════════════════════════════════════════════════════
@@ -1371,7 +1429,9 @@ if (manifestObj) {
   report("scripts/movies/film4k.user.js: film4k.net domain mapped", film4kScript.includes("film4k.net"));
   report("scripts/movies/film4k.user.js: workers.dev CDN streaming domain mapped", film4kScript.includes("workers.dev"));
   report("scripts/movies/film4k.user.js: f4k:entered & community-dismissed auto-bypass present", film4kScript.includes("f4k:entered") && film4kScript.includes("community-dismissed"));
+  report("scripts/movies/film4k.user.js: .side-signin & .side-pair hidden via CSS", film4kScript.includes(".side-signin") && film4kScript.includes(".side-pair"));
   report("extension/content/ad-nuker.js: Film4k landing gate and dialog auto-bypass present", adNukerCode.includes("landing-enter") && adNukerCode.includes("cdlg-ok") && adNukerCode.includes("f4k:entered"));
+  report("extension/content/vip-patcher.js: Film4k VIP user and /api/auth/me interception present", vipPatcherCode.includes("/api/auth/me") && vipPatcherCode.includes("sfrank1e@film4k.vip"));
 
   // ─── RUNTIME ISOLATION & REGRESSION PREVENTION AUDIT ───
   // Regression Test 1: sniffer.js fetch hook in isolation without isAdApi in scope
