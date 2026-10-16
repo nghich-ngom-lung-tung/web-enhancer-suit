@@ -5,6 +5,7 @@ module.exports = {
   "desc": "Mở khóa 4K UHD + Tự động bỏ qua Landing Gate & Popup + M3U8 Sniffer + 1-Click PotPlayer/VLC + Cinema HDR & OLED",
   "version": "5.4.9",
   "isRophim": true,
+  "vipModule": "film4k",
   "domains": [
     "*://film4k.net/*",
     "*://www.film4k.net/*",

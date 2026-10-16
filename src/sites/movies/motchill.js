@@ -5,6 +5,7 @@ module.exports = {
   "desc": "Mở khóa VIP Pro 2099 Vĩnh Viễn + Vô hạn Coins + Chặn 100% AdBlock/Stream Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Skip Intro & Anime HDR",
   "version": "5.4.4",
   "isRophim": true,
+  "vipModule": "motchill",
   "domains": [
     "*://phimmotchill.online/*",
     "*://*.phimmotchill.online/*",

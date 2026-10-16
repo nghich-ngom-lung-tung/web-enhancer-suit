@@ -6,6 +6,7 @@ module.exports = {
   version: "5.4.9",
   category: "sports",
   isRophim: true,
+  vipModule: "sports",
   domains: [
     "*://chuoichientv.me/*", "*://*.chuoichientv.me/*",
     "*://live*.chuoichientv.me/*",

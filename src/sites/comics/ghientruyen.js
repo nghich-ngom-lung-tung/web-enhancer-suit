@@ -5,6 +5,7 @@ module.exports = {
   "desc": "Tự động mở khóa đọc VIP GhienTruyen + Chặn sạch Banner / Popunder + Phím tắt A/D chuyển chương + W/S cuộn mượt + F toàn màn hình",
   "version": "5.4.6",
   "isRophim": true,
+  "vipModule": "firebase",
   "domains": [
     "*://*.ghientruyen.net/*",
     "*://ghientruyen.net/*",

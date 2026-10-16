@@ -5,6 +5,7 @@ module.exports = {
   "desc": "Chặn quảng cáo Ghiền Phim + Triệt tiêu Popunder / Bom88 + Bắt link M3U8 mở PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR",
   "version": "5.4.6",
   "isRophim": true,
+  "vipModule": "firebase",
   "domains": [
     "*://*.ghienphimz.mom/*",
     "*://ghienphimz.mom/*",

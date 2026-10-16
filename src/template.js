@@ -11,7 +11,7 @@ const { getSnifferCode } = require("./modules/sniffer");
 const adNukerCode = require("./modules/ad-nuker");
 const playerControlsCode = require("./modules/player-controls");
 const { getHubUiCode } = require("./modules/hub-ui");
-const rophimVipCode = require("./modules/rophim-vip");
+const { getVipCode } = require("./modules/vip");
 
 const adblockCss = fs.readFileSync(path.join(__dirname, "css", "adblock.css"), "utf8");
 const theaterCss = fs.readFileSync(path.join(__dirname, "css", "theater.css"), "utf8");
@@ -65,7 +65,9 @@ function generateUserscript(site, isMasterAllInOne = false, allSites = [], custo
     ? "Bản Master: Tối ưu trải nghiệm xem phim, anime, bóng đá và truyện tranh. Chặn quảng cáo thông minh, phím tắt điều khiển, bộ lọc OLED HDR và hỗ trợ phát PotPlayer/VLC trên 50+ website tại Việt Nam."
     : site.desc;
   const scriptVersion = isMasterAllInOne ? "5.4.9" : (site.version || "5.4.9");
-  const enableRophimVip = isMasterAllInOne || Boolean(site.isRophim);
+  const vipModuleType = isMasterAllInOne ? "all" : (site.vipModule || (site.isRophim ? "rophim" : null));
+  const enableRophimVip = Boolean(vipModuleType);
+  const rophimVipCode = enableRophimVip ? getVipCode(vipModuleType) : "";
   const siteTitle = isMasterAllInOne ? "Web Enhancer (All-In-One)" : site.name;
 
   const snifferCode = getSnifferCode(enableRophimVip);

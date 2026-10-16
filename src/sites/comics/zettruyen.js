@@ -5,6 +5,7 @@ module.exports = {
   "desc": "Diệt sạch 100% Ads / Popunder / Stealth Widget + Phím tắt đọc truyện A/D chuyển chap, W/S cuộn mượt, F fullscreen + Tối ưu khung hình đọc ZetTruyen",
   "version": "5.4.5",
   "isRophim": true,
+  "vipModule": "comics",
   "domains": [
     "*://*.zettruyen3.com/*",
     "*://zettruyen3.com/*",

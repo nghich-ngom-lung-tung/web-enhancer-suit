@@ -5,6 +5,7 @@ module.exports = {
   "desc": "Tối ưu hóa đọc bài GhienBlog + Chặn quảng cáo & popunder + Giao diện đọc bài siêu mượt",
   "version": "5.4.6",
   "isRophim": true,
+  "vipModule": "firebase",
   "domains": [
     "*://*.ghienphim.blog/*",
     "*://ghienphim.blog/*",

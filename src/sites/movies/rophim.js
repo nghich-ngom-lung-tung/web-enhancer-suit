@@ -5,6 +5,7 @@ module.exports = {
   "desc": "Mở khóa VIP 2099 + Vô hạn Coin + Chặn 100% AdBlock/Player Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Skip Intro & Anime HDR",
   "version": "5.4.4",
   "isRophim": true,
+  "vipModule": "rophim",
   "domains": [
     "*://rophim1.vip/*",
     "*://www.rophim1.vip/*",
