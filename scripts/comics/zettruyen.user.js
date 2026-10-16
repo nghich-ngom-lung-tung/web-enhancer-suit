@@ -709,19 +709,86 @@
       });
     }
 
+    if (url.includes("admin/tv") || (isFilm4kHost && url.includes("/tv") && url.includes("admin"))) {
+      return JSON.stringify({
+        ok: true,
+        status: 200,
+        channels: []
+      });
+    }
+
+    if (url.includes("admin/manifest") || (isFilm4kHost && url.includes("manifest") && url.includes("admin"))) {
+      return JSON.stringify({
+        ok: true,
+        status: 200,
+        list: [],
+        current: null
+      });
+    }
+
+    if (url.includes("admin/movie/") || (isFilm4kHost && url.includes("/movie/") && url.includes("admin"))) {
+      return JSON.stringify({
+        ok: true,
+        status: 200,
+        movie: {
+          slug: "vip-cinema-pro",
+          title: { en: "VIP Cinema Pro", vi: "VIP Cinema Pro" },
+          year: 2026,
+          overview: { en: "VIP Cinema Pro Movie", vi: "Phim VIP Cinema Pro" },
+          poster: { en: "/images/avatars/10.jpg", vi: "/images/avatars/10.jpg" },
+          genres: { en: ["Action"], vi: ["Hành Động"] },
+          okruId: "",
+          tmdbId: 0,
+          mediaType: "movie"
+        }
+      });
+    }
+
+    if (url.includes("admin/tmdb")) {
+      return JSON.stringify({
+        ok: true,
+        status: 200,
+        title: { en: "VIP Movie", vi: "Phim VIP" },
+        overview: { en: "VIP Overview", vi: "Tóm tắt VIP" },
+        poster: { en: "/images/avatars/10.jpg", vi: "/images/avatars/10.jpg" },
+        genres: { en: ["Action"], vi: ["Hành Động"] },
+        year: 2026,
+        results: []
+      });
+    }
+
     if (url.includes("/api/admin") || url.includes("api/admin") || url.includes("admin/movies") || (isFilm4kHost && url.includes("/admin"))) {
+      const film4kSettings = {
+        audioLang: "",
+        subLang: "vi",
+        subsEnabled: true,
+        autoplay: true,
+        capToPlayerSize: false,
+        subSize: 100,
+        subColor: "#ffffff",
+        subBg: "",
+        subDelay: 0,
+        siteLocale: "vi",
+        adultEnabled: false,
+        historyPaused: false,
+        hdrToneMap: 40
+      };
       return JSON.stringify({
         ok: true,
         status: 200,
         statusCode: 200,
         code: 200,
+        list: [],
         movies: [],
         items: [],
         data: [],
         result: [],
         total: 0,
         page: 1,
-        totalPages: 1
+        totalPages: 1,
+        locale: "vi",
+        siteDefaults: film4kSettings,
+        featured: []
       });
     }
 
@@ -4269,6 +4336,28 @@
       if (key === "community-dismissed") return todayStr;
       return origGetItem.apply(this, arguments);
     };
+
+    // ─── DEFUSE WEBMANIFEST 503 ERROR (FILM4K & EMBEDS) ───
+    const inlineManifest = "data:application/manifest+json," + encodeURIComponent(JSON.stringify({
+      name: "Film4k VIP",
+      short_name: "Film4k",
+      start_url: "/",
+      display: "standalone",
+      background_color: "#0c0d12",
+      theme_color: "#5b6cff"
+    }));
+    const fixManifest = () => {
+      try {
+        const m = document.querySelector("link[rel='manifest']");
+        if (m && !m.href.startsWith("data:")) {
+          m.href = inlineManifest;
+        }
+      } catch (e) {}
+    };
+    fixManifest();
+    if (typeof document !== "undefined" && document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", fixManifest, { once: true });
+    }
   } catch (e) {}
 
   // ─── EMBED PLAYER AD DEFUSER (__V_DATA__ & __ADS_CFG for devwithai, streamxx, rophim) ───

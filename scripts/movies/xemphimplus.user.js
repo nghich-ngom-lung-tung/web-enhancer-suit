@@ -1239,6 +1239,28 @@
       if (key === "community-dismissed") return todayStr;
       return origGetItem.apply(this, arguments);
     };
+
+    // ─── DEFUSE WEBMANIFEST 503 ERROR (FILM4K & EMBEDS) ───
+    const inlineManifest = "data:application/manifest+json," + encodeURIComponent(JSON.stringify({
+      name: "Film4k VIP",
+      short_name: "Film4k",
+      start_url: "/",
+      display: "standalone",
+      background_color: "#0c0d12",
+      theme_color: "#5b6cff"
+    }));
+    const fixManifest = () => {
+      try {
+        const m = document.querySelector("link[rel='manifest']");
+        if (m && !m.href.startsWith("data:")) {
+          m.href = inlineManifest;
+        }
+      } catch (e) {}
+    };
+    fixManifest();
+    if (typeof document !== "undefined" && document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", fixManifest, { once: true });
+    }
   } catch (e) {}
 
   // ─── EMBED PLAYER AD DEFUSER (__V_DATA__ & __ADS_CFG for devwithai, streamxx, rophim) ───
