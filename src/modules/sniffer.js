@@ -886,6 +886,9 @@ function getSnifferCode(enableRophimVip) {
       u.includes("acscdn.com") ||
       u.includes("yougetwhatyoupayfor.net") ||
       u.includes("chaseherbalpasty.com") ||
+      u.includes("streamxx.net") ||
+      u.includes("embed_ads") ||
+      u.includes("pause_ads") ||
       u.includes("bom88") ||
       u.includes("tin888") ||
       u.includes("net88")

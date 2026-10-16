@@ -52,5 +52,10 @@ module.exports = [
   "*://*.cctvsignal.xyz/*",
   "*://cctvsignal.xyz/*",
   "*://*.cctvsignal.*/*",
-  "*://fhd-*.cctvsignal.xyz/*"
+  "*://fhd-*.cctvsignal.xyz/*",
+  "*://*.devwithai.net/*",
+  "*://devwithai.net/*",
+  "*://*.streamxx.net/*",
+  "*://streamxx.net/*",
+  "*://*.streamxx.*/*"
 ];

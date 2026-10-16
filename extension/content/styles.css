@@ -151,7 +151,14 @@ div[style*="position:fixed"][style*="bottom:0"]:not(#ro-vip-hub):not(#ro-hub-men
 .marquee-container, .marquee-box, .odds-button,
 [class*="banner-pos-"], [class*="ad-strip-pos"], [class*="ad-popup-modal"],
 .match-detail__offer, .offer__buttons, .offer__bet__col, [class*="match-detail__offer"],
-.teambox__odds, [class*="teambox__odds"], .btn-odds, [class*="btn-odds"], .block-int, .block-k {
+.teambox__odds, [class*="teambox__odds"], .btn-odds, [class*="btn-odds"], .block-int, .block-k,
+
+/* Diệt sạch Player Pause Ads, Watermark & In-Player Embed Banners (devwithai, streamxx, rophim...) */
+.pause-ad-overlay, .pause-ad-center, .pause-ad-image, .pause-ad-close, .pause-ad-click-layer,
+div[class*="pause-ad"], img[src*="pause_ads"], img[src*="embed_ads"],
+.overlay-ad-overlay, .overlay-ad-close, .watermark-ad-overlay, .watermark-ad-close,
+#pause-ad-styles, .art-ad, .art-ads, [class*="art-ad"],
+div[class*="watermark-ad"], div[class*="overlay-ad"] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;

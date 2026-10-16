@@ -10,7 +10,11 @@ module.exports = {
     "*://www.cobephim.cfd/*",
     "*://*.cobephim.cfd/*",
     "*://*.darkbytes.xyz/*",
-    "*://darkbytes.xyz/*"
+    "*://darkbytes.xyz/*",
+    "*://*.devwithai.net/*",
+    "*://devwithai.net/*",
+    "*://*.streamxx.net/*",
+    "*://streamxx.net/*"
   ],
   "includes": [
     "*://*cobephim*/*",

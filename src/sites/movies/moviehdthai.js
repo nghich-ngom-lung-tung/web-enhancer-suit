@@ -11,7 +11,11 @@ module.exports = {
     "*://*.moviehdthai.com/*",
     "*://*.clubc.org/*",
     "*://clubc.org/*",
-    "*://api.clubc.org/*"
+    "*://api.clubc.org/*",
+    "*://*.devwithai.net/*",
+    "*://devwithai.net/*",
+    "*://*.streamxx.net/*",
+    "*://streamxx.net/*"
   ],
   "includes": [
     "*://*moviehdthai*/*",

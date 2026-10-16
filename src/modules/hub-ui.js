@@ -24,6 +24,8 @@ function getHubUiCode(icons, siteTitle, scriptVersion) {
   // ─── VIP CONTROL HUB DOM CREATION ───
   function initVipHub() {
     if (typeof document === "undefined") return;
+    // Tuyệt đối không hiển thị VIP Control Hub trùng lặp bên trong iframe nhúng player
+    if (typeof window !== "undefined" && window.self !== window.top) return;
     if (document.getElementById("ro-vip-hub")) return;
     if (!document.body) {
       document.addEventListener("DOMContentLoaded", () => setTimeout(initVipHub, 200), { once: true });

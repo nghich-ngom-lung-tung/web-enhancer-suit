@@ -40,6 +40,39 @@ module.exports = `
     };
   } catch (e) {}
 
+  // ─── EMBED PLAYER AD DEFUSER (__V_DATA__ for devwithai, streamxx, rophim) ───
+  try {
+    let _vdata = window.__V_DATA__;
+    function sanitizeVData(val) {
+      if (val && typeof val === "object") {
+        if (val.ads && typeof val.ads === "object") {
+          val.ads.click_redirect = [];
+          val.ads.tvc_mp4 = [];
+          val.ads.overlay_banner = [];
+          val.ads.watermark = [];
+          val.ads.pause_ads = [];
+          val.ads.player_poster = [];
+          val.ads.brand_corner = [];
+          val.ads.textlink = [];
+        }
+      }
+      return val;
+    }
+    if (_vdata) {
+      sanitizeVData(_vdata);
+    }
+    Object.defineProperty(window, "__V_DATA__", {
+      configurable: true,
+      enumerable: true,
+      get: function () {
+        return _vdata;
+      },
+      set: function (newVal) {
+        _vdata = sanitizeVData(newVal);
+      }
+    });
+  } catch (e) {}
+
   // ─── ANTI-CRASH & DEVTOOLS-DETECTOR ATTACK SHIELD ───
   try {
     if (typeof HTMLIFrameElement !== "undefined") {
@@ -211,6 +244,9 @@ module.exports = `
       u.includes("net88") ||
       u.includes("c5735ef8") ||
       u.includes("/media/uploads/") && u.includes(".gif") ||
+      u.includes("streamxx.net") ||
+      u.includes("embed_ads") ||
+      u.includes("pause_ads") ||
       u.includes("/ux-toplist/") ||
       u.includes("ux-toplist")
     );
@@ -292,6 +328,13 @@ module.exports = `
       'img[src*="giovang-popup"]',
       '.tvc-pre-roll', '.video-wrapper.tvc-pre-roll', '.tvc-pre-roll__video', '.tvc-pre-roll__skip', '.tvc-pre-roll__link-overlay', '[class*="tvc-pre-roll"]',
       'video[src*="tvc_"]', 'video[src*="assets/tvc/"]',
+
+      // In-Player Pause Ads, Watermark & Embed Overlays (devwithai, streamxx, rophim)
+      '.pause-ad-overlay', '.pause-ad-center', '.pause-ad-image', '.pause-ad-close', '.pause-ad-click-layer',
+      'div[class*="pause-ad"]', 'img[src*="pause_ads"]', 'img[src*="embed_ads"]',
+      '.overlay-ad-overlay', '.overlay-ad-close', '.watermark-ad-overlay', '.watermark-ad-close',
+      '#pause-ad-styles', '.art-ad', '.art-ads', '[class*="art-ad"]',
+      'div[class*="watermark-ad"]', 'div[class*="overlay-ad"]',
 
       // ChuoiChien Video Player Banner & Gambling Overlays
       '.ads-layer', '[class*="ads-layer"]', 'div.ads-layer',
@@ -423,8 +466,11 @@ module.exports = `
           }
         });
 
-        // Diệt tận gốc ads-layer & in-player banner Chuối Chiên (watermark + nút cược + banner dưới player)
+        // Diệt tận gốc ads-layer, in-player pause ads & banner (devwithai, streamxx, rophim, Chuối Chiên...)
         document.querySelectorAll(
+          ".pause-ad-overlay, .pause-ad-center, .pause-ad-image, .pause-ad-close, .pause-ad-click-layer, " +
+          "div[class*='pause-ad'], img[src*='pause_ads'], img[src*='embed_ads'], " +
+          ".overlay-ad-overlay, .watermark-ad-overlay, #pause-ad-styles, .art-ad, .art-ads, " +
           ".ads-layer, [class*='ads-layer'], .player-logo-wrapper, .player-logo-inner, " +
           ".bet-button-player, .bet-buttons-container, .bet-button-content, button.bet-button-content, [class*='bet-button'], " +
           ".banner-player, .banner-canvas, [class*='banner-canvas'], div.banner-canvas, .banner-container, .banner-content, div.banner-content, .banner-image, img.banner-image, [class*='banner-image'], " +

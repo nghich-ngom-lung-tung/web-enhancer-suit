@@ -31,7 +31,11 @@ module.exports = {
     "*://*.rophim10.store/*",
     "*://rophim10.store/*",
     "*://*.rophim10.work/*",
-    "*://rophim10.work/*"
+    "*://rophim10.work/*",
+    "*://*.devwithai.net/*",
+    "*://devwithai.net/*",
+    "*://*.streamxx.net/*",
+    "*://streamxx.net/*"
   ],
   "includes": [
     "*://*rophim*/*"
