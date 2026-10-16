@@ -3,7 +3,9 @@ const path = require('path');
 const fs = require('fs');
 
 function convertMasterIcon() {
-  const masterJpg = 'C:/Users/Admin/.gemini/antigravity/brain/f36e2fdd-3288-4a42-aea6-d5104d947a66/cinema_pro_suite_app_icon_1792082928905.jpg';
+  const localMaster = path.resolve(__dirname, '../../extension/icons/icon_master.jpg');
+  const artifactMaster = 'C:/Users/Admin/.gemini/antigravity/brain/f36e2fdd-3288-4a42-aea6-d5104d947a66/chill_capybara_movie_app_icon_1792172488139.jpg';
+  const masterJpg = fs.existsSync(localMaster) ? localMaster : artifactMaster;
   const tempDir = 'C:/Users/Admin/.gemini/antigravity/brain/f36e2fdd-3288-4a42-aea6-d5104d947a66/scratch/icon_out';
   const targetDir = path.resolve(__dirname, '../../extension/icons');
 

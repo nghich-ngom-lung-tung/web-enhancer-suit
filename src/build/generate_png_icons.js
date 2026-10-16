@@ -202,6 +202,20 @@ function renderCinemaProIcon(size) {
 function generateAllIcons(outputDir) {
   fs.mkdirSync(outputDir, { recursive: true });
   const sizes = [16, 48, 128];
+  
+  // Check if any icon is missing
+  const missing = sizes.some(size => {
+    const dest = path.join(outputDir, `icon${size}.png`);
+    return !fs.existsSync(dest) || fs.statSync(dest).size === 0;
+  });
+
+  if (missing) {
+    try {
+      const { convertMasterIcon } = require('./convert_icon');
+      convertMasterIcon();
+    } catch (_) {}
+  }
+
   sizes.forEach(size => {
     const dest = path.join(outputDir, `icon${size}.png`);
     if (fs.existsSync(dest) && fs.statSync(dest).size > 0) {
