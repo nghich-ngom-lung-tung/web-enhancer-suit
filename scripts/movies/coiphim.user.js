@@ -1182,8 +1182,9 @@
           const nativeFetch = _origFetchNative || (typeof origFetchMain === "function" ? origFetchMain : window.fetch);
           if (!nativeFetch) return;
 
-          const isRoOrNetanime = location.hostname && (location.hostname.includes("rophim") || location.hostname.includes("netanime"));
-          if (!isRoOrNetanime && !force) return;
+          const _h = location.hostname || "";
+          const isRophimLikeHost = _h.includes("rophim") || _h.includes("netanime") || _h.includes("moviehdthai") || _h.includes("cobephim") || ROPHIM_MIRROR_DOMAINS.some(d => _h.includes(d));
+          if (!isRophimLikeHost && !force) return;
 
           // 1. Kiểm tra xem server đã có session cookie hợp lệ chưa (dùng header X-Cinema-Pro-Internal để bypass mock)
           if (!force && window.sessionStorage && window.sessionStorage.getItem("RO_SERVER_SESSION_READY") === "1") {
