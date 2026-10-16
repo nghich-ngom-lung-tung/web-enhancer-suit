@@ -11,8 +11,9 @@
   <strong>Bộ công cụ Tiện ích mở rộng & Userscript toàn diện số 1 Việt Nam dành cho Web Xem Phim, Anime, Thể Thao Trực Tiếp và Truyện Tranh</strong>
 </p>
 
-[![Version](https://img.shields.io/badge/Version-5.5.0_Dual--Build-8b5cf6?style=for-the-badge&logo=javascript&logoColor=white)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit)
-[![Test Suite](https://img.shields.io/badge/Tests-1217%2F1217_Passing-10b981?style=for-the-badge&logo=checkmarx&logoColor=white)](run_audit.js)
+[![CI](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit/actions/workflows/ci.yml/badge.svg)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/badge/Version-5.4.9_Dual--Build-8b5cf6?style=for-the-badge&logo=javascript&logoColor=white)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit)
+[![Test Suite](https://img.shields.io/badge/Tests-1227%2F1227_Passing-10b981?style=for-the-badge&logo=checkmarx&logoColor=white)](run_audit.js)
 [![Health Score](https://img.shields.io/badge/Health_Score-100%25_Production_Ready-047857?style=for-the-badge&logo=speedtest&logoColor=white)](run_audit.js)
 [![Platforms](https://img.shields.io/badge/Platform-Extension_(MV3)_%7C_Tampermonkey-3b82f6?style=for-the-badge&logo=googlechrome&logoColor=white)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit)
 [![Sites](https://img.shields.io/badge/Supported_Sites-57%2B_Platforms-f59e0b?style=for-the-badge&logo=safari&logoColor=white)](#-danh-s%C3%A1ch-website-h%E1%BB%97-tr%E1%BB%A3)

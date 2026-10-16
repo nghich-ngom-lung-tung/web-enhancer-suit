@@ -49,12 +49,15 @@ with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
 `;
 
 let zipSuccess = false;
-try {
-  const pyRes = spawnSync('python', ['-c', pyScript, extDir, zipPath], { stdio: 'inherit' });
-  if (pyRes.status === 0 && fs.existsSync(zipPath)) {
-    zipSuccess = true;
-  }
-} catch (_) {}
+for (const pyBin of ['python', 'python3']) {
+  try {
+    const pyRes = spawnSync(pyBin, ['-c', pyScript, extDir, zipPath], { stdio: 'inherit' });
+    if (pyRes.status === 0 && fs.existsSync(zipPath)) {
+      zipSuccess = true;
+      break;
+    }
+  } catch (_) {}
+}
 
 if (!zipSuccess) {
   // Fallback to powershell with single-quote escaping or unix zip

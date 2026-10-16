@@ -1,0 +1,41 @@
+name: CI - Build & Test Suite
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Build & Audit (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18, 20, 22]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Compile Unified Pipeline (Userscripts & Manifest V3 Extension)
+        run: node build_all.js
+
+      - name: Run Full Audit & Test Suite (1,227+ Assertions)
+        run: node run_audit.js
+
+      - name: Test Release Packaging
+        run: node package_release.js
