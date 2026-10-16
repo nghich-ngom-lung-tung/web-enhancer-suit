@@ -42,10 +42,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.vars.outputs.TAG_NAME }}
-          name: "Web Enhancer Suite ${{ steps.vars.outputs.TAG_NAME }} - Chill Guy Capybara Edition 🦫✨"
+          name: "Web Enhancer Suite ${{ steps.vars.outputs.TAG_NAME }} - Chill Guy Capybara Edition"
           body_path: release/RELEASE_NOTES_v${{ steps.vars.outputs.VERSION }}.md
           draft: false
           prerelease: false
+          make_latest: true
           files: |
             release/web-enhancer-suite-extension-v${{ steps.vars.outputs.VERSION }}.zip
             release/web-enhancer-all.user.js
