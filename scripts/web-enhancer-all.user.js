@@ -713,6 +713,15 @@
     "/users/reviews",
     "/reviews",
     "/baseapi/api/v1/histories",
+    "/histories",
+    "/watch-progress",
+    "/watchlist",
+    "watchlist",
+    "checkWatchlist",
+    "ckWatchlist",
+    "/api/set-auth-cookie",
+    "/set-auth-cookie",
+    "set-auth-cookie",
     "/baseapi/api/v1/notifications",
     "/baseapi/api/v1/notifications/home",
     "/baseapi/api/v1/notifications/unread-counts",
@@ -1041,14 +1050,59 @@
       });
     }
 
-    // 7. Watch progress / History / Histories (chặn 401 gây reload & console error)
-    if (url.includes("/watch-progress") || url.includes("/histories")) {
+    // 7. Watch progress / History / Histories (Next.js App Router expects data: [] as an iterable Array)
+    if (url.includes("/watch-progress") || url.includes("/histories") || url.includes("histories")) {
       return JSON.stringify({
         status: 200,
         success: true,
         code: 200,
-        data: { items: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 1 } },
-        result: { items: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 1 } }
+        data: [],
+        items: [],
+        result: [],
+        pagination: { page: 1, limit: 20, total: 0, totalPages: 1 }
+      });
+    }
+
+    // 7.2 Watchlist (checkWatchlist & addWatchlist - ngăn chặn 401 & TypeError: Cannot read properties of undefined (reading 'length'))
+    if (url.includes("checkWatchlist") || url.includes("ckWatchlist") || url.includes("/watchlist/checkWatchlist")) {
+      return JSON.stringify({
+        status: 200,
+        success: true,
+        code: 200,
+        data: [],
+        result: [],
+        items: []
+      });
+    }
+
+    if (url.includes("addWatchlist") || url.includes("/watchlist/addWatchlist")) {
+      return JSON.stringify({
+        status: 200,
+        success: true,
+        code: 200,
+        data: true,
+        result: true
+      });
+    }
+
+    if (url.includes("/watchlist") || url.includes("watchlist")) {
+      return JSON.stringify({
+        status: 200,
+        success: true,
+        code: 200,
+        data: [],
+        result: [],
+        items: []
+      });
+    }
+
+    // 7.3 Set auth cookie API
+    if (url.includes("/set-auth-cookie") || url.includes("set-auth-cookie")) {
+      return JSON.stringify({
+        status: 200,
+        success: true,
+        code: 200,
+        message: "OK"
       });
     }
 
@@ -1316,19 +1370,32 @@
         result: notiData
       };
     }
-    if (url && (url.includes("/histories") || url.includes("/watch-progress"))) {
+    if (url && (url.includes("/histories") || url.includes("/watch-progress") || url.includes("histories"))) {
       return {
         status: 200,
         success: true,
-        data: {
-          items: [],
-          pagination: { page: 1, limit: 20, total: 0, totalPages: 1 }
-        },
-        result: {
-          items: [],
-          pagination: { page: 1, limit: 20, total: 0, totalPages: 1 }
-        }
+        code: 200,
+        data: [],
+        items: [],
+        result: [],
+        pagination: { page: 1, limit: 20, total: 0, totalPages: 1 }
       };
+    }
+    if (url && (url.includes("checkWatchlist") || url.includes("ckWatchlist") || url.includes("/watchlist"))) {
+      if (url.includes("addWatchlist")) {
+        return { status: 200, success: true, code: 200, data: true, result: true };
+      }
+      return {
+        status: 200,
+        success: true,
+        code: 200,
+        data: (data && Array.isArray(data.data)) ? data.data : [],
+        result: (data && Array.isArray(data.result)) ? data.result : [],
+        items: []
+      };
+    }
+    if (url && (url.includes("/set-auth-cookie") || url.includes("set-auth-cookie"))) {
+      return { status: 200, success: true, code: 200, message: "OK" };
     }
     if (url && (url.includes("/tcoin") || url.includes("tcoin"))) {
       data.thungBalance = COIN_BALANCE;
@@ -1811,22 +1878,20 @@
 
       setTimeout(() => { ensureRophimServerSession(); }, 50);
 
-      // 5. Chặn 307 Redirect khi bấm "Tài Khoản": Đảm bảo có session cookie trước khi chuyển trang
+      // 5. Phục hồi giao diện nếu rơi vào trang raw RSC text/x-component (?callbackUrl=...)
       try {
-        document.addEventListener("click", async function (e) {
-          const link = e.target && e.target.closest && e.target.closest('a[href*="/user/profile"], a[href="/user/profile"], a[href^="/user/"]');
-          if (link) {
-            const isReady = window.sessionStorage && window.sessionStorage.getItem("RO_SERVER_SESSION_READY") === "1";
-            if (!isReady) {
-              e.preventDefault();
-              e.stopPropagation();
-              const targetHref = link.getAttribute("href") || "/user/profile";
-              console.log("[Cinema Pro] Securing VIP server session before opening:", targetHref);
-              await ensureRophimServerSession(true);
-              window.location.href = targetHref;
-            }
+        if (typeof window !== "undefined" && window.location && window.location.search && window.location.search.includes("callbackUrl")) {
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, "", window.location.pathname || "/");
           }
-        }, true);
+          const checkRawRsc = () => {
+            if (document.body && document.body.innerText && (document.body.innerText.startsWith('1:"$Sreact.fragment"') || document.body.innerText.includes('ClientSegmentRoot'))) {
+              window.location.replace(window.location.pathname || "/");
+            }
+          };
+          checkRawRsc();
+          document.addEventListener("DOMContentLoaded", checkRawRsc);
+        }
       } catch (e) {}
     }
 
