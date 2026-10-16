@@ -1346,6 +1346,44 @@ module.exports = `
       }
     } catch (e) {}
 
+    // Resilient Comments Fallback for Fetch (Intercept 401 / 403 / 404 / 500)
+    try {
+      const isFetchCommentSubmit = url && (typeof url === "string") && (url.includes("/comments") || url.includes("/api/v1/comments")) &&
+        !url.includes("/comments/movie/") && !url.includes("/reactions") && !url.includes("/like") &&
+        !url.includes("/get-child-comments") && !url.includes("/report");
+      if (isFetchCommentSubmit && (res.status === 401 || res.status === 403 || res.status === 404 || res.status >= 500)) {
+        let sentData = null;
+        if (init && init.body && typeof init.body === "string") {
+          try { sentData = JSON.parse(init.body); } catch(e) {}
+        }
+        const movieId = (sentData && (sentData.movieId || sentData.id)) || 0;
+        const content = (sentData && sentData.content) || "";
+        const u = getRealProvisionedUser() || getMotchillVipUser();
+        if (movieId && content) {
+          saveLocalComment(movieId, {
+            id: "cpro_" + Date.now(),
+            movieId: Number(movieId),
+            userId: u.id || 999999,
+            content: content,
+            user: u,
+            type: "comment",
+            created_at: new Date().toISOString()
+          });
+        }
+        return new Response(JSON.stringify({
+          status: true,
+          statusCode: 200,
+          code: 200,
+          message: "Bình luận phim thành công.",
+          data: { status: true }
+        }), {
+          status: 200,
+          statusText: "OK",
+          headers: { "Content-Type": "application/json; charset=utf-8" }
+        });
+      }
+    } catch(e) {}
+
     if (!isRophimTarget(url)) return res;
     try {
       const ct = res.headers && res.headers.get && res.headers.get("content-type");
@@ -1415,6 +1453,62 @@ module.exports = `
           } catch (e) {}
           return;
         }
+      }
+
+      // Resilient Comments Fallback for XHR (Intercept 401 / 403 / 404 / 500)
+      const isCommentsSubmit = url && (url.includes("/comments") || url.includes("/api/v1/comments")) &&
+        !url.includes("/comments/movie/") && !url.includes("/reactions") && !url.includes("/like") &&
+        !url.includes("/get-child-comments") && !url.includes("/report");
+
+      if (isCommentsSubmit && (xhr.status === 401 || xhr.status === 403 || xhr.status === 404 || xhr.status >= 500)) {
+        try {
+          let sentData = xhr._cpro_parsed_body;
+          if (!sentData && xhr._cpro_sent_body && typeof xhr._cpro_sent_body === "string") {
+            try { sentData = JSON.parse(xhr._cpro_sent_body); } catch(e) {}
+          }
+          const movieId = (sentData && (sentData.movieId || sentData.id)) || 0;
+          const content = (sentData && sentData.content) || "";
+          const u = getRealProvisionedUser() || getMotchillVipUser();
+          if (movieId && content) {
+            saveLocalComment(movieId, {
+              id: "cpro_" + Date.now(),
+              movieId: Number(movieId),
+              userId: u.id || 999999,
+              content: content,
+              user: u,
+              type: "comment",
+              created_at: new Date().toISOString()
+            });
+          }
+        } catch(e) {}
+
+        const okResponse = JSON.stringify({
+          status: true,
+          statusCode: 200,
+          code: 200,
+          message: "Bình luận phim thành công.",
+          data: { status: true }
+        });
+        Object.defineProperty(xhr, "readyState", { value: 4, configurable: true, writable: true });
+        Object.defineProperty(xhr, "status", { value: 200, configurable: true, writable: true });
+        Object.defineProperty(xhr, "statusText", { value: "OK", configurable: true, writable: true });
+        Object.defineProperty(xhr, "responseText", { value: okResponse, configurable: true, writable: true });
+        Object.defineProperty(xhr, "responseURL", { value: url, configurable: true, writable: true });
+        Object.defineProperty(xhr, "response", {
+          get: function () {
+            if (this.responseType === "json") return { status: true, code: 200, message: "Bình luận phim thành công.", data: { status: true } };
+            return okResponse;
+          },
+          configurable: true
+        });
+        xhr.getAllResponseHeaders = function () {
+          return "content-type: application/json; charset=utf-8";
+        };
+        xhr.getResponseHeader = function (h) {
+          if (h && h.toLowerCase() === "content-type") return "application/json; charset=utf-8";
+          return null;
+        };
+        return;
       }
       const ct = xhr.getResponseHeader && xhr.getResponseHeader("content-type");
       if (ct && ct.includes("application/json")) {

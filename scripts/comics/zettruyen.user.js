@@ -420,8 +420,12 @@
       if (cached) {
         try {
           const userObj = JSON.parse(cached);
-          if (userObj && userObj.id && userObj.access_token) {
-            return userObj;
+          if (userObj && userObj.id) {
+            window.__CINEMA_PRO_REAL_USER__ = userObj;
+            if (userObj.access_token) {
+              window.localStorage.setItem("guestAccessToken", userObj.access_token);
+              return userObj;
+            }
           }
         } catch (e) {}
       }
@@ -438,9 +442,11 @@
       const regRes = await fetchFn("/baseapi/api/v1/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-Cinema-Pro-Internal": "1" },
-        body: JSON.stringify({ name, email, password })
-      });
-      const regData = await regRes.json();
+        body: JSON.stringify({ name, email, password }),
+        credentials: "include"
+      }).catch(() => null);
+      if (!regRes || !regRes.ok) return null;
+      const regData = await regRes.json().catch(() => null);
       if (!regData || (!regData.id && regData.status !== 200)) return null;
       const realUserId = regData.id;
 
@@ -448,8 +454,9 @@
       const csrfRes = await fetchFn("/api/auth/csrf", {
         headers: { "X-Cinema-Pro-Internal": "1" },
         credentials: "include"
-      });
-      const csrfData = await csrfRes.json();
+      }).catch(() => null);
+      if (!csrfRes || !csrfRes.ok) return null;
+      const csrfData = await csrfRes.json().catch(() => null);
       const csrfToken = csrfData?.csrfToken;
       if (!csrfToken) return null;
 
@@ -471,26 +478,31 @@
         },
         body: formBody,
         credentials: "include"
-      });
+      }).catch(() => null);
 
       // 4. Retrieve real session with access_token
       const sessRes = await fetchFn("/api/auth/session", {
         headers: { "X-Cinema-Pro-Internal": "1" },
         credentials: "include"
-      });
-      const sessData = await sessRes.json();
-      const realUser = sessData?.user;
-      if (realUser && realUser.id && realUser.access_token) {
-        window.localStorage.setItem(storageKey, JSON.stringify(realUser));
-        window.localStorage.setItem("guestAccessToken", realUser.access_token);
-        return realUser;
-      } else if (realUserId) {
+      }).catch(() => null);
+      if (sessRes && sessRes.ok) {
+        const sessData = await sessRes.json().catch(() => null);
+        const realUser = sessData?.user;
+        if (realUser && realUser.id && realUser.access_token) {
+          window.__CINEMA_PRO_REAL_USER__ = realUser;
+          window.localStorage.setItem(storageKey, JSON.stringify(realUser));
+          window.localStorage.setItem("guestAccessToken", realUser.access_token);
+          return realUser;
+        }
+      }
+      if (realUserId) {
         const fallbackObj = {
           id: realUserId,
           email: email,
           name: name,
           avatar: "/images/avatars/10.jpg"
         };
+        window.__CINEMA_PRO_REAL_USER__ = fallbackObj;
         window.localStorage.setItem(storageKey, JSON.stringify(fallbackObj));
         return fallbackObj;
       }
@@ -499,9 +511,10 @@
   }
 
   if (typeof window !== "undefined") {
+    try { ensureRealRophimSession(); } catch (e) {}
     setTimeout(() => {
       try { ensureRealRophimSession(); } catch (e) {}
-    }, 150);
+    }, 200);
   }
 
   function getRophimMockJsonString(url, init) {
@@ -647,6 +660,16 @@
     // 2. NextAuth Session (Chỉ mock session payload cho client UI)
     if (url.includes("/api/auth/session") || (url.includes("/auth/session") && !url.includes("/auth/session/check"))) {
       const user = getMotchillVipUser();
+      const realUser = getRealProvisionedUser();
+      if (realUser) {
+        if (realUser.id) user.id = realUser.id;
+        if (realUser.name) user.name = realUser.name;
+        if (realUser.email) user.email = realUser.email;
+        if (realUser.access_token) {
+          user.access_token = realUser.access_token;
+          user.accessToken = realUser.access_token;
+        }
+      }
       return JSON.stringify({
         user: user,
         is_vip: true,
@@ -1208,7 +1231,7 @@
         else if (Array.isArray(data)) serverList = data;
         else if (data && data.items && Array.isArray(data.items)) serverList = data.items;
 
-        const filteredLocal = localComments.filter(lc => !serverList.some(sd => String(sd.id) === String(lc.id)));
+        const filteredLocal = localComments.filter(lc => !serverList.some(sd => String(sd.id) === String(lc.id) || (sd.content && lc.content && String(sd.content).trim() === String(lc.content).trim())));
         const merged = [...filteredLocal, ...serverList];
         if (data && typeof data === "object") {
           data.data = merged;
@@ -1452,6 +1475,44 @@
       }
     } catch (e) {}
 
+    // Resilient Comments Fallback for Fetch (Intercept 401 / 403 / 404 / 500)
+    try {
+      const isFetchCommentSubmit = url && (typeof url === "string") && (url.includes("/comments") || url.includes("/api/v1/comments")) &&
+        !url.includes("/comments/movie/") && !url.includes("/reactions") && !url.includes("/like") &&
+        !url.includes("/get-child-comments") && !url.includes("/report");
+      if (isFetchCommentSubmit && (res.status === 401 || res.status === 403 || res.status === 404 || res.status >= 500)) {
+        let sentData = null;
+        if (init && init.body && typeof init.body === "string") {
+          try { sentData = JSON.parse(init.body); } catch(e) {}
+        }
+        const movieId = (sentData && (sentData.movieId || sentData.id)) || 0;
+        const content = (sentData && sentData.content) || "";
+        const u = getRealProvisionedUser() || getMotchillVipUser();
+        if (movieId && content) {
+          saveLocalComment(movieId, {
+            id: "cpro_" + Date.now(),
+            movieId: Number(movieId),
+            userId: u.id || 999999,
+            content: content,
+            user: u,
+            type: "comment",
+            created_at: new Date().toISOString()
+          });
+        }
+        return new Response(JSON.stringify({
+          status: true,
+          statusCode: 200,
+          code: 200,
+          message: "Bình luận phim thành công.",
+          data: { status: true }
+        }), {
+          status: 200,
+          statusText: "OK",
+          headers: { "Content-Type": "application/json; charset=utf-8" }
+        });
+      }
+    } catch(e) {}
+
     if (!isRophimTarget(url)) return res;
     try {
       const ct = res.headers && res.headers.get && res.headers.get("content-type");
@@ -1521,6 +1582,62 @@
           } catch (e) {}
           return;
         }
+      }
+
+      // Resilient Comments Fallback for XHR (Intercept 401 / 403 / 404 / 500)
+      const isCommentsSubmit = url && (url.includes("/comments") || url.includes("/api/v1/comments")) &&
+        !url.includes("/comments/movie/") && !url.includes("/reactions") && !url.includes("/like") &&
+        !url.includes("/get-child-comments") && !url.includes("/report");
+
+      if (isCommentsSubmit && (xhr.status === 401 || xhr.status === 403 || xhr.status === 404 || xhr.status >= 500)) {
+        try {
+          let sentData = xhr._cpro_parsed_body;
+          if (!sentData && xhr._cpro_sent_body && typeof xhr._cpro_sent_body === "string") {
+            try { sentData = JSON.parse(xhr._cpro_sent_body); } catch(e) {}
+          }
+          const movieId = (sentData && (sentData.movieId || sentData.id)) || 0;
+          const content = (sentData && sentData.content) || "";
+          const u = getRealProvisionedUser() || getMotchillVipUser();
+          if (movieId && content) {
+            saveLocalComment(movieId, {
+              id: "cpro_" + Date.now(),
+              movieId: Number(movieId),
+              userId: u.id || 999999,
+              content: content,
+              user: u,
+              type: "comment",
+              created_at: new Date().toISOString()
+            });
+          }
+        } catch(e) {}
+
+        const okResponse = JSON.stringify({
+          status: true,
+          statusCode: 200,
+          code: 200,
+          message: "Bình luận phim thành công.",
+          data: { status: true }
+        });
+        Object.defineProperty(xhr, "readyState", { value: 4, configurable: true, writable: true });
+        Object.defineProperty(xhr, "status", { value: 200, configurable: true, writable: true });
+        Object.defineProperty(xhr, "statusText", { value: "OK", configurable: true, writable: true });
+        Object.defineProperty(xhr, "responseText", { value: okResponse, configurable: true, writable: true });
+        Object.defineProperty(xhr, "responseURL", { value: url, configurable: true, writable: true });
+        Object.defineProperty(xhr, "response", {
+          get: function () {
+            if (this.responseType === "json") return { status: true, code: 200, message: "Bình luận phim thành công.", data: { status: true } };
+            return okResponse;
+          },
+          configurable: true
+        });
+        xhr.getAllResponseHeaders = function () {
+          return "content-type: application/json; charset=utf-8";
+        };
+        xhr.getResponseHeader = function (h) {
+          if (h && h.toLowerCase() === "content-type") return "application/json; charset=utf-8";
+          return null;
+        };
+        return;
       }
       const ct = xhr.getResponseHeader && xhr.getResponseHeader("content-type");
       if (ct && ct.includes("application/json")) {
