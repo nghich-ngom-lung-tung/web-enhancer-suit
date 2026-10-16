@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.4.4
 // @description  Mở khóa VIP 2099 + Vô hạn Coin + Chặn 100% AdBlock/Player Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Skip Intro & Cinema HDR
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://cobephim.cfd/*
 // @match        *://www.cobephim.cfd/*
 // @match        *://*.cobephim.cfd/*

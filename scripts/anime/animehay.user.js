@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Diệt sạch quảng cáo AnimeHay & VuiGhe + Sniff M3U8 PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR rực rỡ
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.animehay.tv/*
 // @match        *://animehay.tv/*
 // @match        *://*.animehay.live/*

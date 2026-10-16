@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.4
 // @description  Diệt sạch banner cá cược Khô Gà TV + Tóm link M3U8/FLV mở PotPlayer/VLC + Chế độ Sân Cỏ Theater Mode siêu nét
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://khoga.live/*
 // @match        *://*.khoga.live/*
 // @match        *://khoga1.live/*

@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Chặn sạch banner quảng cáo Phim Vàng + M3U8 Stream Sniffer PotPlayer/VLC + Skip Intro 85s + Rạp phim
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.phimvang.com/*
 // @match        *://phimvang.com/*
 // @match        *://*.phimvang.tv/*

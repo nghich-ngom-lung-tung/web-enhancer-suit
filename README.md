@@ -8,7 +8,7 @@
 </p>
 
 [![Version](https://img.shields.io/badge/Version-5.4.9_Dual--Build-8b5cf6?style=for-the-badge&logo=javascript&logoColor=white)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit)
-[![Test Suite](https://img.shields.io/badge/Tests-1155%2F1155_Passing-10b981?style=for-the-badge&logo=checkmarx&logoColor=white)](file:///run_audit.js)
+[![Test Suite](https://img.shields.io/badge/Tests-1159%2F1159_Passing-10b981?style=for-the-badge&logo=checkmarx&logoColor=white)](file:///run_audit.js)
 [![Health Score](https://img.shields.io/badge/Health_Score-100%25_Production_Ready-047857?style=for-the-badge&logo=speedtest&logoColor=white)](file:///run_audit.js)
 [![Platforms](https://img.shields.io/badge/Platform-Extension_(MV3)_%7C_Tampermonkey-3b82f6?style=for-the-badge&logo=googlechrome&logoColor=white)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit)
 [![Sites](https://img.shields.io/badge/Supported_Sites-55%2B_Platforms-f59e0b?style=for-the-badge&logo=safari&logoColor=white)](#-danh-s%C3%A1ch-website-h%E1%BB%97-tr%E1%BB%A3)
@@ -299,8 +299,8 @@ npm test             # hoặc: node run_audit.js
 ```text
 ================================================================
 🎯 COMPREHENSIVE TEST AUDIT COMPLETE:
-   Total Unit & Runtime Assertions : 1099
-   Passed Assertions               : 1099
+   Total Unit & Runtime Assertions : 1159
+   Passed Assertions               : 1159
    Failed Assertions               : 0
    Overall Health Score            : 100.0%
 ================================================================
@@ -315,5 +315,5 @@ npm test             # hoặc: node run_audit.js
 - Bộ công cụ được phát triển với mục đích học tập, nghiên cứu kỹ thuật DOM Manipulation và nâng cao trải nghiệm người dùng cá nhân (UX Enhancement). Mọi nội dung phát sóng thuộc bản quyền của các đơn vị cung cấp tương ứng.
 
 <div align="center">
-  <sub>Được xây dựng với sự tỉ mỉ bởi <strong>nghich-ngom-lung-tung</strong> • 2026</sub>
+  <sub>Được xây dựng với sự tỉ mỉ bởi <a href="https://github.com/Sfrank1e"><strong>Sfrank1e</strong></a> • 2026</sub>
 </div>

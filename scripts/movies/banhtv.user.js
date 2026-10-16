@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Chặn quảng cáo Bánh TV + Sniff M3U8 PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR rực rỡ
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.banhtv.net/*
 // @match        *://banhtv.net/*
 // @match        *://*.banhtv.cc/*

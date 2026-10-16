@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.4.6
 // @description  Chặn quảng cáo Đu Phim (DuPhim) + Triệt tiêu Popunder / Khuyến mãi + Bắt link M3U8 mở PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.duphim.social/*
 // @match        *://duphim.social/*
 // @match        *://*.duphim.*/*

@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Chặn 100% quảng cáo Phim247 + Bắt link M3U8 PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.phim247.tv/*
 // @match        *://phim247.tv/*
 // @match        *://*.phim247.vip/*

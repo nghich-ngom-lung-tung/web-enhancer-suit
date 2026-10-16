@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Chặn 100% quảng cáo Mọt Phim + Tóm link M3U8 PotPlayer/VLC + Skip Intro 85s + Bộ lọc Anime OLED HDR
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.motphim.to/*
 // @match        *://motphim.to/*
 // @match        *://*.motphimtv.me/*

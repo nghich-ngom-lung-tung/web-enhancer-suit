@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Chặn quảng cáo BiluTV + Diệt Stream Guard + Bắt link M3U8 PotPlayer/VLC + Phím tắt Skip Intro & Cinema Mode
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.bilutv.live/*
 // @match        *://bilutv.live/*
 // @match        *://*.bilutva.com/*

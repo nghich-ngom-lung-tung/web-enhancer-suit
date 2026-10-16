@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Chặn sạch banner quảng cáo VietSubTV + Sniff M3U8 PotPlayer/VLC + Skip Intro 85s + Chế độ Rạp phim
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.vietsubtv.org/*
 // @match        *://vietsubtv.org/*
 // @match        *://*.vietsubtv.com/*

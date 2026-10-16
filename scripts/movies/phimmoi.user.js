@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Chặn 100% quảng cáo PhimMoi/PhimMoiChill + Khắc chế Stream Guard + Bắt link M3U8 PotPlayer/VLC + Phím tắt Skip Intro & Cinema Mode
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.phimmoiyyy.net/*
 // @match        *://phimmoiyyy.net/*
 // @match        *://*.phimmoichill.net/*

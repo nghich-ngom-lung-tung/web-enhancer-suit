@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Chặn sạch banner quảng cáo FullPhim + Sniff luồng M3U8 PotPlayer/VLC + Skip Intro 85s + Cinema Theater Mode
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.fullphim.net/*
 // @match        *://fullphim.net/*
 // @match        *://*.fullphim.tv/*

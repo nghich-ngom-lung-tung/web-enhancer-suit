@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Chặn quảng cáo AnimeTVN + Vô hiệu hóa Stream Guard + Bắt link M3U8 PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.animetvn.com/*
 // @match        *://animetvn.com/*
 // @match        *://*.animetvn.tv/*

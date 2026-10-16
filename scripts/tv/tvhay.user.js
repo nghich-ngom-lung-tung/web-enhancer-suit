@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Chặn quảng cáo TVHay Thuyết Minh + Tóm link M3U8 PotPlayer/VLC + Phím tắt Skip Intro & Anime HDR
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.tvhay.site/*
 // @match        *://tvhay.site/*
 // @match        *://*.tvhay.org/*

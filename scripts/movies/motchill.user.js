@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.4.4
 // @description  Mở khóa VIP Pro 2099 Vĩnh Viễn + Vô hạn Coins + Chặn 100% AdBlock/Stream Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Skip Intro & Anime HDR
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://phimmotchill.online/*
 // @match        *://*.phimmotchill.online/*
 // @match        *://motchill.online/*

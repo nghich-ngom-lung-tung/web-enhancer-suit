@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.4.5
 // @description  Diệt sạch 100% Ads / Popunder / Gambling Banner + Phím tắt đọc truyện A/D chuyển chap, W/S cuộn mượt, F fullscreen + Tối ưu khung hình đọc TruyenQQ
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.truyenqq*.com/*
 // @match        *://*.truyenqq*.vn/*
 // @match        *://*.truyenqq.vip/*

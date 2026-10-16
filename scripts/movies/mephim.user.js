@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Diệt sạch quảng cáo Mê Phim TV + M3U8 Stream Sniffer PotPlayer/VLC + Tua Intro 85s + Chế độ Rạp phim
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.mephimtv.com/*
 // @match        *://mephimtv.com/*
 // @match        *://*.mephim.net/*

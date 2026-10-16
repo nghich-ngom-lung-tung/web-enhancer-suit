@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.4.6
 // @description  Tối ưu hóa đọc bài GhienBlog + Chặn quảng cáo & popunder + Giao diện đọc bài siêu mượt
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.ghienphim.blog/*
 // @match        *://ghienphim.blog/*
 // @match        *://*.ghienblog.*/*

@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.4.5
 // @description  Diệt sạch 100% Ads / Popunder / Video Ads + Phím tắt đọc truyện A/D chuyển chap, W/S cuộn mượt, F fullscreen + Tối ưu khung hình đọc TopTruyen
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.toptruyenzone12.com/*
 // @match        *://toptruyenzone12.com/*
 // @match        *://*.toptruyenzone*.com/*

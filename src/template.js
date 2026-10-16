@@ -103,7 +103,7 @@ ${hubCss}
 // @namespace    http://tampermonkey.net/
 // @version      ${scriptVersion}
 // @description  ${scriptDesc}
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 ${matchHeaders}${includeHeaders}
 // @allFrames    true
 // @run-at       document-start

@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.4.9
 // @description  Bản Master: Tối ưu trải nghiệm xem phim, anime, bóng đá và truyện tranh. Chặn quảng cáo thông minh, phím tắt điều khiển, bộ lọc OLED HDR và hỗ trợ phát PotPlayer/VLC trên 50+ website tại Việt Nam.
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://rophim1.vip/*
 // @match        *://www.rophim1.vip/*
 // @match        *://rophim1.cc/*

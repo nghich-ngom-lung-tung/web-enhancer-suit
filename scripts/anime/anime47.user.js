@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Diệt sạch quảng cáo Anime47 + Sniff link M3U8 PotPlayer/VLC + Tua Intro 85s + Anime OLED HDR rực rỡ
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.anime47.net/*
 // @match        *://anime47.net/*
 // @match        *://*.anime47.com/*

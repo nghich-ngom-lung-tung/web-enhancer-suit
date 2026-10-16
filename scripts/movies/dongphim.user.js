@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Chặn quảng cáo Động Phim + Bắt link M3U8 PotPlayer/VLC + Skip Intro 85s + Tăng cường màu sắc HDR & Chế độ Rạp phim
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.dongphim.net/*
 // @match        *://dongphim.net/*
 // @match        *://*.dongphym.net/*

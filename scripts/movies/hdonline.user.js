@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Chặn 100% quảng cáo HDOnline + Bắt link M3U8 PotPlayer/VLC + Skip Intro 85s + Cinema Mode
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.hdonline.co/*
 // @match        *://hdonline.co/*
 // @match        *://*.hdonline.tv/*

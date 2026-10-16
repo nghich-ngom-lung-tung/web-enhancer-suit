@@ -66,8 +66,8 @@ scriptFiles.forEach(file => {
   report(`${file}: Metadata Header Exists`, hasHeader);
 
   // Author
-  const hasAuthor = content.includes("@author       nghich-ngom-lung-tung");
-  report(`${file}: Author is nghich-ngom-lung-tung`, hasAuthor);
+  const hasAuthor = content.includes("@author       Sfrank1e");
+  report(`${file}: Author is Sfrank1e`, hasAuthor);
 
   // Download & Update URL
   if (!file.includes("tampermonkey.user.js")) {
@@ -83,6 +83,13 @@ scriptFiles.forEach(file => {
   const hasAllFrames = content.includes("@allFrames    true");
   report(`${file}: document-start & allFrames enabled`, hasRunAt && hasAllFrames);
 });
+
+// LICENSE file verification
+const licensePath = path.join(__dirname, "LICENSE");
+const licenseExists = fs.existsSync(licensePath);
+const licenseContent = licenseExists ? fs.readFileSync(licensePath, "utf8") : "";
+const hasMit = licenseContent.includes("MIT License") && licenseContent.includes("Sfrank1e");
+report("LICENSE: File exists and contains valid MIT License for Sfrank1e", licenseExists && hasMit);
 
 // ═════════════════════════════════════════════════════════════════
 // 2. TOP WINDOW DOM & RUNTIME SIMULATION

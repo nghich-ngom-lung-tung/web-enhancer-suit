@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.4.5
 // @description  Diệt sạch 100% Ads / Popunder / Stealth Widget + Phím tắt đọc truyện A/D chuyển chap, W/S cuộn mượt, F fullscreen + Tối ưu khung hình đọc ZetTruyen
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.zettruyen3.com/*
 // @match        *://zettruyen3.com/*
 // @match        *://*.zettruyen.com/*

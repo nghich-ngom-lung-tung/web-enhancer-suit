@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.4
 // @description  Diệt sạch 100% banner nhà cái Thập Cẩm TV + Tóm luồng M3U8 bóng đá xem PotPlayer/VLC + Phóng to toàn sân cỏ
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://explorado-invest.com/*
 // @match        *://*.explorado-invest.com/*
 // @match        *://thapcam.tv/*

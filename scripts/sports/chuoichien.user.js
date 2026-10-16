@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.4.9
 // @description  Chặn 100% popup quảng cáo Chuối Chiên TV + Bắt link M3U8 bóng đá trực tiếp PotPlayer/VLC + Auto VIP Login 2099 + Theater Mode
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://chuoichientv.me/*
 // @match        *://*.chuoichientv.me/*
 // @match        *://live08.chuoichientv.me/*

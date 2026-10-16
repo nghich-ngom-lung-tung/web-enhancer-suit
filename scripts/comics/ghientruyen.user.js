@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.4.6
 // @description  Tự động mở khóa đọc VIP GhienTruyen + Chặn sạch Banner / Popunder + Phím tắt A/D chuyển chương + W/S cuộn mượt + F toàn màn hình
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.ghientruyen.net/*
 // @match        *://ghientruyen.net/*
 // @match        *://*.ghientruyen.org/*

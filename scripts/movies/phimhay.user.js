@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Diệt quảng cáo PhimHay.co + Tóm link M3U8 PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR rực rỡ
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.phimhay.co/*
 // @match        *://phimhay.co/*
 // @match        *://*.phimhay.net/*

@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Chặn quảng cáo OPhim/KKPhim + Khắc chế Stream Guard + Bắt link M3U8 PotPlayer/VLC + Phím tắt Cinema Pro
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.ophim.cc/*
 // @match        *://ophim.cc/*
 // @match        *://*.ophim.live/*

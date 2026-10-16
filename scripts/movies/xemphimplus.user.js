@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Chặn quảng cáo XemPhimPlus + Tóm link M3U8 PotPlayer/VLC + Tua Intro 85s + Chế độ Rạp phim
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.xemphimplus.net/*
 // @match        *://xemphimplus.net/*
 // @match        *://*.streamvsmov.com/*

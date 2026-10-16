@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.2
 // @description  Chặn 100% quảng cáo & Popup AnimeVietsub + Sniff luồng M3U8 PotPlayer/VLC + Bỏ qua Intro bài hát 85s + Bộ lọc Anime OLED HDR rực rỡ
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.animevietsub.moe/*
 // @match        *://animevietsub.moe/*
 // @match        *://*.animevietsub.link/*

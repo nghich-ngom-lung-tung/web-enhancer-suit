@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.4
 // @description  Chặn 100% banner cá cược Giờ Vàng TV + Bắt link M3U8 trực tiếp mở PotPlayer/VLC 60fps + Chế độ Sân Cỏ Theater Mode
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://giovang.tax/*
 // @match        *://*.giovang.tax/*
 // @match        *://giovang.tv/*

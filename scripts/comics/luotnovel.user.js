@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.4.5
 // @description  Diệt sạch 100% Ads / Popups / Mission Ads + Phím tắt đọc truyện chữ & truyện tranh A/D chuyển chap, W/S cuộn mượt, F fullscreen + Tối ưu font chữ, lề đọc LuotNovel
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.luotnovel1.site/*
 // @match        *://luotnovel1.site/*
 // @match        *://*.luotnovel*.site/*

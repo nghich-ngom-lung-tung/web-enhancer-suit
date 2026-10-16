@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.4.6
 // @description  Chặn quảng cáo Ghiền Phim + Triệt tiêu Popunder / Bom88 + Bắt link M3U8 mở PotPlayer/VLC + Skip Intro 85s + Anime OLED HDR
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://*.ghienphimz.mom/*
 // @match        *://ghienphimz.mom/*
 // @match        *://*.ghienphimz.*/*

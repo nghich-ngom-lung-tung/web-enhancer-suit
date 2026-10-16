@@ -288,6 +288,7 @@ const manifest = {
   manifest_version: 3,
   name: "Web Enhancer Suite (Cinema Pro VIP)",
   version: "5.4.9",
+  author: "Sfrank1e",
   description: "Tối ưu trải nghiệm xem phim, anime & truyện tranh: Chặn quảng cáo, lọc màu OLED HDR, phím tắt điều khiển và phát qua PotPlayer/VLC.",
   homepage_url: "https://github.com/nghich-ngom-lung-tung/web-enhancer-suit",
   icons: {

@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.4
 // @description  Chặn sạch banner cá cược 8xBet, Catfish Xôi Lạc TV + Tóm link M3U8 trực tiếp PotPlayer/VLC + Chế độ Sân Cỏ Theater Mode
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://xoilaczzz.pro/*
 // @match        *://*.xoilaczzz.pro/*
 // @match        *://xoilacz.pro/*

@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      5.4.4
 // @description  Mở khóa VIP 2099 + Chặn 100% AdBlock/Player Guard + M3U8 Sniffer + 1-Click PotPlayer/VLC + Phím tắt Skip Intro & Anime HDR
-// @author       nghich-ngom-lung-tung
+// @author       Sfrank1e
 // @match        *://netanime.net/*
 // @match        *://www.netanime.net/*
 // @match        *://netanime.cc/*
