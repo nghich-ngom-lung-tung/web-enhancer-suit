@@ -222,7 +222,16 @@
     "/v2/ads",
     "/v1/ads",
     "api.chuoichientv",
-    "api-v2.chuoichientv"
+    "api-v2.chuoichientv",
+    "/comments",
+    "/reactions",
+    "/report",
+    "moviehdthai",
+    "cobephim",
+    "rophim10",
+    "rophim",
+    "episodes/report",
+    "mark-all-as-read"
   ];
 
   function getTopTruyenVipHeaderHtml() {
@@ -315,6 +324,32 @@
     };
   }
 
+  // ─── LOCAL COMMENTS & REACTIONS ENGINE (CINEMA PRO RESILIENT SYSTEM) ───
+  function getLocalCommentsKey(movieId) {
+    return "cpro_comments_" + (movieId || "default");
+  }
+
+  function getLocalComments(movieId) {
+    try {
+      if (typeof window === "undefined" || !window.localStorage) return [];
+      const raw = window.localStorage.getItem(getLocalCommentsKey(movieId));
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveLocalComment(movieId, commentObj) {
+    try {
+      if (typeof window === "undefined" || !window.localStorage) return;
+      const list = getLocalComments(movieId);
+      list.unshift(commentObj);
+      window.localStorage.setItem(getLocalCommentsKey(movieId), JSON.stringify(list));
+    } catch (e) {}
+  }
+
   function getRophimMockJsonString(url, init) {
     if (!url || typeof url !== "string") return null;
 
@@ -384,6 +419,120 @@
         userReaction: null,
         reaction: null,
         message: "Thành công"
+      });
+    }
+
+    // 2.2 Comments Post (Bình luận & Đánh giá phim - Hoạt động ngay lập tức cho cả khách & VIP mà không bị 401 hoặc crash)
+    const isCommentsPost = (url.includes("/comments") || url.includes("/baseapi/api/v1/comments") || url.includes("/api/v1/comments")) && 
+                           !url.includes("/comments/movie/") && 
+                           !url.includes("/reactions") && 
+                           !url.includes("/like") && 
+                           !url.includes("/get-child-comments") && 
+                           !url.includes("/report") && 
+                           (Boolean(bodyStr) || (init && init.method && init.method.toUpperCase() === "POST"));
+
+    if (isCommentsPost) {
+      let payload = {};
+      try { payload = JSON.parse(bodyStr || "{}"); } catch (e) {}
+      const movieId = payload.movieId || payload.id || 0;
+      const content = payload.content || "";
+      const isRating = payload.type === "rating";
+      const newComment = {
+        id: "cpro_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+        movieId: Number(movieId),
+        userId: 999999,
+        content: content,
+        isSpoil: Boolean(payload.isSpoil),
+        pinned: false,
+        total_like: 0,
+        total_dislike: 0,
+        is_like: false,
+        is_dislike: false,
+        total_children: 0,
+        children: [],
+        rating: payload.rating || null,
+        user: {
+          id: 999999,
+          name: "VIP Cinema Pro",
+          username: "vip_cinemapro",
+          avatar: "/images/avatars/10.jpg",
+          is_premium: true,
+          roles: [{ id: 1, name: "admin" }]
+        },
+        createdAt: new Date().toISOString()
+      };
+      if (movieId && content) {
+        saveLocalComment(movieId, newComment);
+      }
+      return JSON.stringify({
+        status: true,
+        statusCode: 200,
+        data: newComment,
+        result: newComment,
+        message: isRating ? "Đánh giá phim thành công." : "Bình luận phim thành công."
+      });
+    }
+
+    // 2.3 Comments Reactions (Bảo vệ React ei() khỏi crash TypeError map/find)
+    if (url.includes("/reactions") || (url.includes("/comments/movie/") && url.includes("reactions"))) {
+      let payload = {};
+      try { payload = JSON.parse(bodyStr || "{}"); } catch (e) {}
+      const cids = Array.isArray(payload.commentIds) ? payload.commentIds : [];
+      const reactionsData = cids.map(id => ({
+        id: id,
+        is_like: false,
+        is_dislike: false
+      }));
+      return JSON.stringify({
+        status: true,
+        statusCode: 200,
+        data: reactionsData,
+        result: reactionsData,
+        reactions: reactionsData,
+        message: "Thành công"
+      });
+    }
+
+    // 2.4 Comments Like / Dislike
+    if (url.includes("/comments/like")) {
+      return JSON.stringify({
+        status: true,
+        statusCode: 200,
+        data: { status: true },
+        result: { status: true },
+        message: "Thành công"
+      });
+    }
+
+    // 2.5 Comments Child Replies
+    if (url.includes("/comments/get-child-comments")) {
+      return JSON.stringify({
+        status: true,
+        statusCode: 200,
+        data: [],
+        result: [],
+        items: []
+      });
+    }
+
+    // 2.6 Comments & Episodes Report
+    if (url.includes("/comments/report") || url.includes("/episodes/report")) {
+      return JSON.stringify({
+        status: true,
+        statusCode: 200,
+        data: { status: true },
+        message: "Báo cáo thành công."
+      });
+    }
+
+    // 2.7 Mark all notifications as read
+    if (url.includes("mark-all-as-read")) {
+      return JSON.stringify({
+        status: 200,
+        statusCode: 200,
+        success: true,
+        data: { success: true },
+        message: "OK"
       });
     }
 
@@ -775,6 +924,27 @@
         if (Array.isArray(data.items)) data.items = [];
         if (Array.isArray(data.banners)) data.banners = [];
         if (Array.isArray(data.result)) data.result = [];
+      }
+      return data;
+    }
+    if (url && url.includes("/comments/movie/") && !url.includes("/reactions")) {
+      const mMatch = url.match(new RegExp("/comments/movie/([0-9]+)"));
+      const movieId = mMatch ? mMatch[1] : 0;
+      const localComments = getLocalComments(movieId);
+      if (localComments.length > 0) {
+        let serverList = [];
+        if (data && Array.isArray(data.data)) serverList = data.data;
+        else if (Array.isArray(data)) serverList = data;
+        else if (data && data.items && Array.isArray(data.items)) serverList = data.items;
+
+        const filteredLocal = localComments.filter(lc => !serverList.some(sd => String(sd.id) === String(lc.id)));
+        const merged = [...filteredLocal, ...serverList];
+        if (data && typeof data === "object") {
+          data.data = merged;
+          if (data.meta) {
+            data.meta.total = (data.meta.total || 0) + filteredLocal.length;
+          }
+        }
       }
       return data;
     }
