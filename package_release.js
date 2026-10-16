@@ -82,49 +82,158 @@ console.log(`  ✓ Copied master userscript -> ${masterScriptDestGeneric}`);
 
 // 5. Generate Release Notes template
 const releaseNotesPath = path.join(releaseDir, `RELEASE_NOTES_v${version}.md`);
-const releaseNotes = `# Web Enhancer Suite v${version} - Chill Guy Capybara Edition 🦫✨
+const releaseNotes = `# <img src="https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/extension/icons/icon48.png" width="30" height="30" align="center" /> Web Enhancer Suite v${version} — Chill Guy Capybara Edition
 
-## 🌟 Điểm nổi bật phiên bản v${version}
+### ✦ Điểm nổi bật phiên bản v${version}
 
-### 🦫 Biểu tượng Mascot Chill Guy Capybara mới
-- Thiết kế linh vật **Chill Guy Capybara** siêu thư thái kết hợp kính 3D anaglyph và vương miện VIP hoàng gia.
-- Đóng gói đầy đủ các kích thước chuẩn Chrome MV3: \`16x16\`, \`48x48\`, \`128x128\` với bo góc squircle macOS trong suốt sắc nét.
+> [!TIP]
+> **Biểu tượng Mascot Chill Guy Capybara độc quyền**
+> • Linh vật **Chill Guy Capybara** 3D thư thái kết hợp kính 3D anaglyph và vương miện VIP hoàng gia.
+> • Xuất bản đầy đủ các kích thước chuẩn Chrome MV3: \`16x16\`, \`48x48\`, \`128x128\` với bo góc squircle macOS trong suốt sắc nét.
 
-### 🎬 Mở rộng & Tối ưu hóa 57+ nền tảng Phim, Anime & Thể Thao
-- **ChoPhim VIP & Social:**
-  - Hỗ trợ lưu trữ & đồng bộ Emoji tương tác, khung Avatar VIP và huy hiệu Premium.
-  - Sửa lỗi tương thích bình luận/chat thời gian thực trên giao diện React.
-  - Tự động bỏ qua lỗi DOM hydration \`removeChild\` collision.
-- **RoPhim & Hệ thống Clones:**
-  - Hỗ trợ mở rộng domain mới: \`rophim10.work\`, \`moviehdthai.com\`, \`cobephim.cfd\`.
-  - Mở khóa luồng video nhúng qua \`clubc.org\` và \`darkbytes.xyz\`.
-- **Film4k & NetAnime:**
-  - Tự động vượt qua Landing Gate & đóng hội thoại cộng đồng.
-  - Mở khóa VIP vĩnh viễn 2099 & túi tiền xu tối đa 999,999,999 Coin.
-- **Trực tiếp bóng đá (Chuối Chiên TV, Xôi Lạc):**
-  - Chặn triệt để popup quảng cáo và banner cá cược gây lag luồng phát.
+> [!NOTE]
+> **Cải tiến cốt lõi & Khắc phục lỗi gần đây:**
+> • **ChoPhim VIP & Social:** Hỗ trợ lưu trữ & đồng bộ Emoji tương tác, khung Avatar VIP và huy hiệu Premium; Khắc phục triệt để lỗi gửi bình luận/chat thời gian thực trên React; Tự động xử lý lỗi DOM hydration collision (\`removeChild\`).
+> • **RoPhim & Hệ thống Clones:** Bổ sung hỗ trợ domain mới \`rophim10.work\`, \`moviehdthai.com\`, \`cobephim.cfd\`; Mở khóa luồng video nhúng qua \`clubc.org\` và \`darkbytes.xyz\`.
+> • **Film4k & NetAnime:** Tự động vượt qua Landing Gate & đóng hội thoại cộng đồng; Mở khóa VIP vĩnh viễn 2099 & túi tiền xu tối đa 999,999,999 Coin.
+> • **Trực tiếp bóng đá (Chuối Chiên TV, Xôi Lạc):** Diệt sạch 100% popup quảng cáo và banner cá cược gây lag luồng phát.
 
 ---
 
-## 📦 File tải về trong bản phát hành (Assets)
+### ◆ Chi tiết 57+ Nền tảng được tối ưu hóa
 
-| File | Mô tả | Dành cho |
+<details open>
+<summary><b>▸ 1. Phim & Điện Ảnh (32 Website) — Bấm để thu gọn / mở rộng</b></summary>
+<br/>
+
+| STT | Website | Tên miền hỗ trợ tiêu biểu | Tính năng mở khóa |
+|:---:|---|---|---|
+| 1 | **ChoPhim** | \`chophim.net\`, \`chophim.com\` | Mở khóa VIP Family, Khung Avatar VIP, Đồng bộ Emoji chat, Sửa lỗi bình luận React |
+| 2 | **RoPhim & Clones** | \`rophim.me\`, \`rophim10.work\`, \`rophim.co\` | VIP 2099, Vô hạn Coin, Bắt luồng M3U8 gốc, Bypass TVC Pre-roll |
+| 3 | **MovieHDThai** | \`moviehdthai.com\`, \`clubc.org\` | VIP 2099, Mở khóa máy chủ nhúng ClubC, Chặn popup quảng cáo |
+| 4 | **CoBePhim** | \`cobephim.cfd\`, \`darkbytes.xyz\` | VIP 2099, Mở khóa máy chủ nhúng Darkbytes, Tăng tốc phát video |
+| 5 | **Film4k** | \`film4k.net\`, \`workers.dev\` | Auto-bypass Landing Gate, VIP Vĩnh viễn 2099, Tắt hội thoại ép đăng nhập |
+| 6 | **MotChill** | \`motchill.in\`, \`motchill.net\`, \`motchill.tv\` | VIP Admin, 999,999,999 Coin, Trích xuất luồng M3U8 phát PotPlayer |
+| 7 | **Nắng Cực TV** | \`nangcuc.tv\`, \`nangcuc.net\` | Chặn click ngầm mở tab mới, Sniffer direct stream |
+| 8 | **SubNhanh** | \`subnhanh.net\`, \`subnhanh.tv\` | Mở khóa Server VIP tốc độ cao, Xóa sạch banner nhà cái |
+| 9 | **PhimMới / PhimMoiChill** | \`phimmoi.net\`, \`phimmoichill.net\` | Khắc phục chuyển hướng quảng cáo, Tự động bắt luồng video |
+| 10 | **Động Phim** | \`dongphim.net\`, \`dongphim.tv\` | Tối ưu buffer luồng phát, Bật bộ lọc màu Anime OLED HDR |
+| 11 | **BiluTV** | \`bilutv.net\`, \`bilutv.org\` | Bypass bẫy Adblock trap, Mở khóa server VIP dự phòng |
+| 12 | **Phim1080** | \`phim1080.net\`, \`phim1080.tv\` | Phát direct stream 1080p, Khởi chạy 1-click qua PotPlayer/VLC |
+| 13 | **XemPhim** | \`xemphim.fun\`, \`xemphim.pm\` | Mở khóa Server VIP, Bỏ qua giới hạn tài khoản thường |
+| 14 | **BiPhim / PhimChill** | \`biphim.net\`, \`phimchill.net\` | Chặn triệt để banner cá cược che video, Tăng tốc tải tập |
+| 15 | **Mọt Phim** | \`motphim.tv\`, \`motphim.net\` | Auto-skip Intro (+85s), Xóa bỏ hoàn toàn TVC đầu video |
+| 16 | **Mê Phim** | \`mephim.net\`, \`mephim.tv\` | Chặn click-hijack mở tab mới, Bảng điều khiển phím tắt OSD |
+| 17 | **Ghiền Phim** | \`ghienphim.net\`, \`ghienphim.org\` | Bộ lọc màu OLED HDR, Phím tắt chuyển tập nhanh (Shift+N) |
+| 18 | **FullPhim** | \`fullphim.net\`, \`fullphim.tv\` | Tự động lựa chọn độ phân giải cao nhất khi bắt đầu |
+| 19 | **PhimHay** | \`phimhay.net\`, \`phimhay.tv\` | Loại bỏ quảng cáo cược, Tối ưu giao diện xem rạp phim |
+| 20 | **Phim247** | \`phim247.net\`, \`phim247.com\` | Mở khóa Server VIP, Bắt luồng M3U8 không dính quảng cáo |
+| 21 | **PhimHD** | \`phimhd.net\`, \`phimhd.tv\` | Tối ưu hóa buffer luồng mượt mà, Chặn popup bẫy click |
+| 22 | **PhimBấtHủ** | \`phimbathu.net\`, \`phimbathu.com\` | Vượt cơ chế Stream Guard, Chặn anti-adblock traps |
+| 23 | **PhimVàng** | \`phimvang.net\`, \`phimvang.org\` | Trích xuất luồng xem qua PotPlayer/VLC, Tải file playlist .m3u |
+| 24 | **BánhTV** | \`banhtv.net\`, \`banhtv.com\` | Mở khóa chất lượng phát Full HD, Xóa TVC gián đoạn |
+| 25 | **HDOnline** | \`hdonline.net\`, \`hdonline.vn\` | Vô hiệu hóa bẫy phát hiện Adblock, Trả lại giao diện sạch |
+| 26 | **ChillHay** | \`chillhay.net\`, \`chillhay.tv\` | Tích hợp Trình phát VIP Cinema Pro với OSD Toast Glassmorphism |
+| 27 | **XemPhimPlus** | \`xemphimplus.net\` | Tự động bắt luồng M3U8 gốc, Hỗ trợ phím tắt tua mượt |
+| 28 | **TopSub** | \`topsub.net\`, \`topsub.org\` | Bypass TVC pre-roll, Chặn banner cược che nút bấm |
+| 29 | **SSPhim** | \`ssphim.net\`, \`ssphim.tv\` | Tối ưu hóa giao diện danh sách tập, Bỏ qua quảng cáo lồng |
+| 30 | **DuPhim** | \`duphim.net\`, \`duphim.tv\` | Xóa popup cảnh báo giả và quảng cáo ép cài ứng dụng |
+| 31 | **CoiPhim / XemPhimViet** | \`coiphim.net\`, \`xemphimviet.net\` | Chặn click mở tab ngầm, Trích xuất luồng stream trực tiếp |
+| 32 | **GhienBlog** | \`ghienblog.net\`, \`ghienblog.org\` | Dọn sạch giao diện đọc & xem phim, Xóa banner spam |
+
+</details>
+
+<details open>
+<summary><b>▸ 2. Anime & Hoạt Hình (10 Website) — Bấm để thu gọn / mở rộng</b></summary>
+<br/>
+
+| STT | Website | Tên miền hỗ trợ tiêu biểu | Tính năng mở khóa |
+|:---:|---|---|---|
+| 33 | **NetAnime** | \`netanime.net\`, \`netanime.cc\` | Mở khóa VIP vĩnh viễn 2099, Cấp tối đa 999,999,999 Coin xem full tập |
+| 34 | **AnimeVietSub** | \`animevietsub.tv\`, \`animevietsub.cc\` | Chặn TVC đầu video, Tự động chuyển tập, Bắt luồng phát M3U8 |
+| 35 | **Hoạt Hình 3D** | \`hoathinh3d.vip\`, \`hoathinh3d.tv\`, \`hh3d.tv\` | Direct stream 4K/FHD, Bỏ qua quảng cáo cược, Tua mượt intro |
+| 36 | **AnimeHay** | \`animehay.tv\`, \`animehay.live\`, \`animehay.site\` | Mở khóa Server VIP tốc độ cao, Kích hoạt Anime OLED HDR |
+| 37 | **VuiGhe** | \`vuighe.net\`, \`vuighe3.com\`, \`vuighe.com\` | Chặn quảng cáo giữa tập, Tăng tốc buffer video |
+| 38 | **Anime47** | \`anime47.net\`, \`anime47.com\`, \`anime47.tv\` | Xóa banner che khung phát, Tối ưu phím tắt điều khiển |
+| 39 | **DongHuaTV** | \`donghuatv.com\`, \`donghua.tv\` | Bộ lọc màu hoạt hình rực rỡ, Direct M3U8 không quảng cáo |
+| 40 | **AnimeTVN** | \`animetvn.com\`, \`animetvn.tv\`, \`animetvn.net\` | Bỏ qua chuyển hướng ép click, Tự động phóng to toàn màn hình |
+| 41 | **Hoạt Hình KungFu** | \`hhkungfu.tv\`, \`hhkungfu.net\` | Trích xuất luồng phim hoạt hình chất lượng cao nhất |
+| 42 | **Hoạt Hình Panda** | \`hhpanda.com\`, \`hhpanda.tv\` | Tối ưu hóa điều khiển phím tắt, Tắt hoàn toàn banner quảng cáo |
+
+</details>
+
+<details open>
+<summary><b>▸ 3. Truyền Hình & TV Series (2 Website) — Bấm để thu gọn / mở rộng</b></summary>
+<br/>
+
+| STT | Website | Tên miền hỗ trợ tiêu biểu | Tính năng mở khóa |
+|:---:|---|---|---|
+| 43 | **TVHay Thuyết Minh** | \`tvhay.site\`, \`tvhay.org\`, \`tvhay.co\` | Mở khóa luồng phim bộ thuyết minh, Chặn popup bẫy click |
+| 44 | **VietSubTV** | \`vietsubtv.org\`, \`vietsubtv.com\` | Tối ưu hóa xem trọn bộ phim truyền hình, Bắt luồng phát nhanh |
+
+</details>
+
+<details open>
+<summary><b>▸ 4. Thể Thao & Trực Tiếp Bóng Đá (5 Website) — Bấm để thu gọn / mở rộng</b></summary>
+<br/>
+
+| STT | Website | Tên miền hỗ trợ tiêu biểu | Tính năng mở khóa |
+|:---:|---|---|---|
+| 45 | **Chuối Chiên TV** | \`chuoichientv.me\`, \`chuoichientv.link\` | Diệt 100% banner cược che khung phát, Mở khóa luồng Full HD 60fps |
+| 46 | **Xôi Lạc TV (XoilacZ)** | \`xoilaczzz.pro\`, \`xoilacz.pro\`, \`xoilac.tv\` | Chặn popup nhảy tab mới, Trích xuất luồng M3U8 thể thao trực tiếp |
+| 47 | **Giờ Vàng TV** | \`giovang.tax\`, \`giovang.tv\`, \`giovang.live\` | Tối ưu hóa đường truyền ổn định không giật lag, Xóa TVC đầu trận |
+| 48 | **Khô Gà TV (KhogaLive)** | \`khoga.live\`, \`khoga.tv\`, \`khoga.net\` | Chặn triệt để banner nhà cái bóng đá, Tối ưu xem mượt |
+| 49 | **Thập Cẩm TV** | \`thapcam.tv\`, \`thapcam.net\`, \`thapcam.link\` | Xem thể thao sạch, Không chuyển hướng link rác |
+
+</details>
+
+<details open>
+<summary><b>▸ 5. Truyện Tranh, Manga & Webtoon (7 Website) — Bấm để thu gọn / mở rộng</b></summary>
+<br/>
+
+| STT | Website | Tên miền hỗ trợ tiêu biểu | Tính năng mở khóa |
+|:---:|---|---|---|
+| 50 | **ZetTruyen** | \`zettruyen3.com\`, \`zettruyen.net\` | Mở khóa tài khoản VIP Reader Pro, Mở khóa toàn bộ chương VIP |
+| 51 | **TopTruyen** | \`toptruyenzone12.com\`, \`toptruyen.net\` | VIP Reader Pro, Tự động mở menu VIP, Đọc mượt không quảng cáo |
+| 52 | **NetTruyen** | \`nettruyen.com\`, \`nettruyen.org\` | Chặn popup cờ bạc, Phím tắt A/D chuyển nhanh chương truyện |
+| 53 | **TruyenQQ** | \`truyenqq.com\`, \`truyenqq.vip\` | Chặn redirect, Cuộn trang mượt mà bằng phím W/S |
+| 54 | **TruyenVN** | \`truyenvn.co\`, \`truyenvn.vip\` | Xóa bỏ watermark quảng cáo che khung hình truyện tranh |
+| 55 | **LuotNovel** | \`luotnovel1.site\`, \`luotnovel.com\` | Kích hoạt Chế độ đọc sạch (Clean Reading Suite), Loại bỏ rác |
+| 56 | **Ghiền Truyện** | \`ghientruyen.net\`, \`ghientruyen.org\` | VIP Reader, Tăng tốc tải ảnh chương truyện không gián đoạn |
+
+</details>
+
+<details open>
+<summary><b>▸ 6. Embeds & Máy Chủ Phát Luồng (1 Nền Tảng) — Bấm để thu gọn / mở rộng</b></summary>
+<br/>
+
+| STT | Website | Tên miền hỗ trợ tiêu biểu | Tính năng mở khóa |
+|:---:|---|---|---|
+| 57 | **OPhim / KKPhim** | \`ophim.cc\`, \`ophim.live\`, \`kkphim.com\` | Trích xuất luồng Stream M3U8 trực tiếp, Bypass bảo vệ Referer |
+
+</details>
+
+---
+
+### ◆ Tệp tải về trong bản phát hành (Assets)
+
+| Tệp tin | Định dạng | Hướng dẫn sử dụng |
 |---|---|---|
-| 🧩 **\`${zipName}\`** | Tiện ích mở rộng Chrome đóng gói sẵn (Manifest V3) | Cài đặt trực tiếp trên Chrome, Edge, Brave, Cốc Cốc |
-| 📜 **\`web-enhancer-all.user.js\`** | Userscript tổng hợp 57+ website trong 1 script duy nhất | Tampermonkey, Violentmonkey |
+| **\`${zipName}\`** | Tiện ích mở rộng Chrome (Manifest V3) | Tải về, giải nén và nạp qua \`chrome://extensions\` (Chế độ Nhà phát triển) |
+| **\`web-enhancer-all.user.js\`** | Master Userscript (57+ Website) | Cài đặt 1-click qua Tampermonkey hoặc Violentmonkey |
 
 ---
 
-## 🚀 Hướng dẫn cài đặt
+### ◆ Hướng dẫn cài đặt
 
-### Cách 1: Cài đặt Chrome Extension (Khuyên dùng)
+#### Cách 1: Cài đặt Chrome Extension (Khuyên dùng)
 1. Tải file **\`${zipName}\`** bên dưới về máy và giải nén thành một thư mục.
-2. Mở trình duyệt Chrome/Edge/Brave và truy cập: \`chrome://extensions\`
+2. Mở trình duyệt Chrome / Edge / Brave / Cốc Cốc và truy cập: \`chrome://extensions\`
 3. Bật công tắc **Developer mode** (Chế độ dành cho nhà phát triển) ở góc trên bên phải.
 4. Bấm nút **Load unpacked** (Tải tiện ích đã giải nén) và chọn thư mục vừa giải nén.
 5. Ghim tiện ích lên thanh công cụ để trải nghiệm biểu tượng Capybara mới!
 
-### Cách 2: Cài đặt Userscript qua Tampermonkey
+#### Cách 2: Cài đặt Userscript qua Tampermonkey
 1. Đảm bảo trình duyệt đã cài tiện ích **Tampermonkey** hoặc **Violentmonkey**.
 2. Nhấp vào file **\`web-enhancer-all.user.js\`** bên dưới và bấm **Install**.
 `;
