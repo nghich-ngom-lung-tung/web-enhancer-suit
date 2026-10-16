@@ -1,0 +1,49 @@
+name: Release Web Enhancer Suite
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Extract Version
+        id: vars
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          TAG_NAME="${GITHUB_REF_NAME}"
+          if [ -z "$TAG_NAME" ] || [ "$TAG_NAME" = "main" ]; then
+            TAG_NAME="v$VERSION"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_OUTPUT
+
+      - name: Build and Package Extension & Userscripts
+        run: |
+          node package_release.js
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.TAG_NAME }}
+          name: "Web Enhancer Suite ${{ steps.vars.outputs.TAG_NAME }} - Chill Guy Capybara Edition 🦫✨"
+          body_path: release/RELEASE_NOTES_v${{ steps.vars.outputs.VERSION }}.md
+          draft: false
+          prerelease: false
+          files: |
+            release/web-enhancer-suite-extension-v${{ steps.vars.outputs.VERSION }}.zip
+            release/web-enhancer-all.user.js

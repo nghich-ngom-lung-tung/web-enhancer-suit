@@ -4,3 +4,5 @@ scratch/
 _metadata/
 .DS_Store
 Thumbs.db
+release/
+dist/

@@ -8,7 +8,8 @@
     "build:scripts": "node build_all_scripts.js",
     "build:extension": "node build_extension.js",
     "test": "node run_audit.js",
-    "audit": "node run_audit.js"
+    "audit": "node run_audit.js",
+    "package": "node package_release.js"
   },
   "keywords": [
     "userscript",
