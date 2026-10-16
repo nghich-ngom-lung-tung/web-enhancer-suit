@@ -57,5 +57,10 @@ module.exports = [
   "*://devwithai.net/*",
   "*://*.streamxx.net/*",
   "*://streamxx.net/*",
-  "*://*.streamxx.*/*"
+  "*://*.streamxx.*/*",
+  "*://*.darkbytes.xyz/*",
+  "*://darkbytes.xyz/*",
+  "*://*.clubc.org/*",
+  "*://clubc.org/*",
+  "*://api.clubc.org/*"
 ];

@@ -887,7 +887,9 @@
       u.includes("acscdn.com") ||
       u.includes("yougetwhatyoupayfor.net") ||
       u.includes("chaseherbalpasty.com") ||
-      u.includes("streamxx.net") ||
+      u.includes("streamxx.net/storage/embed_ads") ||
+      u.includes("streamxx.net/ads") ||
+      u.includes("streamxx.net/api/t/") ||
       u.includes("embed_ads") ||
       u.includes("pause_ads") ||
       u.includes("bom88") ||

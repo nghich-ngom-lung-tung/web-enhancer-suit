@@ -241,41 +241,24 @@
       });
     }
 
-    // 2.1 Darkbytes & RoPhim Comments & Reactions Mock (tránh lỗi 401 & crash undefined.substring trên cobephim / moviehdthai / rophim)
-    if (url.includes("/comments/movie/") && url.includes("/reactions")) {
+    // 2.1 Darkbytes & Clubc Comments & Reactions Mock (chỉ áp dụng cho iframe domain player không có comments backend)
+    const isEmbedOnlyHost = typeof location !== "undefined" && location.hostname && (location.hostname.includes("darkbytes") || location.hostname.includes("clubc"));
+    if (isEmbedOnlyHost && (url.includes("/comments") || url.includes("/reactions"))) {
       return JSON.stringify({
         status: true,
         statusCode: 200,
         data: [],
+        items: [],
         result: [],
+        meta: {
+          total: 0,
+          page: 1,
+          limit: 20,
+          totalPages: 0
+        },
         reactions: [],
         userReaction: null,
         reaction: null,
-        message: "Thành công"
-      });
-    }
-    if (url.includes("/api/v1/comments") || (url.includes("/comments") && !url.includes("/comments/top") && !url.includes("/comments/movie/"))) {
-      return JSON.stringify({
-        status: true,
-        statusCode: 200,
-        data: {
-          id: 999999,
-          user_id: 999999,
-          content: "",
-          user: {
-            id: 999999,
-            name: "VIP Cinema Pro",
-            username: "vip_cinemapro",
-            avatar: "/images/avatars/10.jpg"
-          },
-          reactions: [],
-          createdAt: new Date().toISOString()
-        },
-        result: {
-          status: true,
-          reactions: []
-        },
-        reactions: [],
         message: "Thành công"
       });
     }

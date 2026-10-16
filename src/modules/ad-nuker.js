@@ -40,27 +40,46 @@ module.exports = `
     };
   } catch (e) {}
 
-  // ─── EMBED PLAYER AD DEFUSER (__V_DATA__ for devwithai, streamxx, rophim) ───
+  // ─── EMBED PLAYER AD DEFUSER (__V_DATA__ & __ADS_CFG for devwithai, streamxx, rophim) ───
   try {
-    let _vdata = window.__V_DATA__;
     function sanitizeVData(val) {
-      if (val && typeof val === "object") {
-        if (val.ads && typeof val.ads === "object") {
-          val.ads.click_redirect = [];
-          val.ads.tvc_mp4 = [];
-          val.ads.overlay_banner = [];
-          val.ads.watermark = [];
-          val.ads.pause_ads = [];
-          val.ads.player_poster = [];
-          val.ads.brand_corner = [];
-          val.ads.textlink = [];
+      if (typeof val === "string") {
+        try {
+          let s = val.replace(/-/g, "+").replace(/_/g, "/");
+          while (s.length % 4) s += "=";
+          const parsed = JSON.parse(atob(s));
+          if (parsed && typeof parsed === "object") {
+            parsed.ads = {
+              click_redirect: [],
+              tvc_mp4: [],
+              overlay_banner: [],
+              watermark: [],
+              pause_ads: [],
+              player_poster: [],
+              brand_corner: [],
+              textlink: []
+            };
+            return btoa(JSON.stringify(parsed));
+          }
+        } catch (e) {
+          return val;
         }
+      } else if (val && typeof val === "object" && val.ads) {
+        val.ads = {
+          click_redirect: [],
+          tvc_mp4: [],
+          overlay_banner: [],
+          watermark: [],
+          pause_ads: [],
+          player_poster: [],
+          brand_corner: [],
+          textlink: []
+        };
       }
       return val;
     }
-    if (_vdata) {
-      sanitizeVData(_vdata);
-    }
+
+    let _vdata = sanitizeVData(window.__V_DATA__);
     Object.defineProperty(window, "__V_DATA__", {
       configurable: true,
       enumerable: true,
@@ -70,6 +89,25 @@ module.exports = `
       set: function (newVal) {
         _vdata = sanitizeVData(newVal);
       }
+    });
+
+    let _adsCfg = {
+      click_redirect: [],
+      tvc_mp4: [],
+      overlay_banner: [],
+      watermark: [],
+      pause_ads: [],
+      player_poster: [],
+      brand_corner: [],
+      textlink: []
+    };
+    Object.defineProperty(window, "__ADS_CFG", {
+      configurable: true,
+      enumerable: true,
+      get: function () {
+        return _adsCfg;
+      },
+      set: function () {}
     });
   } catch (e) {}
 
@@ -244,7 +282,9 @@ module.exports = `
       u.includes("net88") ||
       u.includes("c5735ef8") ||
       u.includes("/media/uploads/") && u.includes(".gif") ||
-      u.includes("streamxx.net") ||
+      u.includes("streamxx.net/storage/embed_ads") ||
+      u.includes("streamxx.net/ads") ||
+      u.includes("streamxx.net/api/t/") ||
       u.includes("embed_ads") ||
       u.includes("pause_ads") ||
       u.includes("/ux-toplist/") ||
