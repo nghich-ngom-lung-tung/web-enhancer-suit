@@ -872,18 +872,15 @@
   function safeIsAdApi(url) {
     if (!url || typeof url !== "string") return false;
     const u = url.toLowerCase();
-    if (u.includes("_rsc") || u.includes(".rsc") || u.includes("_next/") || u.includes(".js")) return false;
-    try {
-      if (typeof isAdApi === "function") return isAdApi(url);
-      if (typeof window !== "undefined" && typeof window.isAdApi === "function") return window.isAdApi(url);
-    } catch (e) {}
-    if (u.includes("tvc_") || u.includes("/assets/tvc/") || u.includes("tvc-pre-roll") || u.includes("tvc_net88") || u.includes("tvc_gem88")) return true;
     if (u.includes(".m3u8") || u.includes(".mp4") || u.includes(".ts") || u.includes(".m4s")) return false;
-    return (
-      u.includes("/ads") ||
-      u.includes("/banners") ||
-      u.includes("/banner/") ||
-      u.includes("/api/widget/data") ||
+
+    // Chặn triệt để các mạng quảng cáo và tracker rác (tránh ERR_BLOCKED_BY_CLIENT)
+    if (
+      u.includes("sharethis.com") ||
+      u.includes("driverhugoverblown.com") ||
+      u.includes("vhyohxarqz.in") ||
+      u.includes("mayhapmonisms.com") ||
+      u.includes("cloudflareinsights.com") ||
       u.includes("acscdn.com") ||
       u.includes("yougetwhatyoupayfor.net") ||
       u.includes("chaseherbalpasty.com") ||
@@ -894,7 +891,26 @@
       u.includes("pause_ads") ||
       u.includes("bom88") ||
       u.includes("tin888") ||
-      u.includes("net88")
+      u.includes("net88") ||
+      u.includes("gem88") ||
+      u.includes("tvc_") ||
+      u.includes("/assets/tvc/") ||
+      u.includes("tvc-pre-roll")
+    ) {
+      return true;
+    }
+
+    if (u.includes("_rsc") || u.includes(".rsc") || u.includes("_next/") || u.includes(".js")) return false;
+    try {
+      if (typeof isAdApi === "function") return isAdApi(url);
+      if (typeof window !== "undefined" && typeof window.isAdApi === "function") return window.isAdApi(url);
+    } catch (e) {}
+
+    return (
+      u.includes("/ads") ||
+      u.includes("/banners") ||
+      u.includes("/banner/") ||
+      u.includes("/api/widget/data")
     );
   }
 

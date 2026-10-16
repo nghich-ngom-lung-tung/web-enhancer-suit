@@ -1010,18 +1010,15 @@
   function safeIsAdApi(url) {
     if (!url || typeof url !== "string") return false;
     const u = url.toLowerCase();
-    if (u.includes("_rsc") || u.includes(".rsc") || u.includes("_next/") || u.includes(".js")) return false;
-    try {
-      if (typeof isAdApi === "function") return isAdApi(url);
-      if (typeof window !== "undefined" && typeof window.isAdApi === "function") return window.isAdApi(url);
-    } catch (e) {}
-    if (u.includes("tvc_") || u.includes("/assets/tvc/") || u.includes("tvc-pre-roll") || u.includes("tvc_net88") || u.includes("tvc_gem88")) return true;
     if (u.includes(".m3u8") || u.includes(".mp4") || u.includes(".ts") || u.includes(".m4s")) return false;
-    return (
-      u.includes("/ads") ||
-      u.includes("/banners") ||
-      u.includes("/banner/") ||
-      u.includes("/api/widget/data") ||
+
+    // Chặn triệt để các mạng quảng cáo và tracker rác (tránh ERR_BLOCKED_BY_CLIENT)
+    if (
+      u.includes("sharethis.com") ||
+      u.includes("driverhugoverblown.com") ||
+      u.includes("vhyohxarqz.in") ||
+      u.includes("mayhapmonisms.com") ||
+      u.includes("cloudflareinsights.com") ||
       u.includes("acscdn.com") ||
       u.includes("yougetwhatyoupayfor.net") ||
       u.includes("chaseherbalpasty.com") ||
@@ -1032,7 +1029,26 @@
       u.includes("pause_ads") ||
       u.includes("bom88") ||
       u.includes("tin888") ||
-      u.includes("net88")
+      u.includes("net88") ||
+      u.includes("gem88") ||
+      u.includes("tvc_") ||
+      u.includes("/assets/tvc/") ||
+      u.includes("tvc-pre-roll")
+    ) {
+      return true;
+    }
+
+    if (u.includes("_rsc") || u.includes(".rsc") || u.includes("_next/") || u.includes(".js")) return false;
+    try {
+      if (typeof isAdApi === "function") return isAdApi(url);
+      if (typeof window !== "undefined" && typeof window.isAdApi === "function") return window.isAdApi(url);
+    } catch (e) {}
+
+    return (
+      u.includes("/ads") ||
+      u.includes("/banners") ||
+      u.includes("/banner/") ||
+      u.includes("/api/widget/data")
     );
   }
 
@@ -1338,6 +1354,74 @@
           return;
         }
         return origSetAttr.apply(this, arguments);
+      };
+    }
+
+    if (typeof HTMLScriptElement !== "undefined") {
+      const origScriptSrc = Object.getOwnPropertyDescriptor(HTMLScriptElement.prototype, "src");
+      if (origScriptSrc && origScriptSrc.set) {
+        const origSetScript = origScriptSrc.set;
+        Object.defineProperty(HTMLScriptElement.prototype, "src", {
+          set: function (val) {
+            if (typeof val === "string" && (
+              val.includes("driverhugoverblown.com") ||
+              val.includes("mayhapmonisms.com") ||
+              val.includes("vhyohxarqz.in") ||
+              val.includes("sharethis.com") ||
+              val.includes("cloudflareinsights.com") ||
+              val.includes("acscdn.com") ||
+              val.includes("yougetwhatyoupayfor.net") ||
+              val.includes("chaseherbalpasty.com") ||
+              val.includes("bom88") ||
+              val.includes("tin888") ||
+              val.includes("net88") ||
+              val.includes("gem88")
+            )) {
+              return;
+            }
+            return origSetScript.call(this, val);
+          },
+          get: origScriptSrc.get,
+          configurable: true
+        });
+      }
+      const origSetScriptAttr = HTMLScriptElement.prototype.setAttribute;
+      HTMLScriptElement.prototype.setAttribute = function (name, val) {
+        if (typeof name === "string" && name.toLowerCase() === "src" && typeof val === "string") {
+          if (
+            val.includes("driverhugoverblown.com") ||
+            val.includes("mayhapmonisms.com") ||
+            val.includes("vhyohxarqz.in") ||
+            val.includes("sharethis.com") ||
+            val.includes("cloudflareinsights.com") ||
+            val.includes("acscdn.com") ||
+            val.includes("yougetwhatyoupayfor.net") ||
+            val.includes("chaseherbalpasty.com") ||
+            val.includes("bom88") ||
+            val.includes("tin888") ||
+            val.includes("net88") ||
+            val.includes("gem88")
+          ) {
+            return;
+          }
+        }
+        return origSetScriptAttr.apply(this, arguments);
+      };
+    }
+
+    if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
+      const origBeacon = navigator.sendBeacon.bind(navigator);
+      navigator.sendBeacon = function (url, data) {
+        if (typeof url === "string" && (
+          url.includes("vhyohxarqz.in") ||
+          url.includes("sharethis.com") ||
+          url.includes("cloudflareinsights.com") ||
+          url.includes("driverhugoverblown.com") ||
+          url.includes("mayhapmonisms.com")
+        )) {
+          return true;
+        }
+        return origBeacon(url, data);
       };
     }
   } catch (e) {}

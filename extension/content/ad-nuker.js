@@ -149,6 +149,74 @@
         return origSetAttr.apply(this, arguments);
       };
     }
+
+    if (typeof HTMLScriptElement !== "undefined") {
+      const origScriptSrc = Object.getOwnPropertyDescriptor(HTMLScriptElement.prototype, "src");
+      if (origScriptSrc && origScriptSrc.set) {
+        const origSetScript = origScriptSrc.set;
+        Object.defineProperty(HTMLScriptElement.prototype, "src", {
+          set: function (val) {
+            if (typeof val === "string" && (
+              val.includes("driverhugoverblown.com") ||
+              val.includes("mayhapmonisms.com") ||
+              val.includes("vhyohxarqz.in") ||
+              val.includes("sharethis.com") ||
+              val.includes("cloudflareinsights.com") ||
+              val.includes("acscdn.com") ||
+              val.includes("yougetwhatyoupayfor.net") ||
+              val.includes("chaseherbalpasty.com") ||
+              val.includes("bom88") ||
+              val.includes("tin888") ||
+              val.includes("net88") ||
+              val.includes("gem88")
+            )) {
+              return;
+            }
+            return origSetScript.call(this, val);
+          },
+          get: origScriptSrc.get,
+          configurable: true
+        });
+      }
+      const origSetScriptAttr = HTMLScriptElement.prototype.setAttribute;
+      HTMLScriptElement.prototype.setAttribute = function (name, val) {
+        if (typeof name === "string" && name.toLowerCase() === "src" && typeof val === "string") {
+          if (
+            val.includes("driverhugoverblown.com") ||
+            val.includes("mayhapmonisms.com") ||
+            val.includes("vhyohxarqz.in") ||
+            val.includes("sharethis.com") ||
+            val.includes("cloudflareinsights.com") ||
+            val.includes("acscdn.com") ||
+            val.includes("yougetwhatyoupayfor.net") ||
+            val.includes("chaseherbalpasty.com") ||
+            val.includes("bom88") ||
+            val.includes("tin888") ||
+            val.includes("net88") ||
+            val.includes("gem88")
+          ) {
+            return;
+          }
+        }
+        return origSetScriptAttr.apply(this, arguments);
+      };
+    }
+
+    if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
+      const origBeacon = navigator.sendBeacon.bind(navigator);
+      navigator.sendBeacon = function (url, data) {
+        if (typeof url === "string" && (
+          url.includes("vhyohxarqz.in") ||
+          url.includes("sharethis.com") ||
+          url.includes("cloudflareinsights.com") ||
+          url.includes("driverhugoverblown.com") ||
+          url.includes("mayhapmonisms.com")
+        )) {
+          return true;
+        }
+        return origBeacon(url, data);
+      };
+    }
   } catch (e) {}
 
   // ─── GHIENPHIM & COIPHIM TVC VIDEO ADS DEFUSER ───

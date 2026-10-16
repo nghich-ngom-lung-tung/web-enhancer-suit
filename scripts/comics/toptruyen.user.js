@@ -265,7 +265,8 @@
     "/api/subscriptions",
     "/api/account",
     "/account",
-    "/api/me"
+    "/api/me",
+    "site.webmanifest"
   ];
 
   function getTopTruyenVipHeaderHtml() {
@@ -467,6 +468,33 @@
       history: []
     };
   }
+
+  // Pre-seed Film4k settings in localStorage (Bảo vệ React Or() khỏi crash subColor.slice)
+  try {
+    if (typeof window !== "undefined" && window.localStorage && window.location && window.location.hostname && window.location.hostname.includes("film4k")) {
+      const raw = window.localStorage.getItem("seggg:settings");
+      let cur = {};
+      try { cur = JSON.parse(raw || "{}"); } catch (e) {}
+      if (!cur.subColor || typeof cur.subColor !== "string") {
+        window.localStorage.setItem("seggg:settings", JSON.stringify({
+          audioLang: "",
+          subLang: "vi",
+          subsEnabled: true,
+          autoplay: true,
+          capToPlayerSize: false,
+          subSize: 100,
+          subColor: "#ffffff",
+          subBg: "",
+          subDelay: 0,
+          siteLocale: "vi",
+          adultEnabled: false,
+          historyPaused: false,
+          hdrToneMap: 40,
+          ...cur
+        }));
+      }
+    }
+  } catch (e) {}
 
   // ─── LOCAL COMMENTS & REACTIONS ENGINE (CINEMA PRO RESILIENT SYSTEM) ───
   function getLocalCommentsKey(movieId) {
@@ -719,18 +747,47 @@
     }
 
     if (url.includes("/api/settings") || (isFilm4kHost && url.includes("/settings") && !url.includes("/users/settings") && !url.includes("settings."))) {
+      const film4kSettings = {
+        audioLang: "",
+        subLang: "vi",
+        subsEnabled: true,
+        autoplay: true,
+        capToPlayerSize: false,
+        subSize: 100,
+        subColor: "#ffffff",
+        subBg: "",
+        subDelay: 0,
+        siteLocale: "vi",
+        adultEnabled: false,
+        historyPaused: false,
+        hdrToneMap: 40,
+        audio: "default",
+        subtitle: "vi",
+        sub_size: "medium",
+        sub_bg: false,
+        auto_play: true,
+        auto_next: true,
+        auto_skip_intro: true
+      };
       return JSON.stringify({
+        ok: true,
+        status: 200,
         user: getFilm4kVipUser(),
         signedIn: true,
-        settings: {
-          audio: "default",
-          subtitle: "vi",
-          sub_size: "medium",
-          sub_bg: false,
-          auto_play: true,
-          auto_next: true,
-          auto_skip_intro: true
-        }
+        settings: film4kSettings,
+        data: film4kSettings
+      });
+    }
+
+    if (url.includes("site.webmanifest")) {
+      return JSON.stringify({
+        name: "Film4k VIP",
+        short_name: "Film4k",
+        start_url: "/",
+        display: "standalone",
+        background_color: "#0c0d12",
+        theme_color: "#5b6cff",
+        icons: []
       });
     }
 
@@ -3816,18 +3873,15 @@
   function safeIsAdApi(url) {
     if (!url || typeof url !== "string") return false;
     const u = url.toLowerCase();
-    if (u.includes("_rsc") || u.includes(".rsc") || u.includes("_next/") || u.includes(".js")) return false;
-    try {
-      if (typeof isAdApi === "function") return isAdApi(url);
-      if (typeof window !== "undefined" && typeof window.isAdApi === "function") return window.isAdApi(url);
-    } catch (e) {}
-    if (u.includes("tvc_") || u.includes("/assets/tvc/") || u.includes("tvc-pre-roll") || u.includes("tvc_net88") || u.includes("tvc_gem88")) return true;
     if (u.includes(".m3u8") || u.includes(".mp4") || u.includes(".ts") || u.includes(".m4s")) return false;
-    return (
-      u.includes("/ads") ||
-      u.includes("/banners") ||
-      u.includes("/banner/") ||
-      u.includes("/api/widget/data") ||
+
+    // Chặn triệt để các mạng quảng cáo và tracker rác (tránh ERR_BLOCKED_BY_CLIENT)
+    if (
+      u.includes("sharethis.com") ||
+      u.includes("driverhugoverblown.com") ||
+      u.includes("vhyohxarqz.in") ||
+      u.includes("mayhapmonisms.com") ||
+      u.includes("cloudflareinsights.com") ||
       u.includes("acscdn.com") ||
       u.includes("yougetwhatyoupayfor.net") ||
       u.includes("chaseherbalpasty.com") ||
@@ -3838,7 +3892,26 @@
       u.includes("pause_ads") ||
       u.includes("bom88") ||
       u.includes("tin888") ||
-      u.includes("net88")
+      u.includes("net88") ||
+      u.includes("gem88") ||
+      u.includes("tvc_") ||
+      u.includes("/assets/tvc/") ||
+      u.includes("tvc-pre-roll")
+    ) {
+      return true;
+    }
+
+    if (u.includes("_rsc") || u.includes(".rsc") || u.includes("_next/") || u.includes(".js")) return false;
+    try {
+      if (typeof isAdApi === "function") return isAdApi(url);
+      if (typeof window !== "undefined" && typeof window.isAdApi === "function") return window.isAdApi(url);
+    } catch (e) {}
+
+    return (
+      u.includes("/ads") ||
+      u.includes("/banners") ||
+      u.includes("/banner/") ||
+      u.includes("/api/widget/data")
     );
   }
 
@@ -4301,6 +4374,74 @@
           return;
         }
         return origSetAttr.apply(this, arguments);
+      };
+    }
+
+    if (typeof HTMLScriptElement !== "undefined") {
+      const origScriptSrc = Object.getOwnPropertyDescriptor(HTMLScriptElement.prototype, "src");
+      if (origScriptSrc && origScriptSrc.set) {
+        const origSetScript = origScriptSrc.set;
+        Object.defineProperty(HTMLScriptElement.prototype, "src", {
+          set: function (val) {
+            if (typeof val === "string" && (
+              val.includes("driverhugoverblown.com") ||
+              val.includes("mayhapmonisms.com") ||
+              val.includes("vhyohxarqz.in") ||
+              val.includes("sharethis.com") ||
+              val.includes("cloudflareinsights.com") ||
+              val.includes("acscdn.com") ||
+              val.includes("yougetwhatyoupayfor.net") ||
+              val.includes("chaseherbalpasty.com") ||
+              val.includes("bom88") ||
+              val.includes("tin888") ||
+              val.includes("net88") ||
+              val.includes("gem88")
+            )) {
+              return;
+            }
+            return origSetScript.call(this, val);
+          },
+          get: origScriptSrc.get,
+          configurable: true
+        });
+      }
+      const origSetScriptAttr = HTMLScriptElement.prototype.setAttribute;
+      HTMLScriptElement.prototype.setAttribute = function (name, val) {
+        if (typeof name === "string" && name.toLowerCase() === "src" && typeof val === "string") {
+          if (
+            val.includes("driverhugoverblown.com") ||
+            val.includes("mayhapmonisms.com") ||
+            val.includes("vhyohxarqz.in") ||
+            val.includes("sharethis.com") ||
+            val.includes("cloudflareinsights.com") ||
+            val.includes("acscdn.com") ||
+            val.includes("yougetwhatyoupayfor.net") ||
+            val.includes("chaseherbalpasty.com") ||
+            val.includes("bom88") ||
+            val.includes("tin888") ||
+            val.includes("net88") ||
+            val.includes("gem88")
+          ) {
+            return;
+          }
+        }
+        return origSetScriptAttr.apply(this, arguments);
+      };
+    }
+
+    if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
+      const origBeacon = navigator.sendBeacon.bind(navigator);
+      navigator.sendBeacon = function (url, data) {
+        if (typeof url === "string" && (
+          url.includes("vhyohxarqz.in") ||
+          url.includes("sharethis.com") ||
+          url.includes("cloudflareinsights.com") ||
+          url.includes("driverhugoverblown.com") ||
+          url.includes("mayhapmonisms.com")
+        )) {
+          return true;
+        }
+        return origBeacon(url, data);
       };
     }
   } catch (e) {}

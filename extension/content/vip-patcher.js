@@ -132,7 +132,8 @@
     "/api/subscriptions",
     "/api/account",
     "/account",
-    "/api/me"
+    "/api/me",
+    "site.webmanifest"
   ];
 
   function getTopTruyenVipHeaderHtml() {
@@ -334,6 +335,33 @@
       history: []
     };
   }
+
+  // Pre-seed Film4k settings in localStorage (Bảo vệ React Or() khỏi crash subColor.slice)
+  try {
+    if (typeof window !== "undefined" && window.localStorage && window.location && window.location.hostname && window.location.hostname.includes("film4k")) {
+      const raw = window.localStorage.getItem("seggg:settings");
+      let cur = {};
+      try { cur = JSON.parse(raw || "{}"); } catch (e) {}
+      if (!cur.subColor || typeof cur.subColor !== "string") {
+        window.localStorage.setItem("seggg:settings", JSON.stringify({
+          audioLang: "",
+          subLang: "vi",
+          subsEnabled: true,
+          autoplay: true,
+          capToPlayerSize: false,
+          subSize: 100,
+          subColor: "#ffffff",
+          subBg: "",
+          subDelay: 0,
+          siteLocale: "vi",
+          adultEnabled: false,
+          historyPaused: false,
+          hdrToneMap: 40,
+          ...cur
+        }));
+      }
+    }
+  } catch (e) {}
 
   // ─── LOCAL COMMENTS & REACTIONS ENGINE (CINEMA PRO RESILIENT SYSTEM) ───
   function getLocalCommentsKey(movieId) {
@@ -586,18 +614,47 @@
     }
 
     if (url.includes("/api/settings") || (isFilm4kHost && url.includes("/settings") && !url.includes("/users/settings") && !url.includes("settings."))) {
+      const film4kSettings = {
+        audioLang: "",
+        subLang: "vi",
+        subsEnabled: true,
+        autoplay: true,
+        capToPlayerSize: false,
+        subSize: 100,
+        subColor: "#ffffff",
+        subBg: "",
+        subDelay: 0,
+        siteLocale: "vi",
+        adultEnabled: false,
+        historyPaused: false,
+        hdrToneMap: 40,
+        audio: "default",
+        subtitle: "vi",
+        sub_size: "medium",
+        sub_bg: false,
+        auto_play: true,
+        auto_next: true,
+        auto_skip_intro: true
+      };
       return JSON.stringify({
+        ok: true,
+        status: 200,
         user: getFilm4kVipUser(),
         signedIn: true,
-        settings: {
-          audio: "default",
-          subtitle: "vi",
-          sub_size: "medium",
-          sub_bg: false,
-          auto_play: true,
-          auto_next: true,
-          auto_skip_intro: true
-        }
+        settings: film4kSettings,
+        data: film4kSettings
+      });
+    }
+
+    if (url.includes("site.webmanifest")) {
+      return JSON.stringify({
+        name: "Film4k VIP",
+        short_name: "Film4k",
+        start_url: "/",
+        display: "standalone",
+        background_color: "#0c0d12",
+        theme_color: "#5b6cff",
+        icons: []
       });
     }
 
