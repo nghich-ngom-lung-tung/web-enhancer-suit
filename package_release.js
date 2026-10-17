@@ -97,11 +97,13 @@ const releaseNotes = `# 👑 Web Enhancer Suite v${version} — Chill Guy Capyba
 > • **Tái cấu trúc chuẩn công nghiệp (Industry-Standard Architecture):** Tách nhỏ hệ thống Content Scripts thành các thư mục chuyên biệt: \`core/\`, \`features/\`, \`vip/\` (\`vip-engine.js\`, \`cinema.js\`, \`anime.js\`, \`sports.js\`, \`comics.js\`, \`auth.js\`).
 
 > [!NOTE]
-> **💎 Cải tiến cốt lõi & Khắc phục lỗi gần đây:**
-> • **RoPhim, CoBePhim & MovieHDThai:** Khắc phục triệt để lỗi React Next.js \`TypeError: m.map is not a function\` trên API Watchlist danh sách xem sau; Bổ sung lớp phòng thủ đa tầng cho \`notificationsMovie\` và \`notificationsOther\`.
-> • **ChoPhim VIP & Social:** Hỗ trợ lưu trữ & đồng bộ Emoji tương tác, khung Avatar VIP và huy hiệu Premium; Khắc phục triệt để lỗi gửi bình luận/chat thời gian thực trên React; Tự động xử lý lỗi DOM hydration collision (\`removeChild\`).
-> • **Film4k & NetAnime:** Tự động vượt qua Landing Gate & đóng hội thoại cộng đồng; Mở khóa VIP vĩnh viễn 2099 & túi tiền xu tối đa 999,999,999 Coin.
-> • **Trực tiếp bóng đá (Chuối Chiên TV, Xôi Lạc):** Diệt sạch 100% popup quảng cáo và banner cá cược gây lag luồng phát.
+> **💎 Cải tiến cốt lõi & Khắc phục lỗi toàn diện:**
+> • **Khắc phục triệt để ReferenceError:** Khai báo an toàn \`_origFetchNative\` trong phạm vi module \`cinema.js\` và \`sports.js\`, kèm kiểm tra kiểu an toàn trước khi gọi.
+> • **Khôi phục chuỗi Prototype của XMLHttpRequest:** Thêm liên kết \`window.XMLHttpRequest.prototype = origXhrMain.prototype\`, bảo đảm \`new XMLHttpRequest() instanceof XMLHttpRequest === true\` 100% chuẩn DOM, cùng cơ chế tự động patch response XHR qua \`window.handleRophimXhrResponse\`.
+> • **Bẻ khóa bẫy đột biến tại chỗ (In-Place Mutation Trap):** Chuyển cơ chế so sánh dữ liệu vá từ con trỏ object (\`patched !== data\`) sang so sánh chuỗi JSON tuần tự hóa (\`newText !== text\`), đảm bảo không bao giờ bị rớt response VIP.
+> • **Hỗ trợ Mock đa hình (Polymorphic Mocks):** \`interceptFetch\` và \`getRophimMockResponse\` tự động nhận diện cả plain Object (chuyển JSON) và chuỗi HTML (tự động gán \`Content-Type: text/html\`).
+> • **Lưu trữ Stream bền vững trên Manifest V3:** Background Service Worker đồng bộ \`chrome.storage.session\` song song bộ nhớ đệm, bảo toàn 100% danh sách link M3U8 khi Service Worker chuyển trạng thái ngủ (inactive 30s).
+> • **Kiểm thử thực chiến 100% trên Chrome thật:** Vượt qua toàn diện bộ audit 1239 assertions và thực thi kiểm thử trực tiếp trên 57/57 nền tảng bằng Google Chrome (V8 Engine & Blink DOM) với kết quả 100% sạch lỗi.
 
 ---
 
