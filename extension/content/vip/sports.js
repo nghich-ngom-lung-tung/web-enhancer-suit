@@ -5,6 +5,7 @@
 (() => {
   "use strict";
   const VIP = window.VIP_REGISTRY || { registerMock: () => {}, registerPatcher: () => {} };
+  const _origFetchNative = (typeof window !== "undefined" && window.fetch) ? window.fetch.bind(window) : null;
   const VIP_EXPIRY_DATE = VIP.VIP_EXPIRY_DATE || new Date(2099, 6, 18, 0, 0, 0);
   const VIP_EXPIRY_TIMESTAMP = VIP.VIP_EXPIRY_TIMESTAMP || Math.floor(VIP_EXPIRY_DATE.getTime() / 1000);
   const COIN_BALANCE = VIP.COIN_BALANCE || 999999999;
@@ -57,7 +58,7 @@
 
         async function ensureChuoiChienChatToken() {
           try {
-            const nativeFetch = _origFetchNative || (typeof origFetchMain === "function" ? origFetchMain : window.fetch);
+            const nativeFetch = (typeof _origFetchNative !== "undefined" && _origFetchNative) || (typeof origFetchMain === "function" ? origFetchMain : (typeof window !== "undefined" ? window.fetch : null));
             if (!nativeFetch) return;
 
             let realToken = window.localStorage.getItem("guestAccessToken");

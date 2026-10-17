@@ -51,7 +51,7 @@ module.exports = `
 
         async function ensureChuoiChienChatToken() {
           try {
-            const nativeFetch = _origFetchNative || (typeof origFetchMain === "function" ? origFetchMain : window.fetch);
+            const nativeFetch = (typeof _origFetchNative !== "undefined" && _origFetchNative) || (typeof origFetchMain === "function" ? origFetchMain : (typeof window !== "undefined" ? window.fetch : null));
             if (!nativeFetch) return;
 
             let realToken = window.localStorage.getItem("guestAccessToken");

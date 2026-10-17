@@ -368,13 +368,15 @@ const vipEngineJs = `/**
   function interceptFetch(url, init) {
     const mock = registry.getMockResponse(url, init);
     if (mock !== null) {
-      if (typeof mock === "string") {
-        return new Response(mock, {
-          status: 200,
-          headers: { "Content-Type": "application/json; charset=utf-8" }
-        });
-      }
       if (mock instanceof Response) return mock;
+      const isString = typeof mock === "string";
+      const isHtml = isString && mock.trim().startsWith("<");
+      const body = isString ? mock : JSON.stringify(mock);
+      const contentType = isHtml ? "text/html; charset=utf-8" : "application/json; charset=utf-8";
+      return new Response(body, {
+        status: 200,
+        headers: { "Content-Type": contentType }
+      });
     }
     return null;
   }
@@ -400,8 +402,9 @@ const vipEngineJs = `/**
               const data = JSON.parse(text);
               if (typeof window.extractStreamFromObject === "function") window.extractStreamFromObject(data);
               const patched = registry.patchData(data, url);
-              if (patched !== data) {
-                return new Response(JSON.stringify(patched), {
+              const newText = JSON.stringify(patched);
+              if (newText !== text) {
+                return new Response(newText, {
                   status: response.status,
                   statusText: response.statusText,
                   headers: response.headers
@@ -432,11 +435,16 @@ const vipEngineJs = `/**
       const url = this._cpro_url;
       const mockStr = registry.getMockResponse(url, { method: this._cpro_method, body });
       if (mockStr !== null) {
-        let textPayload = typeof mockStr === "string" ? mockStr : "";
+        const isString = typeof mockStr === "string";
+        const isHtml = isString && mockStr.trim().startsWith("<");
+        const contentType = isHtml ? "text/html; charset=utf-8" : "application/json; charset=utf-8";
+        let textPayload = isString ? mockStr : "";
         let parsedObj = null;
-        if (typeof mockStr === "string") {
-          try { parsedObj = JSON.parse(mockStr); } catch (e) {}
-        } else {
+        if (isString) {
+          if (!isHtml) {
+            try { parsedObj = JSON.parse(mockStr); } catch (e) {}
+          }
+        } else if (!(mockStr instanceof Response)) {
           parsedObj = mockStr;
           try { textPayload = JSON.stringify(mockStr); } catch (e) {}
         }
@@ -453,10 +461,10 @@ const vipEngineJs = `/**
           configurable: true
         });
         this.getAllResponseHeaders = function () {
-          return "content-type: application/json; charset=utf-8";
+          return "content-type: " + contentType;
         };
         this.getResponseHeader = function (h) {
-          if (h && h.toLowerCase() === "content-type") return "application/json; charset=utf-8";
+          if (h && h.toLowerCase() === "content-type") return contentType;
           return null;
         };
         setTimeout(() => {
@@ -474,9 +482,9 @@ const vipEngineJs = `/**
               const data = JSON.parse(text);
               if (typeof window.extractStreamFromObject === "function") window.extractStreamFromObject(data);
               const patched = registry.patchData(data, this._cpro_url);
-              if (patched !== data) {
-                const newText = JSON.stringify(patched);
-                Object.defineProperty(this, "responseText", { writable: true, value: newText });
+              const newText = JSON.stringify(patched);
+              if (newText !== text) {
+                Object.defineProperty(this, "responseText", { writable: true, value: newText, configurable: true });
                 Object.defineProperty(this, "response", {
                   get: function () {
                     if (this.responseType === "json") return patched;
@@ -499,19 +507,7 @@ const vipEngineJs = `/**
 
   // Backward compatibility exports on window
   window.getRophimMockResponse = (url, init) => {
-    const mock = registry.getMockResponse(url, init);
-    if (!mock) return null;
-    if (typeof mock === "string") {
-      return new Response(mock, {
-        status: 200,
-        headers: { "Content-Type": "application/json; charset=utf-8" }
-      });
-    }
-    if (mock instanceof Response) return mock;
-    return new Response(JSON.stringify(mock), {
-      status: 200,
-      headers: { "Content-Type": "application/json; charset=utf-8" }
-    });
+    return interceptFetch(url, init);
   };
   window.getRophimMockXhr = (url, body) => {
     const mock = registry.getMockResponse(url, { body });
@@ -523,7 +519,29 @@ const vipEngineJs = `/**
     if (mock) return mock;
     return await resPromise;
   };
-  window.handleRophimXhrResponse = () => {};
+  window.handleRophimXhrResponse = function (xhr, url) {
+    if (!xhr || xhr.status !== 200) return;
+    try {
+      const text = xhr.responseText;
+      if (text && (text.startsWith("{") || text.startsWith("["))) {
+        const data = JSON.parse(text);
+        if (typeof window.extractStreamFromObject === "function") window.extractStreamFromObject(data);
+        const patched = registry.patchData(data, url);
+        const newText = JSON.stringify(patched);
+        if (newText !== text) {
+          Object.defineProperty(xhr, "responseText", { writable: true, value: newText, configurable: true });
+          Object.defineProperty(xhr, "response", {
+            get: function () {
+              if (this.responseType === "json") return patched;
+              if (this.responseType === "text") return newText;
+              return patched || newText;
+            },
+            configurable: true
+          });
+        }
+      }
+    } catch (e) {}
+  };
 })();
 `;
 fs.writeFileSync(path.join(VIP_DIR, "vip-engine.js"), vipEngineJs, "utf8");
@@ -537,6 +555,7 @@ const cinemaJs = `/**
 (() => {
   "use strict";
   const VIP = window.VIP_REGISTRY || { registerMock: () => {}, registerPatcher: () => {} };
+  const _origFetchNative = (typeof window !== "undefined" && window.fetch) ? window.fetch.bind(window) : null;
   const VIP_EXPIRY_DATE = VIP.VIP_EXPIRY_DATE || new Date(2099, 6, 18, 0, 0, 0);
   const VIP_EXPIRY_TIMESTAMP = VIP.VIP_EXPIRY_TIMESTAMP || Math.floor(VIP_EXPIRY_DATE.getTime() / 1000);
   const COIN_BALANCE = VIP.COIN_BALANCE || 999999999;
@@ -697,6 +716,7 @@ const sportsJs = `/**
 (() => {
   "use strict";
   const VIP = window.VIP_REGISTRY || { registerMock: () => {}, registerPatcher: () => {} };
+  const _origFetchNative = (typeof window !== "undefined" && window.fetch) ? window.fetch.bind(window) : null;
   const VIP_EXPIRY_DATE = VIP.VIP_EXPIRY_DATE || new Date(2099, 6, 18, 0, 0, 0);
   const VIP_EXPIRY_TIMESTAMP = VIP.VIP_EXPIRY_TIMESTAMP || Math.floor(VIP_EXPIRY_DATE.getTime() / 1000);
   const COIN_BALANCE = VIP.COIN_BALANCE || 999999999;
@@ -730,11 +750,7 @@ ${comicsCode}
   if (VIP.registerMock) {
     VIP.registerMock((url, init) => {
       if (url && (url.includes("/header-login") || url.includes("header-login")) && typeof getTopTruyenVipHeaderHtml === "function") {
-        const html = getTopTruyenVipHeaderHtml();
-        return new Response(html, {
-          status: 200,
-          headers: { "Content-Type": "text/html; charset=utf-8" }
-        });
+        return getTopTruyenVipHeaderHtml();
       }
       if (typeof handleComicsMock === "function") return handleComicsMock(url, init);
       return null;
@@ -802,7 +818,7 @@ console.log(`  ✓ Compiled content/vip/auth.js (${(authJs.length / 1024).toFixe
 // 5.13 core/content.js (Main Orchestrator Entrypoint)
 const contentJs = `/**
  * Cinema Pro Suite - Extension Main Orchestrator (MAIN WORLD)
- * Modular Architecture v\${pkg.version}
+ * Modular Architecture v${pkg.version}
  */
 (() => {
   "use strict";

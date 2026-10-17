@@ -1915,6 +1915,7 @@
   };
 
   try {
+    window.XMLHttpRequest.prototype = origXhrMain.prototype;
     Object.keys(origXhrMain).forEach(k => {
       try { window.XMLHttpRequest[k] = origXhrMain[k]; } catch (e) {}
     });

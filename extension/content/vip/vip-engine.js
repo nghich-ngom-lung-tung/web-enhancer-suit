@@ -91,13 +91,15 @@
   function interceptFetch(url, init) {
     const mock = registry.getMockResponse(url, init);
     if (mock !== null) {
-      if (typeof mock === "string") {
-        return new Response(mock, {
-          status: 200,
-          headers: { "Content-Type": "application/json; charset=utf-8" }
-        });
-      }
       if (mock instanceof Response) return mock;
+      const isString = typeof mock === "string";
+      const isHtml = isString && mock.trim().startsWith("<");
+      const body = isString ? mock : JSON.stringify(mock);
+      const contentType = isHtml ? "text/html; charset=utf-8" : "application/json; charset=utf-8";
+      return new Response(body, {
+        status: 200,
+        headers: { "Content-Type": contentType }
+      });
     }
     return null;
   }
@@ -123,8 +125,9 @@
               const data = JSON.parse(text);
               if (typeof window.extractStreamFromObject === "function") window.extractStreamFromObject(data);
               const patched = registry.patchData(data, url);
-              if (patched !== data) {
-                return new Response(JSON.stringify(patched), {
+              const newText = JSON.stringify(patched);
+              if (newText !== text) {
+                return new Response(newText, {
                   status: response.status,
                   statusText: response.statusText,
                   headers: response.headers
@@ -155,11 +158,16 @@
       const url = this._cpro_url;
       const mockStr = registry.getMockResponse(url, { method: this._cpro_method, body });
       if (mockStr !== null) {
-        let textPayload = typeof mockStr === "string" ? mockStr : "";
+        const isString = typeof mockStr === "string";
+        const isHtml = isString && mockStr.trim().startsWith("<");
+        const contentType = isHtml ? "text/html; charset=utf-8" : "application/json; charset=utf-8";
+        let textPayload = isString ? mockStr : "";
         let parsedObj = null;
-        if (typeof mockStr === "string") {
-          try { parsedObj = JSON.parse(mockStr); } catch (e) {}
-        } else {
+        if (isString) {
+          if (!isHtml) {
+            try { parsedObj = JSON.parse(mockStr); } catch (e) {}
+          }
+        } else if (!(mockStr instanceof Response)) {
           parsedObj = mockStr;
           try { textPayload = JSON.stringify(mockStr); } catch (e) {}
         }
@@ -176,10 +184,10 @@
           configurable: true
         });
         this.getAllResponseHeaders = function () {
-          return "content-type: application/json; charset=utf-8";
+          return "content-type: " + contentType;
         };
         this.getResponseHeader = function (h) {
-          if (h && h.toLowerCase() === "content-type") return "application/json; charset=utf-8";
+          if (h && h.toLowerCase() === "content-type") return contentType;
           return null;
         };
         setTimeout(() => {
@@ -197,9 +205,9 @@
               const data = JSON.parse(text);
               if (typeof window.extractStreamFromObject === "function") window.extractStreamFromObject(data);
               const patched = registry.patchData(data, this._cpro_url);
-              if (patched !== data) {
-                const newText = JSON.stringify(patched);
-                Object.defineProperty(this, "responseText", { writable: true, value: newText });
+              const newText = JSON.stringify(patched);
+              if (newText !== text) {
+                Object.defineProperty(this, "responseText", { writable: true, value: newText, configurable: true });
                 Object.defineProperty(this, "response", {
                   get: function () {
                     if (this.responseType === "json") return patched;
@@ -222,19 +230,7 @@
 
   // Backward compatibility exports on window
   window.getRophimMockResponse = (url, init) => {
-    const mock = registry.getMockResponse(url, init);
-    if (!mock) return null;
-    if (typeof mock === "string") {
-      return new Response(mock, {
-        status: 200,
-        headers: { "Content-Type": "application/json; charset=utf-8" }
-      });
-    }
-    if (mock instanceof Response) return mock;
-    return new Response(JSON.stringify(mock), {
-      status: 200,
-      headers: { "Content-Type": "application/json; charset=utf-8" }
-    });
+    return interceptFetch(url, init);
   };
   window.getRophimMockXhr = (url, body) => {
     const mock = registry.getMockResponse(url, { body });
@@ -246,5 +242,27 @@
     if (mock) return mock;
     return await resPromise;
   };
-  window.handleRophimXhrResponse = () => {};
+  window.handleRophimXhrResponse = function (xhr, url) {
+    if (!xhr || xhr.status !== 200) return;
+    try {
+      const text = xhr.responseText;
+      if (text && (text.startsWith("{") || text.startsWith("["))) {
+        const data = JSON.parse(text);
+        if (typeof window.extractStreamFromObject === "function") window.extractStreamFromObject(data);
+        const patched = registry.patchData(data, url);
+        const newText = JSON.stringify(patched);
+        if (newText !== text) {
+          Object.defineProperty(xhr, "responseText", { writable: true, value: newText, configurable: true });
+          Object.defineProperty(xhr, "response", {
+            get: function () {
+              if (this.responseType === "json") return patched;
+              if (this.responseType === "text") return newText;
+              return patched || newText;
+            },
+            configurable: true
+          });
+        }
+      }
+    } catch (e) {}
+  };
 })();

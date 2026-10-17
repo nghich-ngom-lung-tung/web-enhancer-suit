@@ -1779,6 +1779,53 @@ if (manifestObj) {
   } catch (e) {
     report("extension/content/features/player-controls.js: player actions execute cleanly in isolation without ReferenceError", false, e.message);
   }
+
+  // ─── EXTENSION RUNTIME DEFENSE AUDITS ───
+  // 1. Check cinema.js _origFetchNative safety
+  const extCinemaPath = path.join(extDir, "content", "vip", "cinema.js");
+  if (fs.existsSync(extCinemaPath)) {
+    const code = fs.readFileSync(extCinemaPath, "utf8");
+    const hasSafeDecl = code.includes("const _origFetchNative =");
+    report("extension/content/vip/cinema.js: _origFetchNative safely declared in local module scope", hasSafeDecl);
+  }
+
+  // 2. Check sports.js _origFetchNative safety
+  const extSportsPath = path.join(extDir, "content", "vip", "sports.js");
+  if (fs.existsSync(extSportsPath)) {
+    const code = fs.readFileSync(extSportsPath, "utf8");
+    const hasSafeDecl = code.includes("const _origFetchNative =");
+    report("extension/content/vip/sports.js: _origFetchNative safely declared in local module scope", hasSafeDecl);
+  }
+
+  // 3. Check sniffer.js XMLHttpRequest prototype inheritance
+  const extSnifferPath = path.join(extDir, "content", "features", "sniffer.js");
+  if (fs.existsSync(extSnifferPath)) {
+    const code = fs.readFileSync(extSnifferPath, "utf8");
+    const hasProtoLink = code.includes("window.XMLHttpRequest.prototype = origXhrMain.prototype;");
+    report("extension/content/features/sniffer.js: window.XMLHttpRequest.prototype linked to preserve prototype chain & instanceof", hasProtoLink);
+  }
+
+  // 4. Check vip-engine.js handleRophimXhrResponse implementation
+  const extVipEnginePath = path.join(extDir, "content", "vip", "vip-engine.js");
+  if (fs.existsSync(extVipEnginePath)) {
+    const code = fs.readFileSync(extVipEnginePath, "utf8");
+    const hasXhrPatcher = code.includes("window.handleRophimXhrResponse = function") && code.includes("registry.patchData(data, url)");
+    report("extension/content/vip/vip-engine.js: handleRophimXhrResponse actively patches XHR responses", hasXhrPatcher);
+
+    const hasSerializedCompare = code.includes("newText !== text");
+    report("extension/content/vip/vip-engine.js: patch comparison uses serialized string comparison (defends against in-place mutations)", hasSerializedCompare);
+
+    const hasObjectMockSupport = code.includes("const body = isString ? mock : JSON.stringify(mock);");
+    report("extension/content/vip/vip-engine.js: interceptFetch supports plain Object/Array mocks and HTML mocks", hasObjectMockSupport);
+  }
+
+  // 5. Check background.js session storage persistence
+  const extBgPath = path.join(extDir, "background.js");
+  if (fs.existsSync(extBgPath)) {
+    const code = fs.readFileSync(extBgPath, "utf8");
+    const hasSessionStorage = code.includes("chrome.storage.session") && code.includes("saveTabStream");
+    report("extension/background.js: Stream persistence uses chrome.storage.session (survives Service Worker inactivity)", hasSessionStorage);
+  }
 }
 
 // Final check after promise tick

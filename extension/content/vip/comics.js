@@ -180,11 +180,7 @@
   if (VIP.registerMock) {
     VIP.registerMock((url, init) => {
       if (url && (url.includes("/header-login") || url.includes("header-login")) && typeof getTopTruyenVipHeaderHtml === "function") {
-        const html = getTopTruyenVipHeaderHtml();
-        return new Response(html, {
-          status: 200,
-          headers: { "Content-Type": "text/html; charset=utf-8" }
-        });
+        return getTopTruyenVipHeaderHtml();
       }
       if (typeof handleComicsMock === "function") return handleComicsMock(url, init);
       return null;

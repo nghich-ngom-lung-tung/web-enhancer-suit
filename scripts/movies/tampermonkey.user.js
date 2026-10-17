@@ -273,7 +273,7 @@
         } catch (e) {}
       }
 
-      const fetchFn = _origFetchNative || (typeof window.fetch === "function" ? window.fetch.bind(window) : null);
+      const fetchFn = (typeof _origFetchNative !== "undefined" && _origFetchNative) || (typeof window !== "undefined" && typeof window.fetch === "function" ? window.fetch.bind(window) : null);
       if (!fetchFn) return null;
 
       const uniqueSuffix = Date.now() + "_" + Math.floor(Math.random() * 10000);
@@ -378,7 +378,7 @@
 
       async function ensureRophimServerSession(force) {
         try {
-          const nativeFetch = _origFetchNative || (typeof origFetchMain === "function" ? origFetchMain : window.fetch);
+          const nativeFetch = (typeof _origFetchNative !== "undefined" && _origFetchNative) || (typeof origFetchMain === "function" ? origFetchMain : (typeof window !== "undefined" ? window.fetch : null));
           if (!nativeFetch) return;
 
           const _h = (typeof location !== "undefined" && location.hostname) || "";
@@ -2523,6 +2523,7 @@
   };
 
   try {
+    window.XMLHttpRequest.prototype = origXhrMain.prototype;
     Object.keys(origXhrMain).forEach(k => {
       try { window.XMLHttpRequest[k] = origXhrMain[k]; } catch (e) {}
     });

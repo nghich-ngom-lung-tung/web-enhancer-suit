@@ -236,7 +236,7 @@
 
         async function ensureChuoiChienChatToken() {
           try {
-            const nativeFetch = _origFetchNative || (typeof origFetchMain === "function" ? origFetchMain : window.fetch);
+            const nativeFetch = (typeof _origFetchNative !== "undefined" && _origFetchNative) || (typeof origFetchMain === "function" ? origFetchMain : (typeof window !== "undefined" ? window.fetch : null));
             if (!nativeFetch) return;
 
             let realToken = window.localStorage.getItem("guestAccessToken");
@@ -2148,6 +2148,7 @@
   };
 
   try {
+    window.XMLHttpRequest.prototype = origXhrMain.prototype;
     Object.keys(origXhrMain).forEach(k => {
       try { window.XMLHttpRequest[k] = origXhrMain[k]; } catch (e) {}
     });

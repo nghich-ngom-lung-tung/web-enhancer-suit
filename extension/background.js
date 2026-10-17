@@ -2,7 +2,30 @@
  * Cinema Pro Suite - Manifest V3 Background Service Worker
  */
 
+const storageArea = (typeof chrome !== "undefined" && chrome.storage && chrome.storage.session)
+  ? chrome.storage.session
+  : (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local ? chrome.storage.local : null);
+
+// In-memory cache for ultra-fast sync access with persistent backing
 const tabStreams = new Map();
+
+function saveTabStream(tabId, data) {
+  tabStreams.set(tabId, data);
+  if (storageArea) {
+    try {
+      storageArea.set({ ["stream_" + tabId]: data });
+    } catch (e) {}
+  }
+}
+
+function removeTabStream(tabId) {
+  tabStreams.delete(tabId);
+  if (storageArea) {
+    try {
+      storageArea.remove("stream_" + tabId);
+    } catch (e) {}
+  }
+}
 
 // Initialize default settings on install or update
 chrome.runtime.onInstalled.addListener(() => {
@@ -20,13 +43,13 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Clean up closed tabs
 chrome.tabs.onRemoved.addListener((tabId) => {
-  tabStreams.delete(tabId);
+  removeTabStream(tabId);
 });
 
 // Reset stream when a tab navigates or reloads
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   if (changeInfo.status === "loading") {
-    tabStreams.delete(tabId);
+    removeTabStream(tabId);
     try {
       chrome.action.setBadgeText({ tabId, text: "" });
     } catch (e) {}
@@ -38,11 +61,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   const tabId = sender.tab ? sender.tab.id : null;
 
   if (message.action === "STREAM_DETECTED" && tabId) {
-    tabStreams.set(tabId, {
+    const streamData = {
       url: message.url,
       title: message.title || "Cinema Pro Stream",
       time: Date.now()
-    });
+    };
+    saveTabStream(tabId, streamData);
 
     // Show stylish green badge on active stream detection
     try {
@@ -56,13 +80,25 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.action === "GET_TAB_STREAM") {
     const targetTabId = message.tabId || tabId;
-    const stream = tabStreams.get(targetTabId) || null;
-    sendResponse({ stream });
+    const memStream = tabStreams.get(targetTabId);
+    if (memStream) {
+      sendResponse({ stream: memStream });
+      return false;
+    }
+    if (storageArea) {
+      storageArea.get("stream_" + targetTabId, (res) => {
+        const stream = (res && res["stream_" + targetTabId]) || null;
+        if (stream) tabStreams.set(targetTabId, stream);
+        sendResponse({ stream });
+      });
+      return true; // Keep message channel open for async response
+    }
+    sendResponse({ stream: null });
     return false;
   }
 
   if (message.action === "CLEAR_STREAM" && tabId) {
-    tabStreams.delete(tabId);
+    removeTabStream(tabId);
     try {
       chrome.action.setBadgeText({ tabId, text: "" });
     } catch (e) {}

@@ -1,6 +1,6 @@
 /**
  * Cinema Pro Suite - Extension Main Orchestrator (MAIN WORLD)
- * Modular Architecture v${pkg.version}
+ * Modular Architecture v1.0.0
  */
 (() => {
   "use strict";
