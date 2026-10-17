@@ -741,6 +741,15 @@
 
     // 4. Watch progress / Histories
     if (url.includes("/watch-progress") || url.includes("/histories") || url.includes("/history") || url.includes("/api/history")) {
+      if (init && init.method && init.method.toUpperCase() === "DELETE") {
+        return JSON.stringify({
+          status: true,
+          statusCode: 200,
+          code: 200,
+          message: "Xóa lịch sử thành công",
+          success: true
+        });
+      }
       return JSON.stringify({
         status: true,
         statusCode: 200,
@@ -748,7 +757,14 @@
         data: [],
         items: [],
         list: [],
-        total: 0
+        total: 0,
+        meta: {
+          page: 1,
+          limit: 18,
+          total: 0,
+          totalPages: 1,
+          totalPage: 1
+        }
       });
     }
 
@@ -861,29 +877,79 @@
       });
     }
 
-    // 7. Movie Favorites
+    // 7. Movie Favorites & Bookmarks
     if (url.includes("/favorites") || url.includes("/favourite") || url.includes("/favourites")) {
       return JSON.stringify({
         status: true,
         statusCode: 200,
         code: 200,
         data: [],
-        items: []
+        items: [],
+        meta: {
+          page: 1,
+          limit: 18,
+          total: 0,
+          totalPages: 1,
+          totalPage: 1
+        }
       });
     }
 
-    // 8. Bookmarks
+    // 8. Bookmarks (movie, actor, or general)
     if (url.includes("/bookmarks") || url.includes("bookmarks")) {
+      if (init && init.method && init.method.toUpperCase() === "DELETE") {
+        return JSON.stringify({
+          status: true,
+          statusCode: 200,
+          code: 200,
+          message: "Xóa bookmark thành công",
+          success: true
+        });
+      }
+      if (url.includes("/bookmarks/movie") || url.includes("/bookmarks/actor")) {
+        return JSON.stringify({
+          status: true,
+          statusCode: 200,
+          code: 200,
+          data: [],
+          items: [],
+          meta: {
+            page: 1,
+            limit: 18,
+            total: 0,
+            totalPages: 1,
+            totalPage: 1
+          }
+        });
+      }
       return JSON.stringify({
         status: true,
         statusCode: 200,
         code: 200,
         data: {
           movieIds: [],
-          actorIds: []
+          actorIds: [],
+          movies: [],
+          actors: [],
+          data: [],
+          meta: {
+            page: 1,
+            limit: 18,
+            total: 0,
+            totalPages: 1,
+            totalPage: 1
+          }
         },
         movieIds: [],
-        actorIds: []
+        actorIds: [],
+        items: [],
+        meta: {
+          page: 1,
+          limit: 18,
+          total: 0,
+          totalPages: 1,
+          totalPage: 1
+        }
       });
     }
 
@@ -908,27 +974,69 @@
       });
     }
 
-    // 10. Notifications
+    // 10. Notifications (GET /notifications, PATCH /notifications/:id, POST /notifications/mark-all-as-read)
     if (url.includes("/notifications") || url.includes("/notification") || url.includes("notification")) {
+      if (init && init.method && (init.method.toUpperCase() === "PATCH" || init.method.toUpperCase() === "POST")) {
+        return JSON.stringify({
+          status: true,
+          statusCode: 200,
+          code: 200,
+          message: "Thao tác thông báo thành công",
+          success: true
+        });
+      }
       const emptyNoti = {
+        notifications: [],
         notificationsMovie: [],
         notificationsOther: [],
         unreadCountMovie: 0,
-        unreadCountOther: 0
+        unreadCountOther: 0,
+        unreadCount: 0,
+        unread_count: 0
       };
       return JSON.stringify({
         status: true,
         statusCode: 200,
         code: 200,
+        notifications: [],
         notificationsMovie: [],
         notificationsOther: [],
         unreadCountMovie: 0,
         unreadCountOther: 0,
+        unreadCount: 0,
+        unread_count: 0,
         data: emptyNoti,
         result: emptyNoti,
         items: [],
-        unreadCount: 0,
-        unread_count: 0
+        meta: {
+          page: 1,
+          limit: 10,
+          total: 0,
+          totalPages: 1,
+          totalPage: 1
+        }
+      });
+    }
+
+    // 11. Profile Update & Upload Avatar
+    if (url.includes("/upload-avatar") || url.includes("/update-user")) {
+      const realUser = getRealProvisionedUser();
+      const u = {
+        id: realUser?.id || 999999,
+        name: realUser?.name || "VIP Cinema Pro",
+        email: realUser?.email || "vip@rophim.vip",
+        role: "VIP",
+        is_vip: true,
+        is_premium: true,
+        avatar: "/images/avatars/10.jpg"
+      };
+      return JSON.stringify({
+        status: true,
+        statusCode: 200,
+        code: 200,
+        message: "Cập nhật thành công",
+        user: u,
+        data: u
       });
     }
 
@@ -1053,30 +1161,73 @@
       }
       return data;
     }
+    if (url && (url.includes("/histories") || url.includes("/history") || url.includes("/watch-progress"))) {
+      if (data && typeof data === "object") {
+        if (!Array.isArray(data.data)) data.data = [];
+        if (!Array.isArray(data.items)) data.items = [];
+        if (!data.meta || typeof data.meta !== "object") {
+          data.meta = { page: 1, limit: 18, total: 0, totalPages: 1, totalPage: 1 };
+        }
+      }
+      return data;
+    }
+    if (url && (url.includes("/favorites") || url.includes("/favourite") || url.includes("/favourites"))) {
+      if (data && typeof data === "object") {
+        if (!Array.isArray(data.data)) data.data = [];
+        if (!Array.isArray(data.items)) data.items = [];
+        if (!data.meta || typeof data.meta !== "object") {
+          data.meta = { page: 1, limit: 18, total: 0, totalPages: 1, totalPage: 1 };
+        }
+      }
+      return data;
+    }
     if (url && (url.includes("/bookmarks") || url.includes("bookmarks"))) {
+      if (url.includes("/bookmarks/movie") || url.includes("/bookmarks/actor")) {
+        if (data && typeof data === "object") {
+          if (!Array.isArray(data.data)) data.data = [];
+          if (!Array.isArray(data.items)) data.items = [];
+          if (!data.meta || typeof data.meta !== "object") {
+            data.meta = { page: 1, limit: 18, total: 0, totalPages: 1, totalPage: 1 };
+          }
+        }
+        return data;
+      }
       const bookmarkData = {
         movieIds: (data && Array.isArray(data.movieIds)) ? data.movieIds : ((data && data.data && Array.isArray(data.data.movieIds)) ? data.data.movieIds : []),
         actorIds: (data && Array.isArray(data.actorIds)) ? data.actorIds : ((data && data.data && Array.isArray(data.data.actorIds)) ? data.data.actorIds : []),
-        items: (data && Array.isArray(data.items)) ? data.items : ((data && data.data && Array.isArray(data.data.items)) ? data.data.items : [])
+        items: (data && Array.isArray(data.items)) ? data.items : ((data && data.data && Array.isArray(data.data.items)) ? data.data.items : []),
+        data: [],
+        meta: { page: 1, limit: 18, total: 0, totalPages: 1, totalPage: 1 }
       };
       if (data && typeof data === "object") {
         data.data = bookmarkData;
         data.status = true;
         data.code = 200;
+        data.meta = { page: 1, limit: 18, total: 0, totalPages: 1, totalPage: 1 };
       }
       return data;
     }
     if (url && (url.includes("/notification") || url.includes("notification"))) {
       if (data && typeof data === "object") {
+        if (!Array.isArray(data.notifications)) data.notifications = [];
         if (!Array.isArray(data.notificationsMovie)) data.notificationsMovie = [];
         if (!Array.isArray(data.notificationsOther)) data.notificationsOther = [];
         if (typeof data.unreadCountMovie !== "number") data.unreadCountMovie = 0;
         if (typeof data.unreadCountOther !== "number") data.unreadCountOther = 0;
+        if (typeof data.unreadCount !== "number") data.unreadCount = 0;
+        if (!data.meta || typeof data.meta !== "object") {
+          data.meta = { page: 1, limit: 10, total: 0, totalPages: 1, totalPage: 1 };
+        }
         if (data.data && typeof data.data === "object") {
+          if (!Array.isArray(data.data.notifications)) data.data.notifications = [];
           if (!Array.isArray(data.data.notificationsMovie)) data.data.notificationsMovie = [];
           if (!Array.isArray(data.data.notificationsOther)) data.data.notificationsOther = [];
           if (typeof data.data.unreadCountMovie !== "number") data.data.unreadCountMovie = 0;
           if (typeof data.data.unreadCountOther !== "number") data.data.unreadCountOther = 0;
+          if (typeof data.data.unreadCount !== "number") data.data.unreadCount = 0;
+          if (!data.data.meta || typeof data.data.meta !== "object") {
+            data.data.meta = { page: 1, limit: 10, total: 0, totalPages: 1, totalPage: 1 };
+          }
         }
       }
       return data;

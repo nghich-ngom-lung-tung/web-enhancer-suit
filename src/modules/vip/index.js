@@ -198,30 +198,73 @@ ${activeCodes}
       }
       return data;
     }
+    if (url && (url.includes("/histories") || url.includes("/history") || url.includes("/watch-progress"))) {
+      if (data && typeof data === "object") {
+        if (!Array.isArray(data.data)) data.data = [];
+        if (!Array.isArray(data.items)) data.items = [];
+        if (!data.meta || typeof data.meta !== "object") {
+          data.meta = { page: 1, limit: 18, total: 0, totalPages: 1, totalPage: 1 };
+        }
+      }
+      return data;
+    }
+    if (url && (url.includes("/favorites") || url.includes("/favourite") || url.includes("/favourites"))) {
+      if (data && typeof data === "object") {
+        if (!Array.isArray(data.data)) data.data = [];
+        if (!Array.isArray(data.items)) data.items = [];
+        if (!data.meta || typeof data.meta !== "object") {
+          data.meta = { page: 1, limit: 18, total: 0, totalPages: 1, totalPage: 1 };
+        }
+      }
+      return data;
+    }
     if (url && (url.includes("/bookmarks") || url.includes("bookmarks"))) {
+      if (url.includes("/bookmarks/movie") || url.includes("/bookmarks/actor")) {
+        if (data && typeof data === "object") {
+          if (!Array.isArray(data.data)) data.data = [];
+          if (!Array.isArray(data.items)) data.items = [];
+          if (!data.meta || typeof data.meta !== "object") {
+            data.meta = { page: 1, limit: 18, total: 0, totalPages: 1, totalPage: 1 };
+          }
+        }
+        return data;
+      }
       const bookmarkData = {
         movieIds: (data && Array.isArray(data.movieIds)) ? data.movieIds : ((data && data.data && Array.isArray(data.data.movieIds)) ? data.data.movieIds : []),
         actorIds: (data && Array.isArray(data.actorIds)) ? data.actorIds : ((data && data.data && Array.isArray(data.data.actorIds)) ? data.data.actorIds : []),
-        items: (data && Array.isArray(data.items)) ? data.items : ((data && data.data && Array.isArray(data.data.items)) ? data.data.items : [])
+        items: (data && Array.isArray(data.items)) ? data.items : ((data && data.data && Array.isArray(data.data.items)) ? data.data.items : []),
+        data: [],
+        meta: { page: 1, limit: 18, total: 0, totalPages: 1, totalPage: 1 }
       };
       if (data && typeof data === "object") {
         data.data = bookmarkData;
         data.status = true;
         data.code = 200;
+        data.meta = { page: 1, limit: 18, total: 0, totalPages: 1, totalPage: 1 };
       }
       return data;
     }
     if (url && (url.includes("/notification") || url.includes("notification"))) {
       if (data && typeof data === "object") {
+        if (!Array.isArray(data.notifications)) data.notifications = [];
         if (!Array.isArray(data.notificationsMovie)) data.notificationsMovie = [];
         if (!Array.isArray(data.notificationsOther)) data.notificationsOther = [];
         if (typeof data.unreadCountMovie !== "number") data.unreadCountMovie = 0;
         if (typeof data.unreadCountOther !== "number") data.unreadCountOther = 0;
+        if (typeof data.unreadCount !== "number") data.unreadCount = 0;
+        if (!data.meta || typeof data.meta !== "object") {
+          data.meta = { page: 1, limit: 10, total: 0, totalPages: 1, totalPage: 1 };
+        }
         if (data.data && typeof data.data === "object") {
+          if (!Array.isArray(data.data.notifications)) data.data.notifications = [];
           if (!Array.isArray(data.data.notificationsMovie)) data.data.notificationsMovie = [];
           if (!Array.isArray(data.data.notificationsOther)) data.data.notificationsOther = [];
           if (typeof data.data.unreadCountMovie !== "number") data.data.unreadCountMovie = 0;
           if (typeof data.data.unreadCountOther !== "number") data.data.unreadCountOther = 0;
+          if (typeof data.data.unreadCount !== "number") data.data.unreadCount = 0;
+          if (!data.data.meta || typeof data.data.meta !== "object") {
+            data.data.meta = { page: 1, limit: 10, total: 0, totalPages: 1, totalPage: 1 };
+          }
         }
       }
       return data;
