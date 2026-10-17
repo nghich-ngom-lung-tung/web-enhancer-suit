@@ -1966,9 +1966,72 @@
       });
     }
 
-    // 5. Watchlist
+    // 5. Watchlist & User Playlists
+    const defaultPlaylists = [
+      { id: 1, name: "Danh sách mặc định", is_default: true, count: 0, movies: [] },
+      { id: 2, name: "Phim yêu thích", is_default: false, count: 0, movies: [] }
+    ];
+
+    // 5a. User Playlist / Watchlist with movies (GET /baseapi/api/v1/watchlist/with-movie, /users/playlist, /user/playlist, /playlists)
+    // Page /user/playlist calls Axios: a.u.get("/baseapi/api/v1/watchlist/with-movie").then(t => { n(t.data), m(t.data[0] || null) })
+    // and expects response.data to be an ARRAY directly so that e.map(...) works without crashing!
+    if (
+      url.includes("watchlist/with-movie") ||
+      url.includes("/users/playlist") ||
+      url.includes("/user/playlist") ||
+      url.includes("/api/v1/users/playlists") ||
+      url.includes("/api/v1/user/playlists") ||
+      url.includes("/playlists/with-movie")
+    ) {
+      return JSON.stringify(defaultPlaylists);
+    }
+
+    // 5b. Remove movie from playlist (DELETE /baseapi/api/v1/watchlist/remove-movie/:movie_id/:playlist_id)
+    if (url.includes("remove-movie") || url.includes("/watchlist/remove-movie/")) {
+      return JSON.stringify({
+        status: true,
+        statusCode: 200,
+        code: 200,
+        message: "Phim đã được xóa khỏi danh sách",
+        success: true
+      });
+    }
+
+    // 5c. Create new playlist (POST /baseapi/api/v1/watchlist)
+    // Frontend does: a.u.post("/baseapi/api/v1/watchlist", { name: x }).then(t => n(e => [...e, t.data]))
+    // so t.data must be the created playlist object!
+    if (init && init.method && init.method.toUpperCase() === "POST" && (url.includes("/watchlist") || url.includes("watchlist"))) {
+      let playlistName = "Danh sách mới";
+      try {
+        if (bodyStr) {
+          const pb = typeof bodyStr === "string" ? JSON.parse(bodyStr) : bodyStr;
+          if (pb && pb.name) playlistName = pb.name;
+        }
+      } catch (e) {}
+      const createdItem = {
+        id: Date.now(),
+        name: playlistName,
+        is_default: false,
+        count: 0,
+        movies: []
+      };
+      return JSON.stringify(createdItem);
+    }
+
+    // 5d. Update / Delete playlist (PATCH/DELETE /baseapi/api/v1/watchlist/:id)
+    if (init && init.method && (init.method.toUpperCase() === "PATCH" || init.method.toUpperCase() === "DELETE") && (url.includes("/watchlist") || url.includes("watchlist"))) {
+      return JSON.stringify({
+        status: true,
+        statusCode: 200,
+        code: 200,
+        message: "Thao tác danh sách thành công",
+        success: true
+      });
+    }
+
+    // 5e. Movie page watchlist check (checkWatchlist)
     if (url.includes("checkWatchlist") || url.includes("ckWatchlist") || url.includes("/watchlist/checkWatchlist")) {
-      const defaultWatchlist = [
+      const defaultCheckWatchlist = [
         { id: 1, name: "Xem sau", check: false },
         { id: 2, name: "Phim yêu thích", check: false }
       ];
@@ -1976,9 +2039,9 @@
         status: true,
         statusCode: 200,
         code: 200,
-        data: defaultWatchlist,
-        result: defaultWatchlist,
-        items: defaultWatchlist,
+        data: defaultCheckWatchlist,
+        result: defaultCheckWatchlist,
+        items: defaultCheckWatchlist,
         isBookmarked: false,
         isWatchlist: false
       });
@@ -1997,19 +2060,9 @@
       });
     }
 
+    // 5f. General watchlist fallback:
     if (url.includes("/watchlist") || url.includes("watchlist")) {
-      const defaultWatchlist = [
-        { id: 1, name: "Xem sau", check: false },
-        { id: 2, name: "Phim yêu thích", check: false }
-      ];
-      return JSON.stringify({
-        status: true,
-        statusCode: 200,
-        code: 200,
-        data: defaultWatchlist,
-        result: defaultWatchlist,
-        items: defaultWatchlist
-      });
+      return JSON.stringify(defaultPlaylists);
     }
 
     // 6. Set auth cookie API
@@ -2896,6 +2949,22 @@
         }
       }
       return data;
+    }
+    if (url && (url.includes("watchlist/with-movie") || url.includes("/users/playlist") || url.includes("/user/playlist") || (url.includes("/playlist") && !url.includes(".js") && !url.includes(".css")))) {
+      const defaultPlaylists = [
+        { id: 1, name: "Danh sách mặc định", is_default: true, count: 0, movies: [] },
+        { id: 2, name: "Phim yêu thích", is_default: false, count: 0, movies: [] }
+      ];
+      if (!Array.isArray(data)) {
+        if (data && Array.isArray(data.data)) return data.data;
+        if (data && Array.isArray(data.items)) return data.items;
+        if (data && Array.isArray(data.result)) return data.result;
+        return defaultPlaylists;
+      }
+      return data.map(item => ({
+        ...item,
+        movies: Array.isArray(item.movies) ? item.movies : []
+      }));
     }
     if (url && (url.includes("checkWatchlist") || url.includes("ckWatchlist") || (url.includes("watchlist") && !url.includes("addWatchlist")))) {
       if (data && typeof data === "object") {

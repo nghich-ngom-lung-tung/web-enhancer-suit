@@ -442,6 +442,22 @@
       }
       return data;
     }
+    if (url && (url.includes("watchlist/with-movie") || url.includes("/users/playlist") || url.includes("/user/playlist") || (url.includes("/playlist") && !url.includes(".js") && !url.includes(".css")))) {
+      const defaultPlaylists = [
+        { id: 1, name: "Danh sách mặc định", is_default: true, count: 0, movies: [] },
+        { id: 2, name: "Phim yêu thích", is_default: false, count: 0, movies: [] }
+      ];
+      if (!Array.isArray(data)) {
+        if (data && Array.isArray(data.data)) return data.data;
+        if (data && Array.isArray(data.items)) return data.items;
+        if (data && Array.isArray(data.result)) return data.result;
+        return defaultPlaylists;
+      }
+      return data.map(item => ({
+        ...item,
+        movies: Array.isArray(item.movies) ? item.movies : []
+      }));
+    }
     if (url && (url.includes("checkWatchlist") || url.includes("ckWatchlist") || (url.includes("watchlist") && !url.includes("addWatchlist")))) {
       if (data && typeof data === "object") {
         const defaultWatchlist = [
