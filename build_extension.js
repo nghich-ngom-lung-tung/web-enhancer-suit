@@ -969,6 +969,14 @@ legacyFlatFiles.forEach(f => {
   }
 });
 
+// Sync version in popup/popup.html
+const popupHtmlPath = path.join(EXT_DIR, "popup", "popup.html");
+if (fs.existsSync(popupHtmlPath)) {
+  let popupHtml = fs.readFileSync(popupHtmlPath, "utf8");
+  popupHtml = popupHtml.replace(/<span class="version">v[\d\.]+ \(Manifest V3\)<\/span>/, `<span class="version">v${pkg.version} (Manifest V3)</span>`);
+  fs.writeFileSync(popupHtmlPath, popupHtml, "utf8");
+}
+
 console.log(`\n===============================================================`);
 console.log(`✅ Extension Build Complete: Standalone Manifest V3 Ready!`);
 console.log(`   Location: ${EXT_DIR}`);
