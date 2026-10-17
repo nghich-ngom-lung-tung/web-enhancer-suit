@@ -86,14 +86,69 @@ function getSnifferCode(enableRophimVip) {
   // 1. IFRAME EMBED PLAYER GUARD KILLER & STREAM SNIFFER
   // ═══════════════════════════════════════════════════════════════
   if (isEmbedPlayer) {
+    try {
+      const origGetElementById = Document.prototype.getElementById;
+      Document.prototype.getElementById = function (id) {
+        const el = origGetElementById.apply(this, arguments);
+        if (id === "stream-bootstrap" && el && !el._cpro_hooked) {
+          el._cpro_hooked = true;
+          const defuse = (raw) => {
+            try {
+              const parsed = JSON.parse(raw);
+              if (parsed && parsed.browserGuard) {
+                parsed.browserGuard.detect_devtools = false;
+                parsed.browserGuard.anti_adblock = false;
+                parsed.browserGuard.devtools_redirect_url = "";
+                parsed.browserGuard.block_shortcuts = false;
+                parsed.browserGuard.block_context_menu = false;
+                return JSON.stringify(parsed);
+              }
+            } catch (e) {}
+            return raw;
+          };
+          let _text = defuse(el.textContent);
+          Object.defineProperty(el, "textContent", {
+            get() { return defuse(_text); },
+            set(val) { _text = defuse(val); },
+            configurable: true
+          });
+        }
+        return el;
+      };
+    } catch (e) {}
+
     let activePlayer = null;
     const dummyGuard = {
-      version: "guard-25",
-      status: () => ({ blocked: false, antiAdblock: false, action: "none" }),
+      version: "guard-7",
+      devtoolsBuild: "iframe-local-5",
+      detectDevtools: true,
       ready: Promise.resolve(),
       isBlocked: () => false,
-      reportAdResource: () => {},
       waitForAccess: () => Promise.resolve(),
+      reportAdResource: () => {},
+      status: () => ({
+        version: "guard-7",
+        devtoolsBuild: "iframe-local-5",
+        devtoolsLocal: "Chưa có tín hiệu cục bộ",
+        devtoolsRedirect: false,
+        redirectStarted: false,
+        blockShortcuts: false,
+        antiAdblock: false,
+        detectDevtools: true,
+        devtoolsSessionLocked: false,
+        devtoolsRetainedLock: false,
+        action: "none",
+        css: "Tắt",
+        network: "Tắt",
+        devtools: "Tắt trong admin",
+        lastKey: "Chưa nhận phím kiểm tra",
+        frame: "Embed độc lập",
+        parentVersion: "guard-7",
+        parentAds: "Tắt",
+        adResources: 0,
+        uncertainNetwork: false,
+        blocked: false
+      }),
       registerPlayer: (player) => {
         activePlayer = player;
         if (player && typeof player.play === "function") {
@@ -105,10 +160,15 @@ function getSnifferCode(enableRophimVip) {
     };
 
     try {
+      sessionStorage.removeItem("stream-guard:devtools-session-lock:v1");
+      sessionStorage.removeItem("stream-guard:session-lock:v1");
+    } catch (e) {}
+
+    try {
       Object.defineProperty(window, "streamGuard", {
-        value: dummyGuard,
-        writable: false,
-        configurable: false
+        get: () => dummyGuard,
+        set: () => {},
+        configurable: true
       });
     } catch (e) {
       window.streamGuard = dummyGuard;
@@ -120,7 +180,7 @@ function getSnifferCode(enableRophimVip) {
         const stack = new Error().stack || "";
         if (
           stack.includes("stream-guard") ||
-          stack.includes("guard-25") ||
+          stack.includes("guard-") ||
           stack.includes("stopPlayback") ||
           stack.includes("adError")
         ) {
@@ -161,7 +221,15 @@ function getSnifferCode(enableRophimVip) {
         filter: contrast(1.10) saturate(1.25) brightness(1.04) !important;
       }
     \`;
-    (document.head || document.documentElement).appendChild(embedStyle);
+    const appendEmbedStyle = () => {
+      const target = document.head || document.documentElement;
+      if (target && !embedStyle.parentNode) target.appendChild(embedStyle);
+    };
+    if (document.head || document.documentElement) {
+      appendEmbedStyle();
+    } else {
+      document.addEventListener("DOMContentLoaded", appendEmbedStyle, { once: true });
+    }
 
     let lastNotifiedStream = "";
     function notifyStream(url) {

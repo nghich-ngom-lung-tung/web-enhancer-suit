@@ -33,12 +33,14 @@ module.exports = `
         key === "adblock_detected" ||
         key === "popup_last_shown" ||
         key === "corner_start_popup_dismissed" ||
-        key === "giovang_tvc_pre_roll_daily"
+        key === "giovang_tvc_pre_roll_daily" ||
+        (typeof key === "string" && (key.includes("session-lock") || key.includes("stream-guard:")))
       ) return;
       return origSetItem.apply(this, arguments);
     };
     const origGetItem = Storage.prototype.getItem;
     Storage.prototype.getItem = function (key) {
+      if (typeof key === "string" && (key.includes("session-lock") || key.includes("stream-guard:"))) return null;
       if (key === "popup_last_shown" || key === "corner_start_popup_dismissed") return "9999999999999";
       if (key === "giovang_tvc_pre_roll_daily") return JSON.stringify({ date: "2099-12-31", count: 99999 });
       if (key === "rophim-tvc-shown") return "1";
