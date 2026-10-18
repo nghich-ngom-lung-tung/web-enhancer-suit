@@ -501,10 +501,31 @@ html, body {
     .catfish,
     #catfish,
     [class*="catfish"],
+    .s-momo,
+    [class*="s-momo"],
+    .tier-2,
+    .tier-3,
+    .tier-4,
+    .tier-5,
+    .tier-6,
+    .first-pop,
+    .second-pop,
+    .promotion-popup-content,
     .logo-partner,
     [class*="logo-partner"],
     a[href*="hit32"],
-    img[src*="hitlogo"] {
+    img[src*="hitlogo"],
+    a[href*="reffpa.com"],
+    a[href*="10go8.com"],
+    a[href*="go8"],
+    a[href*="154.82."],
+    a[href*="tin888vn"],
+    img[src*="okok14102026"],
+    img[src*="Light_football"],
+    img[src*="GO8-"],
+    img[src*="i905_pc"],
+    img[src*="tin729"],
+    img[src*="400x300"] {
   display: none !important;
   visibility: hidden !important;
   height: 0 !important;

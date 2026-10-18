@@ -1391,8 +1391,8 @@ sportsAndComicsScripts.forEach(file => {
 
   // GhienPhim, DuPhim, CoiPhim & GhienBlog checks
   if (file.includes("ghienphim") || file.includes("duphim") || file.includes("coiphim") || file.includes("ghienblog") || file.includes("web-enhancer-all")) {
-    const hasFloaterAdsNuked = content.includes(".ad-floater") && content.includes(".promotion-popup") && content.includes(".source-banner");
-    report(`${file}: GhienPhim ecosystem ad floaters & promotion popups suppressed`, hasFloaterAdsNuked);
+    const hasFloaterAdsNuked = content.includes(".ad-floater") && content.includes(".promotion-popup") && content.includes(".source-banner") && content.includes(".s-momo");
+    report(`${file}: GhienPhim ecosystem ad floaters (.s-momo) & promotion popups suppressed`, hasFloaterAdsNuked);
 
     const hasComponentAdsNuked = content.includes(".component.ads") && content.includes(".ad-1170x150") && content.includes(".adtop");
     report(`${file}: GhienPhim ecosystem component ads & 1170x150 banners suppressed`, hasComponentAdsNuked);

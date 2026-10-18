@@ -1714,13 +1714,17 @@
       '.ads-static-header', '.ads-static-home-detail-chapter', '.ads-static-home-middle', 'div[class*="ads-static"]',
       '.popup_layer', '.popup_content', '#popup_content',
       // GhienPhim, DuPhim, CoiPhim, GhienBlog Banners & Floating Promos
+      '.s-momo', '[class*="s-momo"]', '.tier-2', '.tier-3', '.tier-4', '.tier-5', '.tier-6',
+      '.first-pop', '.second-pop', '.promotion-popup-content',
       '.ad-floater', '.new-target-goal', '.new-floater-goal', '.promotion-popup', '.popuptet-bg', '.source-banner',
       '.component.ads', '[class*="component ads"]', '.adtop', '.adbot', '[class*="adtop"]', '[class*="adbot"]',
       '.ad-1170x150', '[class*="ad-1170x150"]', '.no-ads', '.anti-bad-ad', '[class*="no-ads"]', '[class*="anti-bad-ad"]',
       'a[aria-label*="Advertisement"]', 'a[aria-label="Advertisement"]',
       'img[src*="newbanner2025"]', 'img[src*="no-ads.png"]',
       'a[href*="shortlink.linkroyal"]', 'a[href*="linkroyal"]', 'a[href*="hdbet"]', 'a[href*="go8.best"]', 'a[href*="tin888"]',
-      'a[href*="bom88"]', 'a[href*="ok999"]', 'iframe[src*="seotraffic.io.vn"]',
+      'a[href*="bom88"]', 'a[href*="ok999"]', 'a[href*="reffpa.com"]', 'a[href*="10go8"]', 'a[href*="go8"]', 'a[href*="154.82."]', 'a[href*="tin888vn"]',
+      'img[src*="okok14102026"]', 'img[src*="Light_football"]', 'img[src*="GO8-"]', 'img[src*="i905_pc"]', 'img[src*="tin729"]', 'img[src*="400x300"]',
+      'iframe[src*="seotraffic.io.vn"]',
       // GhienPhim & CoiPhim TVC Video Ad Layer & Pre-roll
       '.video-ad-layer', '[class*="video-ad-layer"]',
       '.ad-msg', '[class*="ad-msg"]', '.random-content',
