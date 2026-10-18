@@ -162,6 +162,15 @@
     }
   },
   {
+    "id": 19,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": {
+      "urlFilter": "*irondom*",
+      "resourceTypes": ["sub_frame", "image", "xmlhttprequest", "script"]
+    }
+  },
+  {
     "id": 100,
     "priority": 2,
     "action": {

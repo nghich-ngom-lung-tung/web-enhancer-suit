@@ -1558,6 +1558,8 @@ if (manifestObj) {
     report("extension matches: darkbytes.xyz embed pattern present", matches.some(m => m.includes("darkbytes.xyz")));
     report("extension matches: film4k.net pattern present", matches.some(m => m.includes("film4k.net")));
     report("extension matches: film4knet.ngaodacopho.workers.dev pattern present", matches.some(m => m.includes("workers.dev")));
+    report("extension matches: duphim.one pattern present", matches.some(m => m.includes("duphim.one")));
+    report("extension rules: irondom ad-block rule present", Array.isArray(rulesObj) && rulesObj.some(r => r.condition && r.condition.urlFilter.includes("irondom")));
   }
 
   // Validate script syntax

@@ -2373,6 +2373,16 @@
 
     // GhienPhim, CoiPhim & DuPhim In-Memory Playlist & Player Sniffing
     try {
+      if (Array.isArray(window.sources)) {
+        window.sources.forEach(s => {
+          if (s && typeof s === "string") checkAndCaptureUrl(s);
+        });
+      }
+      if (Array.isArray(window.playlist)) {
+        window.playlist.forEach(s => {
+          if (s && typeof s === "string") checkAndCaptureUrl(s);
+        });
+      }
       if (window._memPlaylist && window._memPlaylist[0]) {
         const s = window._memPlaylist[0].source;
         if (s && typeof s === "string") checkAndCaptureUrl(s);

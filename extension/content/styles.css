@@ -500,7 +500,11 @@ html, body {
     .modal-adblock,
     .catfish,
     #catfish,
-    [class*="catfish"] {
+    [class*="catfish"],
+    .logo-partner,
+    [class*="logo-partner"],
+    a[href*="hit32"],
+    img[src*="hitlogo"] {
   display: none !important;
   visibility: hidden !important;
   height: 0 !important;

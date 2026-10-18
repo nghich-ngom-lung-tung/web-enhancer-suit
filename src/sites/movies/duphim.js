@@ -9,6 +9,12 @@ module.exports = {
   "domains": [
     "*://*.duphim.social/*",
     "*://duphim.social/*",
+    "*://*.duphim.one/*",
+    "*://duphim.one/*",
+    "*://*.duphim.net/*",
+    "*://duphim.net/*",
+    "*://*.duphim.tv/*",
+    "*://duphim.tv/*",
     "*://*.duphim.*/*",
     "*://duphim.*/*"
   ],
@@ -68,7 +74,11 @@ module.exports = {
     .modal-adblock,
     .catfish,
     #catfish,
-    [class*="catfish"]
+    [class*="catfish"],
+    .logo-partner,
+    [class*="logo-partner"],
+    a[href*="hit32"],
+    img[src*="hitlogo"]
   `,
   "category": "movies"
 };
