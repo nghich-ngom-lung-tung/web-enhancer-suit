@@ -16,7 +16,7 @@
 [![Test Suite](https://img.shields.io/badge/Tests-1227%2F1227_Passing-10b981?style=for-the-badge&logo=checkmarx&logoColor=white)](run_audit.js)
 [![Health Score](https://img.shields.io/badge/Health_Score-100%25_Production_Ready-047857?style=for-the-badge&logo=speedtest&logoColor=white)](run_audit.js)
 [![Platforms](https://img.shields.io/badge/Platform-Extension_(MV3)_%7C_Tampermonkey-3b82f6?style=for-the-badge&logo=googlechrome&logoColor=white)](https://github.com/nghich-ngom-lung-tung/web-enhancer-suit)
-[![Sites](https://img.shields.io/badge/Supported_Sites-57%2B_Platforms-f59e0b?style=for-the-badge&logo=safari&logoColor=white)](#-danh-s%C3%A1ch-website-h%E1%BB%97-tr%E1%BB%A3)
+[![Sites](https://img.shields.io/badge/Supported_Sites-58%2B_Platforms-f59e0b?style=for-the-badge&logo=safari&logoColor=white)](#-danh-s%C3%A1ch-website-h%E1%BB%97-tr%E1%BB%A3)
 [![License](https://img.shields.io/badge/License-MIT-6366f1?style=for-the-badge)](LICENSE)
 
 <br/>
@@ -96,7 +96,7 @@ Dành cho bạn nào thích quản lý bằng Tampermonkey / Violentmonkey và t
 
 ### ⭐ GÓI TỔNG HỢP TOÀN NĂNG (ALL-IN-ONE) ⭐
 
-[![Install All-In-One](https://img.shields.io/badge/CÀI_ĐẶT_BẢN_GỘP_MASTER_(57+_WEBSITES)-10b981?style=for-the-badge&logo=tampermonkey&logoColor=white)](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/web-enhancer-all.user.js)
+[![Install All-In-One](https://img.shields.io/badge/CÀI_ĐẶT_BẢN_GỘP_MASTER_(58+_WEBSITES)-10b981?style=for-the-badge&logo=tampermonkey&logoColor=white)](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/web-enhancer-all.user.js)
 
 *Tự động kích hoạt trên tất cả web Phim, Anime, Bóng Đá và Truyện Tranh bên dưới*
 
@@ -111,6 +111,7 @@ Dành cho bạn nào thích quản lý bằng Tampermonkey / Violentmonkey và t
 | Website Thể Thao | Trạng Thái | Link Cài Đặt 1-Click | Tên Miền / CDN Hỗ Trợ |
 | :--- | :---: | :---: | :--- |
 | 🍌 **Chuối Chiên TV** | 🟢 Sẵn sàng | [👉 **Cài đặt Chuối Chiên**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/sports/chuoichien.user.js) | `chuoichientv.me`, `chuoichientv.link`, `cctvsignal.xyz` |
+| 🍲 **Bông Lau TV (Bóng Lẩu)** | 🟢 Sẵn sàng | [👉 **Cài đặt Bông Lau**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/sports/bonglau.user.js) | `bonglautv1.org`, `bonglautv1.pro`, `bonglau.live` |
 | ⚽ **Xôi Lạc TV (XoilacZ)** | 🟢 Sẵn sàng | [👉 **Cài đặt Xôi Lạc**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/sports/xoilac.user.js) | `xoilaczzz.pro`, `xoilac.tv`, `xoilac.net` |
 | 🏆 **Thập Cẩm TV (ThapCam)** | 🟢 Sẵn sàng | [👉 **Cài đặt Thập Cẩm**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/sports/thapcam.user.js) | `explorado-invest.com`, `thapcam.tv` |
 | 🍗 **Khô Gà TV (KhogaLive)** | 🟢 Sẵn sàng | [👉 **Cài đặt Khô Gà**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/sports/khoga.user.js) | `khoga.live`, `khoga1.live`, `khoga.space` |

@@ -62,5 +62,8 @@ module.exports = [
   "*://darkbytes.xyz/*",
   "*://*.clubc.org/*",
   "*://clubc.org/*",
-  "*://api.clubc.org/*"
+  "*://api.clubc.org/*",
+  "*://*.bonglau.live/*",
+  "*://tructiep.bonglau.live/*",
+  "*://*.bonglau*.*/*"
 ];

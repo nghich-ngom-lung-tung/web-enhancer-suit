@@ -39,9 +39,11 @@
   try {
     const isChuoiChienHost = (typeof location !== "undefined" && location.hostname && (
       location.hostname.includes("chuoichien") ||
+      location.hostname.includes("bonglau") ||
+      location.hostname.includes("bonglautv") ||
       location.hostname.includes("cctvsignal") ||
       location.hostname.includes("cctv")
-    )) || (typeof window !== "undefined" && window.location && window.location.hostname && window.location.hostname.includes("chuoichien"));
+    )) || (typeof window !== "undefined" && window.location && window.location.hostname && window.location.hostname.includes("chuoichien") || window.location.hostname.includes("bonglau") || window.location.hostname.includes("bonglautv"));
 
     if (isChuoiChienHost && typeof window !== "undefined" && window.localStorage) {
       const VIP_CC_USER = getChuoiChienVipUser();
@@ -191,7 +193,11 @@
               "html body .bet-button-player, html body .bet-buttons-container, html body [class*='bet-buttons-container'], " +
               "html body img[src*='1920x60'], html body img[src*='cdnvip.chuoichientv.net'], html body img[src*='c5735ef8'], " +
               "html body img[alt*='FB88'], html body img[alt*='net-88'], html body img[alt*='banner_player'], html body img[alt*='banner-player'], " +
-              "html body .player-logo-wrapper, html body [class*='player-logo'], html body .boxchat-sticky-ad, html body [class*='boxchat-sticky-ad'], html body .login-prompt { " +
+              "html body .player-logo-wrapper, html body [class*='player-logo'], html body .boxchat-sticky-ad, html body [class*='boxchat-sticky-ad'], html body .login-prompt, " +
+              "html body .popup-backdrop, html body [class*='popup-backdrop'], html body .popup-content-wrap, html body [class*='popup-content-wrap'], html body .popup-close-btn, html body [class*='popup-close-btn'], " +
+              "html body .qx-w, html body [class*='qx-'], html body .qx-box, html body [class*='qx-box'], html body .qx-popup-fullscreen, html body [class*='qx-popup-fullscreen'], " +
+              "html body [data-position*='popup'], html body [data-position='popup-fullscreen'], html body [data-v-de34b07f], html body [data-v-32946555], html body [data-v-a14d81c7], " +
+              "html body video[src*='net88'], html body video[src*='NHA-G8'], html body video[src*='cdnvip.chuoichientv.net/video'], html body a[href*='net88.study'] { " +
               "display: none !important; " +
               "visibility: hidden !important; " +
               "height: 0 !important; " +
@@ -221,6 +227,49 @@
       function cleanChuoiChienPlayerAds() {
         try {
           if (typeof document === "undefined") return;
+
+          // Auto-click close on modal popup
+          const closeBtns = document.querySelectorAll(".popup-close-btn, button.popup-close-btn, [class*='popup-close']");
+          closeBtns.forEach(btn => {
+            if (typeof btn.click === "function") {
+              try { btn.click(); } catch (e) {}
+            }
+          });
+
+          // Nuke modal popup backdrop & Qx wrappers
+          const modalPopups = document.querySelectorAll(
+            ".popup-backdrop, [class*='popup-backdrop'], " +
+            ".popup-content-wrap, [class*='popup-content-wrap'], " +
+            ".qx-w, [class*='qx-'], .qx-box, [class*='qx-popup-fullscreen'], " +
+            "[data-position*='popup'], [data-position='popup-fullscreen'], " +
+            "[data-v-de34b07f], [data-v-32946555]"
+          );
+          modalPopups.forEach(p => {
+            if (p.tagName === "VIDEO" || p.classList?.contains("hlsp") || (p.querySelector && p.querySelector(".hlsp"))) return;
+            try {
+              p.style.setProperty("display", "none", "important");
+              p.style.setProperty("visibility", "hidden", "important");
+              p.remove();
+            } catch (e) {}
+          });
+
+          // Neutralize TVC ad videos (Net88 / cdnvip video)
+          const adVideos = document.querySelectorAll(
+            "video[src*='net88'], video[src*='NET88'], video[src*='/video/net88/'], " +
+            "video[src*='cdnvip.chuoichientv.net/video/'], video[src*='NHA-G8'], " +
+            "video[data-v-a14d81c7][src*='.mp4']"
+          );
+          adVideos.forEach(v => {
+            try {
+              v.muted = true;
+              v.pause();
+              v.currentTime = v.duration || 999;
+              v.dispatchEvent(new Event("ended"));
+              v.src = "";
+              v.style.setProperty("display", "none", "important");
+              v.remove();
+            } catch (e) {}
+          });
 
           const banners = document.querySelectorAll(
             ".banner-canvas, [class*='banner-canvas'], div.banner-canvas, " +
@@ -290,9 +339,11 @@
     if (!url || typeof url !== "string") return null;
     const isChuoiChien = (typeof location !== "undefined" && location.hostname && (
       location.hostname.includes("chuoichien") ||
+      location.hostname.includes("bonglau") ||
+      location.hostname.includes("bonglautv") ||
       location.hostname.includes("cctvsignal") ||
       location.hostname.includes("cctv")
-    )) || url.includes("chuoichien") || url.includes("chuoichientv");
+    )) || url.includes("chuoichien") || url.includes("chuoichientv") || url.includes("bonglau") || url.includes("bonglautv");
 
     // Live matches pinned & chat MUST NOT be blocked
     if (url.includes("/matches") || url.includes("/chat")) {
@@ -338,7 +389,7 @@
       });
     }
 
-    if (isChuoiChien && (url.includes("/ads") || url.includes("/v1/ads") || url.includes("/v2/ads"))) {
+    if (isChuoiChien && (url.includes("/ads") || url.includes("/v1/ads") || url.includes("/v2/ads") || url.includes("/popups") || url.includes("/banners") || url.includes("/banner"))) {
       return JSON.stringify({
         success: true,
         status: 200,

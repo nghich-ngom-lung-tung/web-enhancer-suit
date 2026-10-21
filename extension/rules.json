@@ -2,172 +2,349 @@
   {
     "id": 1,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*chaseherbalpasty*",
-      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "sub_frame",
+        "image",
+        "other"
+      ]
     }
   },
   {
     "id": 2,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*dekkopinolin*",
-      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "sub_frame",
+        "image",
+        "other"
+      ]
     }
   },
   {
     "id": 3,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*aclib*",
-      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "sub_frame",
+        "image",
+        "other"
+      ]
     }
   },
   {
     "id": 4,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*adcash*",
-      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "sub_frame",
+        "image",
+        "other"
+      ]
     }
   },
   {
     "id": 5,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*popads*",
-      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "sub_frame",
+        "image",
+        "other"
+      ]
     }
   },
   {
     "id": 6,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*adsterra*",
-      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "sub_frame",
+        "image",
+        "other"
+      ]
     }
   },
   {
     "id": 7,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*propellerads*",
-      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "sub_frame",
+        "image",
+        "other"
+      ]
     }
   },
   {
     "id": 8,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*c5735ef8*",
-      "resourceTypes": ["script", "xmlhttprequest", "sub_frame", "image", "other"]
+      "resourceTypes": [
+        "script",
+        "xmlhttprequest",
+        "sub_frame",
+        "image",
+        "other"
+      ]
     }
   },
   {
     "id": 9,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*fb88*",
-      "resourceTypes": ["sub_frame", "image", "xmlhttprequest", "script"]
+      "resourceTypes": [
+        "sub_frame",
+        "image",
+        "xmlhttprequest",
+        "script"
+      ]
     }
   },
   {
     "id": 10,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*8xbet*",
-      "resourceTypes": ["sub_frame", "image", "xmlhttprequest", "script"]
+      "resourceTypes": [
+        "sub_frame",
+        "image",
+        "xmlhttprequest",
+        "script"
+      ]
     }
   },
   {
     "id": 11,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*net88*",
-      "resourceTypes": ["sub_frame", "image", "xmlhttprequest", "script"]
+      "resourceTypes": [
+        "sub_frame",
+        "image",
+        "xmlhttprequest",
+        "script",
+        "media",
+        "other"
+      ]
     }
   },
   {
     "id": 12,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*ok999*",
-      "resourceTypes": ["sub_frame", "image", "xmlhttprequest", "script"]
+      "resourceTypes": [
+        "sub_frame",
+        "image",
+        "xmlhttprequest",
+        "script"
+      ]
     }
   },
   {
     "id": 13,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*linkroyal*",
-      "resourceTypes": ["sub_frame", "image", "xmlhttprequest", "script"]
+      "resourceTypes": [
+        "sub_frame",
+        "image",
+        "xmlhttprequest",
+        "script"
+      ]
     }
   },
   {
     "id": 14,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*hdbet*",
-      "resourceTypes": ["sub_frame", "image", "xmlhttprequest", "script"]
+      "resourceTypes": [
+        "sub_frame",
+        "image",
+        "xmlhttprequest",
+        "script"
+      ]
     }
   },
   {
     "id": 15,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*bom88*",
-      "resourceTypes": ["sub_frame", "image", "xmlhttprequest", "script"]
+      "resourceTypes": [
+        "sub_frame",
+        "image",
+        "xmlhttprequest",
+        "script"
+      ]
     }
   },
   {
     "id": 16,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*sin88*",
-      "resourceTypes": ["sub_frame", "image", "xmlhttprequest", "script"]
+      "resourceTypes": [
+        "sub_frame",
+        "image",
+        "xmlhttprequest",
+        "script"
+      ]
     }
   },
   {
     "id": 17,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*may88*",
-      "resourceTypes": ["sub_frame", "image", "xmlhttprequest", "script"]
+      "resourceTypes": [
+        "sub_frame",
+        "image",
+        "xmlhttprequest",
+        "script"
+      ]
     }
   },
   {
     "id": 18,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*red88*",
-      "resourceTypes": ["sub_frame", "image", "xmlhttprequest", "script"]
+      "resourceTypes": [
+        "sub_frame",
+        "image",
+        "xmlhttprequest",
+        "script"
+      ]
     }
   },
   {
     "id": 19,
     "priority": 1,
-    "action": { "type": "block" },
+    "action": {
+      "type": "block"
+    },
     "condition": {
       "urlFilter": "*irondom*",
-      "resourceTypes": ["sub_frame", "image", "xmlhttprequest", "script"]
+      "resourceTypes": [
+        "sub_frame",
+        "image",
+        "xmlhttprequest",
+        "script"
+      ]
+    }
+  },
+  {
+    "id": 20,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "*cdnvip.chuoichientv.net/video/*",
+      "resourceTypes": [
+        "media",
+        "other",
+        "xmlhttprequest",
+        "sub_frame"
+      ]
+    }
+  },
+  {
+    "id": 21,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "*net88.study*",
+      "resourceTypes": [
+        "sub_frame",
+        "image",
+        "xmlhttprequest",
+        "script",
+        "media",
+        "other"
+      ]
     }
   },
   {
@@ -185,7 +362,11 @@
     },
     "condition": {
       "urlFilter": "*edgemaxcdn.org/live/*",
-      "resourceTypes": ["xmlhttprequest", "media", "other"]
+      "resourceTypes": [
+        "xmlhttprequest",
+        "media",
+        "other"
+      ]
     }
   }
 ]

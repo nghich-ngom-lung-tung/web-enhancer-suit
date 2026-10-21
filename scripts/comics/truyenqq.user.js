@@ -103,6 +103,10 @@
 // @match        *://*.clubc.org/*
 // @match        *://clubc.org/*
 // @match        *://api.clubc.org/*
+// @match        *://*.bonglau.live/*
+// @match        *://bonglau.live/*
+// @match        *://tructiep.bonglau.live/*
+// @match        *://*.bonglau*.*/*
 // @include      *://*truyenqq*/*
 // @include      *://truyenqq*.com/*
 // @include      *://truyenqq*.vn/*
@@ -123,6 +127,7 @@
 // @include      *://cctvsignal.*/*
 // @include      *://fhd-*.cctvsignal.xyz/*
 // @include      *://streamxx.*/*
+// @include      *://bonglau*.*/*
 // @allFrames    true
 // @run-at       document-start
 // @grant        none
@@ -1768,6 +1773,12 @@
       '#pause-ad-styles', '.art-ad', '.art-ads', '[class*="art-ad"]',
       'div[class*="watermark-ad"]', 'div[class*="overlay-ad"]',
 
+            // ChuoiChien & BongLau Modal Popups, Backdrops & Video Ads
+      '.popup-backdrop', '[class*="popup-backdrop"]', '.popup-content-wrap', '[class*="popup-content-wrap"]', '.popup-close-btn', '[class*="popup-close-btn"]',
+      '.qx-w', '[class*="qx-"]', '.qx-box', '[class*="qx-box"]', '.qx-popup-fullscreen', '[class*="qx-popup-fullscreen"]',
+      '[data-position*="popup"]', '[data-position="popup-fullscreen"]', '[data-v-de34b07f]', '[data-v-32946555]', '[data-v-a14d81c7]',
+      'a[href*="net88.study"]',
+      'video[src*="net88"]', 'video[src*="NHA-G8"]', 'video[src*="cdnvip.chuoichientv.net/video"]',
       // ChuoiChien Video Player Banner & Gambling Overlays
       '.ads-layer', '[class*="ads-layer"]', 'div.ads-layer',
       '.player-logo-wrapper', '.player-logo-inner', '.player-logo-ad', '[class*="player-logo-"]', '[class*="player-logo"]',
@@ -1838,6 +1849,25 @@
         if (lw.getAttribute("data-tvc") !== "[]") lw.setAttribute("data-tvc", "[]");
       }
 
+      // Tự động đóng và xóa modal popup backdrop trên Chuối Chiên & Bông Lau
+      const ccCloseBtns = document.querySelectorAll('.popup-close-btn:not([data-cc-done]), button.popup-close-btn:not([data-cc-done])');
+      ccCloseBtns.forEach(btn => {
+        btn.setAttribute('data-cc-done', '1');
+        if (typeof btn.click === 'function') {
+          try { btn.click(); } catch (e) {}
+        }
+      });
+      const ccPopups = document.querySelectorAll(
+        '.popup-backdrop, [class*="popup-backdrop"], ' +
+        '.popup-content-wrap, [class*="popup-content-wrap"], ' +
+        '.qx-w, [class*="qx-popup-fullscreen"], [data-position="popup-fullscreen"], ' +
+        '[data-v-de34b07f], [data-v-32946555]'
+      );
+      ccPopups.forEach(p => {
+        if (p.tagName === 'VIDEO' || p.classList?.contains('hlsp') || (p.querySelector && p.querySelector('.hlsp'))) return;
+        safeHideOrRemove(p);
+      });
+
       // Tự động bỏ qua Landing Gate & Community Dialog trên Film4k (chỉ click 1 lần duy nhất)
       const f4kGate = document.querySelector(".landing-enter:not([data-f4k-done]), button.landing-enter:not([data-f4k-done])");
       if (f4kGate) {
@@ -1862,7 +1892,7 @@
       }
 
       // Tự động bỏ qua và kết thúc video TVC pre-roll nếu xuất hiện (ChoPhim, Giờ Vàng, Thể Thao, GhienPhim, CoiPhim)
-      const tvcVideos = document.querySelectorAll(".tvc-pre-roll__video, video[src*='tvc_'], video[src*='assets/tvc/'], video[src*='/ads/'], video[src*='ads/'], div[class*='z-[70]'] video, #video-premium, #video-second, #video-third");
+      const tvcVideos = document.querySelectorAll(".tvc-pre-roll__video, video[src*='tvc_'], video[src*='assets/tvc/'], video[src*='/ads/'], video[src*='ads/'], div[class*='z-[70]'] video, #video-premium, #video-second, #video-third, video[src*='net88'], video[src*='NET88'], video[src*='/video/net88/'], video[src*='cdnvip.chuoichientv.net/video/'], video[src*='NHA-G8'], video[data-v-a14d81c7][src*='.mp4']");
       tvcVideos.forEach(tvcVideo => {
         try {
           tvcVideo.muted = true;
@@ -1875,7 +1905,7 @@
           }
         } catch (e) {}
       });
-      const skipBtns = document.querySelectorAll(".tvc-pre-roll__skip button:not([data-tvc-done]), .tvc-pre-roll__skip:not([data-tvc-done]), .btn-skip-video:not([data-tvc-done]), div[class*='z-[70]'] button:not([data-tvc-done]), button:has(span):not([data-tvc-done])");
+      const skipBtns = document.querySelectorAll(".tvc-pre-roll__skip button:not([data-tvc-done]), .tvc-pre-roll__skip:not([data-tvc-done]), .btn-skip-video:not([data-tvc-done]), div[class*='z-[70]'] button:not([data-tvc-done]), button:has(span):not([data-tvc-done]), button.popup-close-btn:not([data-tvc-done]), .popup-close-btn:not([data-tvc-done])");
       skipBtns.forEach(skipBtn => {
         const txt = (skipBtn.textContent || "").trim();
         if (txt.includes("Bỏ qua") || txt.includes("Skip") || txt.includes("intro") || txt.includes("quảng cáo")) {

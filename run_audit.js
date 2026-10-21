@@ -889,6 +889,7 @@ ghienphimScripts.forEach(file => {
 
 const chuoiChienScripts = scriptFiles.filter(f =>
   f.endsWith("chuoichien.user.js") ||
+  f.endsWith("bonglau.user.js") ||
   f.endsWith("web-enhancer-all.user.js")
 );
 
@@ -1231,6 +1232,7 @@ const sportsAndComicsScripts = [
   "scripts/sports/giovang.user.js",
   "scripts/sports/xoilac.user.js",
   "scripts/sports/chuoichien.user.js",
+  "scripts/sports/bonglau.user.js",
   "scripts/sports/thapcam.user.js",
   "scripts/sports/khoga.user.js",
   "scripts/comics/zettruyen.user.js",
@@ -1282,7 +1284,7 @@ sportsAndComicsScripts.forEach(file => {
   }
 
   // Chuối Chiên TV checks
-  if (file.includes("chuoichien") || file.includes("web-enhancer-all")) {
+  if (file.includes("chuoichien") || file.includes("bonglau") || file.includes("web-enhancer-all")) {
     const hasBannerPlayerNuked = content.includes(".banner-player") && content.includes(".banner-container") && content.includes("FB88");
     report(`${file}: Chuối Chiên TV video player banner & FB88 ads eradicated`, hasBannerPlayerNuked);
 
@@ -1297,6 +1299,9 @@ sportsAndComicsScripts.forEach(file => {
 
     const hasAdsLayerNuked = content.includes("ads-layer") && content.includes("4c9315d7") && content.includes("1920x60");
     report(`${file}: Chuối Chiên TV master Ads Layer & 1920x60 banner (.ads-layer, [data-v-4c9315d7]) eradicated`, hasAdsLayerNuked);
+
+    const hasModalPopupBackdropNuked = content.includes(".popup-backdrop") && content.includes(".qx-w") && content.includes("net88");
+    report(`${file}: Chuối Chiên & Bông Lau popup backdrop (.popup-backdrop, .qx-w) & Net88 modal eradicated`, hasModalPopupBackdropNuked);
 
     const hasM3uRefererDirectives = content.includes("#EXTVLCOPT:http-referrer") && content.includes("|Referer=");
     report(`${file}: PotPlayer & VLC M3U stream launcher HTTP-Referer bypass directives enabled`, hasM3uRefererDirectives);
@@ -1559,6 +1564,8 @@ if (manifestObj) {
     report("extension matches: film4k.net pattern present", matches.some(m => m.includes("film4k.net")));
     report("extension matches: film4knet.ngaodacopho.workers.dev pattern present", matches.some(m => m.includes("workers.dev")));
     report("extension matches: duphim.one pattern present", matches.some(m => m.includes("duphim.one")));
+    report("extension matches: bonglautv1.org pattern present", matches.some(m => m.includes("bonglautv1.org")));
+    report("extension rules: cdnvip net88 video block rule present", Array.isArray(rulesObj) && rulesObj.some(r => r.condition && r.condition.urlFilter.includes("cdnvip.chuoichientv.net/video")));
     report("extension rules: irondom ad-block rule present", Array.isArray(rulesObj) && rulesObj.some(r => r.condition && r.condition.urlFilter.includes("irondom")));
   }
 
