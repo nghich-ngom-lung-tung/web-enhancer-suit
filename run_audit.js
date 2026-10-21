@@ -1652,6 +1652,8 @@ if (manifestObj) {
   report("scripts/movies/narto.user.js: stream.narto-drama.com & mydramawave mapped", nartoScript.includes("stream.narto-drama.com") && nartoScript.includes("mydramawave.com"));
   report("scripts/movies/narto.user.js: nd_ck cookie auto-seed & Adsterra defuser present", nartoScript.includes("nd_ck=") && nartoScript.includes("adsterra"));
   report("extension/content/vip/cinema.js: Narto Drama VIP 2099 & no_ads_active present", cinemaCode.includes("narto-drama.com") && cinemaCode.includes("no_ads_active"));
+  report("extension/content/vip/cinema.js: Narto Drama /auth/email/login mock & patchNartoAuthDom present", cinemaCode.includes("/auth/email/login") && cinemaCode.includes("patchNartoAuthDom"));
+  report("scripts/movies/narto.user.js: nd-auth-modal suppression and VIP 2099 badge present", nartoScript.includes("nd-auth-modal") && nartoScript.includes("patchNartoAuthDom"));
 
   // ─── RUNTIME ISOLATION & REGRESSION PREVENTION AUDIT ───
   // Regression Test 1: sniffer.js fetch hook in isolation without isAdApi in scope

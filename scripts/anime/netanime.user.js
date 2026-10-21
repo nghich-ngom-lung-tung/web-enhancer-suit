@@ -195,13 +195,29 @@
     "narto-drama.com"
   ];
 
-  // Auto-seed nd_ck cookie & unlock Narto Drama short drama AI
+  // Auto-seed nd_ck cookie & unlock Narto Drama VIP Auth & No-Ads Suite
   try {
     if (typeof location !== "undefined" && location.hostname && location.hostname.includes("narto")) {
       if (typeof document !== "undefined" && (!document.cookie || !document.cookie.includes("nd_ck="))) {
         document.cookie = "nd_ck=" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10) + ";path=/;max-age=7200;samesite=Lax";
       }
+      if (typeof window !== "undefined" && window.localStorage) {
+        try {
+          window.localStorage.setItem("nd_auth_auto_popup_pause_until_v1", "9999999999999");
+          window.localStorage.setItem("nd_auth_user_v1", JSON.stringify({
+            id: 999999,
+            name: "VIP Cinema Pro",
+            email: "vip.cinemapro@narto-drama.com",
+            role: "VIP",
+            is_vip: true,
+            is_premium: true,
+            no_ads_active: true,
+            subscription_active: true
+          }));
+        } catch (e) {}
+      }
       if (typeof window !== "undefined") {
+        window.ndIsFrontendAuthed = true;
         window.frontendNoAdsActive = true;
         window.runtimeNoAdsActive = true;
         window.hilltopConsentRequiredRuntime = false;
@@ -209,6 +225,14 @@
         window.ndCreateSandboxedAdsterraFrame = function () { return null; };
         window.ndMountGridCardBanners = function () {};
         window.ndMountHilltopCardBanners = function () {};
+        if (!window.turnstile) {
+          window.turnstile = {
+            render: () => "turnstile_vip_bypass_token",
+            reset: () => {},
+            getResponse: () => "turnstile_vip_bypass_token",
+            remove: () => {}
+          };
+        }
       }
     }
   } catch (e) {}
@@ -516,6 +540,55 @@
   } catch (e) {}
 
   // TCoin DOM Synchronizer
+    // Narto Drama VIP Auth DOM Synchronizer
+  function patchNartoAuthDom() {
+    try {
+      if (typeof document === "undefined") return;
+      if (typeof location !== "undefined" && location.hostname && !location.hostname.includes("narto")) return;
+
+      // 1. Transform navbar login button into VIP 2099 badge
+      const authOpenBtn = document.getElementById("frontend-auth-open");
+      if (authOpenBtn && !authOpenBtn.hasAttribute("data-vip-patched")) {
+        authOpenBtn.setAttribute("data-vip-patched", "1");
+        authOpenBtn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,180,0,0.1));border:1px solid rgba(255,215,0,0.4);padding:4px 10px;border-radius:20px;color:#ffd700;font-weight:700;font-size:13px;box-shadow:0 0 10px rgba(255,215,0,0.2);cursor:default;">👑 VIP 2099</span>';
+        authOpenBtn.title = "Cinema Pro Suite - Đã kích hoạt VIP No-Ads 2099";
+        authOpenBtn.href = "javascript:void(0)";
+        authOpenBtn.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        };
+      }
+
+      // 2. Transform bottom nav login button
+      const bnLogin = document.getElementById("nd-bn-login");
+      if (bnLogin && !bnLogin.hasAttribute("data-vip-patched")) {
+        bnLogin.setAttribute("data-vip-patched", "1");
+        bnLogin.innerHTML = '<span style="color:#ffd700;font-weight:700;">👑 VIP</span>';
+        bnLogin.onclick = (e) => { e.preventDefault(); e.stopPropagation(); };
+      }
+
+      // 3. Defuse & close auth modal if it exists or opened
+      const authModal = document.getElementById("nd-auth-modal");
+      if (authModal) {
+        if (authModal.classList.contains("open")) {
+          authModal.classList.remove("open");
+        }
+        authModal.setAttribute("aria-hidden", "true");
+        authModal.style.setProperty("display", "none", "important");
+      }
+
+      // 4. Auto-fill login credentials if modal inputs exist
+      const emailInput = document.getElementById("nd-auth-login-email");
+      const pwdInput = document.getElementById("nd-auth-login-password");
+      if (emailInput && !emailInput.value) {
+        emailInput.value = "vip.cinemapro@narto-drama.com";
+      }
+      if (pwdInput && !pwdInput.value) {
+        pwdInput.value = "CinemaProVIP2099!";
+      }
+    } catch (e) {}
+  }
+
   function patchTcoinDom() {
     try {
       if (typeof document === "undefined") return;
@@ -571,6 +644,7 @@
     if (typeof MutationObserver !== "undefined") {
       const tcoinObserver = new MutationObserver(() => {
         patchTcoinDom();
+        patchNartoAuthDom();
       });
       const targetObs = (typeof document !== "undefined" && (document.body || document.documentElement));
       if (targetObs) {
@@ -584,7 +658,15 @@
   } catch (e) {}
 
   if (typeof setInterval === "function") {
-    setInterval(patchTcoinDom, 400);
+    setInterval(() => {
+    patchTcoinDom();
+    patchNartoAuthDom();
+  }, 400);
+
+  if (typeof document !== "undefined") {
+    document.addEventListener("DOMContentLoaded", patchNartoAuthDom);
+    window.addEventListener("load", patchNartoAuthDom);
+  }
   }
 
   function handleRophimMock(url, init) {
@@ -624,6 +706,88 @@
         authenticated: true,
         user: u,
         expires: VIP_EXPIRY_DATE.toISOString()
+      });
+    }
+
+    // 1a-2. Narto Drama VIP Auth, Login & Gates Mock
+    const isNartoHost = (typeof location !== "undefined" && location.hostname && location.hostname.includes("narto")) || url.includes("narto");
+    if (
+      url.includes("/auth/email/login") ||
+      (isNartoHost && url.includes("/auth/login") && !url.includes("/auth/session")) ||
+      url.includes("/auth/whatsapp/verify-otp") ||
+      url.includes("/auth/email/signup/verify-code")
+    ) {
+      const realUser = getRealProvisionedUser();
+      const u = {
+        id: realUser?.id || 999999,
+        name: realUser?.name || "VIP Cinema Pro",
+        email: realUser?.email || "vip.cinemapro@narto-drama.com",
+        role: "VIP",
+        is_vip: true,
+        is_premium: true,
+        no_ads_active: true,
+        subscription_active: true,
+        thungBalance: COIN_BALANCE,
+        coin_balance: COIN_BALANCE
+      };
+      return JSON.stringify({
+        ok: true,
+        success: true,
+        status: "success",
+        message: "Login berhasil. Memuat ulang halaman...",
+        user: u,
+        redirect: ""
+      });
+    }
+
+    if (
+      url.includes("/auth/email/signup/request-code") ||
+      url.includes("/auth/whatsapp/request-otp") ||
+      url.includes("/auth/password/recovery/request-code")
+    ) {
+      return JSON.stringify({
+        ok: true,
+        success: true,
+        resend_in: 60,
+        message: "Kode verifikasi berhasil dikirim."
+      });
+    }
+
+    if (url.includes("/auth/password/recovery/reset")) {
+      return JSON.stringify({
+        ok: true,
+        success: true,
+        message: "Password berhasil direset. Silakan login."
+      });
+    }
+
+    if (url.includes("/auth/logout")) {
+      return JSON.stringify({
+        ok: true,
+        success: true,
+        redirect: "/"
+      });
+    }
+
+    if (url.includes("/player/ads/gate-unlock") || url.includes("/player/ads/gate-batch")) {
+      return JSON.stringify({
+        ok: true,
+        success: true,
+        unlocked: true,
+        urls: [],
+        count: 0
+      });
+    }
+
+    if (
+      url.includes("/me/history/sync") ||
+      url.includes("/me/history/remove") ||
+      url.includes("/me/subtitle-settings/sync")
+    ) {
+      return JSON.stringify({
+        ok: true,
+        success: true,
+        items: []
       });
     }
 
@@ -3406,7 +3570,8 @@
       'iframe[src*="bancadeltempoidea"]', 'iframe[src*="highperformanceformat"]',
       'iframe[src*="timely-hello"]', 'iframe[src*="untimely-hello"]',
       'iframe[src*="splendid-garage"]', 'iframe[src*="omg10"]',
-      'iframe[src*="juicyads"]', 'iframe[src*="magsrv"]'
+      'iframe[src*="juicyads"]', 'iframe[src*="magsrv"]',
+      '#nd-auth-modal', '.nd-auth-modal', '.nd-auth-backdrop', '.nd-auth-card', '#nd-auth-title', '.nd-auth-tabs', '.nd-auth-panel'
     ];
 
     try {
@@ -3423,7 +3588,7 @@
       // Tự động đóng và xóa modal popup backdrop trên Chuối Chiên & Bông Lau
       // Narto Drama popup & overlay defuser
       if (typeof window !== "undefined" && window.location && window.location.hostname && window.location.hostname.includes("narto")) {
-        const ndPopups = document.querySelectorAll(".nd-timegate-popup, .player-subscribe-overlay");
+        const ndPopups = document.querySelectorAll(".nd-timegate-popup, .player-subscribe-overlay, #nd-auth-modal, .nd-auth-modal, .nd-auth-backdrop, .nd-auth-card");
         ndPopups.forEach(p => {
           try {
             p.style.display = "none";

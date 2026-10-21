@@ -1857,7 +1857,8 @@
       'iframe[src*="bancadeltempoidea"]', 'iframe[src*="highperformanceformat"]',
       'iframe[src*="timely-hello"]', 'iframe[src*="untimely-hello"]',
       'iframe[src*="splendid-garage"]', 'iframe[src*="omg10"]',
-      'iframe[src*="juicyads"]', 'iframe[src*="magsrv"]'
+      'iframe[src*="juicyads"]', 'iframe[src*="magsrv"]',
+      '#nd-auth-modal', '.nd-auth-modal', '.nd-auth-backdrop', '.nd-auth-card', '#nd-auth-title', '.nd-auth-tabs', '.nd-auth-panel'
     ];
 
     try {
@@ -1874,7 +1875,7 @@
       // Tự động đóng và xóa modal popup backdrop trên Chuối Chiên & Bông Lau
       // Narto Drama popup & overlay defuser
       if (typeof window !== "undefined" && window.location && window.location.hostname && window.location.hostname.includes("narto")) {
-        const ndPopups = document.querySelectorAll(".nd-timegate-popup, .player-subscribe-overlay");
+        const ndPopups = document.querySelectorAll(".nd-timegate-popup, .player-subscribe-overlay, #nd-auth-modal, .nd-auth-modal, .nd-auth-backdrop, .nd-auth-card");
         ndPopups.forEach(p => {
           try {
             p.style.display = "none";
