@@ -107,6 +107,8 @@
 // @match        *://bonglau.live/*
 // @match        *://tructiep.bonglau.live/*
 // @match        *://*.bonglau*.*/*
+// @match        *://*.nguoitho*.*/*
+// @match        *://*.nguoithotv*.*/*
 // @include      *://*truyenqq*/*
 // @include      *://truyenqq*.com/*
 // @include      *://truyenqq*.vn/*
@@ -128,6 +130,8 @@
 // @include      *://fhd-*.cctvsignal.xyz/*
 // @include      *://streamxx.*/*
 // @include      *://bonglau*.*/*
+// @include      *://nguoitho*.*/*
+// @include      *://nguoithotv*.*/*
 // @allFrames    true
 // @run-at       document-start
 // @grant        none

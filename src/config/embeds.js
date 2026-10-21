@@ -65,5 +65,7 @@ module.exports = [
   "*://api.clubc.org/*",
   "*://*.bonglau.live/*",
   "*://tructiep.bonglau.live/*",
-  "*://*.bonglau*.*/*"
+  "*://*.bonglau*.*/*",
+  "*://*.nguoitho*.*/*",
+  "*://*.nguoithotv*.*/*"
 ];

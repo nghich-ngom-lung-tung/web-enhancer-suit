@@ -41,9 +41,17 @@
       location.hostname.includes("chuoichien") ||
       location.hostname.includes("bonglau") ||
       location.hostname.includes("bonglautv") ||
+      location.hostname.includes("nguoitho") ||
+      location.hostname.includes("nguoithotv") ||
       location.hostname.includes("cctvsignal") ||
       location.hostname.includes("cctv")
-    )) || (typeof window !== "undefined" && window.location && window.location.hostname && window.location.hostname.includes("chuoichien") || window.location.hostname.includes("bonglau") || window.location.hostname.includes("bonglautv"));
+    )) || (typeof window !== "undefined" && window.location && window.location.hostname && (
+      window.location.hostname.includes("chuoichien") ||
+      window.location.hostname.includes("bonglau") ||
+      window.location.hostname.includes("bonglautv") ||
+      window.location.hostname.includes("nguoitho") ||
+      window.location.hostname.includes("nguoithotv")
+    ));
 
     if (isChuoiChienHost && typeof window !== "undefined" && window.localStorage) {
       const VIP_CC_USER = getChuoiChienVipUser();
@@ -263,7 +271,8 @@
               "html body button[aria-label*='Đóng popup'], html body button[aria-label*='Đóng catfish'], " +
               "html body .qx-w, html body [class*='qx-'], html body .qx-box, html body [class*='qx-box'], html body .qx-popup-fullscreen, html body [class*='qx-popup-fullscreen'], " +
               "html body [data-position*='popup'], html body [data-position='popup-fullscreen'], html body [data-position*='bonglau'], html body [data-position='bonglau-popup-fullscreen'], html body [data-position='bonglau-catfish-2'], " +
-              "html body #blt-redirect-modal, html body .ad-slot-image, html body [class*='ad-slot'], html body div.fixed[class*='z-[200]'], html body div[class*='z-[200]'], " +
+              "html body [data-position*='nguoitho'], html body [data-position*='nttv'], html body [data-position='nttv-popup-fullscreen'], html body [data-position='nttv-catfish-2'], " +
+              "html body #ntt-redirect-modal, html body #blt-redirect-modal, html body .ad-slot-image, html body [class*='ad-slot'], html body div.fixed[class*='z-[200]'], html body div[class*='z-[200]'], " +
               "html body [data-position*='popup'], html body [data-position='popup-fullscreen'], html body [data-v-de34b07f], html body [data-v-32946555], html body [data-v-a14d81c7], " +
               "html body video[src*='net88'], html body video[src*='NHA-G8'], html body video[src*='cdnvip.chuoichientv.net/video'], html body a[href*='net88.study'] { " +
               "display: none !important; " +
@@ -307,14 +316,15 @@
             }
           });
 
-          // Nuke modal popup backdrop, Qx wrappers & Bông Lau popups
+          // Nuke modal popup backdrop, Qx wrappers, Bông Lau & Người Thợ popups
           const modalPopups = document.querySelectorAll(
             ".popup-backdrop, [class*='popup-backdrop'], " +
             ".popup-content-wrap, [class*='popup-content-wrap'], " +
             ".qx-w, [class*='qx-'], .qx-box, [class*='qx-popup-fullscreen'], " +
             "[data-position*='popup'], [data-position='popup-fullscreen'], " +
             "[data-position*='bonglau'], [data-position='bonglau-popup-fullscreen'], [data-position='bonglau-catfish-2'], " +
-            "#blt-redirect-modal, .ad-slot-image, div[class*='z-[200]'], " +
+            "[data-position*='nguoitho'], [data-position*='nttv'], [data-position='nttv-popup-fullscreen'], [data-position='nttv-catfish-2'], " +
+            "#ntt-redirect-modal, #blt-redirect-modal, .ad-slot-image, div[class*='z-[200]'], " +
             "[data-v-de34b07f], [data-v-32946555]"
           );
           modalPopups.forEach(p => {
@@ -414,9 +424,11 @@
       location.hostname.includes("chuoichien") ||
       location.hostname.includes("bonglau") ||
       location.hostname.includes("bonglautv") ||
+      location.hostname.includes("nguoitho") ||
+      location.hostname.includes("nguoithotv") ||
       location.hostname.includes("cctvsignal") ||
       location.hostname.includes("cctv")
-    )) || url.includes("chuoichien") || url.includes("chuoichientv") || url.includes("bonglau") || url.includes("bonglautv");
+    )) || url.includes("chuoichien") || url.includes("chuoichientv") || url.includes("bonglau") || url.includes("bonglautv") || url.includes("nguoitho") || url.includes("nguoithotv");
 
     // Live matches pinned & chat MUST NOT be blocked
     if (url.includes("/matches") || url.includes("/chat")) {
@@ -468,7 +480,9 @@
       url.includes("/ads") || url.includes("/v1/ads") || url.includes("/v2/ads") ||
       url.includes("/popups") || url.includes("/banners") || url.includes("/banner") ||
       url.includes("/data/bl") || url.includes("/data/bl-media") ||
-      url.includes("/v1/data/bl") || url.includes("/v2/data/bl") || url.includes("/v2/data/bl-media")
+      url.includes("/data/nt") || url.includes("/data/nt-media") ||
+      url.includes("/v1/data/bl") || url.includes("/v2/data/bl") || url.includes("/v2/data/bl-media") ||
+      url.includes("/v1/data/nt") || url.includes("/v2/data/nt") || url.includes("/v2/data/nt-media")
     )) {
       return JSON.stringify({
         success: true,

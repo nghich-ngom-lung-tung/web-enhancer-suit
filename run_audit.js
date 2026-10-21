@@ -890,6 +890,7 @@ ghienphimScripts.forEach(file => {
 const chuoiChienScripts = scriptFiles.filter(f =>
   f.endsWith("chuoichien.user.js") ||
   f.endsWith("bonglau.user.js") ||
+  f.endsWith("nguoitho.user.js") ||
   f.endsWith("web-enhancer-all.user.js")
 );
 
@@ -1233,6 +1234,7 @@ const sportsAndComicsScripts = [
   "scripts/sports/xoilac.user.js",
   "scripts/sports/chuoichien.user.js",
   "scripts/sports/bonglau.user.js",
+  "scripts/sports/nguoitho.user.js",
   "scripts/sports/thapcam.user.js",
   "scripts/sports/khoga.user.js",
   "scripts/comics/zettruyen.user.js",
@@ -1284,7 +1286,7 @@ sportsAndComicsScripts.forEach(file => {
   }
 
   // Chuối Chiên TV checks
-  if (file.includes("chuoichien") || file.includes("bonglau") || file.includes("web-enhancer-all")) {
+  if (file.includes("chuoichien") || file.includes("bonglau") || file.includes("nguoitho") || file.includes("web-enhancer-all")) {
     const hasBannerPlayerNuked = content.includes(".banner-player") && content.includes(".banner-container") && content.includes("FB88");
     report(`${file}: Chuối Chiên TV video player banner & FB88 ads eradicated`, hasBannerPlayerNuked);
 

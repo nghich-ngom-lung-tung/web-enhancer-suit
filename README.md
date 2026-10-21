@@ -96,7 +96,7 @@ Dành cho bạn nào thích quản lý bằng Tampermonkey / Violentmonkey và t
 
 ### ⭐ GÓI TỔNG HỢP TOÀN NĂNG (ALL-IN-ONE) ⭐
 
-[![Install All-In-One](https://img.shields.io/badge/CÀI_ĐẶT_BẢN_GỘP_MASTER_(58+_WEBSITES)-10b981?style=for-the-badge&logo=tampermonkey&logoColor=white)](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/web-enhancer-all.user.js)
+[![Install All-In-One](https://img.shields.io/badge/CÀI_ĐẶT_BẢN_GỘP_MASTER_(59+_WEBSITES)-10b981?style=for-the-badge&logo=tampermonkey&logoColor=white)](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/web-enhancer-all.user.js)
 
 *Tự động kích hoạt trên tất cả web Phim, Anime, Bóng Đá và Truyện Tranh bên dưới*
 
@@ -112,6 +112,7 @@ Dành cho bạn nào thích quản lý bằng Tampermonkey / Violentmonkey và t
 | :--- | :---: | :---: | :--- |
 | 🍌 **Chuối Chiên TV** | 🟢 Sẵn sàng | [👉 **Cài đặt Chuối Chiên**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/sports/chuoichien.user.js) | `chuoichientv.me`, `chuoichientv.link`, `cctvsignal.xyz` |
 | 🍲 **Bông Lau TV (Bóng Lẩu)** | 🟢 Sẵn sàng | [👉 **Cài đặt Bông Lau**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/sports/bonglau.user.js) | `bonglautv1.org`, `bonglautv1.pro`, `bonglau.live` |
+| 🐰 **Người Thợ TV (Người Thỏ)** | 🟢 Sẵn sàng | [👉 **Cài đặt Người Thợ**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/sports/nguoitho.user.js) | `nguoithotv.org`, `nguoithotv.pro`, `nguoitho.live` |
 | ⚽ **Xôi Lạc TV (XoilacZ)** | 🟢 Sẵn sàng | [👉 **Cài đặt Xôi Lạc**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/sports/xoilac.user.js) | `xoilaczzz.pro`, `xoilac.tv`, `xoilac.net` |
 | 🏆 **Thập Cẩm TV (ThapCam)** | 🟢 Sẵn sàng | [👉 **Cài đặt Thập Cẩm**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/sports/thapcam.user.js) | `explorado-invest.com`, `thapcam.tv` |
 | 🍗 **Khô Gà TV (KhogaLive)** | 🟢 Sẵn sàng | [👉 **Cài đặt Khô Gà**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/sports/khoga.user.js) | `khoga.live`, `khoga1.live`, `khoga.space` |

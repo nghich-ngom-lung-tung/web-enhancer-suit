@@ -3,6 +3,7 @@ module.exports = [
   require("./khoga"),
   require("./chuoichien"),
   require("./bonglau"),
+  require("./nguoitho"),
   require("./thapcam"),
   require("./xoilac")
 ];
