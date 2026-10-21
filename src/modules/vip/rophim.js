@@ -11,8 +11,27 @@ module.exports = `
     "cobephim.cfd",
     "rophim10.work",
     "darkbytes.xyz",
-    "clubc.org"
+    "clubc.org",
+    "narto-drama.com"
   ];
+
+  // Auto-seed nd_ck cookie & unlock Narto Drama short drama AI
+  try {
+    if (typeof location !== "undefined" && location.hostname && location.hostname.includes("narto")) {
+      if (typeof document !== "undefined" && (!document.cookie || !document.cookie.includes("nd_ck="))) {
+        document.cookie = "nd_ck=" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10) + ";path=/;max-age=7200;samesite=Lax";
+      }
+      if (typeof window !== "undefined") {
+        window.frontendNoAdsActive = true;
+        window.runtimeNoAdsActive = true;
+        window.hilltopConsentRequiredRuntime = false;
+        window.hilltopConsentResolved = true;
+        window.ndCreateSandboxedAdsterraFrame = function () { return null; };
+        window.ndMountGridCardBanners = function () {};
+        window.ndMountHilltopCardBanners = function () {};
+      }
+    }
+  } catch (e) {}
 
   function getRealProvisionedUser() {
     try {
@@ -176,7 +195,8 @@ module.exports = `
       location.hostname.includes("ro-phim") ||
       location.hostname.includes("netanime") ||
       location.hostname.includes("moviehdthai") ||
-      location.hostname.includes("cobephim")
+      location.hostname.includes("cobephim") ||
+      location.hostname.includes("narto")
     );
     if (isRophimHost) {
       if (typeof window !== "undefined" && window.localStorage) {
@@ -408,6 +428,8 @@ module.exports = `
         role: "VIP",
         is_vip: true,
         is_premium: true,
+        no_ads_active: true,
+        subscription_active: true,
         thungBalance: COIN_BALANCE,
         coin_balance: COIN_BALANCE,
         roles: [
@@ -418,6 +440,8 @@ module.exports = `
         permissions: ["admin", "vip", "premium", "superadmin"]
       };
       return JSON.stringify({
+        ok: true,
+        authenticated: true,
         user: u,
         expires: VIP_EXPIRY_DATE.toISOString()
       });

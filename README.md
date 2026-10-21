@@ -158,6 +158,7 @@ Dành cho bạn nào thích quản lý bằng Tampermonkey / Violentmonkey và t
 | 💃 **Cô Bé Phim (CoBePhim)** | 🟢 Sẵn sàng | [👉 **Cài đặt CoBePhim**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/cobephim.user.js) | `cobephim.cfd` |
 | 🎬 **Film4k** | 🟢 Sẵn sàng | [👉 **Cài đặt Film4k**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/film4k.user.js) | `film4k.net`, `film4knet.ngaodacopho.workers.dev` |
 | 🛒 **Chợ Phim (ChoPhim)** | 🟢 Sẵn sàng | [👉 **Cài đặt ChoPhim**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/chophim.user.js) | `chophim.fun` |
+| 🎬 **Narto Drama (Short Drama AI)** | 🟢 Sẵn sàng | [👉 **Cài đặt Narto Drama**](https://raw.githubusercontent.com/nghich-ngom-lung-tung/web-enhancer-suit/main/scripts/movies/narto.user.js) | `narto-drama.com`, `stream.narto-drama.com` |
 
 </details>
 

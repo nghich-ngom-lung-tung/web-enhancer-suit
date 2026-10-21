@@ -30,5 +30,6 @@ module.exports = [
   require("./moviehdthai"),
   require("./cobephim"),
   require("./film4k"),
-  require("./chophim")
+  require("./chophim"),
+  require("./narto")
 ];

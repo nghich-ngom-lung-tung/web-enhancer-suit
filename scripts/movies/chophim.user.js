@@ -104,6 +104,10 @@
 // @match        *://*.bonglau*.*/*
 // @match        *://*.nguoitho*.*/*
 // @match        *://*.nguoithotv*.*/*
+// @match        *://stream.narto-drama.com/*
+// @match        *://edge.narto-drama.com/*
+// @match        *://*.mydramawave.com/*
+// @match        *://mydramawave.com/*
 // @include      *://*chophim*/*
 // @include      *://embed*.streamc.xyz/*
 // @include      *://stream*.xyz/*
@@ -3017,7 +3021,19 @@
       'a[href*="casino"]', 'a[href*="fun88"]', 'a[href*="w88"]', 'a[href*="fb88"]', 'a[href*="nohu"]',
       'a[href*="taixiu"]', 'a[href*="gamebai"]', 'a[href*="keonhacai"]',
       'a[href*="hitclub"]', 'a[href*="hit.club"]', 'a[href*="go88"]', 'a[href*="sunwin"]',
-      '.landing-ad', 'dialog.cdlg', '.cdlg', '.landing-box .landing-ad'
+      '.landing-ad', 'dialog.cdlg', '.cdlg', '.landing-box .landing-ad',
+
+      // Narto Drama Ads & Popups
+      '#adsterra-top-banner', '#adsterra-top-banner-inner', '#adsterra-top-banner-frame', '#adsterra-top-banner-slot',
+      '.nd-adsterra-card-inner', '.nd-adsterra-card-frame', '.nd-hilltop-card-banner-slot',
+      '[data-adsterra-key]', '[data-adsterra-mounted]',
+      '.nd-timegate-popup', '.player-subscribe-overlay', '.nd-vast-overlay', '.nd-vast-banner',
+      '.vast-ad-banner-slot', '.vast-adsterra-wrap',
+      '[id*="adsterra"]', '[class*="adsterra"]', '[class*="vast-banner"]',
+      'iframe[src*="bancadeltempoidea"]', 'iframe[src*="highperformanceformat"]',
+      'iframe[src*="timely-hello"]', 'iframe[src*="untimely-hello"]',
+      'iframe[src*="splendid-garage"]', 'iframe[src*="omg10"]',
+      'iframe[src*="juicyads"]', 'iframe[src*="magsrv"]'
     ];
 
     try {
@@ -3032,6 +3048,18 @@
       }
 
       // Tự động đóng và xóa modal popup backdrop trên Chuối Chiên & Bông Lau
+      // Narto Drama popup & overlay defuser
+      if (typeof window !== "undefined" && window.location && window.location.hostname && window.location.hostname.includes("narto")) {
+        const ndPopups = document.querySelectorAll(".nd-timegate-popup, .player-subscribe-overlay");
+        ndPopups.forEach(p => {
+          try {
+            p.style.display = "none";
+            p.style.visibility = "hidden";
+            p.remove();
+          } catch (e) {}
+        });
+      }
+
       const ccCloseBtns = document.querySelectorAll('.popup-close-btn:not([data-cc-done]), button.popup-close-btn:not([data-cc-done])');
       ccCloseBtns.forEach(btn => {
         btn.setAttribute('data-cc-done', '1');

@@ -713,6 +713,40 @@ html, body {
   pointer-events: none !important;
 }
 
+#adsterra-top-banner,
+    #adsterra-top-banner-inner,
+    #adsterra-top-banner-frame,
+    #adsterra-top-banner-slot,
+    .nd-adsterra-card-inner,
+    .nd-adsterra-card-frame,
+    .nd-hilltop-card-banner-slot,
+    [data-adsterra-key],
+    [data-adsterra-mounted],
+    .nd-timegate-popup,
+    .player-subscribe-overlay,
+    .nd-vast-overlay,
+    .nd-vast-banner,
+    .vast-ad-banner-slot,
+    .vast-adsterra-wrap,
+    [id*="adsterra"],
+    [class*="adsterra"],
+    [class*="vast-banner"],
+    iframe[src*="bancadeltempoidea"],
+    iframe[src*="highperformanceformat"],
+    iframe[src*="timely-hello"],
+    iframe[src*="untimely-hello"],
+    iframe[src*="splendid-garage"],
+    iframe[src*="omg10"],
+    iframe[src*="juicyads"],
+    iframe[src*="magsrv"] {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      height: 0 !important;
+      width: 0 !important;
+    }
+
 #ad_top, #ad_bottom, .ad-banner, .banner_middle, div[id*="adv_"], .catfish-banner, div[class*="qc_"], .anti-adblock-alert, #overlay-banner, div[style*="z-index: 2147483647"] {
   display: none !important;
   visibility: hidden !important;

@@ -67,5 +67,8 @@ module.exports = [
   "*://tructiep.bonglau.live/*",
   "*://*.bonglau*.*/*",
   "*://*.nguoitho*.*/*",
-  "*://*.nguoithotv*.*/*"
+  "*://*.nguoithotv*.*/*",
+  "*://stream.narto-drama.com/*",
+  "*://edge.narto-drama.com/*",
+  "*://*.mydramawave.com/*"
 ];

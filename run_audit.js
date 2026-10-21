@@ -542,7 +542,7 @@ scriptFiles.forEach(file => {
 // ═════════════════════════════════════════════════════════════════
 console.log("\n👑 PHASE 4: Rophim VIP 2099 & Coin Backend Patcher Audit");
 
-const rophimScripts = scriptFiles.filter(f => f.endsWith("rophim.user.js") || f.endsWith("tampermonkey.user.js") || f.endsWith("web-enhancer-all.user.js") || f.endsWith("netanime.user.js") || f.endsWith("moviehdthai.user.js") || f.endsWith("cobephim.user.js"));
+const rophimScripts = scriptFiles.filter(f => f.endsWith("rophim.user.js") || f.endsWith("tampermonkey.user.js") || f.endsWith("web-enhancer-all.user.js") || f.endsWith("netanime.user.js") || f.endsWith("moviehdthai.user.js") || f.endsWith("cobephim.user.js") || f.endsWith("narto.user.js"));
 rophimScripts.forEach(file => {
   const code = fs.readFileSync(file, "utf8");
   const { window, document } = createTopWindowMock("rophim1.vip");
@@ -1569,6 +1569,9 @@ if (manifestObj) {
     report("extension matches: bonglautv1.org pattern present", matches.some(m => m.includes("bonglautv1.org")));
     report("extension rules: cdnvip net88 video block rule present", Array.isArray(rulesObj) && rulesObj.some(r => r.condition && r.condition.urlFilter.includes("cdnvip.chuoichientv.net/video")));
     report("extension rules: irondom ad-block rule present", Array.isArray(rulesObj) && rulesObj.some(r => r.condition && r.condition.urlFilter.includes("irondom")));
+    report("extension matches: narto-drama.com pattern present", matches.some(m => m.includes("narto-drama.com")));
+    report("extension rules: highperformanceformat block rule present", Array.isArray(rulesObj) && rulesObj.some(r => r.condition && r.condition.urlFilter.includes("highperformanceformat")));
+    report("extension rules: bancadeltempoidea block rule present", Array.isArray(rulesObj) && rulesObj.some(r => r.condition && r.condition.urlFilter.includes("bancadeltempoidea")));
   }
 
   // Validate script syntax
@@ -1643,6 +1646,12 @@ if (manifestObj) {
   report("scripts/movies/film4k.user.js: .side-signin & .side-pair hidden via CSS", film4kScript.includes(".side-signin") && film4kScript.includes(".side-pair"));
   report("extension/content/features/ad-nuker.js: Film4k landing gate and dialog auto-bypass present", adNukerCode.includes("landing-enter") && adNukerCode.includes("cdlg-ok") && adNukerCode.includes("f4k:entered"));
   report("extension/content/vip/cinema.js: Film4k VIP user and /api/auth/me interception present", cinemaCode.includes("/api/auth/me") && cinemaCode.includes("sfrank1e@film4k.vip"));
+
+  const nartoScript = fs.readFileSync(path.join(__dirname, "scripts", "movies", "narto.user.js"), "utf8");
+  report("scripts/movies/narto.user.js: narto-drama.com domain mapped", nartoScript.includes("narto-drama.com"));
+  report("scripts/movies/narto.user.js: stream.narto-drama.com & mydramawave mapped", nartoScript.includes("stream.narto-drama.com") && nartoScript.includes("mydramawave.com"));
+  report("scripts/movies/narto.user.js: nd_ck cookie auto-seed & Adsterra defuser present", nartoScript.includes("nd_ck=") && nartoScript.includes("adsterra"));
+  report("extension/content/vip/cinema.js: Narto Drama VIP 2099 & no_ads_active present", cinemaCode.includes("narto-drama.com") && cinemaCode.includes("no_ads_active"));
 
   // ─── RUNTIME ISOLATION & REGRESSION PREVENTION AUDIT ───
   // Regression Test 1: sniffer.js fetch hook in isolation without isAdApi in scope
