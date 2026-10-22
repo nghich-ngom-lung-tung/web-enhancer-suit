@@ -1781,16 +1781,18 @@
       'div[class*="watermark-ad"]', 'div[class*="overlay-ad"]',
 
             // ChuoiChien & BongLau Modal Popups, Backdrops & Video Ads
-      '.popup-backdrop', '[class*="popup-backdrop"]', '.popup-content-wrap', '[class*="popup-content-wrap"]', '.popup-close-btn', '[class*="popup-close-btn"]',
-      '.qx-w', '[class*="qx-"]', '.qx-box', '[class*="qx-box"]', '.qx-popup-fullscreen', '[class*="qx-popup-fullscreen"]',
-      '[data-position*="popup"]', '[data-position="popup-fullscreen"]', '[data-v-de34b07f]', '[data-v-32946555]', '[data-v-a14d81c7]',
-      'a[href*="net88.study"]',
+      '.popup-backdrop', '.popup-content-wrap', '.popup-close-btn',
+      '.qx-popup-fullscreen', '.qx-w.qx-popup-fullscreen', '.qx-box[data-position="popup-fullscreen"], ' +
+      '[data-position="popup-fullscreen"], [data-position="bonglau-popup-fullscreen"], [data-position="bonglau-catfish-2"], ' +
+      '[data-position="nttv-popup-fullscreen"], [data-position="nttv-catfish-2"], ' +
+      '#ntt-redirect-modal', '#blt-redirect-modal',
+      'a[href*="net88.study"]', 'a[href*="net88.boats"]',
       'video[src*="net88"]', 'video[src*="NHA-G8"]', 'video[src*="cdnvip.chuoichientv.net/video"]',
       // ChuoiChien Video Player Banner & Gambling Overlays
       '.ads-layer', '[class*="ads-layer"]', 'div.ads-layer',
       '.player-logo-wrapper', '.player-logo-inner', '.player-logo-ad', '[class*="player-logo-"]', '[class*="player-logo"]',
       '.bet-button-player', '.bet-buttons-container', '.bet-button-content', 'button.bet-button-content', '[class*="bet-button-player"]', '[class*="bet-buttons-container"]', '[class*="bet-button-content"]',
-      '[data-v-77ed3802]', '[data-v-77cd3882]', '[data-v-4c9315d7]', '[data-v-cede0d5b]',
+      // Scoped banner hashes avoided for layout protection
       '.banner-player', '.banner-canvas', 'div.banner-canvas', '[class*="banner-canvas"]', '.banner-container', '.banner-content', '.banner-image', 'img.banner-image', '.banner-item',
       '[class*="banner-player"]', '[class*="banner-container"]', '[class*="banner-content"]', '[class*="banner-image"]', '[class*="banner-item"]',
       '.banner-content.active', '[class*="banner-content"][class*="active"]',
@@ -1890,10 +1892,13 @@
         }
       });
       const ccPopups = document.querySelectorAll(
-        '.popup-backdrop, [class*="popup-backdrop"], ' +
-        '.popup-content-wrap, [class*="popup-content-wrap"], ' +
-        '.qx-w, [class*="qx-popup-fullscreen"], [data-position="popup-fullscreen"], ' +
-        '[data-v-de34b07f], [data-v-32946555]'
+        '.popup-backdrop, div.popup-backdrop, ' +
+        '.popup-content-wrap, div.popup-content-wrap, ' +
+        '.qx-popup-fullscreen, .qx-w.qx-popup-fullscreen, .qx-box[data-position="popup-fullscreen"], ' +
+        '[data-position="popup-fullscreen"], [data-position*="popup-fullscreen"], ' +
+        '[data-position="bonglau-popup-fullscreen"], [data-position="bonglau-catfish-2"], ' +
+        '[data-position="nttv-popup-fullscreen"], [data-position="nttv-catfish-2"], ' +
+        '#ntt-redirect-modal, #blt-redirect-modal'
       );
       ccPopups.forEach(p => {
         if (p.tagName === 'VIDEO' || p.classList?.contains('hlsp') || (p.querySelector && p.querySelector('.hlsp'))) return;

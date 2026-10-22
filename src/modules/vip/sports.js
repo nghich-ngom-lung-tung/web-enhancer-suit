@@ -28,6 +28,79 @@ module.exports = `
     };
   }
 
+  // Self-heal and protect localStorage auth objects against undefined properties (prevents Nuxt charAt 500 crash)
+  try {
+    if (typeof window !== "undefined" && window.localStorage) {
+      const healAuthUser = function (key) {
+        try {
+          const raw = window.localStorage.getItem(key);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === "object") {
+              let dirty = false;
+              if (!parsed.username || typeof parsed.username !== "string") {
+                parsed.username = "vip_cinemapro";
+                dirty = true;
+              }
+              if (!parsed.name) {
+                parsed.name = "VIP Cinema Pro";
+                dirty = true;
+              }
+              if (!parsed.avatar_url && !parsed.avatar) {
+                parsed.avatar_url = "https://chuoichientv.link/favicon.ico";
+                parsed.avatar = "https://chuoichientv.link/favicon.ico";
+                dirty = true;
+              }
+              if (!parsed.role) {
+                parsed.role = "admin";
+                dirty = true;
+              }
+              if (dirty) {
+                window.localStorage.setItem(key, JSON.stringify(parsed));
+              }
+            }
+          }
+        } catch (e) {}
+      };
+
+      healAuthUser("banana_auth_user");
+      healAuthUser("auth.user");
+
+      // Seed session flags to eliminate catfish / popups immediately
+      if (window.sessionStorage) {
+        try {
+          window.sessionStorage.setItem("bonglau_catfish_2_closed", "1");
+          window.sessionStorage.setItem("nttv_catfish_2_closed", "1");
+        } catch (e) {}
+      }
+
+      // Intercept setItem to prevent Nuxt / Axios from ever saving corrupt auth state
+      if (window.Storage && window.Storage.prototype && !window.Storage.prototype._cpro_guarded) {
+        window.Storage.prototype._cpro_guarded = true;
+        const origSetItem = window.Storage.prototype.setItem;
+        window.Storage.prototype.setItem = function (key, val) {
+          if (key === "banana_auth_user" || key === "auth.user") {
+            try {
+              if (val && typeof val === "string") {
+                const obj = JSON.parse(val);
+                if (obj && typeof obj === "object") {
+                  if (!obj.username || typeof obj.username !== "string") {
+                    obj.username = obj.name || "vip_cinemapro";
+                  }
+                  if (!obj._id) obj._id = "670bf1000000000000000001";
+                  if (!obj.name) obj.name = "VIP Cinema Pro";
+                  if (!obj.role) obj.role = "admin";
+                  val = JSON.stringify(obj);
+                }
+              }
+            } catch (e) {}
+          }
+          return origSetItem.call(this, key, val);
+        };
+      }
+    }
+  } catch (e) {}
+
   // Auto-seed Chuối Chiên TV VIP user & protected real chat token
   try {
     const isChuoiChienHost = (typeof location !== "undefined" && location.hostname && (
@@ -250,24 +323,27 @@ module.exports = `
           if (!s) {
             s = document.createElement("style");
             s.id = "cc-nuke-player-ads";
-            s.textContent = "html body [data-v-4c9315d7].banner-content, html body [data-v-4c9315d7].banner-canvas, html body [data-v-4c9315d7].banner-image, html body img[data-v-4c9315d7], html body div[data-v-4c9315d7].banner-item, html body [data-v-cede0d5b], " +
-              "html body .banner-canvas, html body div.banner-canvas, html body [class*='banner-canvas'], " +
-              "html body .banner-content, html body div.banner-content, html body [class*='banner-content'], " +
-              "html body .banner-container, html body div.banner-container, html body [class*='banner-container'], " +
-              "html body .banner-image, html body img.banner-image, html body [class*='banner-image'], " +
-              "html body .bet-button-content, html body button.bet-button-content, html body [class*='bet-button-content'], " +
-              "html body .bet-button-player, html body .bet-buttons-container, html body [class*='bet-buttons-container'], " +
+            s.textContent = "html body .popup-backdrop, html body div.popup-backdrop, " +
+              "html body .popup-content-wrap, html body div.popup-content-wrap, " +
+              "html body .popup-close-btn, html body button.popup-close-btn, " +
+              "html body button[aria-label*='Đóng popup'], html body button[aria-label*='Đóng catfish'], " +
+              "html body .qx-popup-fullscreen, html body .qx-w.qx-popup-fullscreen, " +
+              "html body .qx-box[data-position='popup-fullscreen'], " +
+              "html body [data-position='popup-fullscreen'], html body [data-position*='popup-fullscreen'], " +
+              "html body [data-position='bonglau-popup-fullscreen'], html body [data-position='bonglau-catfish-2'], " +
+              "html body [data-position='nttv-popup-fullscreen'], html body [data-position='nttv-catfish-2'], " +
+              "html body #ntt-redirect-modal, html body #blt-redirect-modal, " +
+              "html body .banner-canvas, html body div.banner-canvas, " +
+              "html body .banner-content, html body div.banner-content, " +
+              "html body .banner-container, html body div.banner-container, " +
+              "html body .banner-image, html body img.banner-image, " +
+              "html body .bet-button-content, html body button.bet-button-content, " +
+              "html body .bet-button-player, html body .bet-buttons-container, " +
               "html body img[src*='1920x60'], html body img[src*='cdnvip.chuoichientv.net'], html body img[src*='c5735ef8'], " +
               "html body img[alt*='FB88'], html body img[alt*='net-88'], html body img[alt*='banner_player'], html body img[alt*='banner-player'], " +
-              "html body .player-logo-wrapper, html body [class*='player-logo'], html body .boxchat-sticky-ad, html body [class*='boxchat-sticky-ad'], html body .login-prompt, " +
-              "html body .popup-backdrop, html body [class*='popup-backdrop'], html body .popup-content-wrap, html body [class*='popup-content-wrap'], html body .popup-close-btn, html body [class*='popup-close-btn'], " +
-              "html body button[aria-label*='Đóng popup'], html body button[aria-label*='Đóng catfish'], " +
-              "html body .qx-w, html body [class*='qx-'], html body .qx-box, html body [class*='qx-box'], html body .qx-popup-fullscreen, html body [class*='qx-popup-fullscreen'], " +
-              "html body [data-position*='popup'], html body [data-position='popup-fullscreen'], html body [data-position*='bonglau'], html body [data-position='bonglau-popup-fullscreen'], html body [data-position='bonglau-catfish-2'], " +
-              "html body [data-position*='nguoitho'], html body [data-position*='nttv'], html body [data-position='nttv-popup-fullscreen'], html body [data-position='nttv-catfish-2'], " +
-              "html body #ntt-redirect-modal, html body #blt-redirect-modal, html body .ad-slot-image, html body [class*='ad-slot'], html body div.fixed[class*='z-[200]'], html body div[class*='z-[200]'], " +
-              "html body [data-position*='popup'], html body [data-position='popup-fullscreen'], html body [data-v-de34b07f], html body [data-v-32946555], html body [data-v-a14d81c7], " +
-              "html body video[src*='net88'], html body video[src*='NHA-G8'], html body video[src*='cdnvip.chuoichientv.net/video'], html body a[href*='net88.study'] { " +
+              "html body .player-logo-wrapper, html body .boxchat-sticky-ad, html body .login-prompt, " +
+              "html body video[src*='net88'], html body video[src*='NHA-G8'], html body video[src*='cdnvip.chuoichientv.net/video'], " +
+              "html body a[href*='net88.study'], html body a[href*='net88.boats'] { " +
               "display: none !important; " +
               "visibility: hidden !important; " +
               "height: 0 !important; " +
@@ -311,14 +387,13 @@ module.exports = `
 
           // Nuke modal popup backdrop, Qx wrappers, Bông Lau & Người Thợ popups
           const modalPopups = document.querySelectorAll(
-            ".popup-backdrop, [class*='popup-backdrop'], " +
-            ".popup-content-wrap, [class*='popup-content-wrap'], " +
-            ".qx-w, [class*='qx-'], .qx-box, [class*='qx-popup-fullscreen'], " +
-            "[data-position*='popup'], [data-position='popup-fullscreen'], " +
-            "[data-position*='bonglau'], [data-position='bonglau-popup-fullscreen'], [data-position='bonglau-catfish-2'], " +
-            "[data-position*='nguoitho'], [data-position*='nttv'], [data-position='nttv-popup-fullscreen'], [data-position='nttv-catfish-2'], " +
-            "#ntt-redirect-modal, #blt-redirect-modal, .ad-slot-image, div[class*='z-[200]'], " +
-            "[data-v-de34b07f], [data-v-32946555]"
+            ".popup-backdrop, div.popup-backdrop, " +
+            ".popup-content-wrap, div.popup-content-wrap, " +
+            ".qx-popup-fullscreen, .qx-w.qx-popup-fullscreen, .qx-box[data-position='popup-fullscreen'], " +
+            "[data-position='popup-fullscreen'], [data-position*='popup-fullscreen'], " +
+            "[data-position='bonglau-popup-fullscreen'], [data-position='bonglau-catfish-2'], " +
+            "[data-position='nttv-popup-fullscreen'], [data-position='nttv-catfish-2'], " +
+            "#ntt-redirect-modal, #blt-redirect-modal"
           );
           modalPopups.forEach(p => {
             if (p.tagName === "VIDEO" || p.classList?.contains("hlsp") || (p.querySelector && p.querySelector(".hlsp"))) return;
@@ -423,8 +498,17 @@ module.exports = `
       location.hostname.includes("cctv")
     )) || url.includes("chuoichien") || url.includes("chuoichientv") || url.includes("bonglau") || url.includes("bonglautv") || url.includes("nguoitho") || url.includes("nguoithotv");
 
-    // Live matches pinned & chat MUST NOT be blocked
-    if (url.includes("/matches") || url.includes("/chat")) {
+    // Live matches, fixtures, schedules & chat MUST NEVER be mocked or blocked
+    if (
+      url.includes("/match") ||
+      url.includes("/fixtures") ||
+      url.includes("/schedule") ||
+      url.includes("/tournament") ||
+      url.includes("/competition") ||
+      url.includes("/events") ||
+      url.includes("/sports") ||
+      url.includes("/chat")
+    ) {
       return null;
     }
 
@@ -438,16 +522,49 @@ module.exports = `
         token: token,
         accessToken: token,
         refreshToken: "cinema-pro-vip-refresh-token",
+        _id: u._id,
+        id: u.id,
+        username: u.username || "vip_cinemapro",
+        name: u.name || "VIP Cinema Pro",
+        displayName: u.displayName || "VIP Cinema Pro",
+        email: u.email || "vip.cinemapro@chuoichien.tv",
+        emailVerified: true,
+        role: u.role || "admin",
+        avatar: u.avatar || "https://chuoichientv.link/favicon.ico",
+        avatar_url: u.avatar_url || "https://chuoichientv.link/favicon.ico",
+        is_vip: true,
+        vip: 1,
+        level: 99,
+        coin: COIN_BALANCE,
+        balance: COIN_BALANCE,
+        points: COIN_BALANCE,
+        ...u,
         user: u,
         data: u
       });
     }
 
-    if (isChuoiChien && (url.includes("/users/profile") || url.includes("/profile"))) {
+    if (isChuoiChien && (url.includes("/users/profile") || url.includes("/profile") || url.includes("/user/profile"))) {
       const u = getChuoiChienVipUser();
       return JSON.stringify({
         success: true,
         status: 200,
+        _id: u._id,
+        id: u.id,
+        username: u.username || "vip_cinemapro",
+        name: u.name || "VIP Cinema Pro",
+        displayName: u.displayName || "VIP Cinema Pro",
+        email: u.email || "vip.cinemapro@chuoichien.tv",
+        emailVerified: true,
+        role: u.role || "admin",
+        avatar: u.avatar || "https://chuoichientv.link/favicon.ico",
+        avatar_url: u.avatar_url || "https://chuoichientv.link/favicon.ico",
+        is_vip: true,
+        vip: 1,
+        level: 99,
+        coin: COIN_BALANCE,
+        balance: COIN_BALANCE,
+        points: COIN_BALANCE,
         ...u,
         user: u,
         data: u
@@ -464,6 +581,23 @@ module.exports = `
         token: token,
         accessToken: token,
         refreshToken: "cinema-pro-vip-refresh-token",
+        _id: u._id,
+        id: u.id,
+        username: u.username || "vip_cinemapro",
+        name: u.name || "VIP Cinema Pro",
+        displayName: u.displayName || "VIP Cinema Pro",
+        email: u.email || "vip.cinemapro@chuoichien.tv",
+        emailVerified: true,
+        role: u.role || "admin",
+        avatar: u.avatar || "https://chuoichientv.link/favicon.ico",
+        avatar_url: u.avatar_url || "https://chuoichientv.link/favicon.ico",
+        is_vip: true,
+        vip: 1,
+        level: 99,
+        coin: COIN_BALANCE,
+        balance: COIN_BALANCE,
+        points: COIN_BALANCE,
+        ...u,
         user: u,
         data: u
       });
